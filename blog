@@ -919,6 +919,8 @@
   <div class="blog-layout-with-sidebar">
 
     
+      
+      
       <!-- Articles grid -->
       <div>
         <div class="section-heading-row">
@@ -950,6 +952,8 @@
 
         <!-- Pagination -->
         <div class="pagination-wrap" id="pagination"></div>
+      </div>
+      </div>
       </div>
     </div>
 
