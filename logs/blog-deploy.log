@@ -1,0 +1,31 @@
+[2026-05-21T13:14:56.541Z] Post-publish hook triggered
+[2026-05-21T13:14:56.658Z] Starting blog deployment...
+[2026-05-21T13:14:57.089Z] Deployment failed: Command failed: node C:\Users\amado\Downloads\hozana concept\my website\scripts\deploy-blog.js
+[2026-05-21T13:15:52.160Z] Post-publish hook triggered
+[2026-05-21T13:15:52.168Z] Starting blog deployment...
+[2026-05-21T13:15:52.786Z] Deployment failed: Command failed: node C:\Users\amado\Downloads\hozana concept\my website\scripts\deploy-blog.js
+[2026-05-21T13:16:48.804Z] Post-publish hook triggered
+[2026-05-21T13:16:48.830Z] Starting blog deployment...
+[2026-05-21T13:16:49.514Z] Deployment failed: Command failed: node C:\Users\amado\Downloads\hozana concept\my website\scripts\deploy-blog.js
+[2026-05-21T13:17:47.899Z] Post-publish hook triggered
+[2026-05-21T13:17:47.913Z] Starting blog deployment...
+[2026-05-21T13:17:48.175Z] Deployment failed: Command failed: node ./deploy-blog.js
+[2026-05-21T13:19:06.702Z] Post-publish hook triggered
+[2026-05-21T13:19:06.714Z] Starting blog deployment...
+[2026-05-21T13:19:07.030Z] Deployment failed: Command failed: node C:\Users\amado\Downloads\hozana concept\my website\scripts\deploy-blog.js
+[2026-05-21T13:20:14.707Z] Post-publish hook triggered
+[2026-05-21T13:20:14.731Z] Starting blog deployment...
+[2026-05-21T13:20:19.891Z] Blog deployment completed successfully
+[2026-05-21T13:20:19.893Z] Remember to submit your sitemap to search engines!
+[2026-05-21T13:21:39.340Z] Post-publish hook triggered
+[2026-05-21T13:21:39.349Z] Starting blog deployment...
+[2026-05-21T13:21:43.942Z] Blog deployment completed successfully
+[2026-05-21T13:21:43.943Z] Remember to submit your sitemap to search engines!
+[2026-05-21T13:23:13.758Z] Post-publish hook triggered
+[2026-05-21T13:23:13.769Z] Starting blog deployment...
+[2026-05-21T13:23:19.402Z] Blog deployment completed successfully
+[2026-05-21T13:23:19.403Z] Remember to submit your sitemap to search engines!
+[2026-05-21T13:24:29.046Z] Post-publish hook triggered
+[2026-05-21T13:24:29.054Z] Starting blog deployment...
+[2026-05-21T13:24:35.670Z] Blog deployment completed successfully
+[2026-05-21T13:24:35.672Z] Remember to submit your sitemap to search engines!

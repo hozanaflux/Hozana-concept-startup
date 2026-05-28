@@ -1,0 +1,24 @@
+
+# Hozana Concept Static Blog Server Configuration
+
+# Serve static files from blog-posts directory
+location /blog-posts/ {
+  alias C:\Users\amado\Downloads\hozana concept\my website\blog-posts;
+  try_files $uri $uri/ =404;
+}
+
+# Serve blog.html
+location /blog.html {
+  alias C:\Users\amado\Downloads\hozana concept\my website\blog.html;
+}
+
+# Serve sitemap.xml
+location = /sitemap.xml {
+  alias C:\Users\amado\Downloads\hozana concept\my website\sitemap.xml;
+}
+
+# Redirect article.html to blog.html
+location /article.html {
+  return 301 /blog.html;
+}
+  

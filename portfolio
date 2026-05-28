@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio & Études de Cas | Hozana Concept — Excellence Digitale</title>
+  <meta name="description" content="Découvrez nos dernières réalisations : sites web haute performance, solutions d'intelligence artificielle et identités de marque.">
+  <link rel="icon" type="image/png" href="images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script src="js/supabase-config.js"></script>
+
+  <style>
+    :root {
+      --card-bg: rgba(20, 20, 25, 0.6);
+      --card-border: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Hero Refinement - Pro Editorial Style */
+    .portfolio-hero {
+      padding: calc(var(--nav-height) + 8rem) 1.5rem 8rem;
+      text-align: center;
+      position: relative;
+      background: radial-gradient(circle at 50% -20%, rgba(255,46,46,0.2) 0%, transparent 70%);
+      overflow: hidden;
+    }
+    .portfolio-hero::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+    }
+
+    .hero-stat-row {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      margin-top: 4.5rem;
+      flex-wrap: wrap;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat-num {
+      font-family: var(--font-title);
+      font-size: 3rem;
+      font-weight: 900;
+      background: var(--grad-red);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .hero-stat-label {
+      font-size: 0.75rem;
+      color: var(--white-40);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-weight: 700;
+    }
+
+    /* Professional Sticky Filter Bar */
+    .pf-filter-section {
+      position: sticky;
+      top: var(--nav-height);
+      z-index: 100;
+      background: rgba(10, 10, 12, 0.9);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1.25rem 1.5rem;
+    }
+    .pf-filter-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+    }
+    .pf-cats {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .pf-cats::-webkit-scrollbar { display: none; }
+    
+    .pf-tag {
+      padding: 0.7rem 1.5rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.02);
+      color: var(--white-40);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+    .pf-tag:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--white);
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+    }
+    .pf-tag.active {
+      background: var(--grad-red);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 10px 25px rgba(255,46,46,0.25);
+    }
+
+    /* Premium Grid Layout - Masonry/Mosaic Pro */
+    .pf-container {
+      max-width: 1400px;
+      margin: 5rem auto;
+      padding: 0 1.5rem;
+    }
+    .pf-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      grid-auto-flow: dense;
+    }
+    
+    /* Variable card sizes for masonry look */
+    .pf-card.large { grid-column: span 2; }
+    .pf-card.tall { grid-row: span 2; }
+    
+    @media (max-width: 1100px) { 
+      .pf-grid { grid-template-columns: repeat(2, 1fr); } 
+      .pf-card.large { grid-column: span 2; }
+    }
+    @media (max-width: 768px) { 
+      .pf-grid { grid-template-columns: 1fr; gap: 1.75rem; }
+      .pf-card.large, .pf-card.tall { grid-column: span 1; grid-row: span 1; }
+      .pf-filter-inner { flex-direction: column; align-items: center; text-align: center; }
+      .hero-stat-row { gap: 2rem; }
+      .portfolio-hero { padding: calc(var(--nav-height) + 4rem) 1.5rem 4rem; }
+      .hero-stat-num { font-size: 2.25rem; }
+    }
+
+    /* Project Cards - Premium Glass */
+    .pf-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 1 !important;
+      display: flex;
+      flex-direction: column;
+    }
+    .pf-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.06), transparent 70%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .pf-card:hover::before { opacity: 1; }
+    
+    .pf-card:hover {
+      transform: translateY(-12px) scale(1.01);
+      border-color: rgba(255,46,46,0.3);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+      z-index: 10;
+    }
+    
+    .pf-img-wrap {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      background: #0a0a0c;
+    }
+    .pf-card:not(.tall) .pf-img-wrap { aspect-ratio: 16/10; }
+    .pf-card.large .pf-img-wrap { aspect-ratio: 21/9; }
+    
+    .pf-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: block;
+    }
+    .pf-card:hover .pf-img { transform: scale(1.1); }
+    
+    /* Overlay effects */
+    .pf-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);
+      opacity: 0; transition: opacity 0.5s;
+      display: flex; align-items: flex-end; padding: 2rem;
+    }
+    .pf-card:hover .pf-overlay { opacity: 1; }
+    
+    .pf-card-body {
+      padding: 2rem;
+      position: relative;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
+    }
+    .pf-card-cat {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--red);
+      margin-bottom: 0.85rem;
+      display: block;
+    }
+    .pf-card-title {
+      font-family: var(--font-title);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.75rem;
+      line-height: 1.2;
+    }
+    .pf-card-excerpt {
+      font-size: 0.9rem;
+      color: var(--white-50);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    /* Redesigned Premium Modal - Vertical Layout */
+    .pf-modal {
+      position: fixed; inset: 0;
+      background: rgba(4, 4, 6, 0.98);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      z-index: 9999;
+      display: none;
+      align-items: flex-start; /* Start from top to allow scrolling */
+      justify-content: center;
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto; /* Scroll the whole modal */
+      padding: 2rem 1rem;
+    }
+    .pf-modal.open { display: flex; opacity: 1; }
+    
+    .pf-modal-container {
+      background: #0d0d10;
+      width: 100%; max-width: 1000px;
+      border-radius: 32px;
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column; /* Vertical stack */
+      position: relative;
+      box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+      margin: auto; /* Center in the scrollable area */
+    }
+    .pf-modal.open .pf-modal-container {
+      animation: modalPremiumIn 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .pf-modal-media {
+      width: 100%;
+      background: #000;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-height: 70vh; /* Don't take too much space on desktop */
+      min-height: 300px;
+    }
+    .pf-modal-media img {
+      width: 100%; height: 100%;
+      max-height: 70vh;
+      object-fit: contain; /* SHOW ENTIRE IMAGE */
+      display: block;
+    }
+    
+    .pf-modal-info {
+      padding: 3.5rem;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
+    }
+    
+    .pf-modal-close {
+      position: fixed; top: 2rem; right: 2rem;
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 10000;
+      transition: all 0.4s;
+    }
+    .pf-modal-close:hover { background: var(--red); transform: rotate(90deg) scale(1.1); }
+
+    .modal-tag-row { display: flex; gap: 0.6rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .modal-tag {
+      font-size: 0.7rem; font-weight: 800;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      background: rgba(255,46,46,0.1);
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .modal-title { font-family: var(--font-title); font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .modal-desc { color: var(--white-60); line-height: 1.8; margin-bottom: 3rem; font-size: 1.05rem; max-width: 800px; }
+    
+    .modal-meta-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2rem; margin-bottom: 3rem;
+      padding-top: 2.5rem; border-top: 1px solid var(--card-border);
+    }
+    .meta-item-label { font-size: 0.7rem; color: var(--white-30); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.6rem; font-weight: 700; }
+    .meta-item-value { font-weight: 600; color: white; font-size: 1rem; }
+
+    @media (max-width: 1024px) {
+      .pf-modal-info { padding: 2.5rem 1.5rem; }
+      .modal-title { font-size: 2.25rem; }
+      .modal-meta-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+      .pf-modal-close { top: 1rem; right: 1rem; width: 44px; height: 44px; }
+    }
+    @media (max-width: 640px) {
+      .modal-title { font-size: 1.75rem; }
+      .modal-meta-grid { grid-template-columns: 1fr; }
+      .pf-modal-media { max-height: 50vh; min-height: 250px; }
+      .pf-modal-container { border-radius: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<section class="portfolio-hero">
+  <div class="container">
+    <div class="section-label reveal" style="justify-content:center;">Études de Cas</div>
+    <h1 class="text-display reveal delay-1" style="max-width:900px; margin: 0 auto;">
+      L'impact par le <span class="gradient-text">Design</span> & l'<span class="gradient-text">Ingénierie</span>
+    </h1>
+    <p class="text-body-lg reveal delay-2" style="max-width:650px; margin:1.5rem auto 0; color:var(--white-50);">
+      Nous ne créons pas seulement des outils. Nous bâtissons des avantages compétitifs durables pour les entreprises visionnaires.
+    </p>
+    
+    <div class="hero-stat-row">
+      <div class="hero-stat reveal delay-3">
+        <div class="hero-stat-num">50+</div>
+        <div class="hero-stat-label">Projets Livrés</div>
+      </div>
+      <div class="hero-stat reveal delay-4">
+        <div class="hero-stat-num">98%</div>
+        <div class="hero-stat-label">Satisfaction</div>
+      </div>
+      <div class="hero-stat reveal delay-5">
+        <div class="hero-stat-num">24/7</div>
+        <div class="hero-stat-label">Support IA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="pf-filter-section">
+  <div class="pf-filter-inner">
+    <div class="pf-cats">
+      <button class="pf-tag active" onclick="filterPF('all', this)">Tous les Projets</button>
+      <button class="pf-tag" onclick="filterPF('web', this)">Développement Web</button>
+      <button class="pf-tag" onclick="filterPF('design', this)">Brand & UX</button>
+      <button class="pf-tag" onclick="filterPF('ia', this)">Solutions IA</button>
+      <button class="pf-tag" onclick="filterPF('app', this)">Mobile Apps</button>
+    </div>
+    <div class="pf-count" id="pf-count" style="font-size:0.8rem; color:var(--white-30); font-weight:500;"></div>
+  </div>
+</nav>
+
+<main class="pf-container">
+  <div class="pf-grid" id="pf-grid">
+    <!-- Chargement dynamique -->
+  </div>
+</main>
+
+<div class="pf-modal" id="pf-modal" onclick="handleModalClick(event)">
+  <div class="pf-modal-container">
+    <div class="pf-modal-close" onclick="closeModal()"><i class="fas fa-times"></i></div>
+    <div class="pf-modal-media">
+      <img id="m-img" src="" alt="Project Preview">
+    </div>
+    <div class="pf-modal-info">
+      <div class="modal-tag-row" id="m-tags"></div>
+      <h2 id="m-title" class="modal-title"></h2>
+      <p id="m-desc" class="modal-desc"></p>
+      <div class="modal-meta-grid">
+        <div class="meta-item">
+          <div class="meta-item-label">Catégorie</div>
+          <div id="m-cat" class="meta-item-value"></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">Client</div>
+          <div class="meta-item-value">Confidentiel</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">Année</div>
+          <div class="meta-item-value">2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">Expertise</div>
+          <div class="meta-item-value">Premium Digital</div>
+        </div>
+      </div>
+      <div style="margin-top:auto; display:flex; gap:1rem;">
+        <a href="contact" class="btn btn-primary" style="flex:1; justify-content:center;">Lancer un projet similaire</a>
+        <a id="m-link" href="#" target="_blank" class="btn btn-glass" style="padding:0 1.25rem; display:none;"><i class="fas fa-external-link-alt"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="js/supabase-config.js"></script>
+<script src="js/core.js"></script>
+<script src="js/components.js"></script>
+
+<script>
+let allProjects = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetchProjects();
+});
+
+async function fetchProjects() {
+  const grid = document.getElementById('pf-grid');
+  try {
+    console.log('[Portfolio] Récupération des données depuis Supabase...');
+    let dynamicProjects = [];
+    
+    // On essaie d'abord la table officielle, puis la variante
+    const tables = ['portfolio_projects', 'portofolio'];
+    
+    for (const table of tables) {
+      try {
+        const res = await fetch(`tables/${table}?order=sort_order.asc,id.desc`);
+        const data = await res.json();
+        if (data.data && data.data.length > 0) {
+          dynamicProjects = data.data;
+          console.log(`[Portfolio] ${dynamicProjects.length} projets trouvés dans la table: ${table}`);
+          break; 
+        }
+      } catch (e) {
+        console.warn(`[Portfolio] Erreur ou table absente: ${table}`, e);
+      }
+    }
+
+    if (dynamicProjects.length > 0) {
+      allProjects = dynamicProjects;
+    } else {
+      console.log('[Portfolio] Aucune donnée en base, utilisation des projets de démonstration.');
+      allProjects = [
+        { 
+          id:'d1', title:'Nexus E-commerce OS', category:'Développement Web', 
+          image:'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=80', 
+          description:'Une plateforme e-commerce révolutionnaire avec gestion de stock en temps réel et intégration logistique automatisée.',
+          tags:['React', 'Node.js', 'PostgreSQL']
+        },
+        { 
+          id:'d2', title:'Aether AI Assistant', category:'Solutions IA', 
+          image:'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1000&q=80', 
+          description:'Agent intelligent capable de traiter plus de 5000 requêtes clients par jour avec une précision de 94%.',
+          tags:['Python', 'OpenAI', 'NLP']
+        },
+        { 
+          id:'d3', title:'Luxe Branding Studio', category:'Brand & UX', 
+          image:'https://images.unsplash.com/photo-1558655146-d09347e92766?w=1000&q=80', 
+          description:'Refonte complète de l\'identité visuelle pour un groupe hôtelier de luxe. Création d\'un design system modulaire.',
+          tags:['Figma', 'UI Design', 'Branding']
+        }
+      ];
+    }
+    
+    renderProjects(allProjects);
+  } catch (err) {
+    console.error('[Portfolio] Erreur fatale:', err);
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:5rem;color:var(--white-30);">Une erreur de connexion est survenue lors de la récupération des projets.</div>';
+  }
+}
+
+function resolveImageURL(path) {
+  if (!path || typeof path !== 'string') return 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=600';
+  const p = path.trim();
+  if (p.startsWith('http') || p.startsWith('data:')) return p;
+  if (p.startsWith('images/')) return p; // Chemin local relatif
+  
+  // Si c'est un chemin relatif sans dossier, on tente de forcer vers le bucket Supabase par défaut
+  // ou on assume que c'est dans le dossier images local
+  if (!p.includes('/')) return `images/${p}`; 
+  
+  // Tentative Supabase Storage (bucket par défaut dans admin: blog-images)
+  return `${SUPABASE_URL}/storage/v1/object/public/blog-images/${p}`;
+}
+
+function renderProjects(projects) {
+  const grid = document.getElementById('pf-grid');
+  const countEl = document.getElementById('pf-count');
+  
+  if (!grid) return;
+
+  console.log('[Portfolio] Rendu Premium de', projects.length, 'projets');
+
+  grid.innerHTML = projects.map((p, index) => {
+    const rawImg = p.image || p.image_url || p.cover_image || p.img || p.imageUrl || p.photo || p.cover || p.thumbnail;
+    const img = resolveImageURL(rawImg);
+    
+    const cat = p.category || p.cat || 'Projet';
+    const desc = p.description || 'Innovation digitale réalisée par Hozana Concept.';
+    const title = p.title || p.name || 'Projet sans titre';
+    
+    // Logic for variable sizes (Mosaic Pro)
+    // 1st is large, 4th is tall, 7th is large, etc.
+    let sizeClass = '';
+    if (index % 7 === 0) sizeClass = 'large';
+    else if (index % 7 === 3) sizeClass = 'tall';
+    else if (index % 7 === 6) sizeClass = 'large';
+
+    let filterCat = 'web';
+    const c = cat.toLowerCase();
+    if (c.includes('design') || c.includes('brand') || c.includes('ux')) filterCat = 'design';
+    else if (c.includes('ia') || c.includes('sol') || c.includes('intelligent')) filterCat = 'ia';
+    else if (c.includes('app') || c.includes('mob')) filterCat = 'app';
+    else if (c.includes('web')) filterCat = 'web';
+
+    return `
+      <div class="pf-card ${sizeClass}" 
+           data-filter-cat="${filterCat}" 
+           onclick="openModal('${p.id}')" 
+           onmousemove="this.style.setProperty('--x', (event.offsetX/this.offsetWidth)*100 + '%'); this.style.setProperty('--y', (event.offsetY/this.offsetHeight)*100 + '%')"
+           style="transition-delay: ${index * 0.05}s;">
+        <div class="pf-img-wrap">
+          <img src="${img}" class="pf-img" alt="${title}" loading="eager" 
+               onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600'">
+          <div class="pf-overlay">
+            <div class="btn btn-white" style="border-radius:50%; width:50px; height:50px; padding:0; display:flex; align-items:center; justify-content:center;">
+              <i class="fas fa-expand"></i>
+            </div>
+          </div>
+        </div>
+        <div class="pf-card-body">
+          <span class="pf-card-cat">${cat}</span>
+          <h3 class="pf-card-title">${title}</h3>
+          <p class="pf-card-excerpt">${desc}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  if (countEl) countEl.textContent = `${projects.length} RÉALISATIONS D'EXCELLENCE`;
+  
+  // Re-trigger reveal animations
+  if (window.reObserveReveals) window.reObserveReveals();
+}
+
+function filterPF(cat, btn) {
+  document.querySelectorAll('.pf-tag').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  
+  const cards = document.querySelectorAll('.pf-card');
+  let count = 0;
+  
+  cards.forEach(card => {
+    const isVisible = (cat === 'all' || card.dataset.filterCat === cat);
+    card.style.setProperty('display', isVisible ? 'block' : 'none', 'important');
+    if (isVisible) count++;
+  });
+  
+  const countEl = document.getElementById('pf-count');
+  if (countEl) countEl.textContent = `${count} RÉALISATION${count > 1 ? 'S' : ''}`;
+}
+
+function openModal(id) {
+  const p = allProjects.find(x => x.id == id || x.id == String(id));
+  if (!p) return;
+  
+  const rawImg = p.image || p.image_url || p.cover_image || p.img || p.imageUrl || p.photo || p.cover || p.thumbnail;
+  const img = resolveImageURL(rawImg);
+  const title = p.title || p.name || 'Projet sans titre';
+  
+  document.getElementById('m-img').src = img;
+  document.getElementById('m-title').textContent = title;
+  document.getElementById('m-cat').textContent = p.category || p.cat || 'Innovation';
+  document.getElementById('m-desc').textContent = p.description || 'Description en cours de mise à jour.';
+  
+  let tags = [];
+  if (Array.isArray(p.tags)) tags = p.tags;
+  else if (typeof p.tags === 'string') tags = p.tags.split(',');
+  else tags = ['Innovation', 'Excellence'];
+  
+  document.getElementById('m-tags').innerHTML = tags.map(t => `<span class="modal-tag">${t.trim()}</span>`).join('');
+  
+  const linkBtn = document.getElementById('m-link');
+  if (p.link) {
+    linkBtn.href = p.link;
+    linkBtn.style.display = 'inline-flex';
+  } else {
+    linkBtn.style.display = 'none';
+  }
+  
+  const modal = document.getElementById('pf-modal');
+  modal.style.display = 'flex';
+  setTimeout(() => modal.classList.add('open'), 10);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const modal = document.getElementById('pf-modal');
+  modal.classList.remove('open');
+  setTimeout(() => modal.style.display = 'none', 400);
+  document.body.style.overflow = '';
+}
+
+function handleModalClick(e) {
+  if (e.target.id === 'pf-modal') closeModal();
+}
+</script>
+
+</body>
+</html>
+
