@@ -1336,7 +1336,7 @@ function renderFeaturedCard(post) {
   console.log(`[Blog] Rendering featured: ${post.title}`, { img });
 
   return `
-  <a href="/article?id=${post.id}" class="blog-featured-card reveal visible" style="text-decoration:none;">
+  <a href="/blog-posts/${post.slug}" class="blog-featured-card reveal visible" style="text-decoration:none;">
     <div class="featured-img-wrap" style="min-height:350px; background:rgba(255,255,255,0.03);">
       <img src="${img}" alt="${escapeHtml(post.title)}" class="featured-img"
         style="width:100%; height:100%; object-fit:cover; display:block;"
@@ -1377,7 +1377,7 @@ function renderArticleCard(post) {
   const query = (document.getElementById('search-input')?.value || '').trim();
 
   return `
-  <a href="/article?id=${post.id}" class="article-card reveal visible">
+  <a href="/blog-posts/${post.slug}" class="article-card reveal visible">
     <div class="card-img-wrap" style="aspect-ratio:16/9; background:rgba(255,255,255,0.03);">
       <img src="${img}" alt="${escapeHtml(post.title)}" class="card-img"
         style="width:100%; height:100%; object-fit:cover; display:block;"
