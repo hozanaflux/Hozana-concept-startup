@@ -523,6 +523,13 @@
       .share-buttons { flex-direction: row; flex-wrap: wrap; }
       .share-btn { flex: 1; min-width: 120px; justify-content: center; }
     }
+
+    /* Related card entrance */
+    .related-card { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s, box-shadow 0.3s; }
+    .related-card.visible { opacity: 1; transform: translateY(0); }
+
+    /* Sidebar widget entrance */
+    .article-sidebar .sidebar-widget { transition: opacity 0.5s ease, transform 0.5s ease; }
   </style>
 
     <meta property="og:title" content="Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026 | Hozana Concept Blog">
@@ -643,7 +650,7 @@ window.__STATIC_BLOG_DATA__ = {
   <div class="article-hero-overlay"></div>
   <div class="article-hero-content">
     <div id="article-breadcrumb" class="section-label" style="margin-bottom:1.5rem;color:rgba(255,255,255,0.6);">
-      <a href="/blog" style="color:inherit;text-decoration:none;">Blog</a>
+      <a href="blog.html" style="color:inherit;text-decoration:none;">Blog</a>
       <span style="margin:0 0.5rem;">·</span>
       <span id="article-cat-breadcrumb">Croissance</span>
     </div>
@@ -857,7 +864,7 @@ window.__STATIC_BLOG_DATA__ = {
         <div style="font-size:2rem;margin-bottom:0.875rem;">🚀</div>
         <h4 style="font-family:var(--font-title);font-size:0.95rem;font-weight:700;margin-bottom:0.625rem;">Prêt à passer à l'action ?</h4>
         <p style="font-size:0.8rem;color:var(--white-50);margin-bottom:1.25rem;line-height:1.6;">Audit gratuit de 30 min avec nos experts IA.</p>
-        <a href="/contact.html" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;">Réserver →</a>
+        <a href="contact.html" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;">Réserver →</a>
       </div>
     </aside>
   </div>
@@ -871,7 +878,7 @@ window.__STATIC_BLOG_DATA__ = {
         <div class="section-label">Continuez la lecture</div>
         <h2 class="text-h2">Articles <span class="gradient-text">recommandés</span></h2>
       </div>
-      <a href="/blog" class="btn btn-glass">Voir tous les articles →</a>
+      <a href="blog.html" class="btn btn-glass">Voir tous les articles →</a>
     </div>
     <div class="related-grid" id="related-grid">
       <div style="height:280px;background:var(--glass-bg);border-radius:var(--radius-xl);animation:pulse-glow 2s ease infinite;"></div>
@@ -1341,7 +1348,6 @@ function renderRelated(allPosts, currentPost) {
   const related = allPosts
     .filter(p => p.id !== currentPost.id)
     .sort((a, b) => {
-      // Prioritize same category
       const sameCat = (p) => (p.category === currentPost.category) ? 1 : 0;
       return sameCat(b) - sameCat(a);
     })
@@ -1369,6 +1375,14 @@ function renderRelated(allPosts, currentPost) {
       </div>
     </a>`;
   }).join('');
+
+  // Stagger entrance animation
+  requestAnimationFrame(() => {
+    const cards = grid.querySelectorAll('.related-card');
+    cards.forEach((card, i) => {
+      setTimeout(() => card.classList.add('visible'), 100 + i * 120);
+    });
+  });
 }
 
 /* ====================================================
@@ -1425,7 +1439,7 @@ function showError(title, message) {
       <div style="text-align:center;padding:3rem;color:var(--white-50);">
         <div style="font-size:4rem;margin-bottom:1rem;">😔</div>
         <p style="margin-bottom:1.5rem;">${escapeHtml(message)}</p>
-        <a href="/blog" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Retour au blog</a>
+        <a href="blog.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Retour au blog</a>
       </div>`;
   }
 }

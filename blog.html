@@ -24,6 +24,15 @@
     }
     .blog-page { position: relative; }
 
+    /* Article card stagger entrance animation */
+    .article-card { opacity: 0; transform: translateY(30px); transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1), border-color 0.25s, box-shadow 0.25s; }
+    .article-card.visible { opacity: 1; transform: translateY(0); }
+
+    .featured-section .blog-featured-card,
+    #featured-section .blog-featured-card { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .featured-section .blog-featured-card.visible,
+    #featured-section .blog-featured-card.visible { opacity: 1; transform: translateY(0); }
+
     /* HERO */
     .blog-hero {
       padding: calc(var(--nav-height) + 5rem) 2rem 5rem;
@@ -79,14 +88,16 @@
     .blog-search-input:focus {
       border-color: rgba(255,46,46,0.45);
       background: rgba(255,255,255,0.09);
-      box-shadow: 0 0 0 4px rgba(255,46,46,0.08);
+      box-shadow: 0 0 0 4px rgba(255,46,46,0.08), 0 0 20px rgba(255,46,46,0.06);
     }
     .blog-search-input::placeholder { color: rgba(255,255,255,0.3); }
     .blog-search-icon {
       position: absolute; right: 1.25rem; top: 50%;
       transform: translateY(-50%);
       color: rgba(255,255,255,0.4); pointer-events: none;
+      transition: color 0.25s ease;
     }
+    .blog-search-input:focus ~ .blog-search-icon { color: var(--red); }
 
     /* STATS BAR */
     .blog-stats-bar {
@@ -370,8 +381,9 @@
     }
     .pg-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-    .no-results-msg { text-align: center; padding: 4rem 2rem; display: none; }
+    .no-results-msg { text-align: center; padding: 4rem 2rem; display: none; animation: fadeInUp 0.5s ease; }
     .no-results-msg.show { display: block; }
+    .no-results-icon { font-size: 4rem; margin-bottom: 1.25rem; display: block; animation: float 4s ease-in-out infinite; }
 
     /* NEWSLETTER */
     .nl-section {
@@ -407,6 +419,8 @@
     }
     .badge-red { background: rgba(255,46,46,0.12); color: #FF7070; border: 1px solid rgba(255,46,46,0.25); }
 
+
+
     @media (max-width: 1024px) {
       .blog-layout { grid-template-columns: 1fr; }
       .blog-sidebar { position: static; }
@@ -420,6 +434,9 @@
       .blog-stats-bar { gap: 1.5rem; padding: 1.5rem 1.25rem; }
       .blog-main-wrap { padding: 0 1.25rem; }
       .blog-grid-3 { grid-template-columns: 1fr; gap: 1.25rem; }
+      .nl-form { flex-direction: column; }
+      .nl-form input { min-width: 100%; }
+      .nl-card { padding: 2rem 1.5rem; }
     }
   </style>
 </head>
@@ -521,7 +538,7 @@
       <div class="blog-grid-3" id="articles-grid"></div>
 
       <div class="no-results-msg" id="no-results">
-        <div style="font-size:4rem;margin-bottom:1.25rem;">🔍</div>
+        <span class="no-results-icon">🔍</span>
         <h3 style="font-family:'Sora',sans-serif;font-size:1.4rem;margin-bottom:0.75rem;">Aucun résultat trouvé</h3>
         <p style="color:rgba(255,255,255,0.5);margin-bottom:1.5rem;">Essayez d'autres mots-clés ou explorez toutes nos catégories.</p>
         <button class="cat-btn" onclick="resetFilters()" style="font-size:0.85rem;padding:0.5rem 1.5rem;">
@@ -714,6 +731,11 @@ function renderAll() {
         <h2><i class="fas fa-star"></i> À la une</h2>
       </div>
       ${renderFeaturedCard(featuredPost)}`;
+    // Animate featured card after render
+    setTimeout(() => {
+      const fc = featuredEl.querySelector('.blog-featured-card');
+      if (fc) fc.classList.add('visible');
+    }, 50);
   } else if (featuredEl) {
     featuredEl.innerHTML = '';
   }
@@ -727,6 +749,14 @@ function renderAll() {
   grid.innerHTML = pagePosts.length
     ? pagePosts.map(p => renderArticleCard(p)).join('')
     : `<div style="grid-column:1/-1;text-align:center;padding:2rem;color:rgba(255,255,255,0.5);">Aucun autre article dans cette catégorie.</div>`;
+
+  // Stagger entrance animation for cards
+  requestAnimationFrame(() => {
+    const cards = grid.querySelectorAll('.article-card');
+    cards.forEach((card, i) => {
+      setTimeout(() => card.classList.add('visible'), 80 + i * 80);
+    });
+  });
 
   renderPagination(Math.ceil(gridPosts.length / PER_PAGE));
 }
