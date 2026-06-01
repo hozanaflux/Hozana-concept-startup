@@ -737,7 +737,7 @@ function renderFeaturedCard(post) {
   const date = formatDate(post.publish_date || post.created_at);
   const initials = (post.author||'HC').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   return `
-  <a href="/blog-posts/${post.slug || post.id}" class="blog-featured-card">
+  <a href="blog-posts/${post.slug || post.id}.html" class="blog-featured-card">
     <div class="featured-img-wrap" style="min-height:350px;">
       <img src="${img}" alt="${escapeHtml(post.title)}" class="featured-img"
         onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1200&q=80'">
@@ -772,7 +772,7 @@ function renderArticleCard(post) {
   const initials = (post.author||'HC').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   const query = (document.getElementById('search-input')?.value||'').trim();
   return `
-  <a href="/blog-posts/${post.slug || post.id}" class="article-card">
+  <a href="blog-posts/${post.slug || post.id}.html" class="article-card">
     <div class="card-img-wrap">
       <img src="${img}" alt="${escapeHtml(post.title)}" class="card-img"
         onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=70'">
@@ -802,7 +802,7 @@ function renderPopularSidebar() {
   const popular = [...allPosts].sort((a,b)=>((b.views||0)+(b.likes||0)*2)-((a.views||0)+(a.likes||0)*2)).slice(0,4);
   if (!popular.length) { list.innerHTML = '<div style="color:rgba(255,255,255,0.4);font-size:0.85rem;">Aucun article</div>'; return; }
   list.innerHTML = popular.map((p,i) => `
-    <li><a href="/blog-posts/${p.slug || p.id}" class="popular-item">
+    <li><a href="blog-posts/${p.slug || p.id}.html" class="popular-item">
       <span class="popular-num">0${i+1}</span>
       <div class="popular-info">
         <div class="popular-title">${escapeHtml(p.title)}</div>
