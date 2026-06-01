@@ -12,26 +12,27 @@
   <script src="js/supabase-config.js"></script>
   <link rel="stylesheet" href="css/components.css">
   <style>
-    /* ---- READING PROGRESS BAR ---- */
+    /* ---- READING PROGRESS BAR (premium) ---- */
     #reading-progress {
       position: fixed;
       top: 0;
       left: 0;
-      height: 3px;
+      height: 4px;
       width: 0%;
       background: var(--grad-red);
-      z-index: 9999;
+      z-index: 99999;
       transition: width 0.1s linear;
-      box-shadow: 0 0 8px rgba(255,46,46,0.5);
+      box-shadow: 0 0 12px rgba(255,46,46,0.6), 0 0 24px rgba(255,46,46,0.2);
     }
 
-    /* ---- ARTICLE HERO ---- */
+    /* ---- ARTICLE HERO (premium redesign) ---- */
     .article-hero {
       position: relative;
-      min-height: 70vh;
+      min-height: 85vh;
       display: flex;
       align-items: flex-end;
       overflow: hidden;
+      isolation: isolate;
     }
     .article-cover-img {
       position: absolute;
@@ -39,26 +40,123 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: transform 0.3s ease-out;
+      will-change: transform;
     }
     .article-hero-overlay {
       position: absolute;
       inset: 0;
       background: linear-gradient(
         to bottom,
-        rgba(11,11,11,0.2) 0%,
-        rgba(11,11,11,0.5) 40%,
-        rgba(11,11,11,0.92) 75%,
+        rgba(11,11,11,0.15) 0%,
+        rgba(11,11,11,0.35) 30%,
+        rgba(11,11,11,0.75) 55%,
+        rgba(11,11,11,0.95) 80%,
         rgba(11,11,11,1) 100%
       );
     }
+    .article-hero-glow {
+      position: absolute;
+      bottom: -120px; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 300px;
+      background: radial-gradient(ellipse, rgba(255,46,46,0.15) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .article-hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: linear-gradient(to bottom, black 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
     .article-hero-content {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       width: 100%;
       max-width: 860px;
       margin: 0 auto;
-      padding: var(--nav-height) 2rem 4rem;
+      padding: calc(var(--nav-height) + 2rem) 2rem 5rem;
     }
+    .article-hero-content .hero-badge-wrap {
+      display: flex;
+      gap: 0.625rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.8s ease 0.1s both;
+    }
+    .article-hero-content .hero-cat-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      background: rgba(255,46,46,0.12);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,46,46,0.25);
+      border-radius: 999px;
+      font-family: var(--font-accent);
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #FF7070;
+    }
+    .article-hero-content .hero-featured-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.4rem 0.875rem;
+      background: rgba(255,180,0,0.12);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,180,0,0.2);
+      border-radius: 999px;
+      font-family: var(--font-accent);
+      font-size: 0.7rem; font-weight: 700;
+      color: #FFC107;
+    }
+    .article-hero-content .article-title {
+      font-size: clamp(2.2rem, 4.5vw, 3.75rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 30px rgba(0,0,0,0.4);
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+    .article-meta-row {
+      display: flex; align-items: center; gap: 1.5rem;
+      flex-wrap: wrap;
+      color: rgba(255,255,255,0.65);
+      font-family: var(--font-accent);
+      font-size: 0.85rem;
+      animation: fadeInUp 0.8s ease 0.35s both;
+    }
+    .article-meta-row .meta-author {
+      display: flex; align-items: center; gap: 0.625rem;
+    }
+    .article-meta-row .meta-author-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--grad-red);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: white;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px rgba(255,46,46,0.3), 0 0 20px rgba(255,46,46,0.2);
+    }
+    .article-meta-row .meta-item {
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .article-meta-row .meta-item i { color: var(--red); font-size: 0.75rem; }
+
+    /* Breadcrumb */
+    .article-breadcrumb {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: var(--font-accent);
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.8s ease 0s both;
+    }
+    .article-breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+    .article-breadcrumb a:hover { color: var(--red-light); }
+    .article-breadcrumb .sep { color: rgba(255,255,255,0.2); }
 
     /* ---- ARTICLE LAYOUT ---- */
     .article-page-wrap {
@@ -71,92 +169,145 @@
       align-items: start;
     }
 
-    /* ---- ARTICLE BODY ---- */
+    /* ---- ARTICLE BODY (premium typography) ---- */
     .article-content {
       min-width: 0;
     }
     .article-body {
       font-family: var(--font-body);
-      font-size: 1.0625rem;
-      line-height: 1.85;
+      font-size: 1.125rem;
+      line-height: 1.9;
       color: var(--white-80);
     }
+    .article-body p { margin-bottom: 1.75rem; }
+
     .article-body h2 {
       font-family: var(--font-title);
-      font-size: 1.65rem;
+      font-size: 1.75rem;
       font-weight: 700;
       color: var(--white);
-      margin: 3rem 0 1.1rem;
+      margin: 3.5rem 0 1.25rem;
       letter-spacing: -0.02em;
       line-height: 1.2;
-      padding-top: 0.5rem;
+      padding-top: 0.75rem;
       border-top: 1px solid var(--glass-border);
+      position: relative;
+    }
+    .article-body h2::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 0;
+      width: 60px; height: 2px;
+      background: var(--grad-red);
+      border-radius: 2px;
     }
     .article-body h3 {
       font-family: var(--font-title);
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--white);
-      margin: 2.25rem 0 0.875rem;
+      margin: 2.5rem 0 1rem;
+      letter-spacing: -0.01em;
     }
-    .article-body p { margin-bottom: 1.5rem; }
+
+    /* Drop cap on first paragraph */
+    .article-body > p:first-child::first-letter {
+      font-size: 3.5em;
+      font-weight: 800;
+      float: left;
+      line-height: 0.85;
+      margin-right: 0.5rem;
+      margin-top: 0.15rem;
+      background: var(--grad-red);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: var(--font-title);
+    }
+
     .article-body a {
       color: var(--red-light);
       text-decoration: underline;
       text-decoration-color: rgba(255,85,85,0.3);
+      text-underline-offset: 3px;
       transition: all var(--trans-fast);
     }
     .article-body a:hover {
       color: var(--red);
       text-decoration-color: var(--red);
+      text-underline-offset: 2px;
     }
+
+    .article-body strong { color: var(--white); font-weight: 700; }
+
+    /* Premium blockquote */
     .article-body blockquote {
-      margin: 2.5rem 0;
-      padding: 1.5rem 1.75rem;
-      background: rgba(255,46,46,0.05);
+      margin: 3rem 0;
+      padding: 2rem 2rem 2rem 3rem;
+      background: linear-gradient(135deg, rgba(255,46,46,0.06), rgba(255,106,0,0.03));
+      border: none;
       border-left: 4px solid var(--red);
-      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
       font-style: italic;
       color: var(--white-70);
-      font-size: 1.05rem;
+      font-size: 1.1rem;
+      line-height: 1.8;
       position: relative;
     }
     .article-body blockquote::before {
-      content: '"';
+      content: '“';
       font-family: Georgia, serif;
       font-size: 5rem;
-      color: rgba(255,46,46,0.12);
+      color: rgba(255,46,46,0.1);
       position: absolute;
-      top: -1.5rem;
+      top: 0.5rem;
       left: 1rem;
       line-height: 1;
+      pointer-events: none;
     }
+    .article-body blockquote p:last-child { margin-bottom: 0; }
+
+    /* Lists */
     .article-body ul, .article-body ol {
       padding-left: 1.5rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.625rem;
     }
     .article-body li::marker {
       color: var(--red);
     }
+    .article-body ul li { padding-left: 0.25rem; }
+
+    /* Inline code */
     .article-body code {
       font-family: 'Roboto Mono', 'Courier New', monospace;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       background: rgba(255,46,46,0.08);
       border: 1px solid rgba(255,46,46,0.15);
-      border-radius: 4px;
+      border-radius: 6px;
       padding: 0.15rem 0.5rem;
       color: #FF9090;
     }
+
+    /* Code block with copy button */
     .article-body pre {
-      background: rgba(0,0,0,0.5);
+      position: relative;
+      background: rgba(0,0,0,0.6);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
-      padding: 1.5rem;
+      padding: 1.75rem;
       overflow-x: auto;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .article-body pre::before {
+      content: '‾';
+      display: block;
+      margin-bottom: 0.75rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--white-20);
     }
     .article-body pre code {
       background: none;
@@ -164,71 +315,126 @@
       padding: 0;
       color: var(--white-80);
       font-size: 0.875rem;
+      line-height: 1.7;
     }
+    .copy-code-btn {
+      position: absolute;
+      top: 0.75rem; right: 0.75rem;
+      padding: 0.3rem 0.625rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.72rem;
+      font-family: var(--font-accent);
+      cursor: pointer;
+      transition: all 0.2s;
+      opacity: 0;
+    }
+    .article-body pre:hover .copy-code-btn { opacity: 1; }
+    .copy-code-btn:hover {
+      background: rgba(255,46,46,0.15);
+      border-color: rgba(255,46,46,0.3);
+      color: #FF7070;
+    }
+
+    /* Images */
     .article-body img {
       width: 100%;
-      border-radius: var(--radius-md);
-      margin: 1.5rem 0;
+      border-radius: var(--radius-lg);
+      margin: 2rem 0;
+      cursor: zoom-in;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
-    .article-body strong { color: var(--white); font-weight: 700; }
+    .article-body img:hover {
+      transform: scale(1.005);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    }
+
     .article-body hr {
       border: none;
       height: 1px;
       background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
-      margin: 3rem 0;
+      margin: 3.5rem 0;
     }
 
-    /* Callout boxes */
+    /* Premium callout boxes */
     .callout {
-      padding: 1.25rem 1.5rem;
+      padding: 1.5rem 1.75rem;
       border-radius: var(--radius-md);
-      margin: 2rem 0;
+      margin: 2.5rem 0;
       display: flex;
       gap: 1rem;
       align-items: flex-start;
+      position: relative;
     }
     .callout-tip {
-      background: rgba(255,46,46,0.06);
+      background: linear-gradient(135deg, rgba(255,46,46,0.06), rgba(255,106,0,0.03));
       border: 1px solid rgba(255,46,46,0.18);
+    }
+    .callout-tip::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      background: var(--grad-red);
+      border-radius: 3px 0 0 3px;
     }
     .callout-warning {
       background: rgba(255,106,0,0.07);
       border: 1px solid rgba(255,106,0,0.2);
     }
+    .callout-warning::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #FF8C42, #FF6A00);
+      border-radius: 3px 0 0 3px;
+    }
     .callout-info {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.1);
     }
-    .callout-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .callout-info::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+      border-radius: 3px 0 0 3px;
+    }
+    .callout-icon { font-size: 1.35rem; flex-shrink: 0; margin-top: 0.1rem; }
     .callout-text { font-size: 0.9375rem; color: var(--white-80); line-height: 1.65; }
 
-    /* ---- TABLE OF CONTENTS ---- */
+    /* ---- TABLE OF CONTENTS (premium) ---- */
     .toc-box {
-      background: var(--glass-bg);
+      background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,46,46,0.02));
       backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
-      padding: 1.5rem;
+      padding: 1.75rem;
       margin-bottom: 3rem;
     }
     .toc-title {
       font-family: var(--font-accent);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       color: var(--white-40);
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
-    .toc-title i { color: var(--red); }
+    .toc-title i { color: var(--red); font-size: 0.85rem; }
     .toc-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.375rem;
       counter-reset: toc;
     }
     .toc-item {
@@ -241,28 +447,35 @@
       font-size: 0.875rem;
       color: var(--white-60);
       text-decoration: none;
-      padding: 0.35rem 0.5rem;
+      padding: 0.5rem 0.625rem;
       border-radius: var(--radius-sm);
       transition: all var(--trans-fast);
       cursor: pointer;
+      border: 1px solid transparent;
     }
     .toc-link::before {
       content: counter(toc, decimal-leading-zero);
       font-family: var(--font-accent);
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
       color: var(--red);
       flex-shrink: 0;
-      min-width: 24px;
+      min-width: 22px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
     }
     .toc-link:hover {
       color: var(--white);
       background: rgba(255,46,46,0.06);
+      border-color: rgba(255,46,46,0.12);
     }
+    .toc-link:hover::before { opacity: 1; }
     .toc-link.active {
       color: var(--red-light);
       background: rgba(255,46,46,0.08);
+      border-color: rgba(255,46,46,0.2);
     }
+    .toc-link.active::before { opacity: 1; }
 
     /* ---- SIDEBAR (sticky) ---- */
     .article-sidebar {
@@ -278,6 +491,10 @@
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
       padding: 1.5rem;
+      transition: all var(--trans-base);
+    }
+    .sidebar-widget:hover {
+      border-color: rgba(255,46,46,0.15);
     }
     .sidebar-widget-title {
       font-family: var(--font-accent);
@@ -316,14 +533,18 @@
       cursor: pointer;
     }
     .share-btn:hover { transform: translateX(4px); border-color: transparent; }
-    .share-btn.twitter:hover  { background: rgba(255,255,255,0.07); color: var(--white-80); }
-    .share-btn.linkedin:hover { background: rgba(255,255,255,0.07); color: var(--white-80); }
+    .share-btn.twitter:hover  { background: #1DA1F2; color: white; border-color: #1DA1F2; }
+    .share-btn.linkedin:hover { background: #0A66C2; color: white; border-color: #0A66C2; }
     .share-btn.copy:hover     { background: rgba(255,46,46,0.1); color: var(--red); }
-    .share-btn.whatsapp:hover { background: rgba(255,106,0,0.1); color: #FF8C42; }
+    .share-btn.whatsapp:hover { background: #25D366; color: white; border-color: #25D366; }
 
     /* Like button */
     .like-section {
       text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(255,46,46,0.03), transparent);
+      border: 1px solid rgba(255,46,46,0.08);
+      border-radius: var(--radius-xl);
     }
     .like-btn {
       display: inline-flex;
@@ -344,20 +565,27 @@
       background: rgba(255,46,46,0.12);
       border-color: rgba(255,46,46,0.4);
       transform: scale(1.04);
+      box-shadow: 0 0 20px rgba(255,46,46,0.15);
     }
     .like-btn.liked {
       background: rgba(255,46,46,0.15);
       border-color: var(--red);
       color: var(--red-light);
+      box-shadow: 0 0 20px rgba(255,46,46,0.2);
     }
     .like-btn .like-heart {
       font-size: 1.1rem;
       transition: transform var(--trans-bounce);
     }
     .like-btn:hover .like-heart { transform: scale(1.3); }
-    .like-btn.liked .like-heart { transform: scale(1.15); }
+    .like-btn.liked .like-heart { animation: heartPop 0.4s ease; }
+    @keyframes heartPop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.4); }
+      100% { transform: scale(1.15); }
+    }
 
-    /* ---- COMMENTS ---- */
+    /* ---- COMMENTS (premium) ---- */
     .comments-section {
       margin-top: 4rem;
       padding-top: 3rem;
@@ -369,11 +597,17 @@
       margin-bottom: 2rem;
       padding-bottom: 2rem;
       border-bottom: 1px solid var(--glass-border);
+      transition: background 0.2s;
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-left: -1rem;
+      margin-right: -1rem;
     }
+    .comment-item:hover { background: rgba(255,255,255,0.02); }
     .comment-item:last-child {
       border-bottom: none;
       margin-bottom: 0;
-      padding-bottom: 0;
+      padding-bottom: 1rem;
     }
     .comment-avatar {
       width: 44px;
@@ -387,6 +621,7 @@
       font-weight: 700;
       color: white;
       flex-shrink: 0;
+      box-shadow: 0 0 0 2px rgba(255,46,46,0.2), 0 0 15px rgba(255,46,46,0.1);
     }
     .comment-body { flex: 1; min-width: 0; }
     .comment-header {
@@ -414,10 +649,19 @@
     }
     .comment-form {
       margin-top: 2rem;
-      background: var(--glass-bg);
+      background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,46,46,0.02));
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
       padding: 2rem;
+      position: relative;
+    }
+    .comment-form::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 2rem; right: 2rem;
+      height: 1px;
+      background: var(--grad-red);
+      opacity: 0.3;
     }
     .comment-form h3 {
       font-family: var(--font-title);
@@ -433,17 +677,29 @@
       margin-bottom: 1rem;
     }
 
-    /* ---- RELATED ARTICLES ---- */
+    /* ---- RELATED ARTICLES (premium) ---- */
     .related-section {
-      padding: 4rem 2rem;
+      padding: 5rem 2rem;
       background: var(--black-2);
+      position: relative;
+      overflow: hidden;
+    }
+    .related-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 500px; height: 1px;
+      background: var(--grad-red);
+      opacity: 0.3;
+    }
+    .related-grid-wrapper {
+      max-width: 1200px;
+      margin: 2rem auto 0;
     }
     .related-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
-      max-width: 1200px;
-      margin: 2rem auto 0;
     }
     .related-card {
       background: var(--glass-bg);
@@ -458,19 +714,19 @@
     }
     .related-card:hover {
       border-color: rgba(255,46,46,0.25);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      transform: translateY(-6px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
     }
     .related-img {
       width: 100%;
       aspect-ratio: 16/9;
       object-fit: cover;
       display: block;
-      transition: transform 0.4s ease;
+      transition: transform 0.5s ease;
     }
-    .related-card:hover .related-img { transform: scale(1.04); }
+    .related-card:hover .related-img { transform: scale(1.06); }
     .related-body {
-      padding: 1.25rem;
+      padding: 1.5rem;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -482,11 +738,20 @@
       color: var(--red);
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.625rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .related-cat::before {
+      content: '';
+      width: 12px; height: 2px;
+      background: var(--grad-red);
+      border-radius: 2px;
     }
     .related-title {
       font-family: var(--font-title);
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--white);
       line-height: 1.35;
@@ -495,7 +760,9 @@
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      transition: color 0.2s;
     }
+    .related-card:hover .related-title { color: #FF7070; }
     .related-meta {
       margin-top: 1rem;
       padding-top: 0.875rem;
@@ -513,126 +780,253 @@
       .article-sidebar { position: static; }
       .comment-grid { grid-template-columns: 1fr; }
       .related-grid { grid-template-columns: 1fr 1fr; }
+      .article-hero { min-height: 65vh; }
+      .article-title { font-size: clamp(1.8rem, 5vw, 3rem) !important; }
     }
     @media (max-width: 768px) {
-      .article-hero { min-height: 55vh; }
-      .article-hero-content { padding: var(--nav-height) 1.25rem 3rem; }
+      .article-hero { min-height: 50vh; }
+      .article-hero-content { padding: calc(var(--nav-height) + 1rem) 1.25rem 3rem; }
       .article-page-wrap { padding: 0 1.25rem 4rem; }
       .related-section { padding: 3rem 1.25rem; }
-      .related-grid { grid-template-columns: 1fr; }
+      .related-grid { grid-template-columns: 1fr; gap: 1.25rem; }
       .share-buttons { flex-direction: row; flex-wrap: wrap; }
       .share-btn { flex: 1; min-width: 120px; justify-content: center; }
+      .article-title { font-size: clamp(1.5rem, 6vw, 2.2rem) !important; }
+      .article-meta-row { font-size: 0.78rem; gap: 1rem; }
+      .article-body { font-size: 1rem; line-height: 1.8; }
+      .article-body h2 { font-size: 1.35rem; }
+      .article-body > p:first-child::first-letter { font-size: 2.5em; }
+      .comment-item { margin-left: 0; margin-right: 0; padding: 0.75rem; }
+      .article-hero-glow { width: 100%; }
+    }
+    @media (max-width: 480px) {
+      .article-hero { min-height: 45vh; }
+      .article-title { font-size: 1.35rem !important; }
+      .article-meta-row .meta-item { font-size: 0.72rem; }
+      .article-hero-content .hero-badge-wrap { gap: 0.375rem; }
+      .article-meta-row { gap: 0.75rem; }
     }
 
     /* Related card entrance */
     .related-card { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s, box-shadow 0.3s; }
     .related-card.visible { opacity: 1; transform: translateY(0); }
 
+    /* ---- FLOATING SHARE BAR (premium) ---- */
+    .floating-share {
+      position: fixed;
+      left: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 50;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.5s ease;
+    }
+    .floating-share.visible { opacity: 1; visibility: visible; }
+    .floating-share-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(180deg, var(--glass-border), transparent);
+      margin: 0 auto 0.25rem;
+    }
+    .floating-share-btn {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      color: var(--white-50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all var(--trans-bounce);
+    }
+    .floating-share-btn:hover { transform: scale(1.12); color: white; border-color: transparent; }
+    .floating-share-btn.fb-twitter:hover { background: #1DA1F2; }
+    .floating-share-btn.fb-linkedin:hover { background: #0A66C2; }
+    .floating-share-btn.fb-copy:hover { background: rgba(255,46,46,0.15); color: var(--red); border-color: rgba(255,46,46,0.3); }
+
+    /* ---- BACK TO TOP ---- */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      color: var(--white-50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 50;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all var(--trans-bounce);
+      box-shadow: var(--shadow-md);
+    }
+    .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-to-top:hover {
+      background: rgba(255,46,46,0.12);
+      border-color: rgba(255,46,46,0.3);
+      color: var(--red);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-red-sm);
+    }
+
+    /* ---- READING TIME REMAINING ---- */
+    .reading-time-remaining {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      padding: 0.5rem 1rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      font-family: var(--font-accent);
+      font-size: 0.75rem;
+      color: var(--white-50);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+    }
+    .reading-time-remaining.visible { opacity: 1; visibility: visible; }
+    .reading-time-remaining i { color: var(--red); font-size: 0.7rem; }
+
+    /* ---- LIGHTBOX ---- */
+    .lightbox-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(20px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+      cursor: zoom-out;
+    }
+    .lightbox-overlay.open { opacity: 1; visibility: visible; }
+    .lightbox-overlay img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 40px 120px rgba(0,0,0,0.8);
+      transform: scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .lightbox-overlay.open img { transform: scale(1); }
+    .lightbox-close {
+      position: absolute;
+      top: 2rem; right: 2rem;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .lightbox-close:hover {
+      background: rgba(255,46,46,0.2);
+      border-color: rgba(255,46,46,0.4);
+      transform: scale(1.1);
+    }
+    .lightbox-caption {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-accent);
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      max-width: 80vw;
+      text-align: center;
+    }
+
+    /* ---- SCROLL CONTENT ANIMATIONS ---- */
+    .article-body > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .article-body > *.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* Sidebar widget entrance */
     .article-sidebar .sidebar-widget { transition: opacity 0.5s ease, transform 0.5s ease; }
-  </style>
 
-    <meta property="og:title" content="Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026 | Hozana Concept Blog">
-    <meta property="og:description" content="Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalisation à l'ère de l'IA.">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://www.hozanaconcept.com/blog-posts/growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&amp;q=80">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Hozana Concept">
-    <meta property="article:published_time" content="2026-06-01T22:22:24.576Z">
-    <meta property="article:modified_time" content="2026-06-01T22:22:24.576Z">
-    <meta property="article:author" content="Marcus Hozana">
-    <meta property="article:section" content="Croissance">
-  
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026 | Hozana Concept Blog">
-    <meta name="twitter:description" content="Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalisation à l'ère de l'IA.">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&amp;q=80">
-    <meta name="twitter:site" content="@HozanaConcept">
-    <meta name="twitter:creator" content="@HozanaConcept">
-  <link rel="canonical" href="https://www.hozanaconcept.com/blog-posts/growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": "Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026",
-      "description": "Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalisation à l'ère de l'IA.",
-      "datePublished": "2026-06-01T22:22:24.576Z",
-      "dateModified": "2026-06-01T22:22:24.576Z",
-      "author": {
-        "@type": "Person",
-        "name": "Marcus Hozana",
-        "image": {
-          "@type": "ImageObject",
-          "url": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=120&q=80",
-          "caption": "Marcus Hozana"
-        }
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Hozana Concept",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=120&q=80",
-          "width": 120,
-          "height": 120
-        }
-      },
-      "image": {
-        "@type": "ImageObject",
-        "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80",
-        "width": 1200,
-        "height": 630
-      },      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://www.hozanaconcept.com/blog-posts/growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026"
+    /* ---- HERO PARALLAX (mouse tracking) ---- */
+    @media (hover: hover) {
+      .article-cover-img.parallax-active {
+        transition: transform 0.08s ease-out;
       }
-  }
-    </script>
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [{
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Accueil",
-        "item": "https://www.hozanaconcept.com"
-      },{
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Blog",
-        "item": "https://www.hozanaconcept.com/blog"
-      },{
-        "@type": "ListItem",
-        "position": 3,
-        "name": "Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026"
-      }]
     }
-    </script>
-  <script>
-window.__STATIC_BLOG_DATA__ = {
-  id: "640ec5d1-778b-4d10-9f2d-ef604813c195",
-  slug: "growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026",
-  title: "Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026",
-  author: "Marcus Hozana",
-  category: "Croissance",
-  cover_image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80",
-  excerpt: "Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalisation à l'ère de l'IA.",
-  read_time: 9,
-  views: 12,
-  likes: 5,
-  tags: ["Growth","Acquisition","Marketing Digital","Conversion","ROI","Stratégie"],
-  publish_date: "2026-06-01T22:22:24.576+00:00",
-  featured: false
-};
-</script></head>
+
+    /* ---- RESPONSIVE OVERRIDES ---- */
+    @media (max-width: 1200px) {
+      .floating-share { display: none; }
+    }
+    @media (max-width: 768px) {
+      .back-to-top { bottom: 1.25rem; right: 1.25rem; width: 42px; height: 42px; }
+      .reading-time-remaining { display: none; }
+      .article-body > * { transform: none; opacity: 1; }
+    }
+</head>
 <body>
 
 <!-- READING PROGRESS -->
 <div id="reading-progress" role="progressbar" aria-label="Progression de lecture"></div>
+
+<!-- FLOATING SHARE BAR -->
+<div class="floating-share" id="floating-share">
+  <div class="floating-share-line"></div>
+  <button class="floating-share-btn fb-twitter" onclick="shareOn('twitter')" aria-label="Partager sur Twitter"><i class="fab fa-twitter"></i></button>
+  <button class="floating-share-btn fb-linkedin" onclick="shareOn('linkedin')" aria-label="Partager sur LinkedIn"><i class="fab fa-linkedin-in"></i></button>
+  <button class="floating-share-btn fb-copy" onclick="copyLink()" aria-label="Copier le lien"><i class="fas fa-link"></i></button>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="event.stopPropagation();closeLightbox()"><i class="fas fa-times"></i></button>
+  <img id="lightbox-image" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<!-- BACK TO TOP -->
+<button class="back-to-top" id="back-to-top" onclick="scrollToTop()" aria-label="Retour en haut">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- READING TIME REMAINING -->
+<div class="reading-time-remaining" id="reading-time-remaining">
+  <i class="fas fa-clock"></i>
+  <span id="time-remaining-text">— min restant</span>
+</div>
 
 <!-- LOADER -->
 <div id="loader">
@@ -644,30 +1038,24 @@ window.__STATIC_BLOG_DATA__ = {
 <!-- NAVBAR -->
 <div id="navbar-placeholder"></div>
 
-<!-- HERO -->
+<!-- HERO (redesign premium) -->
 <header class="article-hero" id="article-hero">
-  <img id="article-cover" class="article-cover-img" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&amp;q=80" alt="Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026" loading="eager">
+  <img id="article-cover" class="article-cover-img" src="" alt="" loading="eager">
   <div class="article-hero-overlay"></div>
+  <div class="article-hero-glow"></div>
+  <div class="article-hero-grid"></div>
   <div class="article-hero-content">
-    <div id="article-breadcrumb" class="section-label" style="margin-bottom:1.5rem;color:rgba(255,255,255,0.6);">
-      <a href="blog.html" style="color:inherit;text-decoration:none;">Blog</a>
-      <span style="margin:0 0.5rem;">·</span>
-      <span id="article-cat-breadcrumb">Croissance</span>
+    <div class="article-breadcrumb" id="article-breadcrumb">
+      <a href="blog.html">Blog</a>
+      <span class="sep">·</span>
+      <span id="article-cat-breadcrumb">–</span>
     </div>
-    <div id="article-badges" style="display:flex;gap:0.5rem;margin-bottom:1.25rem;flex-wrap:wrap;">
-        <span class="badge badge-red">Croissance</span>
-        
-      </div>
-    <h1 id="article-title" class="text-display" style="max-width:760px;margin-bottom:1.25rem;text-shadow:0 2px 20px rgba(0,0,0,0.4);">Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026</h1>
-    <div id="article-hero-meta" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;color:rgba(255,255,255,0.6);font-family:var(--font-accent);font-size:0.8rem;">
-        <span style="display:flex;align-items:center;gap:0.5rem;">
-          <span style="width:32px;height:32px;border-radius:50%;background:var(--grad-red);display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:white;">MH</span>
-          Marcus Hozana
-        </span>
-        <span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>2 juin 2026</span>
-        <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>9 min de lecture</span>
-        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>13 vues</span>
-      </div>
+    <div class="hero-badge-wrap" id="hero-badge-wrap"></div>
+    <h1 id="article-title" class="article-title">
+      Chargement...
+    </h1>
+    <div class="article-meta-row" id="article-meta-row">
+    </div>
   </div>
 </header>
 
@@ -686,77 +1074,27 @@ window.__STATIC_BLOG_DATA__ = {
 
       <!-- Body -->
       <div class="article-body" id="article-body">
-<h2>Le growth digital en 2026 : moins de trafic, plus de valeur</h2>
-<p>Les règles du marketing digital ont changé. En 2026, la course aux likes et aux impressions brutes est terminée. Les entreprises qui dominent leur marché sont celles qui ont adopté une approche <strong>data-driven et automatisée</strong> de la croissance.</p>
-
-<blockquote>"Nous ne faisons plus de marketing de masse. Chaque euro dépensé est optimisé par l'IA en temps réel pour atteindre la bonne personne, au bon moment, avec le bon message."</blockquote>
-
-<h2>Les 5 piliers du growth digital moderne</h2>
-
-<h3>1. Acquisition automatisée et intelligente</h3>
-<p>L'IA a révolutionné l'acquisition client. Les algorithmes de <strong>smart bidding</strong> sur Google Ads et Meta optimisent les enchères en temps réel pour maximiser le ROI. Les campagnes qui nécessitaient des ajustements quotidiens sont désormais gérées automatiquement avec des performances supérieures de 35%.</p>
-
-<h3>2. Personnalisation à grande échelle</h3>
-<p>La personnalisation n'est plus un simple "Bonjour {prénom}". Grâce à l'IA, chaque visiteur reçoit une expérience unique : contenu dynamique, recommandations produits, offres personnalisées et parcours adaptés à son comportement. <strong>+25% de taux de conversion en moyenne.</strong></p>
-
-<h3>3. Marketing automation multicanal</h3>
-<p>Les campagnes marketing sont orchestrées automatiquement à travers tous les canaux : email, SMS, réseaux sociaux, WhatsApp, notifications push. L'IA détermine le meilleur canal et le meilleur moment pour chaque message.</p>
-
-<h3>4. Optimisation continue de la conversion (CRO)</h3>
-<p>Les tests A/B sont remplacés par des <strong>algorithmes d'optimisation multidimensionnelle</strong> qui testent des centaines de variantes simultanément. Résultat : un taux d'optimisation 10 fois plus rapide que les méthodes traditionnelles.</p>
-
-<h3>5. Rétention et fidélisation prédictive</h3>
-<p>L'analyse prédictive permet d'identifier les clients à risque de churn avant qu'ils ne partent. Des actions de rétention automatisées sont déclenchées : offres personnalisées, emails de réengagement, programmes de fidélité dynamiques.</p>
-
-<div class="callout callout-info">
-  <div class="callout-icon">📈</div>
-  <div class="callout-text"><strong>Chiffre clé :</strong> Augmenter la rétention client de 5% peut augmenter les profits de 25% à 95%. L'IA prédictive permet d'identifier les signaux de churn 30 jours avant le départ du client.</div>
-</div>
-
-<h2>Notre framework AIDA+ pour la croissance</h2>
-<p>Chez Hozana Concept, nous utilisons un framework propriétaire en 5 phases :</p>
-<ol>
-  <li><strong>Attraction</strong> : SEO optimisé par IA, contenu génératif, social listening automatisé</li>
-  <li><strong>Intérêt</strong> : Lead magnets personnalisés, chatbots qualifiants, webinars automatisés</li>
-  <li><strong>Décision</strong> : Scoring IA, séquences d'emails intelligentes, propositions générées</li>
-  <li><strong>Action</strong> : Tunnel de vente automatisé, paiement frictionless, onboarding immédiat</li>
-  <li><strong>Amplification</strong> : Parrainage automatisé, UGC généré, boucle virale</li>
-</ol>
-
-<h2>Les KPIs qui comptent vraiment</h2>
-<p>Au-delà des vanity metrics, voici les indicateurs que nous suivons pour nos clients :</p>
-<ul>
-  <li><strong>CAC (Coût d'Acquisition Client)</strong> : Cible &lt; 30% de la valeur de la première commande</li>
-  <li><strong>LTV (Lifetime Value)</strong> : Objectif &gt; 3x le CAC</li>
-  <li><strong>Taux d'automatisation</strong> : % du cycle marketing automatisé</li>
-  <li><strong>ROI des campagnes</strong> : Retour sur investissement global</li>
-  <li><strong>Net Promoter Score</strong> : Satisfaction et recommandation client</li>
-</ul>
-
-<h2>Conclusion</h2>
-<p>Le growth digital en 2026 est une discipline où la technologie et la stratégie se rencontrent pour créer une croissance durable et prévisible. Les entreprises qui investissent aujourd'hui dans l'automatisation du marketing et la personnalisation IA créeront un avantage concurrentiel difficile à rattraper.</p>
-<p>Chez <strong>Hozana Concept</strong>, nous avons accompagné plus de 50 entreprises dans leur transformation growth. Notre approche combine stratégie, technologie et data pour des résultats mesurables.</p></div>
+        <!-- Skeleton -->
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div style="height:20px;background:var(--glass-bg);border-radius:4px;width:90%;animation:pulse-glow 2s ease infinite;"></div>
+          <div style="height:20px;background:var(--glass-bg);border-radius:4px;animation:pulse-glow 2s ease infinite;"></div>
+          <div style="height:20px;background:var(--glass-bg);border-radius:4px;width:75%;animation:pulse-glow 2s ease infinite;"></div>
+          <div style="height:20px;background:var(--glass-bg);border-radius:4px;animation:pulse-glow 2s ease infinite;"></div>
+          <div style="height:20px;background:var(--glass-bg);border-radius:4px;width:85%;animation:pulse-glow 2s ease infinite;"></div>
+        </div>
+      </div>
 
       <!-- Tags -->
-      <div id="article-tags" style="margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
-          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#Growth</span>
-        
-          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#Acquisition</span>
-        
-          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#Marketing Digital</span>
-        
-          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#Conversion</span>
-        
-          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#ROI</span>
-        
-          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#Stratégie</span>
-        </div>
+      <div id="article-tags" style="margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:0.5rem;"></div>
 
-      <!-- Like button -->
-      <div class="like-section" style="margin-top:3rem;">
+      <!-- Divider with gradient -->
+    <div style="height:1px;background:linear-gradient(90deg,transparent,var(--glass-border),transparent);margin:3rem 0;"></div>
+
+    <!-- Like button -->
+      <div class="like-section">
         <button class="like-btn" id="like-btn" onclick="toggleLike()">
           <span class="like-heart">❤️</span>
-          <span id="like-count">5</span>
+          <span id="like-count">0</span>
           <span>J'aime cet article</span>
         </button>
         <p style="font-size:0.8rem;color:var(--white-30);margin-top:0.75rem;font-family:var(--font-accent);">Votre avis compte pour nous !</p>
@@ -779,16 +1117,16 @@ window.__STATIC_BLOG_DATA__ = {
           <div class="comment-grid">
             <div class="form-group">
               <label class="form-label" for="comment-name">Nom *</label>
-              <input type="text" class="form-control" id="comment-name" placeholder="Votre nom" required="">
+              <input type="text" class="form-control" id="comment-name" placeholder="Votre nom" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="comment-email">Email *</label>
-              <input type="email" class="form-control" id="comment-email" placeholder="votre@email.com" required="">
+              <input type="email" class="form-control" id="comment-email" placeholder="votre@email.com" required>
             </div>
           </div>
           <div class="form-group">
             <label class="form-label" for="comment-text">Commentaire *</label>
-            <textarea class="form-control" id="comment-text" rows="4" placeholder="Partagez votre avis, posez une question..." required="" style="min-height:120px;"></textarea>
+            <textarea class="form-control" id="comment-text" rows="4" placeholder="Partagez votre avis, posez une question..." required style="min-height:120px;"></textarea>
           </div>
           <button type="button" class="btn btn-primary" onclick="submitComment()">
             <i class="fas fa-paper-plane"></i> Publier le commentaire
@@ -804,9 +1142,9 @@ window.__STATIC_BLOG_DATA__ = {
       <div class="sidebar-widget reveal" id="author-card">
         <div class="sidebar-widget-title"><i class="fas fa-user"></i> L'auteur</div>
         <div style="text-align:center;">
-          <div id="author-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--grad-red);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:white;margin:0 auto 1rem;box-shadow:0 0 20px rgba(255,46,46,0.3);">MH</div>
-          <div id="author-name" style="font-family:var(--font-title);font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Marcus Hozana</div>
-          <div style="font-size:0.78rem;color:var(--white-40);font-family:var(--font-accent);margin-bottom:1rem;">Expert IA &amp; Automatisation</div>
+          <div id="author-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--grad-red);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:white;margin:0 auto 1rem;box-shadow:0 0 20px rgba(255,46,46,0.3);">HC</div>
+          <div id="author-name" style="font-family:var(--font-title);font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Hozana Concept</div>
+          <div style="font-size:0.78rem;color:var(--white-40);font-family:var(--font-accent);margin-bottom:1rem;">Expert IA & Automatisation</div>
           <p style="font-size:0.825rem;color:var(--white-50);line-height:1.65;">Spécialiste en intelligence artificielle, automatisation avancée et croissance digitale.</p>
         </div>
       </div>
@@ -817,19 +1155,19 @@ window.__STATIC_BLOG_DATA__ = {
         <div style="display:flex;flex-direction:column;gap:0.875rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-eye" style="color:var(--red);"></i> Vues</span>
-            <span style="font-family:var(--font-title);font-weight:700;" id="stat-views">13</span>
+            <span style="font-family:var(--font-title);font-weight:700;" id="stat-views">–</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-heart" style="color:var(--red);"></i> Likes</span>
-            <span style="font-family:var(--font-title);font-weight:700;" id="stat-likes">5</span>
+            <span style="font-family:var(--font-title);font-weight:700;" id="stat-likes">–</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-clock" style="color:var(--red);"></i> Lecture</span>
-            <span style="font-family:var(--font-title);font-weight:700;" id="stat-read">9 min</span>
+            <span style="font-family:var(--font-title);font-weight:700;" id="stat-read">– min</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-comments" style="color:var(--red);"></i> Commentaires</span>
-            <span style="font-family:var(--font-title);font-weight:700;" id="stat-comments">0</span>
+            <span style="font-family:var(--font-title);font-weight:700;" id="stat-comments">–</span>
           </div>
         </div>
       </div>
@@ -880,11 +1218,13 @@ window.__STATIC_BLOG_DATA__ = {
       </div>
       <a href="blog.html" class="btn btn-glass">Voir tous les articles →</a>
     </div>
+    <div class="related-grid-wrapper">
     <div class="related-grid" id="related-grid">
       <div style="height:280px;background:var(--glass-bg);border-radius:var(--radius-xl);animation:pulse-glow 2s ease infinite;"></div>
       <div style="height:280px;background:var(--glass-bg);border-radius:var(--radius-xl);animation:pulse-glow 2s ease infinite;opacity:0.6;"></div>
       <div style="height:280px;background:var(--glass-bg);border-radius:var(--radius-xl);animation:pulse-glow 2s ease infinite;opacity:0.3;"></div>
     </div>
+  </div>
   </div>
 </section>
 
@@ -913,6 +1253,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     currentPost = window.__STATIC_BLOG_DATA__;
     // Static page — content already rendered. Enable interactive features.
     initReadingProgress();
+    initScrollAnimations();
+    initScrollUI();
+    initParallaxHero();
     loadComments();
     trackView();
     // Load related articles from Supabase
@@ -930,6 +1273,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadPost();
   initReadingProgress();
+  initScrollAnimations();
+  initScrollUI();
+  initParallaxHero();
 });
 
 /* ====================================================
@@ -987,7 +1333,7 @@ function renderPost(post) {
 
     coverEl.src = img;
     coverEl.alt = post.title;
-    coverEl.style.display = 'block'; // Ensure visible
+    coverEl.style.display = 'block';
     coverEl.loading = 'eager';
     coverEl.onerror = () => {
       if (coverEl.src !== defaultImg) coverEl.src = defaultImg;
@@ -997,29 +1343,29 @@ function renderPost(post) {
   const catBreadcrumb = document.getElementById('article-cat-breadcrumb');
   if (catBreadcrumb) catBreadcrumb.textContent = post.category || 'IA';
 
-  const badgesEl = document.getElementById('article-badges');
-  if (badgesEl) {
-    badgesEl.innerHTML = `
-      <span class="badge badge-red">${escapeHtml(post.category || 'IA')}</span>
-      ${post.featured ? '<span class="badge badge-orange">⭐ Featured</span>' : ''}
+  const badgesWrap = document.getElementById('hero-badge-wrap');
+  if (badgesWrap) {
+    badgesWrap.innerHTML = `
+      <span class="hero-cat-badge">${escapeHtml(post.category || 'IA')}</span>
+      ${post.featured ? '<span class="hero-featured-badge">⭐ À la une</span>' : ''}
     `;
   }
 
   const titleEl = document.getElementById('article-title');
   if (titleEl) titleEl.textContent = post.title;
 
-  const metaEl = document.getElementById('article-hero-meta');
-  if (metaEl) {
+  const metaRow = document.getElementById('article-meta-row');
+  if (metaRow) {
     const initials = (post.author || 'HC').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
     const date = formatDate(post.publish_date || post.created_at);
-    metaEl.innerHTML = `
-      <span style="display:flex;align-items:center;gap:0.5rem;">
-        <span style="width:32px;height:32px;border-radius:50%;background:var(--grad-red);display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:white;">${initials}</span>
+    metaRow.innerHTML = `
+      <span class="meta-author">
+        <span class="meta-author-avatar">${initials}</span>
         ${escapeHtml(post.author || 'Hozana Concept')}
       </span>
-      ${date ? `<span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>${date}</span>` : ''}
-      <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>${post.read_time || 5} min de lecture</span>
-      <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>${formatNum((post.views || 0) + 1)} vues</span>
+      ${date ? `<span class="meta-item"><i class="fas fa-calendar-alt"></i>${date}</span>` : ''}
+      <span class="meta-item"><i class="fas fa-clock"></i>${post.read_time || 5} min de lecture</span>
+      <span class="meta-item"><i class="fas fa-eye"></i>${formatNum((post.views || 0) + 1)} vues</span>
     `;
   }
 
@@ -1187,6 +1533,138 @@ function initReadingProgress() {
     bar.style.width = Math.min(progress, 100) + '%';
   }, { passive: true });
 }
+
+/* ====================================================
+   HERO PARALLAX — Mouse tracking
+   ==================================================== */
+function initParallaxHero() {
+  const hero = document.getElementById('article-hero');
+  const cover = document.getElementById('article-cover');
+  if (!hero || !cover) return;
+
+  if (window.matchMedia('(hover: hover)').matches) {
+    cover.classList.add('parallax-active');
+    hero.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      cover.style.transform = `translate(${x * 8}px, ${y * 5}px) scale(1.05)`;
+    });
+    hero.addEventListener('mouseleave', () => {
+      cover.style.transform = 'translate(0, 0) scale(1)';
+    });
+  }
+}
+
+/* ====================================================
+   SCROLL CONTENT ANIMATIONS
+   ==================================================== */
+function initScrollAnimations() {
+  const body = document.getElementById('article-body');
+  if (!body) return;
+
+  // Observe each direct child of article-body
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, idx) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), idx * 40);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -80px 0px', threshold: 0.1 });
+
+  const children = body.querySelectorAll(':scope > *');
+  children.forEach(el => observer.observe(el));
+}
+
+/* ====================================================
+   SCROLL UI — floating share, back to top, reading time
+   ==================================================== */
+function initScrollUI() {
+  const floatingShare = document.getElementById('floating-share');
+  const backToTop = document.getElementById('back-to-top');
+  const readingTimeEl = document.getElementById('reading-time-remaining');
+  const timeText = document.getElementById('time-remaining-text');
+  const bodyEl = document.getElementById('article-body');
+
+  const totalReadTime = currentPost?.read_time || 5;
+  let totalScrollHeight = 0;
+  let lastPercent = -1;
+
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const bodyH = document.body.scrollHeight;
+    const winH = window.innerHeight;
+    const maxScroll = Math.max(bodyH - winH, 1);
+    const percent = Math.min(scrollY / maxScroll, 1);
+
+    // Floating share visible after hero
+    if (floatingShare) {
+      const heroH = document.getElementById('article-hero')?.offsetHeight || 600;
+      floatingShare.classList.toggle('visible', scrollY > heroH * 0.7);
+    }
+
+    // Back to top
+    if (backToTop) {
+      backToTop.classList.toggle('visible', scrollY > winH);
+    }
+
+    // Reading time remaining
+    if (readingTimeEl && timeText && bodyEl) {
+      readingTimeEl.classList.toggle('visible', scrollY > 300 && scrollY < maxScroll - 200);
+      const remaining = Math.max(1, Math.round(totalReadTime * (1 - percent)));
+      const pct = Math.round(percent * 100);
+      if (pct !== lastPercent) {
+        lastPercent = pct;
+        timeText.textContent = `~${remaining} min restant`;
+      }
+    }
+  }, { passive: true });
+}
+
+/* ====================================================
+   SCROLL TO TOP
+   ==================================================== */
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ====================================================
+   LIGHTBOX
+   ==================================================== */
+function openLightbox(imgSrc, caption) {
+  const overlay = document.getElementById('lightbox-overlay');
+  const img = document.getElementById('lightbox-image');
+  const cap = document.getElementById('lightbox-caption');
+  if (!overlay || !img) return;
+  img.src = imgSrc;
+  if (cap) cap.textContent = caption || '';
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const overlay = document.getElementById('lightbox-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Bind lightbox to all article images
+document.addEventListener('click', (e) => {
+  const img = e.target.closest('.article-body img');
+  if (img) {
+    const src = img.getAttribute('src') || img.src;
+    if (src && !src.includes('data:')) {
+      openLightbox(src, img.getAttribute('alt') || '');
+    }
+  }
+});
+
+// Keyboard close lightbox
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+});
 
 /* ====================================================
    LIKE
@@ -1430,7 +1908,7 @@ function showError(title, message) {
   if (hero) {
     hero.style.minHeight = '50vh';
     document.getElementById('article-title').textContent = title;
-    document.getElementById('article-hero-meta').innerHTML = '';
+    document.getElementById('article-meta-row').innerHTML = '';
     document.getElementById('article-cover').src = 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1400&q=80';
   }
   const bodyEl = document.getElementById('article-body');
@@ -1476,4 +1954,101 @@ function formatNum(n) {
   return String(num);
 }
 </script>
-</body></html>
+</style>
+    <meta property="og:title" content="Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026 | Hozana Concept Blog">
+    <meta property="og:description" content="Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalisation à l'ère de l'IA.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.hozanaconcept.com/blog-posts/growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&amp;q=80">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Hozana Concept">
+    <meta property="article:published_time" content="2026-06-01T22:22:24.576Z">
+    <meta property="article:modified_time" content="2026-06-01T22:22:24.576Z">
+    <meta property="article:author" content="Marcus Hozana">
+    <meta property="article:section" content="Croissance">
+  
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026 | Hozana Concept Blog">
+    <meta name="twitter:description" content="Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalisation à l'ère de l'IA.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&amp;q=80">
+    <meta name="twitter:site" content="@HozanaConcept">
+    <meta name="twitter:creator" content="@HozanaConcept">
+  <link rel="canonical" href="https://www.hozanaconcept.com/blog-posts/growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026",
+      "description": "Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalisation à l'ère de l'IA.",
+      "datePublished": "2026-06-01T22:22:24.576Z",
+      "dateModified": "2026-06-01T22:22:24.576Z",
+      "author": {
+        "@type": "Person",
+        "name": "Marcus Hozana",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=120&q=80",
+          "caption": "Marcus Hozana"
+        }
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Hozana Concept",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=120&q=80",
+          "width": 120,
+          "height": 120
+        }
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80",
+        "width": 1200,
+        "height": 630
+      },      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://www.hozanaconcept.com/blog-posts/growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026"
+      }
+  }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "https://www.hozanaconcept.com"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://www.hozanaconcept.com/blog"
+      },{
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026"
+      }]
+    }
+    </script>
+  <script>
+window.__STATIC_BLOG_DATA__ = {
+  id: "640ec5d1-778b-4d10-9f2d-ef604813c195",
+  slug: "growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026",
+  title: "Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026",
+  author: "Marcus Hozana",
+  category: "Croissance",
+  cover_image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80",
+  excerpt: "Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalisation à l'ère de l'IA.",
+  read_time: 9,
+  views: 12,
+  likes: 5,
+  tags: ["Growth","Acquisition","Marketing Digital","Conversion","ROI","Stratégie"],
+  publish_date: "2026-06-01T22:22:24.576+00:00",
+  featured: false
+};
+</script></head><body></body></html>
