@@ -12,27 +12,26 @@
   <script src="js/supabase-config.js"></script>
   <link rel="stylesheet" href="css/components.css">
   <style>
-    /* ---- READING PROGRESS BAR (premium) ---- */
+    /* ---- READING PROGRESS BAR ---- */
     #reading-progress {
       position: fixed;
       top: 0;
       left: 0;
-      height: 4px;
+      height: 3px;
       width: 0%;
       background: var(--grad-red);
-      z-index: 99999;
+      z-index: 9999;
       transition: width 0.1s linear;
-      box-shadow: 0 0 12px rgba(255,46,46,0.6), 0 0 24px rgba(255,46,46,0.2);
+      box-shadow: 0 0 8px rgba(255,46,46,0.5);
     }
 
-    /* ---- ARTICLE HERO (premium redesign) ---- */
+    /* ---- ARTICLE HERO ---- */
     .article-hero {
       position: relative;
-      min-height: 85vh;
+      min-height: 70vh;
       display: flex;
       align-items: flex-end;
       overflow: hidden;
-      isolation: isolate;
     }
     .article-cover-img {
       position: absolute;
@@ -40,123 +39,26 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.3s ease-out;
-      will-change: transform;
     }
     .article-hero-overlay {
       position: absolute;
       inset: 0;
       background: linear-gradient(
         to bottom,
-        rgba(11,11,11,0.15) 0%,
-        rgba(11,11,11,0.35) 30%,
-        rgba(11,11,11,0.75) 55%,
-        rgba(11,11,11,0.95) 80%,
+        rgba(11,11,11,0.2) 0%,
+        rgba(11,11,11,0.5) 40%,
+        rgba(11,11,11,0.92) 75%,
         rgba(11,11,11,1) 100%
       );
     }
-    .article-hero-glow {
-      position: absolute;
-      bottom: -120px; left: 50%;
-      transform: translateX(-50%);
-      width: 800px; height: 300px;
-      background: radial-gradient(ellipse, rgba(255,46,46,0.15) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .article-hero-grid {
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: linear-gradient(to bottom, black 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
-    }
     .article-hero-content {
       position: relative;
-      z-index: 2;
+      z-index: 1;
       width: 100%;
       max-width: 860px;
       margin: 0 auto;
-      padding: calc(var(--nav-height) + 2rem) 2rem 5rem;
+      padding: var(--nav-height) 2rem 4rem;
     }
-    .article-hero-content .hero-badge-wrap {
-      display: flex;
-      gap: 0.625rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-      animation: fadeInUp 0.8s ease 0.1s both;
-    }
-    .article-hero-content .hero-cat-badge {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.4rem 1rem;
-      background: rgba(255,46,46,0.12);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,46,46,0.25);
-      border-radius: 999px;
-      font-family: var(--font-accent);
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: #FF7070;
-    }
-    .article-hero-content .hero-featured-badge {
-      display: inline-flex; align-items: center; gap: 0.3rem;
-      padding: 0.4rem 0.875rem;
-      background: rgba(255,180,0,0.12);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,180,0,0.2);
-      border-radius: 999px;
-      font-family: var(--font-accent);
-      font-size: 0.7rem; font-weight: 700;
-      color: #FFC107;
-    }
-    .article-hero-content .article-title {
-      font-size: clamp(2.2rem, 4.5vw, 3.75rem);
-      font-weight: 800;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-      color: #fff;
-      margin-bottom: 1.5rem;
-      text-shadow: 0 2px 30px rgba(0,0,0,0.4);
-      animation: fadeInUp 0.8s ease 0.2s both;
-    }
-    .article-meta-row {
-      display: flex; align-items: center; gap: 1.5rem;
-      flex-wrap: wrap;
-      color: rgba(255,255,255,0.65);
-      font-family: var(--font-accent);
-      font-size: 0.85rem;
-      animation: fadeInUp 0.8s ease 0.35s both;
-    }
-    .article-meta-row .meta-author {
-      display: flex; align-items: center; gap: 0.625rem;
-    }
-    .article-meta-row .meta-author-avatar {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: var(--grad-red);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; font-weight: 700; color: white;
-      flex-shrink: 0;
-      box-shadow: 0 0 0 2px rgba(255,46,46,0.3), 0 0 20px rgba(255,46,46,0.2);
-    }
-    .article-meta-row .meta-item {
-      display: flex; align-items: center; gap: 0.4rem;
-    }
-    .article-meta-row .meta-item i { color: var(--red); font-size: 0.75rem; }
-
-    /* Breadcrumb */
-    .article-breadcrumb {
-      display: flex; align-items: center; gap: 0.5rem;
-      font-family: var(--font-accent);
-      font-size: 0.78rem;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 1.5rem;
-      animation: fadeInUp 0.8s ease 0s both;
-    }
-    .article-breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
-    .article-breadcrumb a:hover { color: var(--red-light); }
-    .article-breadcrumb .sep { color: rgba(255,255,255,0.2); }
 
     /* ---- ARTICLE LAYOUT ---- */
     .article-page-wrap {
@@ -169,145 +71,92 @@
       align-items: start;
     }
 
-    /* ---- ARTICLE BODY (premium typography) ---- */
+    /* ---- ARTICLE BODY ---- */
     .article-content {
       min-width: 0;
     }
     .article-body {
       font-family: var(--font-body);
-      font-size: 1.125rem;
-      line-height: 1.9;
+      font-size: 1.0625rem;
+      line-height: 1.85;
       color: var(--white-80);
     }
-    .article-body p { margin-bottom: 1.75rem; }
-
     .article-body h2 {
       font-family: var(--font-title);
-      font-size: 1.75rem;
+      font-size: 1.65rem;
       font-weight: 700;
       color: var(--white);
-      margin: 3.5rem 0 1.25rem;
+      margin: 3rem 0 1.1rem;
       letter-spacing: -0.02em;
       line-height: 1.2;
-      padding-top: 0.75rem;
+      padding-top: 0.5rem;
       border-top: 1px solid var(--glass-border);
-      position: relative;
-    }
-    .article-body h2::before {
-      content: '';
-      position: absolute;
-      top: -1px; left: 0;
-      width: 60px; height: 2px;
-      background: var(--grad-red);
-      border-radius: 2px;
     }
     .article-body h3 {
       font-family: var(--font-title);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: var(--white);
-      margin: 2.5rem 0 1rem;
-      letter-spacing: -0.01em;
+      margin: 2.25rem 0 0.875rem;
     }
-
-    /* Drop cap on first paragraph */
-    .article-body > p:first-child::first-letter {
-      font-size: 3.5em;
-      font-weight: 800;
-      float: left;
-      line-height: 0.85;
-      margin-right: 0.5rem;
-      margin-top: 0.15rem;
-      background: var(--grad-red);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-family: var(--font-title);
-    }
-
+    .article-body p { margin-bottom: 1.5rem; }
     .article-body a {
       color: var(--red-light);
       text-decoration: underline;
       text-decoration-color: rgba(255,85,85,0.3);
-      text-underline-offset: 3px;
       transition: all var(--trans-fast);
     }
     .article-body a:hover {
       color: var(--red);
       text-decoration-color: var(--red);
-      text-underline-offset: 2px;
     }
-
-    .article-body strong { color: var(--white); font-weight: 700; }
-
-    /* Premium blockquote */
     .article-body blockquote {
-      margin: 3rem 0;
-      padding: 2rem 2rem 2rem 3rem;
-      background: linear-gradient(135deg, rgba(255,46,46,0.06), rgba(255,106,0,0.03));
-      border: none;
+      margin: 2.5rem 0;
+      padding: 1.5rem 1.75rem;
+      background: rgba(255,46,46,0.05);
       border-left: 4px solid var(--red);
-      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
       font-style: italic;
       color: var(--white-70);
-      font-size: 1.1rem;
-      line-height: 1.8;
+      font-size: 1.05rem;
       position: relative;
     }
     .article-body blockquote::before {
-      content: '“';
+      content: '"';
       font-family: Georgia, serif;
       font-size: 5rem;
-      color: rgba(255,46,46,0.1);
+      color: rgba(255,46,46,0.12);
       position: absolute;
-      top: 0.5rem;
+      top: -1.5rem;
       left: 1rem;
       line-height: 1;
-      pointer-events: none;
     }
-    .article-body blockquote p:last-child { margin-bottom: 0; }
-
-    /* Lists */
     .article-body ul, .article-body ol {
       padding-left: 1.5rem;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 0.625rem;
+      gap: 0.5rem;
     }
     .article-body li::marker {
       color: var(--red);
     }
-    .article-body ul li { padding-left: 0.25rem; }
-
-    /* Inline code */
     .article-body code {
       font-family: 'Roboto Mono', 'Courier New', monospace;
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       background: rgba(255,46,46,0.08);
       border: 1px solid rgba(255,46,46,0.15);
-      border-radius: 6px;
+      border-radius: 4px;
       padding: 0.15rem 0.5rem;
       color: #FF9090;
     }
-
-    /* Code block with copy button */
     .article-body pre {
-      position: relative;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.5);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
-      padding: 1.75rem;
+      padding: 1.5rem;
       overflow-x: auto;
-      margin-bottom: 1.75rem;
-    }
-    .article-body pre::before {
-      content: '‾';
-      display: block;
-      margin-bottom: 0.75rem;
-      font-size: 0.6rem;
-      letter-spacing: 0.3em;
-      color: var(--white-20);
+      margin-bottom: 1.5rem;
     }
     .article-body pre code {
       background: none;
@@ -315,126 +164,71 @@
       padding: 0;
       color: var(--white-80);
       font-size: 0.875rem;
-      line-height: 1.7;
     }
-    .copy-code-btn {
-      position: absolute;
-      top: 0.75rem; right: 0.75rem;
-      padding: 0.3rem 0.625rem;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 6px;
-      color: rgba(255,255,255,0.4);
-      font-size: 0.72rem;
-      font-family: var(--font-accent);
-      cursor: pointer;
-      transition: all 0.2s;
-      opacity: 0;
-    }
-    .article-body pre:hover .copy-code-btn { opacity: 1; }
-    .copy-code-btn:hover {
-      background: rgba(255,46,46,0.15);
-      border-color: rgba(255,46,46,0.3);
-      color: #FF7070;
-    }
-
-    /* Images */
     .article-body img {
       width: 100%;
-      border-radius: var(--radius-lg);
-      margin: 2rem 0;
-      cursor: zoom-in;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      border-radius: var(--radius-md);
+      margin: 1.5rem 0;
     }
-    .article-body img:hover {
-      transform: scale(1.005);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-    }
-
+    .article-body strong { color: var(--white); font-weight: 700; }
     .article-body hr {
       border: none;
       height: 1px;
       background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
-      margin: 3.5rem 0;
+      margin: 3rem 0;
     }
 
-    /* Premium callout boxes */
+    /* Callout boxes */
     .callout {
-      padding: 1.5rem 1.75rem;
+      padding: 1.25rem 1.5rem;
       border-radius: var(--radius-md);
-      margin: 2.5rem 0;
+      margin: 2rem 0;
       display: flex;
       gap: 1rem;
       align-items: flex-start;
-      position: relative;
     }
     .callout-tip {
-      background: linear-gradient(135deg, rgba(255,46,46,0.06), rgba(255,106,0,0.03));
+      background: rgba(255,46,46,0.06);
       border: 1px solid rgba(255,46,46,0.18);
-    }
-    .callout-tip::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; bottom: 0;
-      width: 3px;
-      background: var(--grad-red);
-      border-radius: 3px 0 0 3px;
     }
     .callout-warning {
       background: rgba(255,106,0,0.07);
       border: 1px solid rgba(255,106,0,0.2);
     }
-    .callout-warning::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; bottom: 0;
-      width: 3px;
-      background: linear-gradient(180deg, #FF8C42, #FF6A00);
-      border-radius: 3px 0 0 3px;
-    }
     .callout-info {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.1);
     }
-    .callout-info::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; bottom: 0;
-      width: 3px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
-      border-radius: 3px 0 0 3px;
-    }
-    .callout-icon { font-size: 1.35rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .callout-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 0.1rem; }
     .callout-text { font-size: 0.9375rem; color: var(--white-80); line-height: 1.65; }
 
-    /* ---- TABLE OF CONTENTS (premium) ---- */
+    /* ---- TABLE OF CONTENTS ---- */
     .toc-box {
-      background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,46,46,0.02));
+      background: var(--glass-bg);
       backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
-      padding: 1.75rem;
+      padding: 1.5rem;
       margin-bottom: 3rem;
     }
     .toc-title {
       font-family: var(--font-accent);
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       color: var(--white-40);
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
-    .toc-title i { color: var(--red); font-size: 0.85rem; }
+    .toc-title i { color: var(--red); }
     .toc-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.375rem;
+      gap: 0.5rem;
       counter-reset: toc;
     }
     .toc-item {
@@ -447,35 +241,28 @@
       font-size: 0.875rem;
       color: var(--white-60);
       text-decoration: none;
-      padding: 0.5rem 0.625rem;
+      padding: 0.35rem 0.5rem;
       border-radius: var(--radius-sm);
       transition: all var(--trans-fast);
       cursor: pointer;
-      border: 1px solid transparent;
     }
     .toc-link::before {
       content: counter(toc, decimal-leading-zero);
       font-family: var(--font-accent);
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       font-weight: 700;
       color: var(--red);
       flex-shrink: 0;
-      min-width: 22px;
-      opacity: 0.6;
-      transition: opacity 0.2s;
+      min-width: 24px;
     }
     .toc-link:hover {
       color: var(--white);
       background: rgba(255,46,46,0.06);
-      border-color: rgba(255,46,46,0.12);
     }
-    .toc-link:hover::before { opacity: 1; }
     .toc-link.active {
       color: var(--red-light);
       background: rgba(255,46,46,0.08);
-      border-color: rgba(255,46,46,0.2);
     }
-    .toc-link.active::before { opacity: 1; }
 
     /* ---- SIDEBAR (sticky) ---- */
     .article-sidebar {
@@ -491,10 +278,6 @@
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
       padding: 1.5rem;
-      transition: all var(--trans-base);
-    }
-    .sidebar-widget:hover {
-      border-color: rgba(255,46,46,0.15);
     }
     .sidebar-widget-title {
       font-family: var(--font-accent);
@@ -533,18 +316,14 @@
       cursor: pointer;
     }
     .share-btn:hover { transform: translateX(4px); border-color: transparent; }
-    .share-btn.twitter:hover  { background: #1DA1F2; color: white; border-color: #1DA1F2; }
-    .share-btn.linkedin:hover { background: #0A66C2; color: white; border-color: #0A66C2; }
+    .share-btn.twitter:hover  { background: rgba(255,255,255,0.07); color: var(--white-80); }
+    .share-btn.linkedin:hover { background: rgba(255,255,255,0.07); color: var(--white-80); }
     .share-btn.copy:hover     { background: rgba(255,46,46,0.1); color: var(--red); }
-    .share-btn.whatsapp:hover { background: #25D366; color: white; border-color: #25D366; }
+    .share-btn.whatsapp:hover { background: rgba(255,106,0,0.1); color: #FF8C42; }
 
     /* Like button */
     .like-section {
       text-align: center;
-      padding: 2rem;
-      background: linear-gradient(135deg, rgba(255,46,46,0.03), transparent);
-      border: 1px solid rgba(255,46,46,0.08);
-      border-radius: var(--radius-xl);
     }
     .like-btn {
       display: inline-flex;
@@ -565,27 +344,20 @@
       background: rgba(255,46,46,0.12);
       border-color: rgba(255,46,46,0.4);
       transform: scale(1.04);
-      box-shadow: 0 0 20px rgba(255,46,46,0.15);
     }
     .like-btn.liked {
       background: rgba(255,46,46,0.15);
       border-color: var(--red);
       color: var(--red-light);
-      box-shadow: 0 0 20px rgba(255,46,46,0.2);
     }
     .like-btn .like-heart {
       font-size: 1.1rem;
       transition: transform var(--trans-bounce);
     }
     .like-btn:hover .like-heart { transform: scale(1.3); }
-    .like-btn.liked .like-heart { animation: heartPop 0.4s ease; }
-    @keyframes heartPop {
-      0% { transform: scale(1); }
-      40% { transform: scale(1.4); }
-      100% { transform: scale(1.15); }
-    }
+    .like-btn.liked .like-heart { transform: scale(1.15); }
 
-    /* ---- COMMENTS (premium) ---- */
+    /* ---- COMMENTS ---- */
     .comments-section {
       margin-top: 4rem;
       padding-top: 3rem;
@@ -597,17 +369,11 @@
       margin-bottom: 2rem;
       padding-bottom: 2rem;
       border-bottom: 1px solid var(--glass-border);
-      transition: background 0.2s;
-      border-radius: var(--radius-md);
-      padding: 1rem;
-      margin-left: -1rem;
-      margin-right: -1rem;
     }
-    .comment-item:hover { background: rgba(255,255,255,0.02); }
     .comment-item:last-child {
       border-bottom: none;
       margin-bottom: 0;
-      padding-bottom: 1rem;
+      padding-bottom: 0;
     }
     .comment-avatar {
       width: 44px;
@@ -621,7 +387,6 @@
       font-weight: 700;
       color: white;
       flex-shrink: 0;
-      box-shadow: 0 0 0 2px rgba(255,46,46,0.2), 0 0 15px rgba(255,46,46,0.1);
     }
     .comment-body { flex: 1; min-width: 0; }
     .comment-header {
@@ -649,19 +414,10 @@
     }
     .comment-form {
       margin-top: 2rem;
-      background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,46,46,0.02));
+      background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
       padding: 2rem;
-      position: relative;
-    }
-    .comment-form::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 2rem; right: 2rem;
-      height: 1px;
-      background: var(--grad-red);
-      opacity: 0.3;
     }
     .comment-form h3 {
       font-family: var(--font-title);
@@ -677,29 +433,17 @@
       margin-bottom: 1rem;
     }
 
-    /* ---- RELATED ARTICLES (premium) ---- */
+    /* ---- RELATED ARTICLES ---- */
     .related-section {
-      padding: 5rem 2rem;
+      padding: 4rem 2rem;
       background: var(--black-2);
-      position: relative;
-      overflow: hidden;
-    }
-    .related-section::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%; transform: translateX(-50%);
-      width: 500px; height: 1px;
-      background: var(--grad-red);
-      opacity: 0.3;
-    }
-    .related-grid-wrapper {
-      max-width: 1200px;
-      margin: 2rem auto 0;
     }
     .related-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
+      max-width: 1200px;
+      margin: 2rem auto 0;
     }
     .related-card {
       background: var(--glass-bg);
@@ -714,19 +458,19 @@
     }
     .related-card:hover {
       border-color: rgba(255,46,46,0.25);
-      transform: translateY(-6px);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
     .related-img {
       width: 100%;
       aspect-ratio: 16/9;
       object-fit: cover;
       display: block;
-      transition: transform 0.5s ease;
+      transition: transform 0.4s ease;
     }
-    .related-card:hover .related-img { transform: scale(1.06); }
+    .related-card:hover .related-img { transform: scale(1.04); }
     .related-body {
-      padding: 1.5rem;
+      padding: 1.25rem;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -738,20 +482,11 @@
       color: var(--red);
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin-bottom: 0.625rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .related-cat::before {
-      content: '';
-      width: 12px; height: 2px;
-      background: var(--grad-red);
-      border-radius: 2px;
+      margin-bottom: 0.5rem;
     }
     .related-title {
       font-family: var(--font-title);
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--white);
       line-height: 1.35;
@@ -760,9 +495,7 @@
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      transition: color 0.2s;
     }
-    .related-card:hover .related-title { color: #FF7070; }
     .related-meta {
       margin-top: 1rem;
       padding-top: 0.875rem;
@@ -780,253 +513,119 @@
       .article-sidebar { position: static; }
       .comment-grid { grid-template-columns: 1fr; }
       .related-grid { grid-template-columns: 1fr 1fr; }
-      .article-hero { min-height: 65vh; }
-      .article-title { font-size: clamp(1.8rem, 5vw, 3rem) !important; }
     }
     @media (max-width: 768px) {
-      .article-hero { min-height: 50vh; }
-      .article-hero-content { padding: calc(var(--nav-height) + 1rem) 1.25rem 3rem; }
+      .article-hero { min-height: 55vh; }
+      .article-hero-content { padding: var(--nav-height) 1.25rem 3rem; }
       .article-page-wrap { padding: 0 1.25rem 4rem; }
       .related-section { padding: 3rem 1.25rem; }
-      .related-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+      .related-grid { grid-template-columns: 1fr; }
       .share-buttons { flex-direction: row; flex-wrap: wrap; }
       .share-btn { flex: 1; min-width: 120px; justify-content: center; }
-      .article-title { font-size: clamp(1.5rem, 6vw, 2.2rem) !important; }
-      .article-meta-row { font-size: 0.78rem; gap: 1rem; }
-      .article-body { font-size: 1rem; line-height: 1.8; }
-      .article-body h2 { font-size: 1.35rem; }
-      .article-body > p:first-child::first-letter { font-size: 2.5em; }
-      .comment-item { margin-left: 0; margin-right: 0; padding: 0.75rem; }
-      .article-hero-glow { width: 100%; }
     }
-    @media (max-width: 480px) {
-      .article-hero { min-height: 45vh; }
-      .article-title { font-size: 1.35rem !important; }
-      .article-meta-row .meta-item { font-size: 0.72rem; }
-      .article-hero-content .hero-badge-wrap { gap: 0.375rem; }
-      .article-meta-row { gap: 0.75rem; }
-    }
+  </style>
 
-    /* Related card entrance */
-    .related-card { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s, box-shadow 0.3s; }
-    .related-card.visible { opacity: 1; transform: translateY(0); }
-
-    /* ---- FLOATING SHARE BAR (premium) ---- */
-    .floating-share {
-      position: fixed;
-      left: 2rem;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      z-index: 50;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.5s ease;
-    }
-    .floating-share.visible { opacity: 1; visibility: visible; }
-    .floating-share-line {
-      width: 1px;
-      height: 40px;
-      background: linear-gradient(180deg, var(--glass-border), transparent);
-      margin: 0 auto 0.25rem;
-    }
-    .floating-share-btn {
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      color: var(--white-50);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all var(--trans-bounce);
-    }
-    .floating-share-btn:hover { transform: scale(1.12); color: white; border-color: transparent; }
-    .floating-share-btn.fb-twitter:hover { background: #1DA1F2; }
-    .floating-share-btn.fb-linkedin:hover { background: #0A66C2; }
-    .floating-share-btn.fb-copy:hover { background: rgba(255,46,46,0.15); color: var(--red); border-color: rgba(255,46,46,0.3); }
-
-    /* ---- BACK TO TOP ---- */
-    .back-to-top {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
-      color: var(--white-50);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      cursor: pointer;
-      z-index: 50;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(20px);
-      transition: all var(--trans-bounce);
-      box-shadow: var(--shadow-md);
-    }
-    .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover {
-      background: rgba(255,46,46,0.12);
-      border-color: rgba(255,46,46,0.3);
-      color: var(--red);
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-red-sm);
-    }
-
-    /* ---- READING TIME REMAINING ---- */
-    .reading-time-remaining {
-      position: fixed;
-      bottom: 2rem;
-      left: 2rem;
-      padding: 0.5rem 1rem;
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-full);
-      font-family: var(--font-accent);
-      font-size: 0.75rem;
-      color: var(--white-50);
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.4s ease;
-    }
-    .reading-time-remaining.visible { opacity: 1; visibility: visible; }
-    .reading-time-remaining i { color: var(--red); font-size: 0.7rem; }
-
-    /* ---- LIGHTBOX ---- */
-    .lightbox-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.92);
-      backdrop-filter: blur(20px);
-      z-index: 99999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.4s ease;
-      cursor: zoom-out;
-    }
-    .lightbox-overlay.open { opacity: 1; visibility: visible; }
-    .lightbox-overlay img {
-      max-width: 90vw;
-      max-height: 90vh;
-      object-fit: contain;
-      border-radius: var(--radius-lg);
-      box-shadow: 0 40px 120px rgba(0,0,0,0.8);
-      transform: scale(0.9);
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .lightbox-overlay.open img { transform: scale(1); }
-    .lightbox-close {
-      position: absolute;
-      top: 2rem; right: 2rem;
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: white;
-      font-size: 1.25rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-    .lightbox-close:hover {
-      background: rgba(255,46,46,0.2);
-      border-color: rgba(255,46,46,0.4);
-      transform: scale(1.1);
-    }
-    .lightbox-caption {
-      position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: var(--font-accent);
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.5);
-      max-width: 80vw;
-      text-align: center;
-    }
-
-    /* ---- SCROLL CONTENT ANIMATIONS ---- */
-    .article-body > * {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .article-body > *.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Sidebar widget entrance */
-    .article-sidebar .sidebar-widget { transition: opacity 0.5s ease, transform 0.5s ease; }
-
-    /* ---- HERO PARALLAX (mouse tracking) ---- */
-    @media (hover: hover) {
-      .article-cover-img.parallax-active {
-        transition: transform 0.08s ease-out;
+    <meta property="og:title" content="Automatisation des Processus : Le Guide Complet pour les PME en 2026 | Hozana Concept Blog">
+    <meta property="og:description" content="Guide pratique de l'automatisation pour PME : comment mettre en place des workflows intelligents, réduire les coûts de 40% et libérer du temps pour vos équipes avec des solutions no-code accessibles.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.hozanaconcept.com/blog-posts/automatisation-des-processus-le-guide-complet-pour-les-pme-en-2026">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&amp;q=80">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Hozana Concept">
+    <meta property="article:published_time" content="2026-06-01T22:22:24.116Z">
+    <meta property="article:modified_time" content="2026-06-01T22:22:24.116Z">
+    <meta property="article:author" content="Marcus Hozana">
+    <meta property="article:section" content="Automatisation">
+  
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Automatisation des Processus : Le Guide Complet pour les PME en 2026 | Hozana Concept Blog">
+    <meta name="twitter:description" content="Guide pratique de l'automatisation pour PME : comment mettre en place des workflows intelligents, réduire les coûts de 40% et libérer du temps pour vos équipes avec des solutions no-code accessibles.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&amp;q=80">
+    <meta name="twitter:site" content="@HozanaConcept">
+    <meta name="twitter:creator" content="@HozanaConcept">
+  <link rel="canonical" href="https://www.hozanaconcept.com/blog-posts/automatisation-des-processus-le-guide-complet-pour-les-pme-en-2026">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Automatisation des Processus : Le Guide Complet pour les PME en 2026",
+      "description": "Guide pratique de l'automatisation pour PME : comment mettre en place des workflows intelligents, réduire les coûts de 40% et libérer du temps pour vos équipes avec des solutions no-code accessibles.",
+      "datePublished": "2026-06-01T22:22:24.116Z",
+      "dateModified": "2026-06-01T22:22:24.116Z",
+      "author": {
+        "@type": "Person",
+        "name": "Marcus Hozana",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=120&q=80",
+          "caption": "Marcus Hozana"
+        }
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Hozana Concept",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=120&q=80",
+          "width": 120,
+          "height": 120
+        }
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80",
+        "width": 1200,
+        "height": 630
+      },      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://www.hozanaconcept.com/blog-posts/automatisation-des-processus-le-guide-complet-pour-les-pme-en-2026"
       }
-    }
+  }
+    </script>
 
-    /* ---- RESPONSIVE OVERRIDES ---- */
-    @media (max-width: 1200px) {
-      .floating-share { display: none; }
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "https://www.hozanaconcept.com"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://www.hozanaconcept.com/blog"
+      },{
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Automatisation des Processus : Le Guide Complet pour les PME en 2026"
+      }]
     }
-    @media (max-width: 768px) {
-      .back-to-top { bottom: 1.25rem; right: 1.25rem; width: 42px; height: 42px; }
-      .reading-time-remaining { display: none; }
-      .article-body > * { transform: none; opacity: 1; }
-    }
-</head>
+    </script>
+  <script>
+window.__STATIC_BLOG_DATA__ = {
+  id: "d04fcd11-915b-4e60-83c5-e276357cc6f0",
+  slug: "automatisation-des-processus-le-guide-complet-pour-les-pme-en-2026",
+  title: "Automatisation des Processus : Le Guide Complet pour les PME en 2026",
+  author: "Marcus Hozana",
+  category: "Automatisation",
+  cover_image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80",
+  excerpt: "Guide pratique de l'automatisation pour PME : comment mettre en place des workflows intelligents, réduire les coûts de 40% et libérer du temps pour vos équipes avec des solutions no-code accessibles.",
+  read_time: 10,
+  views: 36,
+  likes: 4,
+  tags: ["Automatisation","No-Code","Make.com","n8n","Workflow","PME"],
+  publish_date: "2026-06-01T22:22:24.116+00:00",
+  featured: false
+};
+</script></head>
 <body>
 
 <!-- READING PROGRESS -->
 <div id="reading-progress" role="progressbar" aria-label="Progression de lecture"></div>
-
-<!-- FLOATING SHARE BAR -->
-<div class="floating-share" id="floating-share">
-  <div class="floating-share-line"></div>
-  <button class="floating-share-btn fb-twitter" onclick="shareOn('twitter')" aria-label="Partager sur Twitter"><i class="fab fa-twitter"></i></button>
-  <button class="floating-share-btn fb-linkedin" onclick="shareOn('linkedin')" aria-label="Partager sur LinkedIn"><i class="fab fa-linkedin-in"></i></button>
-  <button class="floating-share-btn fb-copy" onclick="copyLink()" aria-label="Copier le lien"><i class="fas fa-link"></i></button>
-</div>
-
-<!-- LIGHTBOX -->
-<div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox()">
-  <button class="lightbox-close" onclick="event.stopPropagation();closeLightbox()"><i class="fas fa-times"></i></button>
-  <img id="lightbox-image" src="" alt="">
-  <div class="lightbox-caption" id="lightbox-caption"></div>
-</div>
-
-<!-- BACK TO TOP -->
-<button class="back-to-top" id="back-to-top" onclick="scrollToTop()" aria-label="Retour en haut">
-  <i class="fas fa-arrow-up"></i>
-</button>
-
-<!-- READING TIME REMAINING -->
-<div class="reading-time-remaining" id="reading-time-remaining">
-  <i class="fas fa-clock"></i>
-  <span id="time-remaining-text">— min restant</span>
-</div>
 
 <!-- LOADER -->
 <div id="loader">
@@ -1038,24 +637,30 @@
 <!-- NAVBAR -->
 <div id="navbar-placeholder"></div>
 
-<!-- HERO (redesign premium) -->
+<!-- HERO -->
 <header class="article-hero" id="article-hero">
-  <img id="article-cover" class="article-cover-img" src="" alt="" loading="eager">
+  <img id="article-cover" class="article-cover-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&amp;q=80" alt="Automatisation des Processus : Le Guide Complet pour les PME en 2026" loading="eager">
   <div class="article-hero-overlay"></div>
-  <div class="article-hero-glow"></div>
-  <div class="article-hero-grid"></div>
   <div class="article-hero-content">
-    <div class="article-breadcrumb" id="article-breadcrumb">
-      <a href="blog.html">Blog</a>
-      <span class="sep">·</span>
-      <span id="article-cat-breadcrumb">–</span>
+    <div id="article-breadcrumb" class="section-label" style="margin-bottom:1.5rem;color:rgba(255,255,255,0.6);">
+      <a href="blog.html" style="color:inherit;text-decoration:none;">Blog</a>
+      <span style="margin:0 0.5rem;">·</span>
+      <span id="article-cat-breadcrumb">Automatisation</span>
     </div>
-    <div class="hero-badge-wrap" id="hero-badge-wrap"></div>
-    <h1 id="article-title" class="article-title">
-      Chargement...
-    </h1>
-    <div class="article-meta-row" id="article-meta-row">
-    </div>
+    <div id="article-badges" style="display:flex;gap:0.5rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+        <span class="badge badge-red">Automatisation</span>
+        
+      </div>
+    <h1 id="article-title" class="text-display" style="max-width:760px;margin-bottom:1.25rem;text-shadow:0 2px 20px rgba(0,0,0,0.4);">Automatisation des Processus : Le Guide Complet pour les PME en 2026</h1>
+    <div id="article-hero-meta" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;color:rgba(255,255,255,0.6);font-family:var(--font-accent);font-size:0.8rem;">
+        <span style="display:flex;align-items:center;gap:0.5rem;">
+          <span style="width:32px;height:32px;border-radius:50%;background:var(--grad-red);display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:white;">MH</span>
+          Marcus Hozana
+        </span>
+        <span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>2 juin 2026</span>
+        <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>10 min de lecture</span>
+        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>37 vues</span>
+      </div>
   </div>
 </header>
 
@@ -1074,27 +679,98 @@
 
       <!-- Body -->
       <div class="article-body" id="article-body">
-        <!-- Skeleton -->
-        <div style="display:flex;flex-direction:column;gap:1rem;">
-          <div style="height:20px;background:var(--glass-bg);border-radius:4px;width:90%;animation:pulse-glow 2s ease infinite;"></div>
-          <div style="height:20px;background:var(--glass-bg);border-radius:4px;animation:pulse-glow 2s ease infinite;"></div>
-          <div style="height:20px;background:var(--glass-bg);border-radius:4px;width:75%;animation:pulse-glow 2s ease infinite;"></div>
-          <div style="height:20px;background:var(--glass-bg);border-radius:4px;animation:pulse-glow 2s ease infinite;"></div>
-          <div style="height:20px;background:var(--glass-bg);border-radius:4px;width:85%;animation:pulse-glow 2s ease infinite;"></div>
-        </div>
-      </div>
+<h2>L'automatisation des processus n'est plus un luxe réservé aux grands groupes</h2>
+<p>En 2026, les outils d'automatisation sont devenus accessibles à toutes les tailles d'entreprises. Que vous soyez une startup de 5 personnes ou une ETI de 200 collaborateurs, <strong>l'automatisation intelligente</strong> vous permet de réduire vos coûts opérationnels de 40% en moyenne et de libérer un temps précieux pour vos équipes.</p>
+
+<blockquote>"Nous avons automatisé 60% des processus administratifs de nos clients en seulement 8 semaines. Le résultat : des équipes plus focalisées sur la valeur ajoutée et une croissance du chiffre d'affaires de 35%."</blockquote>
+
+<h2>Qu'est-ce que l'automatisation des processus métier ?</h2>
+<p>L'automatisation des processus métier (Business Process Automation) consiste à utiliser la technologie pour exécuter des tâches répétitives, des workflows et des processus sans intervention humaine. Elle englobe :</p>
+<ul>
+  <li><strong>L'automatisation robotisée (RPA)</strong> : pour les tâches répétitives basées sur des règles</li>
+  <li><strong>L'orchestration de workflows</strong> : pour enchaîner des actions complexes entre plusieurs outils</li>
+  <li><strong>L'IA et le Machine Learning</strong> : pour les décisions intelligentes et les prédictions</li>
+  <li><strong>Les API et intégrations</strong> : pour connecter vos outils entre eux</li>
+</ul>
+
+<h2>Les 10 processus les plus automatisés par nos clients</h2>
+<ol>
+  <li><strong>Gestion des leads entrants</strong> : Qualification automatique, attribution, suivi email</li>
+  <li><strong>Facturation et relances</strong> : Génération, envoi, suivi des paiements et relances automatiques</li>
+  <li><strong>Service client</strong> : Chatbot, ticket routing, réponses automatiques, escalade</li>
+  <li><strong>Marketing automation</strong> : Campagnes email, segmentation, scoring, A/B testing</li>
+  <li><strong>Reporting et analytics</strong> : Collecte de données, génération de rapports, alertes</li>
+  <li><strong>Gestion des réseaux sociaux</strong> : Planification, publication, analyse, curation de contenu</li>
+  <li><strong>Recrutement</strong> : Tri des CV, présélection, planification d'entretiens</li>
+  <li><strong>Gestion de projet</strong> : Création de tâches, assignation, suivi, notifications</li>
+  <li><strong>Comptabilité</strong> : Saisie, rapprochement, classification, reporting</li>
+  <li><strong>RH et paie</strong> : Onboarding, congés, notes de frais, évaluations</li>
+</ol>
+
+<div class="callout callout-tip">
+  <div class="callout-icon">⚡</div>
+  <div class="callout-text"><strong>Recommandation :</strong> Commencez par un seul processus critique. Automatisez-le complètement avant de passer au suivant. Cette approche itérative est 3 fois plus efficace qu'une tentative d'automatisation massive.</div>
+</div>
+
+<h2>Les outils no-code qui changent la donne</h2>
+<p>La démocratisation de l'automatisation doit beaucoup aux plateformes no-code :</p>
+<ul>
+  <li><strong>Make.com</strong> (Integromat) : Le leader pour les workflows visuels complexes. Interface intuitive, milliers d'intégrations, scénarios puissants.</li>
+  <li><strong>n8n</strong> : Alternative open-source, auto-hébergée, idéale pour les données sensibles.</li>
+  <li><strong>Zapier</strong> : Le plus simple pour les automatisations basiques et les startups.</li>
+  <li><strong>Bubble</strong> : Pour créer des applications web complètes sans code.</li>
+  <li><strong>Notion + Make</strong> : Le duo gagnant pour la gestion de projet automatisée.</li>
+</ul>
+
+<h2>Cas pratique : Automatisation du cycle de vente</h2>
+<p>Voici comment nous avons automatisé le cycle de vente complet d'un client e-commerce :</p>
+<ol>
+  <li>Un lead remplit le formulaire de contact</li>
+  <li>Make.com capture les données et les envoie à HubSpot (CRM)</li>
+  <li>L'IA analyse le besoin et qualifie le lead (chaud/froid/non qualifié)</li>
+  <li>Un email de bienvenue personnalisé est envoyé automatiquement</li>
+  <li>Le lead chaud est assigné au commercial disponible</li>
+  <li>Un rendez-vous Calendly est proposé par email</li>
+  <li>Après l'appel, un suivi automatisé est déclenché</li>
+
+  <li>La proposition commerciale est générée par IA et envoyée</li>
+  <li>Les relances sont automatiques jusqu'à la signature</li>
+  <li>Après conversion, le client est intégré au processus d'onboarding</li>
+</ol>
+<p><strong>Résultat : 70% de temps gagné sur le cycle de vente, taux de conversion multiplié par 2,5.</strong></p>
+
+<h2>Les pièges à éviter</h2>
+<ul>
+  <li><strong>Automatiser un mauvais processus</strong> : Si le processus est inefficace, l'automatisation ne fera qu'accélérer l'inefficacité</li>
+  <li><strong>Négliger la maintenance</strong> : Les automatisations nécessitent une surveillance et des ajustements réguliers</li>
+  <li><strong>Oublier l'humain</strong> : L'automatisation doit libérer du temps, pas remplacer les relations clients</li>
+  <li><strong>Ignorer la sécurité</strong> : Les données sensibles qui transitent par des API doivent être protégées</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>L'automatisation des processus n'est plus une option pour les entreprises qui veulent rester compétitives. Avec les outils no-code actuels, le retour sur investissement est rapide et les bénéfices sont tangibles : réduction des coûts, gain de productivité, amélioration de la satisfaction client.</p>
+<p>Chez <strong>Hozana Concept</strong>, nous concevons et déployons des architectures d'automatisation sur mesure pour nos clients. Chaque solution est pensée pour s'intégrer parfaitement à votre écosystème existant.</p></div>
 
       <!-- Tags -->
-      <div id="article-tags" style="margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:0.5rem;"></div>
+      <div id="article-tags" style="margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
+          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#Automatisation</span>
+        
+          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#No-Code</span>
+        
+          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#Make.com</span>
+        
+          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#n8n</span>
+        
+          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#Workflow</span>
+        
+          <span style="padding:0.3rem 0.875rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);">#PME</span>
+        </div>
 
-      <!-- Divider with gradient -->
-    <div style="height:1px;background:linear-gradient(90deg,transparent,var(--glass-border),transparent);margin:3rem 0;"></div>
-
-    <!-- Like button -->
-      <div class="like-section">
+      <!-- Like button -->
+      <div class="like-section" style="margin-top:3rem;">
         <button class="like-btn" id="like-btn" onclick="toggleLike()">
           <span class="like-heart">❤️</span>
-          <span id="like-count">0</span>
+          <span id="like-count">4</span>
           <span>J'aime cet article</span>
         </button>
         <p style="font-size:0.8rem;color:var(--white-30);margin-top:0.75rem;font-family:var(--font-accent);">Votre avis compte pour nous !</p>
@@ -1117,16 +793,16 @@
           <div class="comment-grid">
             <div class="form-group">
               <label class="form-label" for="comment-name">Nom *</label>
-              <input type="text" class="form-control" id="comment-name" placeholder="Votre nom" required>
+              <input type="text" class="form-control" id="comment-name" placeholder="Votre nom" required="">
             </div>
             <div class="form-group">
               <label class="form-label" for="comment-email">Email *</label>
-              <input type="email" class="form-control" id="comment-email" placeholder="votre@email.com" required>
+              <input type="email" class="form-control" id="comment-email" placeholder="votre@email.com" required="">
             </div>
           </div>
           <div class="form-group">
             <label class="form-label" for="comment-text">Commentaire *</label>
-            <textarea class="form-control" id="comment-text" rows="4" placeholder="Partagez votre avis, posez une question..." required style="min-height:120px;"></textarea>
+            <textarea class="form-control" id="comment-text" rows="4" placeholder="Partagez votre avis, posez une question..." required="" style="min-height:120px;"></textarea>
           </div>
           <button type="button" class="btn btn-primary" onclick="submitComment()">
             <i class="fas fa-paper-plane"></i> Publier le commentaire
@@ -1142,9 +818,9 @@
       <div class="sidebar-widget reveal" id="author-card">
         <div class="sidebar-widget-title"><i class="fas fa-user"></i> L'auteur</div>
         <div style="text-align:center;">
-          <div id="author-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--grad-red);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:white;margin:0 auto 1rem;box-shadow:0 0 20px rgba(255,46,46,0.3);">HC</div>
-          <div id="author-name" style="font-family:var(--font-title);font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Hozana Concept</div>
-          <div style="font-size:0.78rem;color:var(--white-40);font-family:var(--font-accent);margin-bottom:1rem;">Expert IA & Automatisation</div>
+          <div id="author-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--grad-red);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:white;margin:0 auto 1rem;box-shadow:0 0 20px rgba(255,46,46,0.3);">MH</div>
+          <div id="author-name" style="font-family:var(--font-title);font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Marcus Hozana</div>
+          <div style="font-size:0.78rem;color:var(--white-40);font-family:var(--font-accent);margin-bottom:1rem;">Expert IA &amp; Automatisation</div>
           <p style="font-size:0.825rem;color:var(--white-50);line-height:1.65;">Spécialiste en intelligence artificielle, automatisation avancée et croissance digitale.</p>
         </div>
       </div>
@@ -1155,19 +831,19 @@
         <div style="display:flex;flex-direction:column;gap:0.875rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-eye" style="color:var(--red);"></i> Vues</span>
-            <span style="font-family:var(--font-title);font-weight:700;" id="stat-views">–</span>
+            <span style="font-family:var(--font-title);font-weight:700;" id="stat-views">37</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-heart" style="color:var(--red);"></i> Likes</span>
-            <span style="font-family:var(--font-title);font-weight:700;" id="stat-likes">–</span>
+            <span style="font-family:var(--font-title);font-weight:700;" id="stat-likes">4</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-clock" style="color:var(--red);"></i> Lecture</span>
-            <span style="font-family:var(--font-title);font-weight:700;" id="stat-read">– min</span>
+            <span style="font-family:var(--font-title);font-weight:700;" id="stat-read">10 min</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-comments" style="color:var(--red);"></i> Commentaires</span>
-            <span style="font-family:var(--font-title);font-weight:700;" id="stat-comments">–</span>
+            <span style="font-family:var(--font-title);font-weight:700;" id="stat-comments">0</span>
           </div>
         </div>
       </div>
@@ -1218,13 +894,11 @@
       </div>
       <a href="blog.html" class="btn btn-glass">Voir tous les articles →</a>
     </div>
-    <div class="related-grid-wrapper">
     <div class="related-grid" id="related-grid">
       <div style="height:280px;background:var(--glass-bg);border-radius:var(--radius-xl);animation:pulse-glow 2s ease infinite;"></div>
       <div style="height:280px;background:var(--glass-bg);border-radius:var(--radius-xl);animation:pulse-glow 2s ease infinite;opacity:0.6;"></div>
       <div style="height:280px;background:var(--glass-bg);border-radius:var(--radius-xl);animation:pulse-glow 2s ease infinite;opacity:0.3;"></div>
     </div>
-  </div>
   </div>
 </section>
 
@@ -1235,7 +909,6 @@
 <script src="js/supabase-config.js"></script>
 <script src="js/core.js"></script>
 <script src="js/components.js"></script>
-<script src="js/blog-seo.js"></script>
 <script>
 'use strict';
 
@@ -1253,9 +926,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     currentPost = window.__STATIC_BLOG_DATA__;
     // Static page — content already rendered. Enable interactive features.
     initReadingProgress();
-    initScrollAnimations();
-    initScrollUI();
-    initParallaxHero();
     loadComments();
     trackView();
     // Load related articles from Supabase
@@ -1273,9 +943,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadPost();
   initReadingProgress();
-  initScrollAnimations();
-  initScrollUI();
-  initParallaxHero();
 });
 
 /* ====================================================
@@ -1333,7 +1000,7 @@ function renderPost(post) {
 
     coverEl.src = img;
     coverEl.alt = post.title;
-    coverEl.style.display = 'block';
+    coverEl.style.display = 'block'; // Ensure visible
     coverEl.loading = 'eager';
     coverEl.onerror = () => {
       if (coverEl.src !== defaultImg) coverEl.src = defaultImg;
@@ -1343,29 +1010,29 @@ function renderPost(post) {
   const catBreadcrumb = document.getElementById('article-cat-breadcrumb');
   if (catBreadcrumb) catBreadcrumb.textContent = post.category || 'IA';
 
-  const badgesWrap = document.getElementById('hero-badge-wrap');
-  if (badgesWrap) {
-    badgesWrap.innerHTML = `
-      <span class="hero-cat-badge">${escapeHtml(post.category || 'IA')}</span>
-      ${post.featured ? '<span class="hero-featured-badge">⭐ À la une</span>' : ''}
+  const badgesEl = document.getElementById('article-badges');
+  if (badgesEl) {
+    badgesEl.innerHTML = `
+      <span class="badge badge-red">${escapeHtml(post.category || 'IA')}</span>
+      ${post.featured ? '<span class="badge badge-orange">⭐ Featured</span>' : ''}
     `;
   }
 
   const titleEl = document.getElementById('article-title');
   if (titleEl) titleEl.textContent = post.title;
 
-  const metaRow = document.getElementById('article-meta-row');
-  if (metaRow) {
+  const metaEl = document.getElementById('article-hero-meta');
+  if (metaEl) {
     const initials = (post.author || 'HC').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
     const date = formatDate(post.publish_date || post.created_at);
-    metaRow.innerHTML = `
-      <span class="meta-author">
-        <span class="meta-author-avatar">${initials}</span>
+    metaEl.innerHTML = `
+      <span style="display:flex;align-items:center;gap:0.5rem;">
+        <span style="width:32px;height:32px;border-radius:50%;background:var(--grad-red);display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:white;">${initials}</span>
         ${escapeHtml(post.author || 'Hozana Concept')}
       </span>
-      ${date ? `<span class="meta-item"><i class="fas fa-calendar-alt"></i>${date}</span>` : ''}
-      <span class="meta-item"><i class="fas fa-clock"></i>${post.read_time || 5} min de lecture</span>
-      <span class="meta-item"><i class="fas fa-eye"></i>${formatNum((post.views || 0) + 1)} vues</span>
+      ${date ? `<span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>${date}</span>` : ''}
+      <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>${post.read_time || 5} min de lecture</span>
+      <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>${formatNum((post.views || 0) + 1)} vues</span>
     `;
   }
 
@@ -1535,134 +1202,6 @@ function initReadingProgress() {
 }
 
 /* ====================================================
-   HERO PARALLAX — Mouse tracking
-   ==================================================== */
-function initParallaxHero() {
-  const hero = document.getElementById('article-hero');
-  const cover = document.getElementById('article-cover');
-  if (!hero || !cover) return;
-
-  if (window.matchMedia('(hover: hover)').matches) {
-    cover.classList.add('parallax-active');
-    hero.addEventListener('mousemove', (e) => {
-      const rect = hero.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-      cover.style.transform = `translate(${x * 8}px, ${y * 5}px) scale(1.05)`;
-    });
-    hero.addEventListener('mouseleave', () => {
-      cover.style.transform = 'translate(0, 0) scale(1)';
-    });
-  }
-}
-
-/* ====================================================
-   SCROLL CONTENT ANIMATIONS
-   ==================================================== */
-function initScrollAnimations() {
-  const body = document.getElementById('article-body');
-  if (!body) return;
-
-  // Observe each direct child of article-body
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, idx) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), idx * 40);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { rootMargin: '0px 0px -80px 0px', threshold: 0.1 });
-
-  const children = body.querySelectorAll(':scope > *');
-  children.forEach(el => observer.observe(el));
-}
-
-/* ====================================================
-   SCROLL UI — floating share, back to top, reading time
-   ==================================================== */
-function initScrollUI() {
-  const floatingShare = document.getElementById('floating-share');
-  const backToTop = document.getElementById('back-to-top');
-  const readingTimeEl = document.getElementById('reading-time-remaining');
-  const timeText = document.getElementById('time-remaining-text');
-  const bodyEl = document.getElementById('article-body');
-
-  const totalReadTime = currentPost?.read_time || 5;
-  const heroEl = document.getElementById('article-hero');
-  const heroH = heroEl?.offsetHeight || 600;
-  let lastPercent = -1;
-
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const bodyH = document.body.scrollHeight;
-    const winH = window.innerHeight;
-    const maxScroll = Math.max(bodyH - winH, 1);
-    const percent = Math.min(scrollY / maxScroll, 1);
-
-    // Floating share visible after hero
-    floatingShare?.classList.toggle('visible', scrollY > heroH * 0.7);
-
-    // Back to top
-    backToTop?.classList.toggle('visible', scrollY > winH);
-
-    // Reading time remaining
-    if (readingTimeEl && timeText) {
-      readingTimeEl.classList.toggle('visible', scrollY > 300 && scrollY < maxScroll - 200);
-      const remaining = Math.max(1, Math.round(totalReadTime * (1 - percent)));
-      const pct = Math.round(percent * 100);
-      if (pct !== lastPercent) {
-        lastPercent = pct;
-        timeText.textContent = `~${remaining} min restant`;
-      }
-    }
-  }, { passive: true });
-}
-
-/* ====================================================
-   SCROLL TO TOP
-   ==================================================== */
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-/* ====================================================
-   LIGHTBOX
-   ==================================================== */
-function openLightbox(imgSrc, caption) {
-  const overlay = document.getElementById('lightbox-overlay');
-  const img = document.getElementById('lightbox-image');
-  const cap = document.getElementById('lightbox-caption');
-  if (!overlay || !img) return;
-  img.src = imgSrc;
-  if (cap) cap.textContent = caption || '';
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-  const overlay = document.getElementById('lightbox-overlay');
-  if (!overlay) return;
-  overlay.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// Bind lightbox to all article images
-document.addEventListener('click', (e) => {
-  const img = e.target.closest('.article-body img');
-  if (img) {
-    const src = img.getAttribute('src') || img.src;
-    if (src && !src.includes('data:')) {
-      openLightbox(src, img.getAttribute('alt') || '');
-    }
-  }
-});
-
-// Keyboard close lightbox
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeLightbox();
-});
-
-/* ====================================================
    LIKE
    ==================================================== */
 async function toggleLike() {
@@ -1822,6 +1361,7 @@ function renderRelated(allPosts, currentPost) {
   const related = allPosts
     .filter(p => p.id !== currentPost.id)
     .sort((a, b) => {
+      // Prioritize same category
       const sameCat = (p) => (p.category === currentPost.category) ? 1 : 0;
       return sameCat(b) - sameCat(a);
     })
@@ -1849,14 +1389,6 @@ function renderRelated(allPosts, currentPost) {
       </div>
     </a>`;
   }).join('');
-
-  // Stagger entrance animation
-  requestAnimationFrame(() => {
-    const cards = grid.querySelectorAll('.related-card');
-    cards.forEach((card, i) => {
-      setTimeout(() => card.classList.add('visible'), 100 + i * 120);
-    });
-  });
 }
 
 /* ====================================================
@@ -1904,7 +1436,7 @@ function showError(title, message) {
   if (hero) {
     hero.style.minHeight = '50vh';
     document.getElementById('article-title').textContent = title;
-    document.getElementById('article-meta-row').innerHTML = '';
+    document.getElementById('article-hero-meta').innerHTML = '';
     document.getElementById('article-cover').src = 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1400&q=80';
   }
   const bodyEl = document.getElementById('article-body');
@@ -1950,101 +1482,6 @@ function formatNum(n) {
   return String(num);
 }
 </script>
-</style>
-    <meta property="og:title" content="Automatisation des Processus : Le Guide Complet pour les PME en 2026 | Hozana Concept Blog">
-    <meta property="og:description" content="Guide pratique de l'automatisation pour PME : comment mettre en place des workflows intelligents, réduire les coûts de 40% et libérer du temps pour vos équipes avec des solutions no-code accessibles.">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://www.hozanaconcept.com/blog-posts/automatisation-des-processus-le-guide-complet-pour-les-pme-en-2026">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&amp;q=80">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Hozana Concept">
-    <meta property="article:published_time" content="2026-06-01T22:22:24.116Z">
-    <meta property="article:modified_time" content="2026-06-01T22:22:24.116Z">
-    <meta property="article:author" content="Marcus Hozana">
-    <meta property="article:section" content="Automatisation">
-  
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Automatisation des Processus : Le Guide Complet pour les PME en 2026 | Hozana Concept Blog">
-    <meta name="twitter:description" content="Guide pratique de l'automatisation pour PME : comment mettre en place des workflows intelligents, réduire les coûts de 40% et libérer du temps pour vos équipes avec des solutions no-code accessibles.">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&amp;q=80">
-    <meta name="twitter:site" content="@HozanaConcept">
-    <meta name="twitter:creator" content="@HozanaConcept">
-  <link rel="canonical" href="https://www.hozanaconcept.com/blog-posts/automatisation-des-processus-le-guide-complet-pour-les-pme-en-2026">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": "Automatisation des Processus : Le Guide Complet pour les PME en 2026",
-      "description": "Guide pratique de l'automatisation pour PME : comment mettre en place des workflows intelligents, réduire les coûts de 40% et libérer du temps pour vos équipes avec des solutions no-code accessibles.",
-      "datePublished": "2026-06-01T22:22:24.116Z",
-      "dateModified": "2026-06-01T22:22:24.116Z",
-      "author": {
-        "@type": "Person",
-        "name": "Marcus Hozana",
-        "image": {
-          "@type": "ImageObject",
-          "url": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=120&q=80",
-          "caption": "Marcus Hozana"
-        }
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Hozana Concept",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=120&q=80",
-          "width": 120,
-          "height": 120
-        }
-      },
-      "image": {
-        "@type": "ImageObject",
-        "url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80",
-        "width": 1200,
-        "height": 630
-      },      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://www.hozanaconcept.com/blog-posts/automatisation-des-processus-le-guide-complet-pour-les-pme-en-2026"
-      }
-  }
-    </script>
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [{
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Accueil",
-        "item": "https://www.hozanaconcept.com"
-      },{
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Blog",
-        "item": "https://www.hozanaconcept.com/blog"
-      },{
-        "@type": "ListItem",
-        "position": 3,
-        "name": "Automatisation des Processus : Le Guide Complet pour les PME en 2026"
-      }]
-    }
-    </script>
-  <script>
-window.__STATIC_BLOG_DATA__ = {
-  id: "d04fcd11-915b-4e60-83c5-e276357cc6f0",
-  slug: "automatisation-des-processus-le-guide-complet-pour-les-pme-en-2026",
-  title: "Automatisation des Processus : Le Guide Complet pour les PME en 2026",
-  author: "Marcus Hozana",
-  category: "Automatisation",
-  cover_image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80",
-  excerpt: "Guide pratique de l'automatisation pour PME : comment mettre en place des workflows intelligents, réduire les coûts de 40% et libérer du temps pour vos équipes avec des solutions no-code accessibles.",
-  read_time: 10,
-  views: 36,
-  likes: 4,
-  tags: ["Automatisation","No-Code","Make.com","n8n","Workflow","PME"],
-  publish_date: "2026-06-01T22:22:24.116+00:00",
-  featured: false
-};
-</script></head><body></body></html>
+
+</body></html>

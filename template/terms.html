@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Termes & Conditions | Hozana Concept</title>
+  <meta name="description" content="Conditions générales de vente et d'utilisation de Hozana Concept — agence IA à Tunis, Tunisie.">
+  <link rel="icon" type="image/png" href="images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    .legal-hero {
+      padding: calc(var(--nav-height) + 4rem) 2rem 4rem;
+      background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,46,46,0.1) 0%, transparent 60%);
+      position: relative;
+    }
+    .legal-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .legal-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+    .legal-content h2 {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--white);
+      margin: 3rem 0 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .legal-content h2 .h2-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--grad-red);
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+    .legal-content h3 {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white-90);
+      margin: 1.75rem 0 0.75rem;
+    }
+    .legal-content p {
+      font-size: 0.9375rem;
+      color: var(--white-70);
+      line-height: 1.8;
+      margin-bottom: 0.75rem;
+    }
+    .legal-content ul, .legal-content ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .legal-content li { font-size: 0.9rem; color: var(--white-70); line-height: 1.6; }
+    .legal-content strong { color: var(--white); }
+    .legal-content a { color: var(--red); text-decoration: none; }
+    .legal-content a:hover { text-decoration: underline; }
+    .legal-block {
+      padding: 1.5rem 1.75rem;
+      border-radius: var(--radius-lg);
+      margin: 1rem 0;
+      border-left: 3px solid rgba(255,46,46,0.4);
+      background: rgba(255,255,255,0.02);
+    }
+    .legal-block p { margin-bottom: 0.4rem; }
+    .legal-toc {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 2rem;
+      margin-bottom: 3rem;
+    }
+    .legal-toc h3 {
+      font-family: var(--font-accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--white-40);
+      margin-bottom: 1rem;
+    }
+    .legal-toc ol { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
+    .legal-toc li { font-size: 0.875rem; color: var(--white-60); }
+    .legal-toc a { color: var(--red); font-weight: 500; }
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(255,46,46,0.08), rgba(255,106,0,0.05));
+      border: 1px solid rgba(255,46,46,0.2);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1.75rem;
+      margin: 1.5rem 0;
+    }
+    .highlight-box p { margin-bottom: 0; }
+    @media (max-width: 768px) {
+      .legal-content { padding: 2.5rem 1.25rem 4rem; }
+      .legal-hero { padding: calc(var(--nav-height) + 2.5rem) 1.25rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="loader">
+  <img src="images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;">
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+<div id="navbar-placeholder"></div>
+
+<section class="legal-hero">
+  <div style="max-width:860px;margin:0 auto;position:relative;z-index:1;">
+    <div class="section-label reveal"><i class="fas fa-file-contract"></i> Conditions Générales</div>
+    <h1 class="text-h1 reveal delay-1" style="margin:0.75rem 0 1rem;">Termes & <span class="gradient-text">Conditions</span></h1>
+    <p class="reveal delay-2" style="color:var(--white-60);max-width:600px;">Ces conditions régissent l'utilisation de nos services et la relation contractuelle entre Hozana Concept et ses clients.</p>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem;" class="reveal delay-3">
+      <span class="badge badge-glass">Dernière mise à jour : Avril 2025</span>
+      <span class="badge badge-red">Version 2.0</span>
+    </div>
+  </div>
+</section>
+
+<div class="legal-content">
+
+  <div class="legal-toc reveal">
+    <h3><i class="fas fa-list"></i> Sommaire</h3>
+    <ol>
+      <li><a href="#parties">Parties contractantes</a></li>
+      <li><a href="#objet">Objet et champ d'application</a></li>
+      <li><a href="#commande">Processus de commande</a></li>
+      <li><a href="#prestations">Description des prestations</a></li>
+      <li><a href="#tarifs">Tarifs et conditions de paiement</a></li>
+      <li><a href="#obligations-client">Obligations du client</a></li>
+      <li><a href="#obligations-hozana">Obligations de Hozana Concept</a></li>
+      <li><a href="#propriete-int">Propriété intellectuelle</a></li>
+      <li><a href="#confidentialite-cgv">Confidentialité</a></li>
+      <li><a href="#responsabilite-cgv">Responsabilité et garanties</a></li>
+      <li><a href="#resiliation">Résiliation</a></li>
+      <li><a href="#force-majeure">Force majeure</a></li>
+      <li><a href="#modifications-cgv">Modifications des CGV</a></li>
+      <li><a href="#litiges">Règlement des litiges</a></li>
+      <li><a href="#contact-cgv">Contact</a></li>
+    </ol>
+  </div>
+
+  <div class="highlight-box reveal">
+    <p><strong><i class="fas fa-info-circle" style="color:var(--red);"></i> Important :</strong> En utilisant nos services, en signant un devis ou en effectuant un paiement, vous acceptez sans réserve les présentes Conditions Générales de Vente et d'Utilisation. Veuillez les lire attentivement avant tout engagement.</p>
+  </div>
+
+  <h2 id="parties"><span class="h2-num">1</span> Parties contractantes</h2>
+  <div class="glass legal-block reveal">
+    <p><strong>Prestataire :</strong> Hozana Concept, SUARL au capital variable</p>
+    <p><strong>Matricule fiscal :</strong> 1843519Y</p>
+    <p><strong>Représentant légal :</strong> Efro Mwanza, Fondateur & CEO</p>
+    <p><strong>Siège social :</strong> 5, rue Kheireddine Pacha, Tunis 1003, Tunisie</p>
+    <p><strong>Email :</strong> <a href="mailto:info@hozanaconcept.com">info@hozanaconcept.com</a></p>
+    <p><strong>Téléphone :</strong> <a href="tel:+21651474751">+216 51 47 47 51</a></p>
+    <p style="margin-top:0.75rem;"><strong>Client :</strong> Toute personne physique ou morale ayant passé commande d'un service auprès de Hozana Concept, ci-après dénommée « le Client ».</p>
+  </div>
+
+  <h2 id="objet"><span class="h2-num">2</span> Objet et champ d'application</h2>
+  <p class="reveal">Les présentes Conditions Générales de Vente et d'Utilisation (CGV/CGU) ont pour objet de définir les droits et obligations des parties dans le cadre de la vente de prestations de services par Hozana Concept.</p>
+  <p class="reveal">Elles s'appliquent à toute commande passée auprès de Hozana Concept, qu'il s'agisse de :</p>
+  <ul class="reveal">
+    <li>Services d'intelligence artificielle et d'automatisation</li>
+    <li>Création de sites web et d'applications</li>
+    <li>Services de marketing digital et de growth</li>
+    <li>Prestations de branding et de design</li>
+    <li>Formations et coaching IA</li>
+    <li>Consulting et audit digital</li>
+    <li>Packs mensuels (Starter, Growth, Elite, Enterprise)</li>
+  </ul>
+  <p class="reveal">Toute dérogation aux présentes CGV doit faire l'objet d'un accord écrit et signé par les deux parties.</p>
+
+  <h2 id="commande"><span class="h2-num">3</span> Processus de commande</h2>
+  <h3>3.1 Devis et proposition commerciale</h3>
+  <p class="reveal">Toute commande débute par une demande de contact via notre site, par email ou par téléphone. Nous établissons un devis détaillé, valable <strong>30 jours</strong> à compter de sa date d'émission.</p>
+
+  <h3>3.2 Acceptation du devis</h3>
+  <p class="reveal">L'acceptation du devis par le Client, formalisée par sa signature électronique ou manuscrite, accompagnée du paiement de l'acompte requis, vaut bon de commande ferme et irrévocable. Elle emporte acceptation des présentes CGV.</p>
+
+  <h3>3.3 Acompte</h3>
+  <p class="reveal">Sauf mention contraire dans le devis, un acompte de <strong>50 % du montant total HT</strong> est exigible à la signature du devis pour tout projet de création (site web, application, branding). Pour les abonnements mensuels, le premier mois est facturé intégralement à l'avance.</p>
+
+  <h2 id="prestations"><span class="h2-num">4</span> Description des prestations</h2>
+  <h3>4.1 Packs d'abonnement</h3>
+  <ul class="reveal">
+    <li><strong>Pack Starter (490 DT ou €/mois) :</strong> Services d'automatisation de base, chatbot IA, 3 workflows, rapport mensuel, support email</li>
+    <li><strong>Pack Growth (990 DT ou €/mois) :</strong> Services avancés, 3 chatbots IA, 10 workflows complexes, analytics temps réel, growth ads, support prioritaire</li>
+    <li><strong>Pack Elite (1 990 DT ou €/mois) :</strong> Solution complète, IA sur mesure, workflows illimités, account manager dédié, SLA 4h</li>
+    <li><strong>Pack Enterprise (sur devis) :</strong> Solution entièrement personnalisée avec accompagnement stratégique complet</li>
+  </ul>
+
+  <h3>4.2 Délais de livraison</h3>
+  <p class="reveal">Les délais indicatifs communiqués dans nos devis sont donnés à titre d'information. Hozana Concept s'engage à tout mettre en œuvre pour les respecter. En cas de retard, le Client en sera informé dans les meilleurs délais. Les retards ne peuvent donner lieu à des pénalités sauf accord contractuel spécifique.</p>
+  <p class="reveal">Tout retard causé par le manque de fourniture d'éléments, de validations ou d'informations par le Client suspend les délais de Hozana Concept.</p>
+
+  <h2 id="tarifs"><span class="h2-num">5</span> Tarifs et conditions de paiement</h2>
+  <h3>5.1 Prix</h3>
+  <p class="reveal">Les prix sont indiqués hors taxes (HT). La TVA applicable sera ajoutée conformément à la réglementation en vigueur. Hozana Concept se réserve le droit de modifier ses tarifs à tout moment, sous réserve d'en informer le Client avec un préavis de <strong>30 jours</strong> pour les abonnements en cours.</p>
+
+  <h3>5.2 Modalités de paiement</h3>
+  <ul class="reveal">
+    <li>Virement bancaire (délai : 5 jours ouvrés)</li>
+    <li>Carte bancaire en ligne (paiement immédiat sécurisé)</li>
+    <li>Chèque (délai d'encaissement : 10 jours ouvrés)</li>
+    <li>Paiement mobile (Flouci, D17, etc.)</li>
+  </ul>
+
+  <h3>5.3 Retard de paiement</h3>
+  <p class="reveal">Tout retard de paiement entraîne automatiquement :</p>
+  <ul class="reveal">
+    <li>La suspension des prestations en cours jusqu'à régularisation</li>
+    <li>L'application de pénalités de retard au taux légal en vigueur en Tunisie</li>
+    <li>La facturation de frais de recouvrement forfaitaires de 40 DT par facture impayée</li>
+  </ul>
+  <p class="reveal">En cas de non-paiement persistant (plus de 30 jours), Hozana Concept se réserve le droit de résilier le contrat et de poursuivre le recouvrement par voie judiciaire.</p>
+
+  <h2 id="obligations-client"><span class="h2-num">6</span> Obligations du Client</h2>
+  <p class="reveal">Le Client s'engage à :</p>
+  <ul class="reveal">
+    <li>Fournir des informations exactes, complètes et à jour nécessaires à l'exécution des prestations</li>
+    <li>Transmettre l'ensemble des éléments (textes, images, accès) dans les délais convenus</li>
+    <li>Valider les livrables dans un délai de <strong>7 jours ouvrés</strong> à compter de leur réception (passé ce délai, ils sont réputés acceptés)</li>
+    <li>Respecter les droits de propriété intellectuelle de Hozana Concept et des tiers</li>
+    <li>Utiliser les services conformément à leur destination et à la réglementation applicable</li>
+    <li>Ne pas utiliser les services à des fins illégales, frauduleuses ou contraires à l'ordre public</li>
+    <li>Honorer ses obligations de paiement aux échéances convenues</li>
+    <li>Désigner un interlocuteur unique avec pouvoir de décision pour la durée du projet</li>
+  </ul>
+
+  <h2 id="obligations-hozana"><span class="h2-num">7</span> Obligations de Hozana Concept</h2>
+  <p class="reveal">Hozana Concept s'engage à :</p>
+  <ul class="reveal">
+    <li>Fournir les services décrits dans le devis avec professionnalisme et diligence</li>
+    <li>Affecter des ressources qualifiées et expérimentées à chaque projet</li>
+    <li>Respecter une obligation de <strong>moyens</strong> (et non de résultats sauf mention contraire explicite)</li>
+    <li>Informer le Client de tout aléa susceptible d'affecter la bonne exécution des prestations</li>
+    <li>Maintenir la confidentialité des informations communiquées par le Client</li>
+    <li>Assurer la continuité des services d'abonnement avec un objectif de disponibilité de 99,5 %</li>
+    <li>Répondre aux demandes de support dans les délais définis par le pack souscrit</li>
+  </ul>
+
+  <h2 id="propriete-int"><span class="h2-num">8</span> Propriété intellectuelle</h2>
+  <h3>8.1 Travaux créés pour le Client</h3>
+  <p class="reveal">À complet paiement de toutes les sommes dues, Hozana Concept cède au Client les droits de propriété intellectuelle sur les créations originales réalisées spécifiquement pour lui (code source sur mesure, designs originaux, contenus éditoriaux), pour une utilisation commerciale sans limitation géographique ni temporelle.</p>
+
+  <h3>8.2 Outils et méthodes propriétaires</h3>
+  <p class="reveal">Les outils, frameworks, bibliothèques, méthodes et savoir-faire développés et utilisés par Hozana Concept dans la réalisation des prestations restent la propriété exclusive de Hozana Concept. Le Client bénéficie uniquement d'une licence d'utilisation non exclusive pour ses besoins propres.</p>
+
+  <h3>8.3 Droit de référence</h3>
+  <p class="reveal">Hozana Concept se réserve le droit de mentionner le nom du Client et de présenter les travaux réalisés à titre de référence commerciale (portfolio, études de cas), sauf opposition expresse écrite du Client dans un délai de 30 jours suivant la livraison finale.</p>
+
+  <h2 id="confidentialite-cgv"><span class="h2-num">9</span> Confidentialité</h2>
+  <p class="reveal">Les deux parties s'engagent à maintenir strictement confidentielles toutes informations, données, documents ou secrets d'affaires communiqués dans le cadre de leur relation contractuelle, pendant toute la durée du contrat et pour une période de <strong>3 ans</strong> après sa résiliation.</p>
+  <p class="reveal">Cette obligation de confidentialité ne s'applique pas aux informations déjà dans le domaine public ou qui deviendraient publiques sans faute de la partie réceptrice.</p>
+
+  <h2 id="responsabilite-cgv"><span class="h2-num">10</span> Responsabilité et garanties</h2>
+  <h3>10.1 Limitation de responsabilité</h3>
+  <p class="reveal">La responsabilité totale de Hozana Concept, quelle qu'en soit la cause, est limitée au montant total des sommes effectivement perçues au titre du contrat en cause sur les 12 derniers mois. En aucun cas Hozana Concept ne saurait être tenue responsable de préjudices indirects, pertes de données, pertes de chiffre d'affaires ou manques à gagner.</p>
+
+  <h3>10.2 Garantie des livraisons</h3>
+  <p class="reveal">Hozana Concept garantit la conformité de ses livraisons au cahier des charges validé. En cas de non-conformité avérée, Hozana Concept s'engage à corriger les anomalies à ses frais dans un délai raisonnable. Cette garantie est valable <strong>30 jours</strong> après la livraison finale.</p>
+
+  <h2 id="resiliation"><span class="h2-num">11</span> Résiliation</h2>
+  <h3>11.1 Résiliation par le Client</h3>
+  <p class="reveal">Pour les abonnements mensuels, le Client peut résilier à tout moment avec un préavis de <strong>30 jours calendaires</strong> par email recommandé à <a href="mailto:info@hozanaconcept.com">info@hozanaconcept.com</a>. Aucun remboursement du mois en cours n'est effectué.</p>
+  <p class="reveal">Pour les projets au forfait, la résiliation en cours d'exécution entraîne la facturation des travaux réalisés prorata temporis, augmentée d'une indemnité de résiliation de <strong>20 % du montant restant</strong>.</p>
+
+  <h3>11.2 Résiliation par Hozana Concept</h3>
+  <p class="reveal">Hozana Concept peut résilier le contrat avec effet immédiat en cas de :</p>
+  <ul class="reveal">
+    <li>Non-paiement après mise en demeure restée sans effet pendant 15 jours</li>
+    <li>Violation grave des présentes CGV par le Client</li>
+    <li>Comportement abusif ou illicite du Client</li>
+    <li>Force majeure rendant impossible l'exécution des prestations</li>
+  </ul>
+
+  <h2 id="force-majeure"><span class="h2-num">12</span> Force majeure</h2>
+  <p class="reveal">Ni l'une ni l'autre des parties ne pourra être tenue responsable de l'inexécution de ses obligations contractuelles si cette inexécution est due à un cas de force majeure tel que défini par la jurisprudence tunisienne : événement imprévisible, irrésistible et extérieur aux parties (catastrophe naturelle, guerre, pandémie, défaillance des réseaux de télécommunication, etc.).</p>
+  <p class="reveal">La partie qui invoque la force majeure devra en informer l'autre dans les <strong>48 heures</strong> suivant la survenance de l'événement. Si la force majeure persiste plus de <strong>60 jours</strong>, chaque partie pourra résilier le contrat sans indemnité.</p>
+
+  <h2 id="modifications-cgv"><span class="h2-num">13</span> Modifications des conditions générales</h2>
+  <p class="reveal">Hozana Concept se réserve le droit de modifier les présentes CGV à tout moment. Les nouvelles conditions s'appliquent aux commandes passées après leur mise en ligne. Pour les abonnements en cours, les modifications sont notifiées avec un préavis de <strong>30 jours</strong>. La poursuite du service après ce délai vaut acceptation des nouvelles conditions.</p>
+
+  <h2 id="litiges"><span class="h2-num">14</span> Règlement des litiges</h2>
+  <h3>14.1 Médiation et résolution amiable</h3>
+  <p class="reveal">En cas de différend, les parties s'engagent à rechercher une solution amiable avant tout recours judiciaire. Une réclamation doit être adressée par email à <a href="mailto:info@hozanaconcept.com">info@hozanaconcept.com</a>. Hozana Concept s'engage à répondre dans un délai de <strong>15 jours ouvrés</strong>.</p>
+
+  <h3>14.2 Juridiction compétente</h3>
+  <p class="reveal">À défaut de résolution amiable, tout litige relatif à l'interprétation ou à l'exécution des présentes CGV sera soumis à la compétence exclusive des <strong>tribunaux de Tunis (Tunisie)</strong>, nonobstant pluralité de défendeurs ou appel en garantie.</p>
+  <p class="reveal">Les présentes CGV sont régies par le <strong>droit tunisien</strong>.</p>
+
+  <h2 id="contact-cgv"><span class="h2-num">15</span> Contact</h2>
+  <div class="glass legal-block reveal">
+    <p>Pour toute question relative aux présentes conditions :</p>
+    <p><strong>Email :</strong> <a href="mailto:info@hozanaconcept.com">info@hozanaconcept.com</a></p>
+    <p><strong>Téléphone :</strong> <a href="tel:+21651474751">+216 51 47 47 51</a></p>
+    <p><strong>Courrier :</strong> Hozana Concept — 5, rue Kheireddine Pacha, Tunis 1003, Tunisie</p>
+    <p><strong>Horaires :</strong> Lundi – Vendredi, 9h – 18h (heure de Tunis)</p>
+  </div>
+
+  <div style="margin-top:3rem;padding:1.5rem;background:rgba(255,46,46,0.05);border:1px solid rgba(255,46,46,0.15);border-radius:var(--radius-lg);text-align:center;" class="reveal">
+    <p style="color:var(--white-50);font-size:0.875rem;margin:0;">Conditions Générales de Vente — Hozana Concept SUARL · Matricule fiscal 1843519Y<br>Version 2.0 — Avril 2025 · 5, rue Kheireddine Pacha, Tunis 1003, Tunisie</p>
+  </div>
+
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="js/core.js"></script>
+<script src="js/components.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof renderNavbar === 'function') renderNavbar();
+    if (typeof renderFooter === 'function') renderFooter();
+    if (typeof initReveal === 'function') initReveal();
+    if (typeof initLoader === 'function') initLoader();
+  });
+</script>
+</body>
+</html>

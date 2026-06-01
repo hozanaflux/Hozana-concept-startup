@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentions Légales | Hozana Concept</title>
+  <meta name="description" content="Mentions légales de Hozana Concept — société unipersonnelle basée à Tunis, Tunisie.">
+  <link rel="icon" type="image/png" href="images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    .legal-hero {
+      padding: calc(var(--nav-height) + 4rem) 2rem 4rem;
+      background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,46,46,0.1) 0%, transparent 60%);
+      position: relative;
+    }
+    .legal-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .legal-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+    .legal-body h2 {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--white);
+      margin: 3rem 0 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .legal-body h2 .h2-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--grad-red);
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+    .legal-body p {
+      font-size: 0.9375rem;
+      color: var(--white-70);
+      line-height: 1.8;
+      margin-bottom: 0.75rem;
+    }
+    .legal-body strong { color: var(--white); }
+    .legal-body a { color: var(--red); text-decoration: none; }
+    .legal-body a:hover { text-decoration: underline; }
+    .legal-block {
+      padding: 1.5rem 1.75rem;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1rem;
+      border-left: 3px solid rgba(255,46,46,0.4);
+      background: rgba(255,255,255,0.02);
+    }
+    .legal-block p { margin-bottom: 0.4rem; }
+    .legal-toc {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 2rem;
+      margin-bottom: 3rem;
+    }
+    .legal-toc h3 {
+      font-family: var(--font-accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--white-40);
+      margin-bottom: 1rem;
+    }
+    .legal-toc ol {
+      padding-left: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .legal-toc li { font-size: 0.875rem; color: var(--white-60); }
+    .legal-toc a { color: var(--red); font-weight: 500; }
+    @media (max-width: 768px) {
+      .legal-body { padding: 2.5rem 1.25rem 4rem; }
+      .legal-hero { padding: calc(var(--nav-height) + 2.5rem) 1.25rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="loader">
+  <img src="images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;">
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+<div id="navbar-placeholder"></div>
+
+<section class="legal-hero">
+  <div style="max-width:860px;margin:0 auto;position:relative;z-index:1;">
+    <div class="section-label reveal"><i class="fas fa-balance-scale"></i> Légal</div>
+    <h1 class="text-h1 reveal delay-1" style="margin:0.75rem 0 1rem;">Mentions <span class="gradient-text">Légales</span></h1>
+    <p class="reveal delay-2" style="color:var(--white-60);max-width:560px;">Conformément aux dispositions légales et réglementaires en vigueur en Tunisie.</p>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem;" class="reveal delay-3">
+      <span class="badge badge-glass">Dernière mise à jour : Avril 2025</span>
+      <span class="badge badge-red">SUARL 1843519Y</span>
+    </div>
+  </div>
+</section>
+
+<div class="legal-body">
+
+  <!-- Table des matières -->
+  <div class="legal-toc reveal">
+    <h3><i class="fas fa-list"></i> Sommaire</h3>
+    <ol>
+      <li><a href="#editeur">Éditeur du site</a></li>
+      <li><a href="#hebergement">Hébergement</a></li>
+      <li><a href="#propriete">Propriété intellectuelle</a></li>
+      <li><a href="#responsabilite">Limitation de responsabilité</a></li>
+      <li><a href="#liens">Liens hypertextes</a></li>
+      <li><a href="#donnees">Protection des données personnelles</a></li>
+      <li><a href="#cookies">Cookies</a></li>
+      <li><a href="#droit">Droit applicable et juridiction</a></li>
+      <li><a href="#contact-legal">Contact</a></li>
+    </ol>
+  </div>
+
+  <h2 id="editeur"><span class="h2-num">1</span> Éditeur du site</h2>
+  <div class="glass legal-block reveal">
+    <p><strong>Raison sociale :</strong> Hozana Concept</p>
+    <p><strong>Forme juridique :</strong> Société Unipersonnelle à Responsabilité Limitée (SUARL)</p>
+    <p><strong>Numéro de matricule fiscal :</strong> 1843519Y</p>
+    <p><strong>Fondateur & Directeur général :</strong> Efro Mwanza</p>
+    <p><strong>Siège social :</strong> 5, rue Kheireddine Pacha, Tunis 1003, Tunisie</p>
+    <p><strong>Email :</strong> <a href="mailto:info@hozanaconcept.com">info@hozanaconcept.com</a></p>
+    <p><strong>Téléphone :</strong> <a href="tel:+21651474751">+216 51 47 47 51</a></p>
+    <p><strong>Site web :</strong> <a href="https://hozanaconcept.com">hozanaconcept.com</a></p>
+  </div>
+
+  <h2 id="hebergement"><span class="h2-num">2</span> Hébergement</h2>
+  <div class="glass legal-block reveal">
+    <p><strong>Hébergeur :</strong> Genspark AI Platform</p>
+    <p><strong>Site web :</strong> <a href="https://www.genspark.ai" target="_blank" rel="noopener">www.genspark.ai</a></p>
+    <p>Le site est hébergé sur une infrastructure cloud sécurisée avec disponibilité garantie 99,9 %.</p>
+  </div>
+
+  <h2 id="propriete"><span class="h2-num">3</span> Propriété intellectuelle</h2>
+  <p class="reveal">L'ensemble des contenus présents sur le site Hozana Concept (textes, graphismes, logos, images, icônes, vidéos, sons, et tout autre contenu) est la propriété exclusive de Hozana Concept ou de ses partenaires, et est protégé par les lois tunisiennes et internationales relatives à la propriété intellectuelle et aux droits d'auteur.</p>
+  <p class="reveal">Toute reproduction, représentation, modification, publication, adaptation, totale ou partielle, des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite sans l'autorisation écrite préalable de Hozana Concept. Toute exploitation non autorisée du site ou de son contenu sera considérée comme constituant une contrefaçon et poursuivie conformément aux dispositions légales en vigueur.</p>
+  <p class="reveal">Les marques et logos figurant sur le site sont des marques déposées. Toute reproduction, imitation ou utilisation, totale ou partielle, de ces signes distinctifs, sans l'autorisation expresse de Hozana Concept, est interdite.</p>
+
+  <h2 id="responsabilite"><span class="h2-num">4</span> Limitation de responsabilité</h2>
+  <p class="reveal">Hozana Concept s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur son site. Cependant, Hozana Concept ne garantit pas l'exactitude, la précision ou l'exhaustivité des informations mises à disposition sur ce site.</p>
+  <p class="reveal">Hozana Concept décline toute responsabilité pour toute imprécision, inexactitude ou omission portant sur des informations disponibles sur le site, ainsi que pour tout dommage résultant d'une intrusion frauduleuse d'un tiers ayant entraîné une modification des informations mises à disposition sur le site.</p>
+  <p class="reveal">En aucun cas, Hozana Concept ne saurait être tenue responsable de tout dommage direct ou indirect, prévisible ou non, résultant de l'utilisation ou de l'impossibilité d'utilisation de ce site.</p>
+
+  <h2 id="liens"><span class="h2-num">5</span> Liens hypertextes</h2>
+  <p class="reveal">Le site Hozana Concept peut contenir des liens hypertextes vers d'autres sites présents sur le réseau internet. Hozana Concept n'assume aucune responsabilité quant aux contenus, publicités, produits ou services disponibles sur ces sites tiers et ne saurait être tenue responsable des dommages ou pertes avérés ou allégués consécutifs ou liés à l'utilisation ou au fait d'avoir fait confiance au contenu, à des biens ou des services disponibles sur ces sites.</p>
+  <p class="reveal">La création de liens hypertextes vers le site Hozana Concept nécessite une autorisation préalable et écrite de la société.</p>
+
+  <h2 id="donnees"><span class="h2-num">6</span> Protection des données personnelles</h2>
+  <p class="reveal">Hozana Concept s'engage à respecter la confidentialité de vos données personnelles et à les traiter conformément à la législation tunisienne en vigueur, notamment la loi organique n° 2004-63 du 27 juillet 2004 portant sur la protection des données à caractère personnel.</p>
+  <p class="reveal">Le traitement de vos données personnelles est décrit dans notre <a href="privacy.html">Politique de Confidentialité</a>, accessible depuis toutes les pages du site.</p>
+  <p class="reveal">Vous disposez d'un droit d'accès, de rectification, d'opposition et de suppression de vos données personnelles. Pour exercer ces droits, contactez-nous à : <a href="mailto:info@hozanaconcept.com">info@hozanaconcept.com</a></p>
+
+  <h2 id="cookies"><span class="h2-num">7</span> Cookies</h2>
+  <p class="reveal">Le site Hozana Concept utilise des cookies pour améliorer votre expérience de navigation, mesurer l'audience du site et vous proposer des contenus adaptés à vos intérêts.</p>
+  <p class="reveal">Vous pouvez configurer votre navigateur pour refuser les cookies ou être averti avant d'en accepter. Le refus de cookies peut affecter le fonctionnement de certaines fonctionnalités du site. Pour plus d'informations, consultez notre <a href="privacy.html">Politique de Confidentialité</a>.</p>
+
+  <h2 id="droit"><span class="h2-num">8</span> Droit applicable et juridiction compétente</h2>
+  <p class="reveal">Les présentes mentions légales sont régies par la loi tunisienne. En cas de litige, et après tentative de résolution amiable, les tribunaux tunisiens seront seuls compétents, sauf disposition légale impérative contraire.</p>
+  <p class="reveal">Tout litige relatif à l'utilisation du site Hozana Concept sera soumis à la juridiction exclusive des tribunaux de Tunis, Tunisie.</p>
+
+  <h2 id="contact-legal"><span class="h2-num">9</span> Contact</h2>
+  <div class="glass legal-block reveal">
+    <p>Pour toute question relative aux présentes mentions légales :</p>
+    <p><strong>Par email :</strong> <a href="mailto:info@hozanaconcept.com">info@hozanaconcept.com</a></p>
+    <p><strong>Par téléphone :</strong> <a href="tel:+21651474751">+216 51 47 47 51</a></p>
+    <p><strong>Par courrier :</strong> Hozana Concept – 5, rue Kheireddine Pacha, Tunis 1003, Tunisie</p>
+  </div>
+
+  <div style="margin-top:3rem;padding:1.5rem;background:rgba(255,46,46,0.05);border:1px solid rgba(255,46,46,0.15);border-radius:var(--radius-lg);text-align:center;" class="reveal">
+    <p style="color:var(--white-50);font-size:0.875rem;margin:0;">Ces mentions légales ont été rédigées conformément aux lois tunisiennes en vigueur. <br>Dernière révision : Avril 2025 — Hozana Concept SUARL · Matricule fiscal 1843519Y</p>
+  </div>
+
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="js/core.js"></script>
+<script src="js/components.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof renderNavbar === 'function') renderNavbar();
+    if (typeof renderFooter === 'function') renderFooter();
+    if (typeof initReveal === 'function') initReveal();
+    if (typeof initLoader === 'function') initLoader();
+  });
+</script>
+</body>
+</html>

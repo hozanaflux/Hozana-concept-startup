@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio & Réalisations | Hozana Concept — +50 Projets Livrés</title>
+  <meta name="description" content="+50 projets réalisés : sites web, identités visuelles, applications mobiles, dashboards BI, contenus réseaux sociaux. Découvrez le travail concret d'Hozana Concept, agence IA Tunisie.">
+  <meta name="keywords" content="portfolio, réalisations, sites web, design graphique, branding, application mobile, réseaux sociaux">
+  <link rel="icon" type="image/png" href="images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    /* ===== PORTFOLIO PAGE STYLES ===== */
+
+    /* Hero */
+    .portfolio-hero {
+      padding: calc(var(--nav-height) + 5rem) 2rem 5rem;
+      text-align: center;
+      position: relative;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,46,46,0.1) 0%, transparent 70%);
+      overflow: hidden;
+    }
+    .portfolio-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    /* Stats hero */
+    .pf-hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+    .pf-hero-stat {
+      text-align: center;
+    }
+    .pf-hero-stat-num {
+      font-family: var(--font-title);
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: var(--grad-red);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+    .pf-hero-stat-label {
+      font-size: 0.8rem;
+      color: var(--white-50);
+      font-family: var(--font-accent);
+      margin-top: 0.25rem;
+    }
+
+    /* Filter bar */
+    .pf-filter-section {
+      position: sticky;
+      top: var(--nav-height);
+      z-index: 40;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1.25rem 2rem;
+    }
+    .pf-filter-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .pf-cats {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .pf-tag {
+      padding: 0.45rem 1.1rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--glass-border);
+      background: transparent;
+      color: var(--white-50);
+      font-family: var(--font-accent);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--trans-base);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .pf-tag:hover { border-color: rgba(255,46,46,0.4); color: var(--white); }
+    .pf-tag.active { background: var(--grad-red); border-color: transparent; color: white; }
+
+    .pf-count {
+      font-size: 0.82rem;
+      color: var(--white-40);
+      font-family: var(--font-accent);
+      white-space: nowrap;
+    }
+
+    /* Masonry grid */
+    .pf-masonry {
+      columns: 3;
+      column-gap: 1.25rem;
+    }
+    @media (max-width: 1024px) { .pf-masonry { columns: 2; } }
+    @media (max-width: 600px)  { .pf-masonry { columns: 1; } }
+
+    .pf-item {
+      break-inside: avoid;
+      margin-bottom: 1.25rem;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: transform var(--trans-bounce), box-shadow var(--trans-base);
+    }
+    .pf-item:hover { transform: translateY(-6px); box-shadow: 0 30px 70px rgba(0,0,0,0.5); }
+
+    .pf-img {
+      width: 100%;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+    .pf-item:hover .pf-img { transform: scale(1.04); }
+
+    .pf-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      opacity: 0;
+      transition: opacity var(--trans-base);
+    }
+    .pf-item:hover .pf-overlay { opacity: 1; }
+
+    .pf-always {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 1rem 1.25rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    }
+
+    .pf-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: var(--grad-red);
+      color: white;
+      font-size: 0.68rem;
+      font-family: var(--font-accent);
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-full);
+      margin-bottom: 0.375rem;
+    }
+    .pf-badge.purple { background: linear-gradient(135deg, #a855f7, #ec4899); }
+    .pf-badge.blue   { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+    .pf-badge.green  { background: linear-gradient(135deg, #10b981, #22c55e); }
+    .pf-badge.orange { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+
+    .pf-name {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+    }
+    .pf-desc {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.7);
+      font-family: var(--font-accent);
+      margin-top: 0.2rem;
+    }
+    .pf-result {
+      font-size: 0.78rem;
+      color: #22c55e;
+      font-family: var(--font-accent);
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+
+    .pf-expand-btn {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity var(--trans-base);
+      cursor: pointer;
+    }
+    .pf-item:hover .pf-expand-btn { opacity: 1; }
+
+    /* Featured items */
+    .pf-item.pf-featured { border: 1px solid rgba(255,46,46,0.2); }
+    .pf-item.pf-featured::before {
+      content: '⭐ En vedette';
+      position: absolute;
+      top: 1rem; left: 1rem;
+      background: rgba(255,46,46,0.9);
+      color: white;
+      font-size: 0.65rem;
+      font-family: var(--font-accent);
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      z-index: 5;
+    }
+
+    /* Lightbox */
+    .pf-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    .pf-lightbox.open { opacity: 1; visibility: visible; }
+    .pf-lb-content {
+      position: relative;
+      max-width: 900px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      background: rgba(20,20,30,0.98);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+    .pf-lb-img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      display: block;
+    }
+    .pf-lb-body { padding: 2rem; }
+    .pf-lb-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all var(--trans-base);
+    }
+    .pf-lb-close:hover { background: rgba(255,46,46,0.3); }
+
+    .pf-lb-title {
+      font-family: var(--font-title);
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .pf-lb-category {
+      font-size: 0.8rem;
+      font-family: var(--font-accent);
+      font-weight: 700;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+    .pf-lb-desc-full {
+      color: var(--white-70);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    .pf-lb-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .pf-lb-tag {
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--glass-border);
+      font-size: 0.78rem;
+      font-family: var(--font-accent);
+      color: var(--white-60);
+    }
+    .pf-lb-results {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .pf-lb-kpi {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      text-align: center;
+    }
+    .pf-lb-kpi-num {
+      font-family: var(--font-title);
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--grad-red);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .pf-lb-kpi-label {
+      font-size: 0.72rem;
+      color: var(--white-40);
+      font-family: var(--font-accent);
+    }
+
+    /* CTA section */
+    .pf-cta {
+      background: linear-gradient(135deg, rgba(255,46,46,0.07), rgba(255,106,0,0.04));
+      border: 1px solid rgba(255,46,46,0.15);
+      border-radius: var(--radius-xl);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .pf-hero-stats { gap: 2rem; }
+      .pf-filter-inner { flex-direction: column; align-items: flex-start; }
+      .pf-lb-results { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader" role="status" aria-label="Chargement">
+  <img src="images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;">
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- NAVBAR -->
+<div id="navbar-placeholder"></div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="portfolio-hero">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="section-label reveal" style="justify-content:center;">Portfolio & Réalisations</div>
+    <h1 class="text-display reveal delay-1" style="max-width:800px;margin:0.75rem auto 1.25rem;">
+      Des créations <span class="gradient-text">qui font la différence</span>
+    </h1>
+    <p class="text-body-lg reveal delay-2" style="max-width:600px;margin:0 auto;">
+      Sites web, identités visuelles, contenus réseaux sociaux, applications… Découvrez les projets que nous avons réalisés pour des entrepreneurs et PME en France et à l'international.
+    </p>
+
+    <!-- Hero stats -->
+    <div class="pf-hero-stats reveal delay-3">
+      <div class="pf-hero-stat">
+        <div class="pf-hero-stat-num">50+</div>
+        <div class="pf-hero-stat-label">Projets réalisés</div>
+      </div>
+      <div class="pf-hero-stat">
+        <div class="pf-hero-stat-num">30j</div>
+        <div class="pf-hero-stat-label">Délai moyen de livraison</div>
+      </div>
+      <div class="pf-hero-stat">
+        <div class="pf-hero-stat-num">98%</div>
+        <div class="pf-hero-stat-label">Clients satisfaits</div>
+      </div>
+      <div class="pf-hero-stat">
+        <div class="pf-hero-stat-num">×4</div>
+        <div class="pf-hero-stat-label">ROI moyen constaté</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FILTER BAR — Sticky
+     ============================================================ -->
+<div class="pf-filter-section" id="pf-filter-bar">
+  <div class="pf-filter-inner">
+    <div class="pf-cats">
+      <button class="pf-tag active" onclick="pfFilter('all',this)">
+        <i class="fas fa-th-large"></i> Tout voir
+      </button>
+      <button class="pf-tag" onclick="pfFilter('web',this)">
+        <i class="fas fa-globe"></i> Sites Web
+      </button>
+      <button class="pf-tag" onclick="pfFilter('design',this)">
+        <i class="fas fa-palette"></i> Design & Branding
+      </button>
+      <button class="pf-tag" onclick="pfFilter('social',this)">
+        <i class="fab fa-instagram"></i> Réseaux Sociaux
+      </button>
+      <button class="pf-tag" onclick="pfFilter('app',this)">
+        <i class="fas fa-mobile-alt"></i> Applications
+      </button>
+      <button class="pf-tag" onclick="pfFilter('ia',this)">
+        <i class="fas fa-robot"></i> IA & Dashboards
+      </button>
+    </div>
+    <div class="pf-count" id="pf-count">Affichage de <strong>18</strong> projets</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PORTFOLIO MASONRY GRID
+     ============================================================ -->
+<section class="section" style="padding-top:3rem;">
+  <div class="container">
+    <div class="pf-masonry" id="pf-masonry">
+
+      <!-- === SITES WEB === -->
+      <div class="pf-item pf-featured reveal" data-cat="web" onclick="pfOpen(0)">
+        <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&q=80" alt="Site e-commerce mode" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge"><i class="fas fa-globe"></i> Site E-commerce</div>
+          <div class="pf-name">Boutique Mode Paris</div>
+          <div class="pf-desc">E-commerce · UI/UX · SEO</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge"><i class="fas fa-globe"></i> Site E-commerce</div>
+          <div class="pf-name">Boutique Mode Paris</div>
+          <div class="pf-result">↑ +340% de ventes en ligne</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-1" data-cat="design" onclick="pfOpen(1)">
+        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&q=80" alt="Logo et identité visuelle" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge purple"><i class="fas fa-palette"></i> Branding</div>
+          <div class="pf-name">Resto Gourmet</div>
+          <div class="pf-desc">Logo · Charte · Carte</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge purple"><i class="fas fa-palette"></i> Branding</div>
+          <div class="pf-name">Resto Gourmet</div>
+          <div class="pf-result">Reconnaissance de marque +200%</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-2" data-cat="social" onclick="pfOpen(2)">
+        <img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=600&q=80" alt="Stratégie Instagram" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge" style="background:linear-gradient(135deg,#f09433,#dc2743);"><i class="fab fa-instagram"></i> Instagram</div>
+          <div class="pf-name">Marque Beauté</div>
+          <div class="pf-desc">Posts · Stories · Reels</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge" style="background:linear-gradient(135deg,#f09433,#dc2743);"><i class="fab fa-instagram"></i> Instagram</div>
+          <div class="pf-name">Marque Beauté</div>
+          <div class="pf-result">+12K abonnés en 4 mois</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-3" data-cat="app" onclick="pfOpen(3)">
+        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&q=80" alt="Application mobile livraison" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge blue"><i class="fas fa-mobile-alt"></i> App Mobile</div>
+          <div class="pf-name">LivreLocal App</div>
+          <div class="pf-desc">iOS · Android · UX Design</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge blue"><i class="fas fa-mobile-alt"></i> App Mobile</div>
+          <div class="pf-name">LivreLocal App</div>
+          <div class="pf-result">4.8★ App Store · 5K users</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal" data-cat="web" onclick="pfOpen(4)">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=700&q=80" alt="Dashboard analytics web" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge orange"><i class="fas fa-chart-bar"></i> Dashboard BI</div>
+          <div class="pf-name">FinTech Analytics</div>
+          <div class="pf-desc">Data viz · Temps réel</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge orange"><i class="fas fa-chart-bar"></i> Dashboard BI</div>
+          <div class="pf-name">FinTech Analytics</div>
+          <div class="pf-result">Décisions 5× plus rapides</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-1" data-cat="social" onclick="pfOpen(5)">
+        <img src="https://images.unsplash.com/photo-1432888498266-38ffda3985b6?w=600&q=80" alt="Gestion réseaux sociaux" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge" style="background:linear-gradient(135deg,#1877F2,#0ea5e9);"><i class="fab fa-facebook-f"></i> Facebook</div>
+          <div class="pf-name">Coach Entreprise</div>
+          <div class="pf-desc">Ads · Community · Content</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge" style="background:linear-gradient(135deg,#1877F2,#0ea5e9);"><i class="fab fa-facebook-f"></i> Facebook</div>
+          <div class="pf-name">Coach Entreprise</div>
+          <div class="pf-result">CPA réduit de 60% · ROI ×5</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-2" data-cat="design" onclick="pfOpen(6)">
+        <img src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&q=80" alt="Campagne design print" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge purple"><i class="fas fa-print"></i> Print & Digital</div>
+          <div class="pf-name">Fitness Club</div>
+          <div class="pf-desc">Affiches · Flyers · Bannières</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge purple"><i class="fas fa-print"></i> Print & Digital</div>
+          <div class="pf-name">Fitness Club</div>
+          <div class="pf-result">+280 inscriptions la 1ère semaine</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-3" data-cat="ia" onclick="pfOpen(7)">
+        <img src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80" alt="IA chatbot et automatisation" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge"><i class="fas fa-robot"></i> IA & Automation</div>
+          <div class="pf-name">Chatbot E-commerce</div>
+          <div class="pf-desc">IA conversationnelle · Ventes</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge"><i class="fas fa-robot"></i> IA & Automation</div>
+          <div class="pf-name">Chatbot E-commerce</div>
+          <div class="pf-result">342 ventes/jour automatisées</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal" data-cat="web" onclick="pfOpen(8)">
+        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=700&q=80" alt="Site vitrine professionnel" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge"><i class="fas fa-store"></i> Site Vitrine</div>
+          <div class="pf-name">Cabinet Juridique</div>
+          <div class="pf-desc">Design · SEO · Leads</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge"><i class="fas fa-store"></i> Site Vitrine</div>
+          <div class="pf-name">Cabinet Juridique</div>
+          <div class="pf-result">+180% de demandes/mois</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-1" data-cat="design" onclick="pfOpen(9)">
+        <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=600&q=80" alt="Design UI moderne" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge purple"><i class="fas fa-swatchbook"></i> UI Design</div>
+          <div class="pf-name">SaaS Platform UI</div>
+          <div class="pf-desc">Design System · Figma</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge purple"><i class="fas fa-swatchbook"></i> UI Design</div>
+          <div class="pf-name">SaaS Platform UI</div>
+          <div class="pf-result">UX score +65 pts · Taux conversion ×2</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-2" data-cat="social" onclick="pfOpen(10)">
+        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80" alt="TikTok et vidéo social" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge" style="background:#000;border:1px solid rgba(255,255,255,0.2);"><i class="fab fa-tiktok"></i> TikTok</div>
+          <div class="pf-name">Marque Food & Drink</div>
+          <div class="pf-desc">Vidéos · Trends · Virales</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge" style="background:#000;border:1px solid rgba(255,255,255,0.2);"><i class="fab fa-tiktok"></i> TikTok</div>
+          <div class="pf-name">Marque Food & Drink</div>
+          <div class="pf-result">2,4M de vues · +45K abonnés</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-3" data-cat="app" onclick="pfOpen(11)">
+        <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?w=600&q=80" alt="Application web progressive" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge blue"><i class="fas fa-globe"></i> Web App</div>
+          <div class="pf-name">Plateforme RH</div>
+          <div class="pf-desc">React · API · Dashboard</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge blue"><i class="fas fa-globe"></i> Web App</div>
+          <div class="pf-name">Plateforme RH</div>
+          <div class="pf-result">Process RH 3× plus rapides</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal" data-cat="ia" onclick="pfOpen(12)">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=700&q=80" alt="Dashboard BI analytics" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge orange"><i class="fas fa-brain"></i> IA Prédictive</div>
+          <div class="pf-name">Retail Demand Forecast</div>
+          <div class="pf-desc">ML · Prédiction · Stock</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge orange"><i class="fas fa-brain"></i> IA Prédictive</div>
+          <div class="pf-name">Retail Demand Forecast</div>
+          <div class="pf-result">Ruptures de stock -78%</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-1" data-cat="web" onclick="pfOpen(13)">
+        <img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=700&q=80" alt="Landing page haute conversion" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge green"><i class="fas fa-rocket"></i> Landing Page</div>
+          <div class="pf-name">Agence Immobilière</div>
+          <div class="pf-desc">Conversion · CRO · A/B test</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge green"><i class="fas fa-rocket"></i> Landing Page</div>
+          <div class="pf-name">Agence Immobilière</div>
+          <div class="pf-result">Taux conversion 8.4% (×4)</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-2" data-cat="design" onclick="pfOpen(14)">
+        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=600&q=80" alt="Identité de marque packaging" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge purple"><i class="fas fa-box"></i> Packaging</div>
+          <div class="pf-name">Cosmétiques Naturels</div>
+          <div class="pf-desc">Packaging · Identité · Print</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge purple"><i class="fas fa-box"></i> Packaging</div>
+          <div class="pf-name">Cosmétiques Naturels</div>
+          <div class="pf-result">Référencé dans 12 boutiques</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal delay-3" data-cat="social" onclick="pfOpen(15)">
+        <img src="https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=600&q=80" alt="Content marketing LinkedIn" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge blue"><i class="fab fa-linkedin-in"></i> LinkedIn</div>
+          <div class="pf-name">Consultant B2B</div>
+          <div class="pf-desc">Personal Branding · Content</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge blue"><i class="fab fa-linkedin-in"></i> LinkedIn</div>
+          <div class="pf-name">Consultant B2B</div>
+          <div class="pf-result">+50K impressions/mois · 25 leads</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item reveal" data-cat="ia" onclick="pfOpen(16)">
+        <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=700&q=80" alt="Automatisation workflow" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge"><i class="fas fa-bolt"></i> Automatisation</div>
+          <div class="pf-name">CRM Automation</div>
+          <div class="pf-desc">Zapier · Make · Pipelines</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge"><i class="fas fa-bolt"></i> Automatisation</div>
+          <div class="pf-name">CRM Automation</div>
+          <div class="pf-result">30h économisées par semaine</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="pf-item pf-featured reveal delay-1" data-cat="web" onclick="pfOpen(17)">
+        <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=800&q=80" alt="Site web startup tech" class="pf-img" loading="lazy">
+        <div class="pf-always">
+          <div class="pf-badge"><i class="fas fa-code"></i> Site Web Startup</div>
+          <div class="pf-name">TechStartup Dakar</div>
+          <div class="pf-desc">Développement · Design · SEO</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge"><i class="fas fa-code"></i> Site Web Startup</div>
+          <div class="pf-name">TechStartup Dakar</div>
+          <div class="pf-result">Levée de fonds facilitée · +67% CA</div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+
+    </div>
+
+    <!-- Load more -->
+    <div class="text-center mt-lg reveal" id="load-more-section">
+      <button class="btn btn-glass btn-lg" onclick="loadMore()" id="load-more-btn">
+        <i class="fas fa-plus"></i> Voir plus de projets
+      </button>
+      <p style="margin-top:0.75rem;font-size:0.8rem;color:var(--white-40);">Affichage de <span id="shown-count">18</span> projets sur 50+</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LIGHTBOX
+     ============================================================ -->
+<div class="pf-lightbox" id="pf-lightbox" onclick="pfCloseLightbox(event)">
+  <div class="pf-lb-content" id="pf-lb-content">
+    <button class="pf-lb-close" onclick="pfCloseLightbox()" aria-label="Fermer"><i class="fas fa-times"></i></button>
+    <img src="" alt="" class="pf-lb-img" id="pf-lb-img">
+    <div class="pf-lb-body" id="pf-lb-body"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CTA
+     ============================================================ -->
+<section class="section">
+  <div class="container">
+    <div class="pf-cta reveal">
+      <div class="section-label" style="justify-content:center;">Votre projet</div>
+      <h2 class="text-h1" style="margin:1rem 0 1rem;">Votre projet mérite <span class="gradient-text">le meilleur</span></h2>
+      <p class="text-body-lg" style="max-width:540px;margin:0 auto 2rem;">
+        Site web, design, réseaux sociaux ou application — nous réalisons votre vision avec excellence. Demandez un devis gratuit en 24h.
+      </p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="contact.html" class="btn btn-primary btn-lg">
+          <i class="fas fa-paper-plane"></i> Démarrer mon projet
+        </a>
+        <a href="packs.html" class="btn btn-glass btn-lg">
+          Voir les tarifs <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div id="footer-placeholder"></div>
+
+<!-- SCRIPTS -->
+<script src="js/core.js"></script>
+<script src="js/components.js"></script>
+<script>
+/* ============================================================
+   PORTFOLIO DATA — Données des projets pour le lightbox
+   ============================================================ */
+const pfProjects = [
+  {
+    title: 'Boutique Mode Paris',
+    cat: 'Site E-commerce',
+    img: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=900&q=80',
+    description: 'Nous avons conçu et développé une boutique en ligne complète pour cette marque de mode parisienne. L\'objectif : permettre à leurs créateurs de vendre directement en ligne, sans intermédiaire. Le site est optimisé pour le mobile, rapide et référencé sur Google.',
+    tags: ['E-commerce', 'Développement web', 'UI/UX Design', 'SEO', 'Paiement en ligne', 'Mobile-first'],
+    kpis: [
+      { num: '+340%', label: 'Ventes en ligne' },
+      { num: '30j', label: 'Délai de livraison' },
+      { num: '4.9★', label: 'Satisfaction client' }
+    ]
+  },
+  {
+    title: 'Resto Gourmet',
+    cat: 'Design & Branding',
+    img: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=900&q=80',
+    description: 'Création d\'une identité visuelle complète pour un restaurant gastronomique à Lyon. Logo, charte graphique, carte de menu, signalétique, flyers et supports numériques — tout a été pensé pour refléter le raffinement de leur cuisine.',
+    tags: ['Logo design', 'Charte graphique', 'Menu design', 'Signalétique', 'Supports print'],
+    kpis: [
+      { num: '+200%', label: 'Notoriété marque' },
+      { num: '5', label: 'Supports créés' },
+      { num: '14j', label: 'Délai de livraison' }
+    ]
+  },
+  {
+    title: 'Marque Beauté Instagram',
+    cat: 'Réseaux Sociaux',
+    img: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=900&q=80',
+    description: 'Gestion complète du compte Instagram d\'une marque de cosmétiques naturels. Nous avons créé tous les visuels, stories, reels et posts avec une ligne éditoriale cohérente. La marque a gagné 12 000 abonnés qualifiés en seulement 4 mois.',
+    tags: ['Instagram', 'Content creation', 'Stories', 'Reels', 'Community management', 'Ads'],
+    kpis: [
+      { num: '+12K', label: 'Abonnés gagnés' },
+      { num: '4 mois', label: 'Pour y arriver' },
+      { num: '340%', label: 'Engagement ↑' }
+    ]
+  },
+  {
+    title: 'LivreLocal App',
+    cat: 'Application Mobile',
+    img: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=900&q=80',
+    description: 'Application mobile de livraison locale permettant de commander auprès de commerçants de quartier. Disponible sur iOS et Android, l\'app propose une interface intuitive, un système de suivi en temps réel et un paiement sécurisé.',
+    tags: ['iOS', 'Android', 'UX/UI Design', 'Développement mobile', 'Paiement in-app', 'Géolocalisation'],
+    kpis: [
+      { num: '4.8★', label: 'Note App Store' },
+      { num: '5K', label: 'Utilisateurs actifs' },
+      { num: '60j', label: 'Délai livraison' }
+    ]
+  },
+  {
+    title: 'FinTech Analytics Dashboard',
+    cat: 'Dashboard BI',
+    img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80',
+    description: 'Tableau de bord analytique en temps réel pour une fintech. Visualisation des transactions, détection d\'anomalies par IA, rapports automatisés et alertes intelligentes. Les décisions business sont maintenant prises 5× plus rapidement.',
+    tags: ['Data Visualization', 'BI', 'Temps réel', 'IA', 'Rapports automatisés', 'KPI tracking'],
+    kpis: [
+      { num: '×5', label: 'Décisions plus rapides' },
+      { num: '100%', label: 'Temps réel' },
+      { num: '-40%', label: 'Coûts analytiques' }
+    ]
+  },
+  {
+    title: 'Coach Entreprise Facebook',
+    cat: 'Réseaux Sociaux',
+    img: 'https://images.unsplash.com/photo-1432888498266-38ffda3985b6?w=900&q=80',
+    description: 'Stratégie complète de publicité Facebook et gestion de communauté pour un coach en entreprise. Ciblage ultra-précis de l\'audience, création de contenus persuasifs et optimisation continue des campagnes publicitaires.',
+    tags: ['Facebook Ads', 'Community management', 'Content creation', 'A/B testing', 'Conversion tracking'],
+    kpis: [
+      { num: '-60%', label: 'Coût par acquisition' },
+      { num: '×5', label: 'Retour sur pub' },
+      { num: '85', label: 'Leads/mois' }
+    ]
+  },
+  {
+    title: 'Fitness Club Campaign',
+    cat: 'Design Print & Digital',
+    img: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=900&q=80',
+    description: 'Campagne de communication complète pour le lancement d\'une nouvelle salle de sport. Affiches 4×3, flyers, bannières web, stories Instagram et email marketing — tous cohérents avec une charte graphique dynamique et motivante.',
+    tags: ['Design print', 'Affiches', 'Flyers', 'Bannières web', 'Email design', 'Cohérence visuelle'],
+    kpis: [
+      { num: '+280', label: 'Inscriptions S1' },
+      { num: '8', label: 'Supports créés' },
+      { num: '21j', label: 'Délai campagne' }
+    ]
+  },
+  {
+    title: 'Chatbot IA E-commerce',
+    cat: 'IA & Automatisation',
+    img: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=900&q=80',
+    description: 'Déploiement d\'un chatbot IA conversationnel pour un e-commerce à fort trafic. Le bot répond aux questions, qualifie les leads, recommande des produits et finalise des ventes — 24h/24, 7j/7, sans intervention humaine.',
+    tags: ['Chatbot IA', 'OpenAI GPT-4', 'NLP', 'E-commerce', 'Automatisation ventes', 'Qualification leads'],
+    kpis: [
+      { num: '342', label: 'Ventes auto/jour' },
+      { num: '24/7', label: 'Disponibilité' },
+      { num: '+127%', label: 'Leads qualifiés' }
+    ]
+  },
+  {
+    title: 'Cabinet Juridique',
+    cat: 'Site Vitrine',
+    img: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=900&q=80',
+    description: 'Site vitrine professionnel pour un cabinet d\'avocats parisien. Design sobre et élégant, optimisé pour la confiance et la conversion. Formulaire de contact, système de prise de RDV en ligne et blog SEO intégrés.',
+    tags: ['Site vitrine', 'Prise de RDV', 'SEO', 'Blog', 'Formulaire contact', 'Design premium'],
+    kpis: [
+      { num: '+180%', label: 'Demandes/mois' },
+      { num: 'P1', label: 'Google local' },
+      { num: '21j', label: 'Délai livraison' }
+    ]
+  },
+  {
+    title: 'SaaS Platform UI',
+    cat: 'UI/UX Design',
+    img: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=900&q=80',
+    description: 'Refonte complète de l\'interface utilisateur d\'une plateforme SaaS B2B. Design system complet sur Figma, prototypes interactifs, tests utilisateurs et documentation technique. L\'UX score a progressé de 65 points.',
+    tags: ['UI Design', 'UX Research', 'Figma', 'Design System', 'Prototypage', 'Tests utilisateurs'],
+    kpis: [
+      { num: '+65pts', label: 'UX Score' },
+      { num: '×2', label: 'Taux conversion' },
+      { num: '-30%', label: 'Churn utilisateurs' }
+    ]
+  },
+  {
+    title: 'Marque Food TikTok',
+    cat: 'TikTok & Vidéo',
+    img: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=900&q=80',
+    description: 'Stratégie et création de contenus TikTok pour une marque de boissons artisanales. Identification des trends, production de vidéos courtes virales, collaborations influenceurs et gestion de la communauté.',
+    tags: ['TikTok', 'Vidéo court format', 'Trends', 'Influenceur', 'Community management', 'Virality'],
+    kpis: [
+      { num: '2.4M', label: 'Vues totales' },
+      { num: '+45K', label: 'Abonnés' },
+      { num: '8', label: 'Vidéos virales' }
+    ]
+  },
+  {
+    title: 'Plateforme RH Web App',
+    cat: 'Application Web',
+    img: 'https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?w=900&q=80',
+    description: 'Développement d\'une application web RH complète pour une PME de 200 personnes. Gestion des congés, suivi des performances, onboarding digital et génération automatique de documents RH.',
+    tags: ['Web App', 'React', 'Node.js', 'API REST', 'Dashboard RH', 'Automatisation'],
+    kpis: [
+      { num: '×3', label: 'Rapidité process RH' },
+      { num: '-80%', label: 'Erreurs admin' },
+      { num: '200', label: 'Salariés gérés' }
+    ]
+  },
+  {
+    title: 'Retail Demand Forecast IA',
+    cat: 'IA Prédictive',
+    img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80',
+    description: 'Système de prévision de la demande par intelligence artificielle pour une chaîne retail. Le modèle analyse les historiques de ventes, les tendances saisonnières et les données externes pour prédire les besoins en stock.',
+    tags: ['Machine Learning', 'Prévision demande', 'Python', 'Data Science', 'Retail', 'Optimisation stock'],
+    kpis: [
+      { num: '-78%', label: 'Ruptures de stock' },
+      { num: '-22%', label: 'Surstock coûteux' },
+      { num: '+35%', label: 'Marge brute' }
+    ]
+  },
+  {
+    title: 'Agence Immobilière Landing',
+    cat: 'Landing Page',
+    img: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=900&q=80',
+    description: 'Landing page à fort taux de conversion pour une agence immobilière. Tests A/B sur les accroches, CTA, formulaires et visuels. Intégration d\'un simulateur de valeur immobilière et d\'une prise de RDV automatique.',
+    tags: ['Landing Page', 'CRO', 'A/B Testing', 'Formulaire', 'Simulateur', 'Conversion optimization'],
+    kpis: [
+      { num: '8.4%', label: 'Taux conversion' },
+      { num: '×4', label: 'vs. avant' },
+      { num: '+120', label: 'Leads/mois' }
+    ]
+  },
+  {
+    title: 'Cosmétiques Naturels Packaging',
+    cat: 'Design & Packaging',
+    img: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=900&q=80',
+    description: 'Création de l\'identité visuelle et du packaging pour une gamme de cosmétiques naturels. Direction artistique complète : logo, packaging, étiquettes, coffrets cadeaux et supports de vente boutique.',
+    tags: ['Packaging', 'Logo design', 'Direction artistique', 'Print', 'Étiquettes', 'Coffrets'],
+    kpis: [
+      { num: '12', label: 'Boutiques reférencées' },
+      { num: '+90%', label: 'Conversion en rayon' },
+      { num: '3', label: 'Prix design remportés' }
+    ]
+  },
+  {
+    title: 'Consultant B2B LinkedIn',
+    cat: 'LinkedIn & Personal Branding',
+    img: 'https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=900&q=80',
+    description: 'Stratégie de personal branding LinkedIn et création de contenus pour un consultant en transformation digitale. Articles de fond, posts engageants, profil optimisé et campagnes de prospection automatisées.',
+    tags: ['LinkedIn', 'Personal Branding', 'Content marketing', 'Prospection', 'B2B', 'Thought leadership'],
+    kpis: [
+      { num: '50K', label: 'Impressions/mois' },
+      { num: '25', label: 'Leads qualifiés/mois' },
+      { num: '×8', label: 'Visibilité profil' }
+    ]
+  },
+  {
+    title: 'CRM Automation',
+    cat: 'Automatisation',
+    img: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=900&q=80',
+    description: 'Automatisation complète du CRM et des processus commerciaux. Connexion de 15+ outils, workflows de relance automatiques, scoring des leads par IA et rapports hebdomadaires générés automatiquement.',
+    tags: ['CRM', 'Zapier', 'Make.com', 'Automation', 'Email marketing', 'Lead scoring'],
+    kpis: [
+      { num: '30h', label: 'Économisées/semaine' },
+      { num: '15+', label: 'Outils connectés' },
+      { num: '-65%', label: 'Tâches manuelles' }
+    ]
+  },
+  {
+    title: 'TechStartup Dakar',
+    cat: 'Site Web Startup',
+    img: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=900&q=80',
+    description: 'Site web institutionnel pour une startup technologique dakaroise cherchant à lever des fonds et recruter des talents. Design moderne, storytelling puissant, intégration d\'un espace investisseurs et d\'un blog.',
+    tags: ['Site startup', 'Développement web', 'Storytelling', 'SEO', 'Blog', 'Design premium'],
+    kpis: [
+      { num: '+67%', label: 'Chiffre d\'affaires' },
+      { num: '3 mois', label: 'Pour lever des fonds' },
+      { num: '50+', label: 'Candidatures reçues' }
+    ]
+  }
+];
+
+/* ============================================================
+   FILTER
+   ============================================================ */
+function pfFilter(cat, btn) {
+  document.querySelectorAll('.pf-tag').forEach(b => b.classList.remove('active'));
+  btn?.classList.add('active');
+
+  const items = document.querySelectorAll('.pf-item');
+  let count = 0;
+  items.forEach(item => {
+    const match = cat === 'all' || item.dataset.cat === cat;
+    item.style.display = match ? '' : 'none';
+    if (match) count++;
+  });
+
+  const countEl = document.getElementById('pf-count');
+  if (countEl) {
+    countEl.innerHTML = `Affichage de <strong>${count}</strong> projet${count > 1 ? 's' : ''}`;
+  }
+}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+function pfOpen(index) {
+  const p = pfProjects[index];
+  if (!p) return;
+
+  document.getElementById('pf-lb-img').src = p.img;
+  document.getElementById('pf-lb-img').alt = p.title;
+
+  document.getElementById('pf-lb-body').innerHTML = `
+    <div class="pf-lb-category">${p.cat}</div>
+    <h2 class="pf-lb-title">${p.title}</h2>
+    <p class="pf-lb-desc-full">${p.description}</p>
+    <div class="pf-lb-results">
+      ${p.kpis.map(k => `
+        <div class="pf-lb-kpi">
+          <div class="pf-lb-kpi-num">${k.num}</div>
+          <div class="pf-lb-kpi-label">${k.label}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="pf-lb-tags">
+      ${p.tags.map(t => `<span class="pf-lb-tag">${t}</span>`).join('')}
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="contact.html" class="btn btn-primary"><i class="fas fa-rocket"></i> Projet similaire</a>
+      <a href="contact.html" class="btn btn-glass">Demander un devis →</a>
+    </div>
+  `;
+
+  document.getElementById('pf-lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function pfCloseLightbox(e) {
+  if (e && e.target !== document.getElementById('pf-lightbox')) return;
+  document.getElementById('pf-lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') pfCloseLightbox();
+});
+
+/* ============================================================
+   LOAD MORE
+   ============================================================ */
+function loadMore() {
+  const btn = document.getElementById('load-more-btn');
+  if (!btn) return;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
+  setTimeout(() => {
+    btn.innerHTML = '<i class="fas fa-check"></i> Tous les projets affichés';
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    document.getElementById('shown-count').textContent = '50+';
+    window.HC?.showToast?.('Tous nos projets sont affichés. Contactez-nous pour en voir plus !', 'success');
+  }, 1200);
+}
+</script>
+
+</body>
+</html>

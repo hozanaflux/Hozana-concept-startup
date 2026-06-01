@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Branding & Identité Visuelle | Hozana Concept Tunisie</title>
+  <meta name="description" content="Logo, charte graphique, UI/UX, motion design, content studio. Hozana Concept crée votre identité visuelle premium à Tunis. Une marque forte qui vend et qui marque les esprits.">
+  <link rel="icon" type="image/png" href="images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    .svc-page-hero { padding:calc(var(--nav-height) + 5rem) 2rem 5rem;position:relative;overflow:hidden;text-align:center; }
+    @media(max-width:1024px) { .svc-page-hero { padding: calc(var(--nav-height) + 4rem) 1.5rem 4rem; } }
+    @media(max-width:768px) { .svc-page-hero { padding: calc(var(--nav-height) + 3rem) 1.25rem 3rem; } }
+    @media(max-width:480px) { .svc-page-hero { padding: calc(var(--nav-height) + 2.5rem) 1rem 2.5rem; } }
+    .svc-page-hero::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(255,106,0,0.16) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 15% 60%,rgba(255,46,46,0.08) 0%,transparent 55%); }
+    .svc-page-hero::after { content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:60px 60px; }
+    .svc-page-hero .container { position:relative;z-index:1; }
+    .svc-page-cat { display:inline-flex;align-items:center;gap:0.5rem;padding:0.35rem 1rem;border-radius:999px;font-family:var(--font-accent);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.25);color:#FF8C42;margin-bottom:1.5rem; }
+    .svc-cards-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:3rem; }
+    .svc-card-item { background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;transition:border-color .25s,transform .25s,background .25s;position:relative;overflow:hidden; }
+    .svc-card-item:hover { border-color:rgba(255,106,0,0.3);background:rgba(255,106,0,0.04);transform:translateY(-4px); }
+    .svc-card-item::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#FF2E2E,#FF8C42);opacity:0;transition:opacity .25s; }
+    .svc-card-item:hover::before { opacity:1; }
+    .svc-item-icon { width:52px;height:52px;border-radius:14px;background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.2);display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:#FF8C42;margin-bottom:1.25rem;transition:background .25s; }
+    .svc-card-item:hover .svc-item-icon { background:rgba(255,106,0,0.16); }
+    .svc-item-title { font-family:var(--font-title);font-size:1.15rem;font-weight:800;color:var(--white);margin-bottom:0.75rem; }
+    .svc-item-desc { font-size:0.875rem;color:var(--white-60);line-height:1.7;margin-bottom:1.25rem; }
+    .svc-item-feats { list-style:none;display:flex;flex-direction:column;gap:0.45rem;margin-bottom:1.5rem; }
+    .svc-item-feats li { display:flex;align-items:flex-start;gap:0.6rem;font-size:0.82rem;color:var(--white-70); }
+    .svc-item-feats li i { font-size:0.6rem;color:#FF8C42;margin-top:0.35em;flex-shrink:0; }
+    .svc-item-cta { font-family:var(--font-accent);font-size:0.82rem;font-weight:700;color:#FF8C42;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;transition:gap .2s; }
+    .svc-item-cta:hover { gap:0.65rem; }
+    .results-row { display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:2.5rem; }
+    .result-metric { padding:1.5rem 1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;text-align:center; }
+    .result-metric-val { font-family:var(--font-title);font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,#FF6A00,#FF2E2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:0.5rem; }
+    .result-metric-lbl { font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent); }
+    .process-steps { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-top:3rem; }
+    .process-step { text-align:center;padding:2rem 1.5rem;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:16px; }
+    .process-step-num { font-family:var(--font-title);font-size:3rem;font-weight:900;background:linear-gradient(135deg,#FF6A00,#FF2E2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:0.75rem; }
+    .process-step-title { font-family:var(--font-accent);font-size:0.9rem;font-weight:700;color:var(--white-90);margin-bottom:0.5rem; }
+    .process-step-desc { font-size:0.8rem;color:var(--white-50);line-height:1.6; }
+    .svc-page-cta { position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(255,106,0,0.09),rgba(255,46,46,0.06));border:1px solid rgba(255,106,0,0.15);border-radius:24px;padding:5rem 3rem;text-align:center; }
+    .svc-page-cta::before { content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none; }
+    .svc-page-cta::after { content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:50%;height:1px;background:linear-gradient(90deg,#FF6A00,#FF2E2E);opacity:.7; }
+    .svc-page-cta > * { position:relative;z-index:1; }
+    @media(max-width:768px) { .svc-cards-grid{grid-template-columns:1fr;} .svc-page-cta{padding:3rem 1.5rem;} }
+  </style>
+</head>
+<body>
+<div id="loader"><img src="images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;"><div class="loader-bar"><div class="loader-bar-fill"></div></div></div>
+<div id="navbar-placeholder"></div>
+
+<section class="svc-page-hero">
+  <div class="container">
+    <div class="svc-page-cat reveal"><i class="fas fa-palette"></i> Branding & Création</div>
+    <h1 class="text-display reveal delay-1" style="max-width:780px;margin:0 auto 1.25rem;">
+      Une identité visuelle qui <span class="gradient-text">marque les esprits</span>
+    </h1>
+    <p class="text-body-lg reveal delay-2" style="max-width:600px;margin:0 auto 2rem;color:var(--white-60);">
+      De la charte graphique aux visuels réseaux sociaux — nous créons des marques fortes, cohérentes et mémorables qui convertissent avant même que vous parliez.
+    </p>
+    <div class="reveal delay-3" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="contact.html" class="btn btn-primary btn-lg"><i class="fas fa-rocket"></i> Créer mon identité</a>
+      <a href="portfolio.html" class="btn btn-glass btn-lg">Voir les réalisations →</a>
+    </div>
+    <div class="results-row reveal delay-3" style="max-width:700px;margin:2.5rem auto 0;">
+      <div class="result-metric"><div class="result-metric-val">+340%</div><div class="result-metric-lbl">Engagement moyen</div></div>
+      <div class="result-metric"><div class="result-metric-val">48h</div><div class="result-metric-lbl">Livraison logo</div></div>
+      <div class="result-metric"><div class="result-metric-val">100+</div><div class="result-metric-lbl">Marques créées</div></div>
+      <div class="result-metric"><div class="result-metric-val">98%</div><div class="result-metric-lbl">Satisfaction client</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--black-2);">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">4 expertises créatives</div>
+      <h2 class="text-h2">Ce que nous <span class="gradient-text">créons pour vous</span></h2>
+    </div>
+    <div class="svc-cards-grid">
+      <div class="svc-card-item reveal">
+        <div class="svc-item-icon"><i class="fas fa-fingerprint"></i></div>
+        <div class="svc-item-title">Brand Identity</div>
+        <div class="svc-item-desc">Une identité complète qui raconte votre histoire. Logo, couleurs, typographie, tone of voice — tout ce qui fait qu'on vous reconnaît immédiatement.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Logo + variantes + déclinaisons</li>
+          <li><i class="fas fa-circle"></i> Charte graphique complète</li>
+          <li><i class="fas fa-circle"></i> Guide de marque (Brand Book)</li>
+          <li><i class="fas fa-circle"></i> Palette de couleurs & typographie</li>
+          <li><i class="fas fa-circle"></i> Supports print & digital</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Créer ma marque <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="svc-card-item reveal delay-1">
+        <div class="svc-item-icon"><i class="fas fa-vector-square"></i></div>
+        <div class="svc-item-title">UI/UX Design</div>
+        <div class="svc-item-desc">Des interfaces belles et intuitives qui convertissent. Maquettes Figma, prototypes interactifs et design systems complets.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Wireframes & maquettes Figma</li>
+          <li><i class="fas fa-circle"></i> Prototypes interactifs</li>
+          <li><i class="fas fa-circle"></i> Design system & composants</li>
+          <li><i class="fas fa-circle"></i> Tests utilisateurs & itérations</li>
+          <li><i class="fas fa-circle"></i> Handoff développeurs</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Designer mon interface <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="svc-card-item reveal delay-2">
+        <div class="svc-item-icon"><i class="fas fa-film"></i></div>
+        <div class="svc-item-title">Motion Design</div>
+        <div class="svc-item-desc">Des animations qui captivent. Intros vidéo, reels animés, transitions et effets visuels qui donnent vie à votre marque.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Animations logo & intro vidéo</li>
+          <li><i class="fas fa-circle"></i> Reels & stories animés</li>
+          <li><i class="fas fa-circle"></i> Transitions & effets UI</li>
+          <li><i class="fas fa-circle"></i> Motion graphics publicitaires</li>
+          <li><i class="fas fa-circle"></i> Explainer vidéos animées</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Animer ma marque <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="svc-card-item reveal delay-1">
+        <div class="svc-item-icon"><i class="fas fa-photo-video"></i></div>
+        <div class="svc-item-title">Content Studio</div>
+        <div class="svc-item-desc">Tous vos visuels réseaux sociaux, supports print et contenus digitaux. Posts, stories, flyers, affiches — cohérents avec votre identité.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Templates Instagram & Facebook</li>
+          <li><i class="fas fa-circle"></i> Flyers, affiches & supports print</li>
+          <li><i class="fas fa-circle"></i> Packaging & étiquettes</li>
+          <li><i class="fas fa-circle"></i> Bannières publicitaires</li>
+          <li><i class="fas fa-circle"></i> Newsletter & email design</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Créer mes contenus <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-lg reveal"><div class="section-label">Notre processus</div><h2 class="text-h2">De l'idée au <span class="gradient-text">visuel final</span></h2></div>
+    <div class="process-steps">
+      <div class="process-step reveal"><div class="process-step-num">01</div><div class="process-step-title">Brief & Découverte</div><div class="process-step-desc">Analyse de votre univers, vos concurrents et votre cible.</div></div>
+      <div class="process-step reveal delay-1"><div class="process-step-num">02</div><div class="process-step-title">Moodboard</div><div class="process-step-desc">Direction artistique, références visuelles et validations.</div></div>
+      <div class="process-step reveal delay-2"><div class="process-step-num">03</div><div class="process-step-title">Création</div><div class="process-step-desc">Design des éléments, retours et affinage avec vous.</div></div>
+      <div class="process-step reveal delay-3"><div class="process-step-num">04</div><div class="process-step-title">Livraison</div><div class="process-step-desc">Fichiers sources + guide d'utilisation complet.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--black-2);">
+  <div class="container">
+    <div class="svc-page-cta reveal">
+      <div class="section-label" style="justify-content:center;">Prêt à vous démarquer ?</div>
+      <h2 class="text-h1" style="margin:0.75rem 0 1.5rem;">Créons votre <span class="gradient-text">identité de marque</span></h2>
+      <p class="text-body-lg" style="max-width:500px;margin:0 auto 2rem;">Premier échange gratuit. On parle de votre projet, on vous propose une direction créative et un devis transparent.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="contact.html" class="btn btn-primary btn-lg"><i class="fas fa-palette"></i> Démarrer mon projet</a>
+        <a href="portfolio.html" class="btn btn-glass btn-lg">Voir le portfolio</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="js/core.js"></script>
+<script src="js/components.js"></script>
+</body>
+</html>

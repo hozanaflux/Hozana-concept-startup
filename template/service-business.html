@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business & Monétisation IA | Hozana Concept Tunisie</title>
+  <meta name="description" content="Funnels de vente, CRO, email/SMS automation, stratégies de revenus. Hozana Concept transforme votre trafic en revenus prévisibles grâce à l'IA. Tunisie, France, Afrique. Audit gratuit.">
+  <link rel="icon" type="image/png" href="images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    .svc-page-hero { padding:calc(var(--nav-height) + 4rem) 2rem 4rem;position:relative;overflow:hidden;text-align:center; }
+    @media(max-width:768px) { .svc-page-hero { padding: calc(var(--nav-height) + 2.5rem) 1.25rem 3rem; } }
+    .svc-page-hero::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(255,46,46,0.15) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 80% 70%,rgba(255,106,0,0.09) 0%,transparent 55%); }
+    .svc-page-hero::after { content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:60px 60px; }
+    .svc-page-hero .container { position:relative;z-index:1; }
+    .svc-page-cat { display:inline-flex;align-items:center;gap:0.5rem;padding:0.35rem 1rem;border-radius:999px;font-family:var(--font-accent);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;background:rgba(255,46,46,0.1);border:1px solid rgba(255,46,46,0.25);color:#FF7070;margin-bottom:1.5rem; }
+    .svc-cards-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:3rem; }
+    .svc-card-item { background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;transition:border-color .25s,transform .25s,background .25s;position:relative;overflow:hidden; }
+    .svc-card-item:hover { border-color:rgba(255,46,46,0.3);background:rgba(255,46,46,0.04);transform:translateY(-4px); }
+    .svc-card-item::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad-red);opacity:0;transition:opacity .25s; }
+    .svc-card-item:hover::before { opacity:1; }
+    .svc-item-icon { width:52px;height:52px;border-radius:14px;background:rgba(255,46,46,0.1);border:1px solid rgba(255,46,46,0.2);display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:var(--red);margin-bottom:1.25rem;transition:background .25s; }
+    .svc-card-item:hover .svc-item-icon { background:rgba(255,46,46,0.16); }
+    .svc-item-title { font-family:var(--font-title);font-size:1.15rem;font-weight:800;color:var(--white);margin-bottom:0.75rem; }
+    .svc-item-desc { font-size:0.875rem;color:var(--white-60);line-height:1.7;margin-bottom:1.25rem; }
+    .svc-item-feats { list-style:none;display:flex;flex-direction:column;gap:0.45rem;margin-bottom:1.5rem; }
+    .svc-item-feats li { display:flex;align-items:flex-start;gap:0.6rem;font-size:0.82rem;color:var(--white-70); }
+    .svc-item-feats li i { font-size:0.5rem;color:var(--red);margin-top:0.42em;flex-shrink:0; }
+    .svc-item-cta { font-family:var(--font-accent);font-size:0.82rem;font-weight:700;color:var(--red);text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;transition:gap .2s; }
+    .svc-item-cta:hover { gap:0.65rem; }
+    .results-row { display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:2.5rem; }
+    .result-metric { padding:1.5rem 1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;text-align:center; }
+    .result-metric-val { font-family:var(--font-title);font-size:2.2rem;font-weight:900;background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:0.5rem; }
+    .result-metric-lbl { font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent); }
+    .process-steps { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-top:3rem; }
+    .process-step { text-align:center;padding:2rem 1.5rem;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:16px;position:relative; }
+    .process-step-num { font-family:var(--font-title);font-size:3rem;font-weight:900;background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:0.75rem; }
+    .process-step-title { font-family:var(--font-accent);font-size:0.9rem;font-weight:700;color:var(--white-90);margin-bottom:0.5rem; }
+    .process-step-desc { font-size:0.8rem;color:var(--white-50);line-height:1.6; }
+    /* Funnel visual */
+    .funnel-wrap { display:flex;flex-direction:column;gap:0;align-items:center;margin:3rem auto;max-width:560px; }
+    .funnel-stage { width:100%;padding:1.25rem 2rem;border-radius:0;text-align:center;position:relative;clip-path:polygon(5% 0%,95% 0%,88% 100%,12% 100%); }
+    .funnel-stage:first-child { border-radius:20px 20px 0 0;clip-path:none; }
+    .funnel-label { font-family:var(--font-accent);font-size:0.9rem;font-weight:700;color:var(--white); }
+    .funnel-sub { font-size:0.75rem;color:var(--white-60);margin-top:0.2rem; }
+    .svc-page-cta { position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(255,46,46,0.09),rgba(255,106,0,0.06));border:1px solid rgba(255,46,46,0.15);border-radius:24px;padding:5rem 3rem;text-align:center; }
+    .svc-page-cta::before { content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none; }
+    .svc-page-cta::after { content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:50%;height:1px;background:var(--grad-red);opacity:.7; }
+    .svc-page-cta > * { position:relative;z-index:1; }
+    @media(max-width:768px) { .svc-cards-grid{grid-template-columns:1fr;} .svc-page-cta{padding:3rem 1.5rem;} .funnel-stage{clip-path:none!important;border-radius:12px!important;} }
+  </style>
+</head>
+<body>
+<div id="loader"><img src="images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;"><div class="loader-bar"><div class="loader-bar-fill"></div></div></div>
+<div id="navbar-placeholder"></div>
+
+<!-- HERO -->
+<section class="svc-page-hero">
+  <div class="container">
+    <div class="svc-page-cat reveal"><i class="fas fa-circle-dollar-to-slot"></i> Business & Monétisation</div>
+    <h1 class="text-display reveal delay-1" style="max-width:820px;margin:0 auto 1.25rem;">
+      Transformez votre trafic en <span class="gradient-text">revenus prévisibles</span>
+    </h1>
+    <p class="text-body-lg reveal delay-2" style="max-width:620px;margin:0 auto 2rem;color:var(--white-60);">
+      Funnels haute conversion, automatisation email & SMS, CRO et stratégies de monétisation — nous construisons les systèmes qui font croître votre chiffre d'affaires sans vous épuiser.
+    </p>
+    <div class="reveal delay-3" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="contact.html" class="btn btn-primary btn-lg"><i class="fas fa-rocket"></i> Booster mes revenus</a>
+      <a href="packs.html" class="btn btn-glass btn-lg">Voir les offres →</a>
+    </div>
+    <div class="results-row reveal delay-3" style="max-width:760px;margin:2.5rem auto 0;">
+      <div class="result-metric"><div class="result-metric-val">+247%</div><div class="result-metric-lbl">CA moyen en 90j</div></div>
+      <div class="result-metric"><div class="result-metric-val">×4.2</div><div class="result-metric-lbl">ROI sur les funnels</div></div>
+      <div class="result-metric"><div class="result-metric-val">−67%</div><div class="result-metric-lbl">Coût par acquisition</div></div>
+      <div class="result-metric"><div class="result-metric-val">48h</div><div class="result-metric-lbl">Mise en ligne funnel</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES CARDS -->
+<section class="section" style="background:var(--black-2);">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">4 leviers de croissance</div>
+      <h2 class="text-h2">Ce que nous <span class="gradient-text">mettons en place</span></h2>
+    </div>
+    <div class="svc-cards-grid">
+
+      <!-- Funnels -->
+      <div class="svc-card-item reveal">
+        <div class="svc-item-icon"><i class="fas fa-filter"></i></div>
+        <div class="svc-item-title">Funnels de Vente</div>
+        <div class="svc-item-desc">Des tunnels de vente complets et optimisés — landing pages ultra-persuasives, séquences de nurturing et pages de checkout qui maximisent chaque visite.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Landing pages haute conversion (A/B testées)</li>
+          <li><i class="fas fa-circle"></i> Séquences de nurturing automatisées</li>
+          <li><i class="fas fa-circle"></i> Upsells, downsells & order bumps</li>
+          <li><i class="fas fa-circle"></i> Pages de checkout optimisées</li>
+          <li><i class="fas fa-circle"></i> Suivi des conversions & analytics</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Créer mon funnel <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <!-- CRO -->
+      <div class="svc-card-item reveal delay-1">
+        <div class="svc-item-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="svc-item-title">CRO — Optimisation des Conversions</div>
+        <div class="svc-item-desc">Transformer vos visiteurs existants en clients sans dépenser un euro de plus en publicité. Chaque élément de votre site est analysé, testé et optimisé.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Audit UX complet de vos pages</li>
+          <li><i class="fas fa-circle"></i> Tests A/B sur CTAs, titres, formulaires</li>
+          <li><i class="fas fa-circle"></i> Heatmaps & enregistrements sessions</li>
+          <li><i class="fas fa-circle"></i> Optimisation des formulaires</li>
+          <li><i class="fas fa-circle"></i> Rapports hebdomadaires d'amélioration</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Optimiser mes conversions <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Email & SMS -->
+      <div class="svc-card-item reveal delay-2">
+        <div class="svc-item-icon"><i class="fas fa-envelope-open-text"></i></div>
+        <div class="svc-item-title">Email & SMS Automation</div>
+        <div class="svc-item-desc">Des séquences automatiques qui vendent pendant que vous dormez. Onboarding, relances panier, promotions, réactivation — tout s'enclenche sans votre intervention.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Séquences de bienvenue & onboarding</li>
+          <li><i class="fas fa-circle"></i> Relances panier abandonné</li>
+          <li><i class="fas fa-circle"></i> Campagnes SMS haute délivrabilité</li>
+          <li><i class="fas fa-circle"></i> Segmentation & personnalisation avancée</li>
+          <li><i class="fas fa-circle"></i> Automatisations comportementales</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Automatiser mes emails <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Stratégies Revenus -->
+      <div class="svc-card-item reveal delay-1">
+        <div class="svc-item-icon"><i class="fas fa-coins"></i></div>
+        <div class="svc-item-title">Stratégies de Revenus</div>
+        <div class="svc-item-desc">Nouvelles sources de revenus, offres premium, monétisation de votre audience — nous identifions et activons tous les leviers inexploités de votre business.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Audit des sources de revenus actuelles</li>
+          <li><i class="fas fa-circle"></i> Création d'offres premium & packages</li>
+          <li><i class="fas fa-circle"></i> Stratégie de pricing & positionnement</li>
+          <li><i class="fas fa-circle"></i> Monétisation audience (formation, SaaS…)</li>
+          <li><i class="fas fa-circle"></i> Partenariats & affiliation</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Diversifier mes revenus <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FUNNEL VISUEL -->
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">Notre approche</div>
+      <h2 class="text-h2">Le funnel <span class="gradient-text">Hozana en 4 étapes</span></h2>
+      <p style="color:var(--white-60);max-width:500px;margin:1rem auto 0;font-size:0.95rem;line-height:1.7;">Chaque étape est conçue pour maximiser la valeur et réduire les frictions. Un système qui tourne en automatique.</p>
+    </div>
+
+    <div class="funnel-wrap" aria-label="Entonnoir de conversion">
+      <div class="funnel-stage reveal" style="background:rgba(255,46,46,0.15);border:1px solid rgba(255,46,46,0.3);border-radius:20px 20px 0 0;padding:1.5rem 3rem;width:100%;text-align:center;">
+        <div style="font-size:1.5rem;margin-bottom:0.4rem;color:var(--red);"><i class="fas fa-users"></i></div>
+        <div class="funnel-label">1. Trafic qualifié</div>
+        <div class="funnel-sub">Ads, SEO, Social, Content — vos visiteurs idéaux arrivent</div>
+      </div>
+      <div class="funnel-stage reveal delay-1" style="background:rgba(255,60,0,0.13);border:1px solid rgba(255,60,0,0.25);width:88%;padding:1.5rem 2rem;text-align:center;">
+        <div style="font-size:1.5rem;margin-bottom:0.4rem;color:#FF5A00;"><i class="fas fa-magnet"></i></div>
+        <div class="funnel-label">2. Capture & Landing Page</div>
+        <div class="funnel-sub">Lead magnet, offre irrésistible, formulaire optimisé</div>
+      </div>
+      <div class="funnel-stage reveal delay-2" style="background:rgba(255,90,0,0.11);border:1px solid rgba(255,90,0,0.22);width:74%;padding:1.5rem 2rem;text-align:center;">
+        <div style="font-size:1.5rem;margin-bottom:0.4rem;color:#FF6A00;"><i class="fas fa-envelope-open-text"></i></div>
+        <div class="funnel-label">3. Nurturing automatisé</div>
+        <div class="funnel-sub">Séquences email/SMS, contenu de valeur, confiance</div>
+      </div>
+      <div class="funnel-stage reveal delay-3" style="background:rgba(255,130,0,0.12);border:1px solid rgba(255,130,0,0.25);width:58%;padding:1.5rem 2rem;border-radius:0 0 16px 16px;text-align:center;">
+        <div style="font-size:1.5rem;margin-bottom:0.4rem;color:#FF8C42;"><i class="fas fa-bag-shopping"></i></div>
+        <div class="funnel-label">4. Conversion & Upsell</div>
+        <div class="funnel-sub">Checkout optimisé, offre principale + bump + upsell</div>
+      </div>
+    </div>
+
+    <!-- Métriques du funnel -->
+    <div class="reveal delay-3" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:3rem;max-width:800px;margin-left:auto;margin-right:auto;">
+      <div style="text-align:center;padding:1.5rem;background:rgba(255,46,46,0.06);border:1px solid rgba(255,46,46,0.15);border-radius:16px;">
+        <div style="font-family:var(--font-title);font-size:2.2rem;font-weight:900;background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">×4.2</div>
+        <div style="font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);margin-top:0.4rem;">ROI moyen constaté</div>
+      </div>
+      <div style="text-align:center;padding:1.5rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;">
+        <div style="font-family:var(--font-title);font-size:2.2rem;font-weight:900;color:var(--white-80);">−67%</div>
+        <div style="font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);margin-top:0.4rem;">Coût par acquisition</div>
+      </div>
+      <div style="text-align:center;padding:1.5rem;background:rgba(255,106,0,0.06);border:1px solid rgba(255,106,0,0.15);border-radius:16px;">
+        <div style="font-family:var(--font-title);font-size:2.2rem;font-weight:900;color:#FF8C42;">+247%</div>
+        <div style="font-size:0.78rem;color:var(--white-50);font-family:var(--font-accent);margin-top:0.4rem;">CA en 90 jours</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section" style="background:var(--black-2);">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">Notre méthode</div>
+      <h2 class="text-h2">De l'analyse à <span class="gradient-text">l'optimisation continue</span></h2>
+    </div>
+    <div class="process-steps">
+      <div class="process-step reveal">
+        <div class="process-step-num">01</div>
+        <div class="process-step-title">Audit Business</div>
+        <div class="process-step-desc">Analyse de votre CA, vos coûts d'acquisition, vos taux de conversion et vos sources de revenus actuelles.</div>
+      </div>
+      <div class="process-step reveal delay-1">
+        <div class="process-step-num">02</div>
+        <div class="process-step-title">Stratégie & Plan</div>
+        <div class="process-step-desc">Définition des funnels prioritaires, séquences d'automation et roadmap de monétisation sur 90 jours.</div>
+      </div>
+      <div class="process-step reveal delay-2">
+        <div class="process-step-num">03</div>
+        <div class="process-step-title">Déploiement</div>
+        <div class="process-step-desc">Construction des funnels, intégration des outils, mise en place des automatisations email/SMS.</div>
+      </div>
+      <div class="process-step reveal delay-3">
+        <div class="process-step-num">04</div>
+        <div class="process-step-title">Optimisation</div>
+        <div class="process-step-desc">Tests A/B en continu, ajustements basés sur les données, reporting mensuel et itérations.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="section">
+  <div class="container">
+    <div class="svc-page-cta reveal">
+      <!-- Dot pattern décoratif -->
+      <div aria-hidden="true" style="position:absolute;bottom:1.5rem;right:2rem;display:grid;grid-template-columns:repeat(5,8px);gap:6px;opacity:0.15;">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span>
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span>
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:block;"></span>
+      </div>
+      <div class="section-label" style="justify-content:center;">Prêt à scaler ?</div>
+      <h2 class="text-h1" style="margin:0.75rem 0 1.5rem;">Construisons votre <span class="gradient-text">machine à revenus</span></h2>
+      <p class="text-body-lg" style="max-width:520px;margin:0 auto 2rem;">Audit business offert. On identifie ensemble vos leviers de croissance inexploités et on construit le plan d'action sur 90 jours.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="contact.html" class="btn btn-primary btn-lg"><i class="fas fa-rocket"></i> Audit offert — 30 min</a>
+        <a href="packs.html" class="btn btn-glass btn-lg">Voir les packs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="js/core.js"></script>
+<script src="js/components.js"></script>
+</body>
+</html>

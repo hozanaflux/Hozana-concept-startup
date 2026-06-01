@@ -1,0 +1,11 @@
+
+# Hozana Concept Post-Publish Hook Configuration
+
+# Hook to run after article publication
+# This hook will trigger the static blog generation process
+
+# To set up the hook in your CMS:
+# 1. Add a webhook to your CMS that points to: C:\Users\amado\Downloads\hozana concept\my website\scripts\post-publish-hook.js
+# 2. Configure the webhook to trigger on article publish/update events
+# 3. Set the webhook to send a POST request to the hook script
+  

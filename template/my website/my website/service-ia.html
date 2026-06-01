@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intelligence Artificielle & Automatisation | Hozana Concept Tunis</title>
+  <meta name="description" content="Solutions IA sur mesure : chatbots, agents IA, automatisation des ventes, marketing IA, prédictions data. Hozana Concept — agence IA Tunisie. Audit gratuit 30 min.">
+  <link rel="icon" type="image/png" href="images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    /* ── Page hero ── */
+    .svc-page-hero {
+      padding: calc(var(--nav-height) + 4rem) 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    @media(max-width:768px) { .svc-page-hero { padding: calc(var(--nav-height) + 2.5rem) 1.25rem 3rem; } }
+    .svc-page-hero::before {
+      content:'';
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,46,46,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 60%, rgba(255,106,0,0.09) 0%, transparent 55%);
+    }
+    .svc-page-hero::after {
+      content:'';
+      position:absolute;
+      inset:0;
+      background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+      background-size:60px 60px;
+    }
+    .svc-page-hero .container { position:relative;z-index:1; }
+
+    /* ── Category label ── */
+    .svc-page-cat {
+      display:inline-flex;
+      align-items:center;
+      gap:0.5rem;
+      padding:0.35rem 1rem;
+      border-radius:999px;
+      font-family:var(--font-accent);
+      font-size:0.72rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.1em;
+      background:rgba(255,46,46,0.1);
+      border:1px solid rgba(255,46,46,0.25);
+      color:#FF7070;
+      margin-bottom:1.5rem;
+    }
+
+    /* ── Service cards grid ── */
+    .svc-cards-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+      gap:1.5rem;
+      margin-top:3rem;
+    }
+    .svc-card-item {
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:20px;
+      padding:2rem;
+      transition:border-color .25s, transform .25s, background .25s;
+      position:relative;
+      overflow:hidden;
+    }
+    .svc-card-item:hover {
+      border-color:rgba(255,46,46,0.3);
+      background:rgba(255,46,46,0.04);
+      transform:translateY(-4px);
+    }
+    .svc-card-item::before {
+      content:'';
+      position:absolute;
+      top:0;left:0;right:0;
+      height:2px;
+      background:var(--grad-red);
+      opacity:0;
+      transition:opacity .25s;
+    }
+    .svc-card-item:hover::before { opacity:1; }
+
+    /* Icon */
+    .svc-item-icon {
+      width:52px;height:52px;
+      border-radius:14px;
+      background:rgba(255,46,46,0.1);
+      border:1px solid rgba(255,46,46,0.2);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.25rem;
+      color:var(--red);
+      margin-bottom:1.25rem;
+      transition:background .25s;
+    }
+    .svc-card-item:hover .svc-item-icon {
+      background:rgba(255,46,46,0.16);
+    }
+    .svc-item-title {
+      font-family:var(--font-title);
+      font-size:1.15rem;
+      font-weight:800;
+      color:var(--white);
+      margin-bottom:0.75rem;
+    }
+    .svc-item-desc {
+      font-size:0.875rem;
+      color:var(--white-60);
+      line-height:1.7;
+      margin-bottom:1.25rem;
+    }
+    .svc-item-feats {
+      list-style:none;
+      display:flex;
+      flex-direction:column;
+      gap:0.45rem;
+      margin-bottom:1.5rem;
+    }
+    .svc-item-feats li {
+      display:flex;
+      align-items:flex-start;
+      gap:0.6rem;
+      font-size:0.82rem;
+      color:var(--white-70);
+    }
+    .svc-item-feats li i {
+      font-size:0.6rem;
+      color:var(--red);
+      margin-top:0.35em;
+      flex-shrink:0;
+    }
+    .svc-item-cta {
+      font-family:var(--font-accent);
+      font-size:0.82rem;
+      font-weight:700;
+      color:var(--red);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:0.4rem;
+      transition:gap .2s;
+    }
+    .svc-item-cta:hover { gap:0.65rem; }
+
+    /* ── Process section ── */
+    .process-steps {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:1.25rem;
+      margin-top:3rem;
+    }
+    .process-step {
+      text-align:center;
+      padding:2rem 1.5rem;
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:16px;
+      position:relative;
+    }
+    .process-step-num {
+      font-family:var(--font-title);
+      font-size:3rem;
+      font-weight:900;
+      background:var(--grad-red);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      line-height:1;
+      margin-bottom:0.75rem;
+    }
+    .process-step-title {
+      font-family:var(--font-accent);
+      font-size:0.9rem;
+      font-weight:700;
+      color:var(--white-90);
+      margin-bottom:0.5rem;
+    }
+    .process-step-desc {
+      font-size:0.8rem;
+      color:var(--white-50);
+      line-height:1.6;
+    }
+
+    /* ── CTA ── */
+    .svc-page-cta {
+      position:relative;overflow:hidden;
+      background:linear-gradient(135deg,rgba(255,46,46,0.09),rgba(255,106,0,0.06));
+      border:1px solid rgba(255,46,46,0.15);
+      border-radius:24px;
+      padding:5rem 3rem;
+      text-align:center;
+      margin:0;
+    }
+    .svc-page-cta::before {
+      content:'';position:absolute;inset:0;
+      background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+      background-size:40px 40px;pointer-events:none;
+    }
+    .svc-page-cta::after {
+      content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+      width:50%;height:1px;background:var(--grad-red);opacity:.7;
+    }
+    .svc-page-cta > * { position:relative;z-index:1; }
+
+    /* Results metrics */
+    .results-row {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:1rem;
+      margin-top:3rem;
+    }
+    .result-metric {
+      padding:1.5rem 1rem;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:16px;
+      text-align:center;
+    }
+    .result-metric-val {
+      font-family:var(--font-title);
+      font-size:2.2rem;
+      font-weight:900;
+      background:var(--grad-red);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      line-height:1;
+      margin-bottom:0.5rem;
+    }
+    .result-metric-lbl {
+      font-size:0.78rem;
+      color:var(--white-50);
+      font-family:var(--font-accent);
+    }
+
+    @media(max-width:768px) {
+      .svc-cards-grid { grid-template-columns:1fr; }
+      .svc-page-cta { padding:3rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="loader"><img src="images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;"><div class="loader-bar"><div class="loader-bar-fill"></div></div></div>
+<div id="navbar-placeholder"></div>
+
+<!-- HERO -->
+<section class="svc-page-hero">
+  <div class="container">
+    <div class="svc-page-cat reveal"><i class="fas fa-bolt"></i> Service Prioritaire · STAR</div>
+    <h1 class="text-display reveal delay-1" style="max-width:780px;margin:0 auto 1.25rem;">
+      <span class="gradient-text">Intelligence Artificielle</span> — Transformez votre business
+    </h1>
+    <p class="text-body-lg reveal delay-2" style="max-width:600px;margin:0 auto 2rem;color:var(--white-60);">
+      Chatbots intelligents, agents IA autonomes, automatisation avancée et analyse prédictive. Nous déployons l'IA là où elle crée de la valeur — concrètement, rapidement.
+    </p>
+    <div class="reveal delay-3" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="contact.html" class="btn btn-primary btn-lg"><i class="fas fa-rocket"></i> Audit IA gratuit</a>
+      <a href="packs.html" class="btn btn-glass btn-lg">Voir les packs →</a>
+    </div>
+    <!-- Metrics -->
+    <div class="results-row reveal delay-3" style="max-width:700px;margin:2.5rem auto 0;">
+      <div class="result-metric"><div class="result-metric-val">300%</div><div class="result-metric-lbl">ROI moyen</div></div>
+      <div class="result-metric"><div class="result-metric-val">247h</div><div class="result-metric-lbl">Économisées / mois</div></div>
+      <div class="result-metric"><div class="result-metric-val">24/7</div><div class="result-metric-lbl">Disponibilité IA</div></div>
+      <div class="result-metric"><div class="result-metric-val">−40%</div><div class="result-metric-lbl">Coûts opérationnels</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES GRID -->
+<section class="section" style="background:var(--black-2);">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">5 expertises IA</div>
+      <h2 class="text-h2">Ce que nous <span class="gradient-text">déployons pour vous</span></h2>
+    </div>
+
+    <div class="svc-cards-grid">
+
+      <!-- Automatisation IA -->
+      <div class="svc-card-item reveal">
+        <div class="svc-item-icon"><i class="fas fa-cogs"></i></div>
+        <div class="svc-item-title">Automatisation IA</div>
+        <div class="svc-item-desc">Éliminez les tâches répétitives. Nous construisons des workflows intelligents qui traitent, décident et agissent — sans intervention humaine.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Workflows n8n, Make.com, Zapier</li>
+          <li><i class="fas fa-circle"></i> Automatisation CRM & pipeline de vente</li>
+          <li><i class="fas fa-circle"></i> Email & SMS marketing automatisés</li>
+          <li><i class="fas fa-circle"></i> Traitement automatique de documents</li>
+          <li><i class="fas fa-circle"></i> Reporting et alertes intelligentes</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Automatiser mon business <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Chatbots IA -->
+      <div class="svc-card-item reveal delay-1">
+        <div class="svc-item-icon"><i class="fas fa-comments"></i></div>
+        <div class="svc-item-title">Chatbots IA (WhatsApp + site web)</div>
+        <div class="svc-item-desc">Des assistants conversationnels qui répondent, qualifient et convertissent vos prospects 24h/24 — sur votre site et sur WhatsApp.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Chatbot site web intégré (widget)</li>
+          <li><i class="fas fa-circle"></i> Bot WhatsApp Business API</li>
+          <li><i class="fas fa-circle"></i> Qualification automatique des leads</li>
+          <li><i class="fas fa-circle"></i> FAQ & support client IA</li>
+          <li><i class="fas fa-circle"></i> Transfert vers agent humain si besoin</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Créer mon chatbot <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Agents IA personnalisés -->
+      <div class="svc-card-item reveal delay-2">
+        <div class="svc-item-icon"><i class="fas fa-brain"></i></div>
+        <div class="svc-item-title">Agents IA personnalisés</div>
+        <div class="svc-item-desc">Des agents autonomes capables de raisonner, planifier et exécuter des tâches complexes à votre place. Basés sur GPT-4o, Claude ou Mistral.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Agents de prospection & outreach</li>
+          <li><i class="fas fa-circle"></i> Agent de veille & analyse concurrentielle</li>
+          <li><i class="fas fa-circle"></i> Agent de génération de leads</li>
+          <li><i class="fas fa-circle"></i> Fine-tuning sur vos données</li>
+          <li><i class="fas fa-circle"></i> Intégration RAG (base de connaissances)</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Déployer mon agent IA <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Analyse & prédictions -->
+      <div class="svc-card-item reveal delay-1">
+        <div class="svc-item-icon"><i class="fas fa-chart-bar"></i></div>
+        <div class="svc-item-title">Analyse & Prédictions</div>
+        <div class="svc-item-desc">Transformez vos données en décisions. Modèles prédictifs, scoring IA et dashboards intelligents pour anticiper avant vos concurrents.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Scoring & qualification des leads</li>
+          <li><i class="fas fa-circle"></i> Prévisions de ventes & churn prediction</li>
+          <li><i class="fas fa-circle"></i> Dashboards temps réel connectés</li>
+          <li><i class="fas fa-circle"></i> Détection d'anomalies & fraudes</li>
+          <li><i class="fas fa-circle"></i> Modèles de recommandation</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Analyser mes données <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Génération de contenu IA -->
+      <div class="svc-card-item reveal delay-2">
+        <div class="svc-item-icon"><i class="fas fa-pen-nib"></i></div>
+        <div class="svc-item-title">Génération de Contenu IA</div>
+        <div class="svc-item-desc">Produisez du contenu premium à grande échelle — articles SEO, posts réseaux, scripts vidéo, emails — dans votre ton de voix.</div>
+        <ul class="svc-item-feats">
+          <li><i class="fas fa-circle"></i> Articles de blog SEO optimisés</li>
+          <li><i class="fas fa-circle"></i> Posts & captions pour réseaux sociaux</li>
+          <li><i class="fas fa-circle"></i> Scripts vidéo & podcasts</li>
+          <li><i class="fas fa-circle"></i> Séquences email & newsletters</li>
+          <li><i class="fas fa-circle"></i> Contenu multilingue automatique</li>
+        </ul>
+        <a href="contact.html" class="svc-item-cta">Générer du contenu <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">Notre méthode</div>
+      <h2 class="text-h2">De l'idée au <span class="gradient-text">déploiement en 30 jours</span></h2>
+    </div>
+    <div class="process-steps">
+      <div class="process-step reveal"><div class="process-step-num">01</div><div class="process-step-title">Audit & Diagnostic</div><div class="process-step-desc">Analyse de votre business, identification des opportunités IA à fort ROI.</div></div>
+      <div class="process-step reveal delay-1"><div class="process-step-num">02</div><div class="process-step-title">Conception</div><div class="process-step-desc">Architecture technique, choix des modèles IA, maquettes des workflows.</div></div>
+      <div class="process-step reveal delay-2"><div class="process-step-num">03</div><div class="process-step-title">Développement</div><div class="process-step-desc">Intégration, tests et fine-tuning des modèles sur vos données.</div></div>
+      <div class="process-step reveal delay-3"><div class="process-step-num">04</div><div class="process-step-title">Déploiement</div><div class="process-step-desc">Mise en production, formation équipe, monitoring et optimisation continue.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="background:var(--black-2);">
+  <div class="container">
+    <div class="svc-page-cta reveal">
+      <div class="section-label" style="justify-content:center;">Prêt à passer à l'IA ?</div>
+      <h2 class="text-h1" style="margin:0.75rem 0 1.5rem;">Démarrons votre <span class="gradient-text">projet IA</span></h2>
+      <p class="text-body-lg" style="max-width:500px;margin:0 auto 2rem;">Premier audit 100% gratuit. On identifie vos opportunités IA et on vous propose un plan d'action concret.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="contact.html" class="btn btn-primary btn-lg"><i class="fas fa-calendar"></i> Audit gratuit 30 min</a>
+        <a href="packs.html" class="btn btn-glass btn-lg">Voir les packs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="js/core.js"></script>
+<script src="js/components.js"></script>
+</body>
+</html>

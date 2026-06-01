@@ -103,26 +103,26 @@ async function generateStaticPost(post) {
     const catBreadcrumb = document.getElementById('article-cat-breadcrumb');
     if (catBreadcrumb) catBreadcrumb.textContent = post.category || 'IA';
 
-    const badgesWrap = document.getElementById('hero-badge-wrap');
-    if (badgesWrap) {
-      badgesWrap.innerHTML = `
-        <span class="hero-cat-badge">${escapeHtml(post.category || 'IA')}</span>
-        ${post.featured ? '<span class="hero-featured-badge">⭐ À la une</span>' : ''}
+    const badgesEl = document.getElementById('article-badges');
+    if (badgesEl) {
+      badgesEl.innerHTML = `
+        <span class="badge badge-red">${escapeHtml(post.category || 'IA')}</span>
+        ${post.featured ? '<span class="badge badge-orange">⭐ Featured</span>' : ''}
       `;
     }
 
-    const metaRow = document.getElementById('article-meta-row');
-    if (metaRow) {
+    const metaEl = document.getElementById('article-hero-meta');
+    if (metaEl) {
       const initials = (post.author || 'HC').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
       const date = formatDate(post.publish_date || post.created_at);
-      metaRow.innerHTML = `
-        <span class="meta-author">
-          <span class="meta-author-avatar">${initials}</span>
+      metaEl.innerHTML = `
+        <span style="display:flex;align-items:center;gap:0.5rem;">
+          <span style="width:32px;height:32px;border-radius:50%;background:var(--grad-red);display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:white;">${initials}</span>
           ${escapeHtml(post.author || 'Hozana Concept')}
         </span>
-        ${date ? `<span class="meta-item"><i class="fas fa-calendar-alt"></i>${date}</span>` : ''}
-        <span class="meta-item"><i class="fas fa-clock"></i>${post.read_time || 5} min de lecture</span>
-        <span class="meta-item"><i class="fas fa-eye"></i>${formatNum((post.views || 0) + 1)} vues</span>
+        ${date ? `<span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>${date}</span>` : ''}
+        <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>${post.read_time || 5} min de lecture</span>
+        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>${formatNum((post.views || 0) + 1)} vues</span>
       `;
     }
 

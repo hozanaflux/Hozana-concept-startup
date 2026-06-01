@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Hozana Concept</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <style>
+    /* CSS identical to original, plus small additions for new panels */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sidebar-w: 256px; --topbar-h: 64px; --bg: #070709; --surface: #0f0f13; --surface2: #16161c;
+      --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14); --text: #f0f0f5;
+      --muted: rgba(240,240,245,0.45); --muted2: rgba(240,240,245,0.25); --red: #FF2E2E;
+      --red-o: rgba(255,46,46,0.12); --red-border: rgba(255,46,46,0.3); --orange: #FF6A00;
+      --grad: linear-gradient(135deg,#FF2E2E,#FF6A00); --radius: 14px; --radius-sm: 8px;
+      --radius-lg: 20px; --trans: 0.18s ease; --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --font: 'Space Grotesk', sans-serif; --font-title: 'Sora', sans-serif;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); overflow-x: hidden; font-size: 14px; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+    .login-screen { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; align-items: center; justify-content: center; background-image: radial-gradient(ellipse 70% 50% at 50% 20%, rgba(255,46,46,0.1) 0%, transparent 70%); }
+    .login-card { width: 100%; max-width: 400px; background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 2.5rem 2rem; animation: fadeUp .4s ease; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:translateY(0) } }
+    .login-logo { font-family: var(--font-title); font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 0.25rem; }
+    .login-logo span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .login-sub { text-align: center; font-size: .78rem; color: var(--muted); margin-bottom: 2rem; }
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .4rem; }
+    .field-wrap { position: relative; }
+    .field input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: .875rem; padding: .7rem 1rem; outline: none; transition: border-color var(--trans); }
+    .field input:focus { border-color: var(--red-border); }
+    .eye-btn { position: absolute; right: .75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: .875rem; }
+    .login-err { display: none; background: var(--red-o); border: 1px solid var(--red-border); border-radius: var(--radius-sm); color: #FF7070; font-size: .8rem; padding: .6rem 1rem; margin-bottom: .75rem; }
+    .btn-login { width: 100%; background: var(--grad); color: #fff; font-family: var(--font); font-size: .875rem; font-weight: 700; border: none; border-radius: var(--radius-sm); padding: .8rem; cursor: pointer; transition: all var(--trans); }
+    .login-back { display: block; text-align: center; margin-top: 1.25rem; font-size: .78rem; color: var(--muted); text-decoration: none; }
+    .admin { display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-w); flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); position: fixed; top: 0; left: 0; bottom: 0; display: flex; flex-direction: column; overflow-y: auto; z-index: 100; transition: transform var(--trans); }
+    .sidebar-brand { padding: 1.25rem 1.25rem 1rem; border-bottom: 1px solid var(--border); font-family: var(--font-title); font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: .5rem; }
+    .sidebar-brand span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-section { padding: 1.1rem 1rem .3rem; font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted2); }
+    .nav-btn { display: flex; align-items: center; gap: .75rem; padding: .65rem 1rem; margin: .1rem .5rem; border-radius: var(--radius-sm); background: none; border: none; color: var(--muted); font-family: var(--font); font-size: .85rem; font-weight: 500; cursor: pointer; text-decoration: none; width: calc(100% - 1rem); transition: all var(--trans); text-align: left; }
+    .nav-btn i { width: 16px; text-align: center; font-size: .8rem; }
+    .nav-btn:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .nav-btn.active { background: var(--red-o); color: #FF7070; border: 1px solid var(--red-border); }
+    .nav-btn .badge { margin-left: auto; background: var(--red); color: #fff; font-size: .6rem; font-weight: 700; padding: .1rem .4rem; border-radius: 99px; min-width: 18px; text-align: center; }
+    .sidebar-footer { margin-top: auto; padding: 1rem .5rem .75rem; border-top: 1px solid var(--border); }
+    .sidebar-user { display: flex; align-items: center; gap: .625rem; padding: .5rem .75rem; font-size: .78rem; color: var(--muted); }
+    .user-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+    .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .topbar { height: var(--topbar-h); background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; position: sticky; top: 0; z-index: 50; gap: 1rem; }
+    .mobile-toggle { display: none; background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--muted); padding: .5rem .625rem; }
+    .page-title { font-family: var(--font-title); font-size: 1.1rem; font-weight: 800; }
+    .tb-btn { display: flex; align-items: center; gap: .5rem; padding: .5rem 1rem; border-radius: var(--radius-sm); font-family: var(--font); font-size: .8rem; font-weight: 600; cursor: pointer; transition: all var(--trans); border: 1px solid var(--border); background: var(--surface2); color: var(--muted); }
+    .tb-btn.primary { background: var(--grad); color: #fff; border-color: transparent; }
+    .content { padding: 1.75rem 2rem; flex: 1; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; position: relative; overflow: hidden; }
+    .kpi::after { content:''; position:absolute; top:0;left:0;right:0;height:2px; background:var(--grad); opacity:.5; }
+    .kpi-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: .625rem; display: flex; align-items: center; gap: .4rem; }
+    .kpi-val { font-family: var(--font-title); font-size: 1.9rem; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: .375rem; }
+    .chart-row { display: grid; grid-template-columns: 1.8fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+    .chart-wrap { height: 200px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.25rem; }
+    .card-head { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+    .card-title { font-weight: 700; font-size: .9rem; display: flex; align-items: center; gap: .5rem; }
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .8275rem; }
+    th { padding: .75rem 1rem; text-align: left; font-size: .67rem; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--border); text-transform: uppercase; }
+    td { padding: .8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; color: rgba(240,240,245,0.8); }
+    .badge { display: inline-flex; align-items: center; padding: .2rem .6rem; border-radius: 99px; font-size: .67rem; font-weight: 700; text-transform: uppercase; }
+    .badge-blue { background: rgba(59,130,246,.15); color: #60a5fa; border: 1px solid rgba(59,130,246,.25); }
+    .badge-yellow { background: rgba(234,179,8,.15); color: #facc15; border: 1px solid rgba(234,179,8,.25); }
+    .badge-green { background: rgba(34,197,94,.15); color: #4ade80; border: 1px solid rgba(34,197,94,.25); }
+    .badge-red { background: var(--red-o); color: #FF7070; border: 1px solid var(--red-border); }
+    .badge-gray { background: rgba(255,255,255,.07); color: var(--muted); border: 1px solid var(--border); }
+    .badge-purple { background: rgba(168,85,247,.15); color: #c084fc; border: 1px solid rgba(168,85,247,.25); }
+    .acts { display: flex; gap: .3rem; }
+    .act { width: 28px; height: 28px; border-radius: 6px; background: var(--surface2); border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; transition: all var(--trans); }
+    .act:hover { color: var(--text); background: rgba(255,255,255,0.1); }
+    .act.del:hover { background: var(--red-o); color: #FF7070; border-color: var(--red-border); }
+    .act.ok:hover { background: rgba(34,197,94,.15); color: #4ade80; border-color: rgba(34,197,94,.3); }
+    .search, .filter-select, .form-ctrl { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: .85rem; padding: .5rem .75rem; outline: none; transition: border-color var(--trans); }
+    .search:focus, .form-ctrl:focus { border-color: var(--red-border); }
+    .pf-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; padding: 1.25rem; }
+    .pf-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color var(--trans); }
+    .pf-img { width: 100%; height: 150px; object-fit: cover; background: var(--bg); display: block; }
+    .pf-body { padding: .875rem; }
+    .pf-cat { font-size: .65rem; font-weight: 700; text-transform: uppercase; color: var(--red); margin-bottom: .375rem; }
+    .pf-name { font-weight: 700; font-size: .875rem; margin-bottom: .5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pipeline { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; padding: 1.25rem; }
+    .pipe-col { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+    .pipe-head { font-size: .7rem; font-weight: 700; text-transform: uppercase; margin-bottom: .75rem; display: flex; align-items: center; justify-content: space-between; }
+    .pipe-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .75rem; margin-bottom: .5rem; font-size: .775rem; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 1.5rem; opacity: 0; visibility: hidden; transition: all .2s ease; }
+    .overlay.open { opacity: 1; visibility: visible; }
+    .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 0; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; transform: scale(.96) translateY(12px); transition: transform .25s cubic-bezier(.34,1.56,.64,1); }
+    .overlay.open .modal { transform: scale(1) translateY(0); }
+    .modal-head { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--surface); z-index: 1; }
+    .modal-body { padding: 1.5rem; }
+    .modal-foot { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: .625rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-grp.full { grid-column: 1/-1; }
+    .form-label { display: block; font-size: .7rem; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: .375rem; }
+    .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .55rem 1.1rem; border-radius: var(--radius-sm); font-family: var(--font); font-size: .8rem; font-weight: 600; cursor: pointer; border: none; transition: all var(--trans); }
+    .btn-primary { background: var(--grad); color: #fff; }
+    .btn-ghost { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); }
+    #toast-area { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999; display: flex; flex-direction: column; gap: .5rem; }
+    .toast { padding: .75rem 1.1rem; background: rgba(18,18,24,0.97); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--text); font-size: .8rem; display: flex; align-items: center; gap: .5rem; box-shadow: var(--shadow); animation: toastIn .25s ease; border-left: 3px solid #3b82f6; }
+    @keyframes toastIn { from { opacity:0; transform:translateX(16px) } to { opacity:1; transform:translateX(0) } }
+    @media (max-width: 1024px) { .kpi-row, .chart-row, .pf-grid, .pipeline { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .main { margin-left: 0; } .mobile-toggle { display: flex; } .kpi-row, .chart-row, .pf-grid, .pipeline { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo"><span>Hozana</span> Admin</div>
+    <div class="login-sub">Espace d'administration sécurisé</div>
+    <form id="login-form">
+      <div class="field">
+        <label>Email</label>
+        <div class="field-wrap"><input type="email" id="l-email" placeholder="admin@hozanaconcept.com" required></div>
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <div class="field-wrap">
+          <input type="password" id="l-pass" placeholder="••••••••••" required>
+          <button type="button" class="eye-btn" onclick="togglePwd()"><i class="fas fa-eye" id="eye-ico"></i></button>
+        </div>
+      </div>
+      <div class="login-err" id="l-err"></div>
+      <button type="submit" class="btn-login" id="l-btn"><i class="fas fa-sign-in-alt"></i> Connexion</button>
+    </form>
+    <a href="index.html" class="login-back"><i class="fas fa-arrow-left"></i> Retour au site</a>
+  </div>
+</div>
+
+<div class="admin" id="admin-app" style="display:none;">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><span>Hozana</span><small>Admin</small></div>
+    <div class="nav-section">Vue d'ensemble</div>
+    <button class="nav-btn active" onclick="nav(this,'dashboard')"><i class="fas fa-th-large"></i> Dashboard</button>
+    <button class="nav-btn" onclick="nav(this,'analytics')"><i class="fas fa-chart-bar"></i> Analytics</button>
+
+    <div class="nav-section">Contenu</div>
+    <button class="nav-btn" onclick="nav(this,'articles')"><i class="fas fa-newspaper"></i> Articles <span class="badge" id="badge-posts">0</span></button>
+    <button class="nav-btn" onclick="nav(this,'portfolio')"><i class="fas fa-images"></i> Portfolio <span class="badge" id="badge-pf">0</span></button>
+    <button class="nav-btn" onclick="nav(this,'services')"><i class="fas fa-concierge-bell"></i> Services <span class="badge" id="badge-svcs">0</span></button>
+    <button class="nav-btn" onclick="nav(this,'comments')"><i class="fas fa-comments"></i> Commentaires <span class="badge" id="badge-com">0</span></button>
+
+    <div class="nav-section">Business</div>
+    <button class="nav-btn" onclick="nav(this,'packs')"><i class="fas fa-box"></i> Packs & Tarifs <span class="badge" id="badge-packs">0</span></button>
+    <button class="nav-btn" onclick="nav(this,'leads')"><i class="fas fa-user-plus"></i> Leads CRM <span class="badge" id="badge-leads">0</span></button>
+    <button class="nav-btn" onclick="nav(this,'orders')"><i class="fas fa-shopping-cart"></i> Commandes <span class="badge" id="badge-orders">0</span></button>
+
+    <div class="nav-section">Système</div>
+    <button class="nav-btn" onclick="nav(this,'settings')"><i class="fas fa-cog"></i> Paramètres</button>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="nav-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Voir le site</a>
+      <button class="nav-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+        <div class="page-title" id="page-title">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <button class="tb-btn" onclick="refreshAll()"><i class="fas fa-sync-alt"></i> Actualiser</button>
+        <button class="tb-btn primary" id="topbar-cta" style="display:none;"></button>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- DASHBOARD -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="kpi-row">
+          <div class="kpi"><div class="kpi-label">Leads total</div><div class="kpi-val" id="k-leads">—</div><div id="k-leads-new">…</div></div>
+          <div class="kpi"><div class="kpi-label">Articles</div><div class="kpi-val" id="k-posts">—</div><div id="k-posts-sub">…</div></div>
+          <div class="kpi"><div class="kpi-label">Commandes</div><div class="kpi-val" id="k-orders">—</div><div id="k-orders-sub">…</div></div>
+          <div class="kpi"><div class="kpi-label">Revenu</div><div class="kpi-val" id="k-rev">—</div><div id="k-rev-sub">…</div></div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-card"><div class="chart-wrap"><canvas id="chart-leads-line"></canvas></div></div>
+          <div class="chart-card"><div class="chart-wrap"><canvas id="chart-leads-donut"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Derniers leads</div></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Contact</th><th>Service</th><th>Source</th><th>Statut</th><th>Date</th></tr></thead><tbody id="dash-leads"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="panel" id="panel-analytics">
+        <div class="kpi-row">
+          <div class="kpi"><div class="kpi-label">Pages vues</div><div class="kpi-val" id="an-views">—</div></div>
+          <div class="kpi"><div class="kpi-label">Visiteurs</div><div class="kpi-val" id="an-uniq">—</div></div>
+          <div class="kpi"><div class="kpi-label">Likes</div><div class="kpi-val" id="an-likes">—</div></div>
+          <div class="kpi"><div class="kpi-label">Conversion</div><div class="kpi-val" id="an-conv">—</div></div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-card"><canvas id="chart-cat"></canvas></div>
+          <div class="chart-card"><canvas id="chart-packs"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Pages les plus vues</div></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Page</th><th>Vues</th><th>Part</th></tr></thead><tbody id="an-pages"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ARTICLES -->
+      <div class="panel" id="panel-articles">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Articles (<span id="posts-count">0</span>)</div>
+            <div class="card-tools">
+              <input type="text" class="search" placeholder="Rechercher…" oninput="filterPosts(this.value)">
+              <button class="btn btn-primary btn-sm" onclick="openArticleModal()"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+          <div class="tbl-wrap"><table><thead><tr><th>Article</th><th>Catégorie</th><th>Vues</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="posts-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- PORTFOLIO -->
+      <div class="panel" id="panel-portfolio">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Portfolio (<span id="pf-count">0</span>)</div>
+            <button class="btn btn-primary btn-sm" onclick="openPfModal()"><i class="fas fa-plus"></i></button>
+          </div>
+          <div class="pf-grid" id="pf-grid"></div>
+        </div>
+      </div>
+
+      <!-- SERVICES -->
+      <div class="panel" id="panel-services">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Services (<span id="svcs-count">0</span>)</div>
+            <button class="btn btn-primary btn-sm" onclick="openServiceModal()"><i class="fas fa-plus"></i></button>
+          </div>
+          <div class="tbl-wrap"><table><thead><tr><th>Service</th><th>Catégorie</th><th>Slug</th><th>Star</th><th>Ordre</th><th>Actions</th></tr></thead><tbody id="svcs-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- PACKS -->
+      <div class="panel" id="panel-packs">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Packs & Tarifs (<span id="packs-count">0</span>)</div>
+            <button class="btn btn-primary btn-sm" onclick="openPackModal()"><i class="fas fa-plus"></i></button>
+          </div>
+          <div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Prix (M/A)</th><th>Featured</th><th>Badge</th><th>Ordre</th><th>Actions</th></tr></thead><tbody id="packs-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- LEADS -->
+      <div class="panel" id="panel-leads">
+        <div class="pipeline" id="leads-pipeline"></div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Tous les leads (<span id="leads-count">0</span>)</div></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Contact</th><th>Email</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="leads-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="panel" id="panel-orders">
+        <div class="card">
+          <div class="card-head"><div class="card-title">Commandes</div></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Client</th><th>Pack</th><th>Montant</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="orders-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- COMMENTS -->
+      <div class="panel" id="panel-comments">
+        <div class="card">
+          <div class="card-head"><div class="card-title">Commentaires (<span id="com-count">0</span>)</div></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Auteur</th><th>Commentaire</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="com-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="panel" id="panel-settings">
+        <div class="settings-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+          <div class="card" style="padding:1.5rem;"><h3>Accès Admin</h3><p>admin@hozanaconcept.com</p></div>
+          <div class="card" style="padding:1.5rem;"><h3>Thème</h3><select class="form-ctrl" onchange="setTheme(this.value)"><option value="dark">Sombre</option><option value="light">Clair</option></select></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="overlay" id="m-article"><div class="modal"><div class="modal-head"><div class="modal-title" id="m-article-title"></div><button class="modal-close" onclick="closeModal('m-article')">×</button></div><div class="modal-body"><input type="hidden" id="a-id"><div class="form-row"><div class="form-grp full"><label class="form-label">Titre</label><input class="form-ctrl" id="a-title"></div><div class="form-grp"><label class="form-label">Catégorie</label><input class="form-ctrl" id="a-cat"></div><div class="form-grp"><label class="form-label">Auteur</label><input class="form-ctrl" id="a-author"></div><div class="form-grp full"><label class="form-label">Résumé</label><textarea class="form-ctrl" id="a-excerpt"></textarea></div><div class="form-grp full"><label class="form-label">Contenu HTML</label><textarea class="form-ctrl" id="a-content" rows="6"></textarea></div><div class="form-grp"><label class="form-label">Image URL</label><input class="form-ctrl" id="a-img"></div><div class="form-grp"><label class="form-label">Temps lecture</label><input class="form-ctrl" id="a-readtime" type="number"></div><div class="form-grp"><label class="form-label">Tags</label><input class="form-ctrl" id="a-tags"></div><div class="form-grp"><label class="form-label">Statut</label><select class="form-ctrl" id="a-pub"><option value="true">Publié</option><option value="false">Brouillon</option></select></div></div></div><div class="modal-foot"><button class="btn btn-primary" onclick="saveArticle()">Enregistrer</button></div></div></div>
+
+<div class="overlay" id="m-portfolio"><div class="modal"><div class="modal-head"><div class="modal-title" id="m-pf-title"></div><button class="modal-close" onclick="closeModal('m-portfolio')">×</button></div><div class="modal-body"><input type="hidden" id="pf-id"><div class="form-row"><div class="form-grp full"><label class="form-label">Titre</label><input class="form-ctrl" id="pf-title"></div><div class="form-grp"><label class="form-label">Catégorie</label><input class="form-ctrl" id="pf-cat"></div><div class="form-grp"><label class="form-label">Lien</label><input class="form-ctrl" id="pf-link"></div><div class="form-grp full"><label class="form-label">Description</label><textarea class="form-ctrl" id="pf-desc"></textarea></div><div class="form-grp full"><label class="form-label">Image URL</label><input class="form-ctrl" id="pf-img" oninput="previewPfImg(this.value)"></div><div class="form-grp full" id="pf-img-preview-wrap" style="display:none;"><img id="pf-img-preview" style="width:100%;max-height:150px;object-fit:cover;"></div><div class="form-grp"><label class="form-label">Tags</label><input class="form-ctrl" id="pf-tags"></div><div class="form-grp"><label class="form-label">Ordre</label><input class="form-ctrl" id="pf-order" type="number"></div><div class="form-grp"><label class="form-label">Featured</label><select class="form-ctrl" id="pf-featured"><option value="false">Non</option><option value="true">Oui</option></select></div></div></div><div class="modal-foot"><button class="btn btn-primary" onclick="savePortfolio()">Enregistrer</button></div></div></div>
+
+<div class="overlay" id="m-service"><div class="modal"><div class="modal-head"><div class="modal-title" id="m-svc-title"></div><button class="modal-close" onclick="closeModal('m-service')">×</button></div><div class="modal-body"><input type="hidden" id="svc-id"><div class="form-row"><div class="form-grp"><label class="form-label">Titre</label><input class="form-ctrl" id="svc-title"></div><div class="form-grp"><label class="form-label">Slug</label><input class="form-ctrl" id="svc-slug"></div><div class="form-grp"><label class="form-label">Icône (FontAwesome)</label><input class="form-ctrl" id="svc-icon" placeholder="fas fa-robot"></div><div class="form-grp"><label class="form-label">Label Catégorie</label><input class="form-ctrl" id="svc-cat"></div><div class="form-grp full"><label class="form-label">Description</label><textarea class="form-ctrl" id="svc-desc"></textarea></div><div class="form-grp full"><label class="form-label">Features (un par ligne)</label><textarea class="form-ctrl" id="svc-features"></textarea></div><div class="form-grp"><label class="form-label">Ordre</label><input class="form-ctrl" id="svc-order" type="number"></div><div class="form-grp"><label class="form-label">Mise en avant</label><select class="form-ctrl" id="svc-star"><option value="false">Non</option><option value="true">Oui</option></select></div></div></div><div class="modal-foot"><button class="btn btn-primary" onclick="saveService()">Enregistrer</button></div></div></div>
+
+<div class="overlay" id="m-pack"><div class="modal"><div class="modal-head"><div class="modal-title" id="m-pack-title"></div><button class="modal-close" onclick="closeModal('m-pack')">×</button></div><div class="modal-body"><input type="hidden" id="pk-id"><div class="form-row"><div class="form-grp"><label class="form-label">Nom du Pack</label><input class="form-ctrl" id="pk-name"></div><div class="form-grp"><label class="form-label">Slug</label><input class="form-ctrl" id="pk-slug"></div><div class="form-grp"><label class="form-label">Prix Mensuel</label><input class="form-ctrl" id="pk-price-m" type="number"></div><div class="form-grp"><label class="form-label">Prix Annuel</label><input class="form-ctrl" id="pk-price-a" type="number"></div><div class="form-grp"><label class="form-label">Badge texte</label><input class="form-ctrl" id="pk-badge"></div><div class="form-grp"><label class="form-label">Ordre</label><input class="form-ctrl" id="pk-order" type="number"></div><div class="form-grp full"><label class="form-label">Description</label><textarea class="form-ctrl" id="pk-desc"></textarea></div><div class="form-grp full"><label class="form-label">Features (un par ligne)</label><textarea class="form-ctrl" id="pk-features"></textarea></div><div class="form-grp full"><label class="form-label">Exclus (un par ligne)</label><textarea class="form-ctrl" id="pk-excluded"></textarea></div><div class="form-grp"><label class="form-label">Featured</label><select class="form-ctrl" id="pk-feat"><option value="false">Non</option><option value="true">Oui</option></select></div></div></div><div class="modal-foot"><button class="btn btn-primary" onclick="savePack()">Enregistrer</button></div></div></div>
+
+<div class="overlay" id="m-confirm"><div class="modal sm"><div class="modal-head"><div class="modal-title">Confirmer</div><button class="modal-close" onclick="closeModal('m-confirm')">×</button></div><div class="modal-body"><p>Supprimer cet élément ?</p></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('m-confirm')">Annuler</button><button class="btn btn-danger" id="confirm-ok">Supprimer</button></div></div></div>
+
+<div id="toast-area"></div>
+<script src="js/admin.js"></script>
+</body>
+</html>

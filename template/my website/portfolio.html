@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio & Réalisations | Hozana Concept — +50 Projets</title>
+  <meta name="description" content="Découvrez nos réalisations en sites web, branding, réseaux sociaux et applications mobiles. Des résultats concrets pour nos clients.">
+  <link rel="icon" href="images/favicon-logo.png" type="image/png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    /* Portfolio specific overrides/additions */
+    .portfolio-hero {
+      padding: 10rem 0 6rem;
+      background: radial-gradient(circle at 15% 20%, rgba(255,46,46,0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 85% 80%, rgba(255,106,0,0.05) 0%, transparent 40%);
+      text-align: center;
+    }
+    .pf-hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      margin-top: 3.5rem;
+      flex-wrap: wrap;
+    }
+    .pf-hero-stat-num {
+      font-family: var(--font-title);
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      background: var(--grad-red);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .pf-hero-stat-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--white-40);
+      font-weight: 600;
+    }
+
+    /* Filter Bar */
+    .pf-filter-section {
+      position: sticky;
+      top: 70px;
+      z-index: 40;
+      background: rgba(7,7,9,0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1rem 0;
+    }
+    .pf-filter-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .pf-cats {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 5px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .pf-cats::-webkit-scrollbar { display: none; }
+    
+    .pf-count {
+      font-size: 0.85rem;
+      color: var(--white-60);
+      white-space: nowrap;
+    }
+
+    /* Masonry Grid */
+    .pf-masonry {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+    .pf-item {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      cursor: pointer;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .pf-item.pf-featured {
+      grid-column: span 2;
+      aspect-ratio: 16/7;
+    }
+    @media (max-width: 992px) {
+      .pf-item.pf-featured { grid-column: span 1; aspect-ratio: 4/3; }
+      .pf-masonry { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .pf-masonry { grid-template-columns: 1fr; }
+    }
+
+    .pf-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .pf-item:hover .pf-img { transform: scale(1.05); }
+
+    .pf-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .pf-item:hover .pf-overlay { opacity: 1; }
+
+    .pf-always {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 1.5rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+      transition: opacity 0.3s ease;
+    }
+    .pf-item:hover .pf-always { opacity: 0; }
+
+    .pf-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255,46,46,0.15);
+      border: 1px solid rgba(255,46,46,0.3);
+      color: #ff5f5f;
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .pf-badge.purple { background: rgba(168,85,247,0.15); border-color: rgba(168,85,247,0.3); color: #d8b4fe; }
+    .pf-badge.blue { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.3); color: #93c5fd; }
+    .pf-badge.orange { background: rgba(249,115,22,0.15); border-color: rgba(249,115,22,0.3); color: #fdba74; }
+    .pf-badge.green { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.3); color: #86efac; }
+
+    .pf-name {
+      font-family: var(--font-title);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.25rem;
+    }
+    .pf-desc {
+      font-size: 0.85rem;
+      color: var(--white-60);
+    }
+    .pf-result {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #4ade80;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .pf-expand-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+    .pf-item:hover .pf-expand-btn { opacity: 1; transform: translateY(0); }
+
+    /* Lightbox */
+    .pf-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(7,7,9,0.95);
+      backdrop-filter: blur(15px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+    }
+    .pf-lightbox.open { opacity: 1; visibility: visible; }
+    
+    .pf-lb-content {
+      width: 100%;
+      max-width: 1000px;
+      background: var(--surface-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-2xl);
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      overflow: hidden;
+      position: relative;
+      max-height: 90vh;
+      animation: lbScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes lbScale { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+    
+    @media (max-width: 992px) {
+      .pf-lb-content { grid-template-columns: 1fr; overflow-y: auto; }
+    }
+
+    .pf-lb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #111;
+    }
+    .pf-lb-body {
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+    }
+    @media (max-width: 640px) { .pf-lb-body { padding: 1.5rem; } }
+
+    .pf-lb-close {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      width: 36px; height: 36px;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      color: white;
+      display: flex;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s;
+    }
+    .pf-lb-close:hover { background: var(--grad-red); border-color: transparent; }
+
+    .pf-lb-category {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--red-light);
+      margin-bottom: 0.75rem;
+    }
+    .pf-lb-title {
+      font-family: var(--font-title);
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+    .pf-lb-desc-full {
+      color: var(--white-60);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+    .pf-lb-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .pf-lb-tag {
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--glass-border);
+      font-size: 0.78rem;
+      font-family: var(--font-accent);
+      color: var(--white-60);
+    }
+    .pf-lb-results {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .pf-lb-kpi {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      text-align: center;
+    }
+    .pf-lb-kpi-num {
+      font-family: var(--font-title);
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--grad-red);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .pf-lb-kpi-label {
+      font-size: 0.72rem;
+      color: var(--white-40);
+      font-family: var(--font-accent);
+    }
+
+    /* CTA section */
+    .pf-cta {
+      background: linear-gradient(135deg, rgba(255,46,46,0.07), rgba(255,106,0,0.04));
+      border: 1px solid rgba(255,46,46,0.15);
+      border-radius: var(--radius-xl);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .pf-hero-stats { gap: 2rem; }
+      .pf-filter-inner { flex-direction: column; align-items: flex-start; }
+      .pf-lb-results { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader" role="status" aria-label="Chargement">
+  <img src="images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;">
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- NAVBAR -->
+<div id="navbar-placeholder"></div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="portfolio-hero">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="section-label reveal" style="justify-content:center;">Portfolio & Réalisations</div>
+    <h1 class="text-display reveal delay-1" style="max-width:800px;margin:0.75rem auto 1.25rem;">
+      Des créations <span class="gradient-text">qui font la différence</span>
+    </h1>
+    <p class="text-body-lg reveal delay-2" style="max-width:600px;margin:0 auto;">
+      Sites web, identités visuelles, contenus réseaux sociaux, applications… Découvrez les projets que nous avons réalisés pour des entrepreneurs et PME en France et à l'international.
+    </p>
+
+    <!-- Hero stats -->
+    <div class="pf-hero-stats reveal delay-3">
+      <div class="pf-hero-stat">
+        <div class="pf-hero-stat-num">50+</div>
+        <div class="pf-hero-stat-label">Projets réalisés</div>
+      </div>
+      <div class="pf-hero-stat">
+        <div class="pf-hero-stat-num">30j</div>
+        <div class="pf-hero-stat-label">Délai moyen de livraison</div>
+      </div>
+      <div class="pf-hero-stat">
+        <div class="pf-hero-stat-num">98%</div>
+        <div class="pf-hero-stat-label">Clients satisfaits</div>
+      </div>
+      <div class="pf-hero-stat">
+        <div class="pf-hero-stat-num">×4</div>
+        <div class="pf-hero-stat-label">ROI moyen constaté</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FILTER BAR — Sticky
+     ============================================================ -->
+<div class="pf-filter-section" id="pf-filter-bar">
+  <div class="pf-filter-inner">
+    <div class="pf-cats">
+      <button class="pf-tag active" onclick="pfFilter('all',this)">
+        <i class="fas fa-th-large"></i> Tout voir
+      </button>
+      <button class="pf-tag" onclick="pfFilter('Sites Web',this)">
+        <i class="fas fa-globe"></i> Sites Web
+      </button>
+      <button class="pf-tag" onclick="pfFilter('Design & Branding',this)">
+        <i class="fas fa-palette"></i> Design & Branding
+      </button>
+      <button class="pf-tag" onclick="pfFilter('Réseaux Sociaux',this)">
+        <i class="fab fa-instagram"></i> Réseaux Sociaux
+      </button>
+      <button class="pf-tag" onclick="pfFilter('Applications',this)">
+        <i class="fas fa-mobile-alt"></i> Applications
+      </button>
+      <button class="pf-tag" onclick="pfFilter('IA & Dashboards',this)">
+        <i class="fas fa-robot"></i> IA & Dashboards
+      </button>
+    </div>
+    <div class="pf-count" id="pf-count">Chargement des projets...</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PORTFOLIO MASONRY GRID
+     ============================================================ -->
+<section class="section" style="padding-top:3rem;">
+  <div class="container">
+    <div class="pf-masonry" id="pf-masonry">
+      <!-- Dynamic content -->
+    </div>
+
+    <!-- Load more (optional) -->
+    <div class="text-center mt-lg reveal" id="load-more-section" style="display:none;">
+      <button class="btn btn-glass btn-lg" onclick="loadMore()" id="load-more-btn">
+        <i class="fas fa-plus"></i> Voir plus de projets
+      </button>
+      <p style="margin-top:0.75rem;font-size:0.8rem;color:var(--white-40);">Affichage de <span id="shown-count">0</span> projets</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LIGHTBOX
+     ============================================================ -->
+<div class="pf-lightbox" id="pf-lightbox" onclick="pfCloseLightbox(event)">
+  <div class="pf-lb-content" id="pf-lb-content">
+    <button class="pf-lb-close" onclick="pfCloseLightbox()" aria-label="Fermer"><i class="fas fa-times"></i></button>
+    <img src="" alt="" class="pf-lb-img" id="pf-lb-img">
+    <div class="pf-lb-body" id="pf-lb-body"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CTA
+     ============================================================ -->
+<section class="section">
+  <div class="container">
+    <div class="pf-cta reveal">
+      <div class="section-label" style="justify-content:center;">Votre projet</div>
+      <h2 class="text-h1" style="margin:1rem 0 1rem;">Votre projet mérite <span class="gradient-text">le meilleur</span></h2>
+      <p class="text-body-lg" style="max-width:540px;margin:0 auto 2rem;">
+        Site web, design, réseaux sociaux ou application — nous réalisons votre vision avec excellence. Demandez un devis gratuit en 24h.
+      </p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="contact.html" class="btn btn-primary btn-lg">
+          <i class="fas fa-paper-plane"></i> Démarrer mon projet
+        </a>
+        <a href="packs.html" class="btn btn-glass btn-lg">
+          Voir les tarifs <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div id="footer-placeholder"></div>
+
+<!-- SCRIPTS -->
+<script src="js/core.js"></script>
+<script src="js/components.js"></script>
+<script>
+/* ====================================================
+   DATA & RENDER
+   ==================================================== */
+let pfProjects = [];
+let currentFilter = 'all';
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const res = await fetch('tables/portfolio_projects?order=sort_order.asc');
+    const data = await res.json();
+    pfProjects = data.data || [];
+    renderProjects('all');
+  } catch (err) {
+    console.error('Failed to load portfolio:', err);
+    document.getElementById('pf-count').textContent = 'Erreur lors du chargement des projets.';
+  }
+});
+
+function renderProjects(filter = 'all') {
+  currentFilter = filter;
+  const grid = document.getElementById('pf-masonry');
+  if (!grid) return;
+
+  const filtered = filter === 'all' 
+    ? pfProjects 
+    : pfProjects.filter(p => p.category === filter);
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--white-40);">Aucun projet trouvé dans cette catégorie.</div>';
+    document.getElementById('pf-count').innerHTML = 'Aucun projet affiché';
+    return;
+  }
+
+  grid.innerHTML = filtered.map((p, index) => {
+    const delayClass = `delay-${index % 4}`;
+    const featuredClass = p.featured ? 'pf-featured' : '';
+    const tags = Array.isArray(p.tags) ? p.tags : (p.tags || '').split(',').map(t=>t.trim()).filter(Boolean);
+    const badgeColor = getBadgeColor(p.category);
+    
+    return `
+      <div class="pf-item ${featuredClass} reveal ${delayClass}" onclick="pfOpen('${p.id}')">
+        <img src="${p.image}" alt="${p.title}" class="pf-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80'">
+        <div class="pf-always">
+          <div class="pf-badge ${badgeColor}">${p.category}</div>
+          <div class="pf-name">${p.title}</div>
+          <div class="pf-desc">${tags.slice(0,3).join(' · ')}</div>
+        </div>
+        <div class="pf-overlay">
+          <div class="pf-badge ${badgeColor}">${p.category}</div>
+          <div class="pf-name">${p.title}</div>
+          ${p.description ? `<div class="pf-desc" style="color:white;margin-bottom:0.5rem;">${p.description.substring(0,80)}...</div>` : ''}
+          <div class="pf-result">
+            <i class="fas fa-arrow-right"></i> Voir les détails
+          </div>
+        </div>
+        <div class="pf-expand-btn"><i class="fas fa-expand"></i></div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('pf-count').innerHTML = `Affichage de <strong>${filtered.length}</strong> projet${filtered.length > 1 ? 's' : ''}`;
+  
+  // Re-trigger reveal animation if window.HC exists
+  if (window.HC && typeof window.HC.initReveal === 'function') {
+    window.HC.initReveal();
+  }
+}
+
+function getBadgeColor(cat) {
+  if (!cat) return '';
+  const c = cat.toLowerCase();
+  if (c.includes('web')) return '';
+  if (c.includes('design') || c.includes('branding')) return 'purple';
+  if (c.includes('social')) return 'blue';
+  if (c.includes('app')) return 'blue';
+  if (c.includes('ia') || c.includes('dashboard')) return 'orange';
+  if (c.includes('marketing')) return 'green';
+  return '';
+}
+
+/* ============================================================
+   FILTER
+   ============================================================ */
+function pfFilter(cat, btn) {
+  document.querySelectorAll('.pf-tag').forEach(b => b.classList.remove('active'));
+  btn?.classList.add('active');
+  renderProjects(cat);
+}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+function pfOpen(id) {
+  const p = pfProjects.find(x => x.id === id);
+  if (!p) return;
+
+  const kpis = Array.isArray(p.kpis) ? p.kpis : (typeof p.kpis === 'string' ? JSON.parse(p.kpis) : []);
+  const tags = Array.isArray(p.tags) ? p.tags : (p.tags || '').split(',').map(t=>t.trim()).filter(Boolean);
+
+  document.getElementById('pf-lb-img').src = p.image;
+  document.getElementById('pf-lb-img').alt = p.title;
+
+  document.getElementById('pf-lb-body').innerHTML = `
+    <div class="pf-lb-category">${p.category}</div>
+    <h2 class="pf-lb-title">${p.title}</h2>
+    <p class="pf-lb-desc-full">${p.description || 'Pas de description disponible pour ce projet.'}</p>
+    <div class="pf-lb-results">
+      ${kpis.length > 0 ? kpis.map(k => `
+        <div class="pf-lb-kpi">
+          <div class="pf-lb-kpi-num">${k.num}</div>
+          <div class="pf-lb-kpi-label">${k.label}</div>
+        </div>
+      `).join('') : '<div class="pf-lb-kpi" style="grid-column:span 3">Projet réalisé avec excellence par Hozana Concept</div>'}
+    </div>
+    <div class="pf-lb-tags">
+      ${tags.map(t => `<span class="pf-lb-tag">${t}</span>`).join('')}
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="contact.html" class="btn btn-primary"><i class="fas fa-rocket"></i> Projet similaire</a>
+      ${p.link ? `<a href="${p.link}" target="_blank" class="btn btn-glass">Voir en direct →</a>` : ''}
+    </div>
+  `;
+
+  document.getElementById('pf-lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function pfCloseLightbox(e) {
+  if (e && e.target !== document.getElementById('pf-lightbox') && !e.target.closest('.pf-lb-close')) return;
+  document.getElementById('pf-lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') pfCloseLightbox();
+});
+</script>
+
+</body>
+</html>

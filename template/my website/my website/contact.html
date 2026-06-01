@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact & Audit Gratuit | Hozana Concept — Réponse en 24h</title>
+  <meta name="description" content="Contactez Hozana Concept pour lancer votre projet IA. Audit gratuit de 30 minutes sans engagement. Réponse sous 24h. Basés à Tunis, nous servons la France, la Belgique et l'Afrique.">
+  <link rel="icon" type="image/png" href="images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <script src="js/supabase-config.js"></script>
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    .contact-hero {
+      padding: calc(var(--nav-height) + 4rem) 2rem 5rem;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,46,46,0.12) 0%, transparent 60%);
+      position: relative;
+    }
+    .contact-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .contact-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1rem;
+      transition: all var(--trans-base);
+    }
+    .contact-info-item:hover {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+    }
+    .contact-icon {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(255,46,46,0.15), rgba(255,106,0,0.1));
+      border: 1px solid rgba(255,46,46,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      color: var(--red);
+      transition: all var(--trans-bounce);
+    }
+    .contact-info-item:hover .contact-icon {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-red-sm);
+    }
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 3rem;
+    }
+    .success-screen.show { display: block; }
+    select.form-control {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+    }
+    select.form-control option {
+      background: #1a1a1a;
+      color: white;
+    }
+    @media (max-width: 768px) {
+      .contact-layout { grid-template-columns: 1fr; gap: 2rem; }
+      .map-section { padding: 3rem 1.25rem; }
+      .map-overlay-card { position: relative; bottom: auto; left: auto; margin-top: 1rem; border-radius: var(--radius-lg); }
+      .contact-info-list { gap: 1rem; }
+      .map-wrapper { border-radius: 12px; }
+    }
+    @media (max-width: 480px) {
+      .contact-layout { padding: 0; }
+      .form-row { flex-direction: column; }
+    }
+
+    /* === MAP === */
+    .map-section {
+      background: var(--black-2);
+      padding: 5rem 2rem;
+    }
+    .map-wrapper {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      position: relative;
+    }
+    .map-iframe {
+      width: 100%;
+      height: 420px;
+      display: block;
+      border: none;
+      filter: grayscale(20%) invert(0);
+    }
+    [data-theme="dark"] .map-iframe {
+      filter: invert(90%) hue-rotate(180deg) brightness(0.85) saturate(0.9);
+    }
+    .map-overlay-card {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 1.5rem;
+      background: rgba(10,10,18,0.95);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      backdrop-filter: blur(12px);
+      max-width: 280px;
+    }
+    .map-overlay-title {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .map-overlay-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--white-60);
+      margin-bottom: 0.375rem;
+    }
+    .map-overlay-item i { color: var(--red); width: 14px; }
+
+    /* === FAQ === */
+    .faq-section { padding: 5rem 2rem; }
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .faq-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color var(--trans-base);
+    }
+    .faq-item:hover { border-color: rgba(255,46,46,0.2); }
+    .faq-item.open { border-color: rgba(255,46,46,0.25); }
+
+    .faq-q {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      cursor: pointer;
+      gap: 1rem;
+    }
+    .faq-q-text {
+      font-family: var(--font-accent);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--white);
+      line-height: 1.4;
+    }
+    .faq-icon {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      color: var(--white-60);
+      transition: all var(--trans-bounce);
+    }
+    .faq-item.open .faq-icon {
+      background: var(--grad-red);
+      border-color: transparent;
+      color: white;
+      transform: rotate(45deg);
+    }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .faq-item.open .faq-a { max-height: 400px; }
+    .faq-a-inner {
+      padding: 0 1.5rem 1.25rem;
+      color: var(--white-60);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 1rem;
+      margin-top: 0;
+    }
+    .faq-a-inner strong { color: var(--white-80); }
+    .faq-a-inner a { color: var(--red); text-decoration: none; }
+    .faq-a-inner a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div id="loader">
+  <img src="images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;">
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+<div id="navbar-placeholder"></div>
+
+<!-- HERO -->
+<section class="contact-hero">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="section-label reveal" style="justify-content:center;">Contact</div>
+    <h1 class="text-display reveal delay-1" style="max-width:700px;margin:0.75rem auto 1.5rem;">
+      Parlons de votre <span class="gradient-text">projet IA</span>
+    </h1>
+    <p class="text-body-lg reveal delay-2" style="max-width:520px;margin:0 auto;">
+      Audit gratuit de 30 minutes. Nos experts analyseront votre business et vous proposeront une roadmap IA personnalisée, sans engagement.
+    </p>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="section" style="padding-top:3rem;">
+  <div class="container">
+    <div class="contact-layout">
+
+      <!-- Left: Info -->
+      <div>
+        <h2 class="text-h2 reveal" style="margin-bottom:2rem;">Plusieurs façons de <span class="gradient-text">nous joindre</span></h2>
+
+        <div class="reveal delay-1">
+          <div class="contact-info-item">
+            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <div style="font-family:var(--font-accent);font-weight:700;margin-bottom:0.25rem;">Email</div>
+              <a href="mailto:info@hozanaconcept.com" style="color:var(--white-70);text-decoration:none;">info@hozanaconcept.com</a>
+              <div style="font-size:0.8rem;color:var(--white-40);">Réponse sous 24h</div>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="contact-icon" style="color:#25D366;background:rgba(37,211,102,0.1);border-color:rgba(37,211,102,0.2);"><i class="fab fa-whatsapp"></i></div>
+            <div>
+              <div style="font-family:var(--font-accent);font-weight:700;margin-bottom:0.25rem;">WhatsApp</div>
+              <a href="https://wa.me/21651474751" style="color:var(--white-70);text-decoration:none;" target="_blank">+216 51 47 47 51</a>
+              <div style="font-size:0.8rem;color:var(--white-40);">Disponible 7j/7 · 9h - 21h</div>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="contact-icon" style="color:var(--red);background:rgba(255,46,46,0.08);border-color:rgba(255,46,46,0.18);"><i class="fab fa-linkedin-in"></i></div>
+            <div>
+              <div style="font-family:var(--font-accent);font-weight:700;margin-bottom:0.25rem;">LinkedIn</div>
+              <a href="#" style="color:var(--white-70);text-decoration:none;" target="_blank">linkedin.com/company/hozanaconcept</a>
+              <div style="font-size:0.8rem;color:var(--white-40);">Suivez notre actualité</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Process steps -->
+        <div class="glass" style="padding:2rem;border-radius:var(--radius-xl);margin-top:2.5rem;" class="reveal">
+          <h3 style="font-family:var(--font-title);font-size:1rem;font-weight:700;margin-bottom:1.5rem;">Comment ça se passe ?</h3>
+          <div style="display:flex;flex-direction:column;gap:1rem;">
+            <div style="display:flex;gap:1rem;align-items:flex-start;">
+              <div style="width:32px;height:32px;background:var(--grad-red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700;flex-shrink:0;">1</div>
+              <div>
+                <div style="font-family:var(--font-accent);font-weight:700;font-size:0.875rem;margin-bottom:0.25rem;">Vous remplissez le formulaire</div>
+                <div style="font-size:0.8rem;color:var(--white-50);">Décrivez votre business et vos besoins en 2 minutes.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;align-items:flex-start;">
+              <div style="width:32px;height:32px;background:var(--grad-red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700;flex-shrink:0;">2</div>
+              <div>
+                <div style="font-family:var(--font-accent);font-weight:700;font-size:0.875rem;margin-bottom:0.25rem;">On vous rappelle sous 24h</div>
+                <div style="font-size:0.8rem;color:var(--white-50);">Un expert prend contact pour planifier votre audit.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;align-items:flex-start;">
+              <div style="width:32px;height:32px;background:var(--grad-red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700;flex-shrink:0;">3</div>
+              <div>
+                <div style="font-family:var(--font-accent);font-weight:700;font-size:0.875rem;margin-bottom:0.25rem;">Audit gratuit 30 min</div>
+                <div style="font-size:0.8rem;color:var(--white-50);">On analyse votre situation et vous propose une solution.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Form -->
+      <div class="reveal-right">
+        <div class="glass-heavy" style="padding:2.5rem;border-radius:var(--radius-xl);" id="form-container">
+          <h2 class="text-h2" style="margin-bottom:0.5rem;">Demande de <span class="gradient-text">contact</span></h2>
+          <p style="font-size:0.875rem;color:var(--white-50);margin-bottom:2rem;">Tous les champs * sont obligatoires.</p>
+
+          <form id="contact-form" onsubmit="submitContact(event)" novalidate>
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Prénom & Nom *</label>
+                <input type="text" class="form-control" id="contact-name" placeholder="Marcus Dupont" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email *</label>
+                <input type="email" class="form-control" id="contact-email" placeholder="vous@entreprise.com" required>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Téléphone</label>
+                <input type="tel" class="form-control" id="contact-phone" placeholder="+216 51 47 47 51">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Entreprise</label>
+                <input type="text" class="form-control" id="contact-company" placeholder="Nom de votre entreprise">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Service qui vous intéresse *</label>
+              <select class="form-control" id="contact-service" required>
+                <option value="">Sélectionnez un service...</option>
+                <optgroup label="🌐 Sites Web & Applications">
+                  <option value="site-vitrine">Création de site vitrine</option>
+                  <option value="ecommerce">Boutique en ligne (E-commerce)</option>
+                  <option value="app-mobile">Application mobile</option>
+                  <option value="web-app">Application web sur mesure</option>
+                </optgroup>
+                <optgroup label="🎨 Design & Réseaux Sociaux">
+                  <option value="branding">Logo & Identité visuelle</option>
+                  <option value="social-media">Gestion réseaux sociaux</option>
+                  <option value="content-design">Visuels & posts Instagram/Facebook</option>
+                  <option value="print">Flyers, affiches & supports print</option>
+                </optgroup>
+                <optgroup label="🤖 IA & Automatisation">
+                  <option value="ia">Chatbot IA</option>
+                  <option value="automation">Automatisation des processus</option>
+                  <option value="growth">Growth Digital & Publicité</option>
+                  <option value="content">Contenu IA</option>
+                  <option value="analytics">Analytics & Tableaux de bord</option>
+                </optgroup>
+                <optgroup label="💼 Packs">
+                  <option value="pack-starter">Pack Starter (490€/mois)</option>
+                  <option value="pack-growth">Pack Growth (990€/mois)</option>
+                  <option value="pack-elite">Pack Elite (1 990€/mois)</option>
+                  <option value="enterprise">Solution Enterprise (sur devis)</option>
+                </optgroup>
+                <option value="audit">🎁 Audit gratuit seulement (30 min)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Votre message *</label>
+              <textarea class="form-control" id="contact-message" rows="5" placeholder="Décrivez votre business, vos défis actuels et ce que vous souhaitez automatiser ou améliorer..." required></textarea>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1.5rem;">
+              <input type="checkbox" id="contact-consent" required style="margin-top:3px;accent-color:var(--red);">
+              <label for="contact-consent" style="font-size:0.8rem;color:var(--white-60);line-height:1.5;">J'accepte que mes données soient utilisées pour me recontacter. Elles ne seront jamais partagées avec des tiers. <a href="privacy.html" style="color:var(--red);">Politique de confidentialité</a></label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-full" style="justify-content:center;" id="submit-btn">
+              <i class="fas fa-paper-plane"></i>
+              Envoyer ma demande
+            </button>
+          </form>
+
+          <!-- Success screen -->
+          <div class="success-screen" id="success-screen">
+            <div style="font-size:4rem;margin-bottom:1rem;">🎉</div>
+            <h3 style="font-family:var(--font-title);font-size:1.5rem;font-weight:700;margin-bottom:0.75rem;">Message envoyé !</h3>
+            <p style="color:var(--white-60);line-height:1.6;margin-bottom:1.5rem;">
+              Merci pour votre demande. Un expert Hozana Concept vous contactera dans les prochaines <strong style="color:var(--white);">24 heures</strong> pour planifier votre audit gratuit.
+            </p>
+            <a href="index.html" class="btn btn-glass">Retour à l'accueil</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CARTE GOOGLE MAPS — Localisation Paris
+     ============================================================ -->
+<section class="map-section" id="localisation">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">Où nous trouver</div>
+      <h2 class="text-h2">Basés à <span class="gradient-text">Tunis</span>, actifs partout</h2>
+      <p style="color:var(--white-60);margin-top:0.75rem;max-width:500px;margin-left:auto;margin-right:auto;">
+        Notre agence est installée à Tunis. Nous travaillons avec des clients en Tunisie et à l'international, en présentiel ou en visio.
+      </p>
+    </div>
+    <div class="map-wrapper reveal delay-1">
+      <iframe
+        class="map-iframe"
+        title="Localisation Hozana Concept — Tunis"
+        src="https://www.openstreetmap.org/export/embed.html?bbox=10.1400%2C36.7900%2C10.2200%2C36.8300&layer=mapnik&marker=36.8100%2C10.1800"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        aria-label="Carte OpenStreetMap — Tunis, Tunisie"
+      ></iframe>
+      <div class="map-overlay-card">
+        <div class="map-overlay-title">📍 Hozana Concept</div>
+        <div class="map-overlay-item"><i class="fas fa-map-marker-alt"></i> 5, rue Kheireddine Pacha, Tunis 1003</div>
+        <div class="map-overlay-item"><i class="fas fa-envelope"></i> info@hozanaconcept.com</div>
+        <div class="map-overlay-item"><i class="fab fa-whatsapp"></i> +216 51 47 47 51</div>
+        <div class="map-overlay-item"><i class="fas fa-clock"></i> Lun–Ven · 9h–18h</div>
+        <div style="margin-top:0.75rem;">
+          <a href="https://www.openstreetmap.org/?mlat=36.8100&mlon=10.1800#map=14/36.8100/10.1800" target="_blank" rel="noopener" class="btn btn-glass" style="padding:0.4rem 0.875rem;font-size:0.78rem;">
+            <i class="fas fa-external-link-alt"></i> Ouvrir la carte
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ — Questions fréquentes
+     ============================================================ -->
+<section class="faq-section" id="faq">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">Questions fréquentes</div>
+      <h2 class="text-h2">Tout ce que vous voulez <span class="gradient-text">savoir</span></h2>
+      <p style="color:var(--white-60);margin-top:0.75rem;max-width:520px;margin-left:auto;margin-right:auto;">
+        Pas encore convaincu ? Voici les réponses aux questions que nos clients posent le plus souvent avant de démarrer.
+      </p>
+    </div>
+
+    <div class="faq-list" id="faq-list">
+
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <div class="faq-q-text">🌐 Combien coûte la création d'un site web ?</div>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Le prix dépend de vos besoins. Un <strong>site vitrine</strong> commence à partir de <strong>990€</strong> et une boutique e-commerce à partir de <strong>1 990€</strong>. Nous proposons aussi des packs mensuels dès <strong>490€/mois</strong> qui incluent site + maintenance + réseaux sociaux. <a href="packs.html">Voir tous nos tarifs →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal delay-1" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <div class="faq-q-text">⏱️ Combien de temps faut-il pour créer mon site ?</div>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            En général, nous livrons un <strong>site vitrine en 10 à 21 jours</strong> et un e-commerce en <strong>3 à 4 semaines</strong>. Pour les projets plus complexes (applications, IA), compter 30 à 60 jours. Tout commence par un audit gratuit pour définir le planning précis.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal delay-2" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <div class="faq-q-text">🎨 Je ne comprends rien au design. Vous vous occupez de tout ?</div>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            <strong>Absolument !</strong> Vous n'avez pas besoin de connaissances techniques. Vous nous donnez vos idées, votre activité, vos couleurs préférées (si vous en avez). On s'occupe du reste : logo, charte graphique, site web, visuels réseaux sociaux… Vous validez et c'est tout.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal delay-3" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <div class="faq-q-text">📱 Vous créez aussi les visuels pour mes réseaux sociaux ?</div>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Oui ! Nous créons des <strong>posts, stories, reels et templates</strong> pour Instagram, Facebook, TikTok et LinkedIn. Selon votre formule, nous pouvons aussi gérer entièrement votre présence sur les réseaux (publication, réponse aux commentaires, stratégie éditoriale).
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <div class="faq-q-text">🤖 C'est quoi l'intelligence artificielle concrètement pour mon business ?</div>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            En clair : <strong>un assistant IA répond à vos clients</strong> à votre place, 24h/24. Un système envoie des emails de relance automatiquement. Vos tâches répétitives se font sans que vous y pensiez. Résultat : vous gagnez du temps, vos clients sont mieux servis et vous vendez plus.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal delay-1" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <div class="faq-q-text">💳 Comment se passe le paiement ?</div>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Pour les projets à la carte : <strong>50% à la commande, 50% à la livraison</strong>. Pour les packs mensuels : facturation mensuelle par carte bancaire ou virement. Nous acceptons également les paiements en 3× sans frais pour les projets supérieurs à 1 500€.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal delay-2" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <div class="faq-q-text">📊 Comment savoir si ça marche ? Quels résultats espérer ?</div>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Nous mettons en place des <strong>indicateurs clairs dès le départ</strong> : nombre de visiteurs, taux de conversion, leads générés, engagement réseaux… Vous recevez un rapport régulier. Nos clients constatent en moyenne <strong>+300% de ROI</strong> et <strong>-40% de coûts opérationnels</strong> en 3 mois.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal delay-3" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <div class="faq-q-text">🌍 Vous travaillez avec des clients hors de Paris / hors de France ?</div>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            <strong>Oui, absolument !</strong> Nous travaillons avec des clients partout en France et à l'international (Sénégal, Côte d'Ivoire, Belgique, Canada…). Tout se passe en visioconférence via Google Meet ou Zoom. La distance n'est pas un obstacle.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <div class="faq-q-text">🚀 Par où commencer si je ne sais pas ce dont j'ai besoin ?</div>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Commencez par notre <strong>audit gratuit de 30 minutes</strong>. Remplissez le formulaire ci-dessus et un expert vous appelle sous 24h. On analyse ensemble votre situation, vos objectifs et on vous propose une solution adaptée à votre budget — sans engagement.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA after FAQ -->
+    <div class="text-center mt-lg reveal" style="margin-top:3rem;">
+      <p style="color:var(--white-50);margin-bottom:1.25rem;">Vous avez une autre question ?</p>
+      <a href="https://wa.me/+33600000000?text=Bonjour, j'ai une question pour Hozana Concept" target="_blank" class="btn btn-glass btn-lg" style="margin-right:1rem;">
+        <i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp direct
+      </a>
+      <a href="mailto:hello@hozanaconcept.com" class="btn btn-outline">
+        <i class="fas fa-envelope"></i> Envoyer un email
+      </a>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="js/core.js"></script>
+<script src="js/components.js"></script>
+<script>
+  // FAQ accordion
+  function toggleFaq(el) {
+    const isOpen = el.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item.open').forEach(f => f.classList.remove('open'));
+    // Open clicked if was closed
+    if (!isOpen) el.classList.add('open');
+  }
+
+  // Pre-fill pack if coming from packs page
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const pack = params.get('pack');
+    if (pack) {
+      const select = document.getElementById('contact-service');
+      const option = select.querySelector(`option[value="pack-${pack}"]`) || select.querySelector(`option[value="${pack}"]`);
+      if (option) select.value = option.value;
+    }
+  });
+
+  async function submitContact(e) {
+    e.preventDefault();
+
+    const name = document.getElementById('contact-name').value;
+    const email = document.getElementById('contact-email').value;
+    const phone = document.getElementById('contact-phone').value;
+    const company = document.getElementById('contact-company').value;
+    const service = document.getElementById('contact-service').value;
+    const message = document.getElementById('contact-message').value;
+    const consent = document.getElementById('contact-consent').checked;
+
+    if (!name || !email || !service || !message || !consent) {
+      window.HC?.showToast('Veuillez remplir tous les champs obligatoires.', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+
+    try {
+      await fetch('tables/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, company, service, message, source: 'contact_form', status: 'new' })
+      });
+
+      // Show success
+      document.getElementById('contact-form').style.display = 'none';
+      document.getElementById('success-screen').classList.add('show');
+    } catch(err) {
+      window.HC?.showToast('Erreur lors de l\'envoi. Contactez-nous directement par WhatsApp.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer ma demande';
+    }
+  }
+</script>
+</body>
+</html>

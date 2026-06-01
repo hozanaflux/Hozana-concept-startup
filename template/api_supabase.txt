@@ -1,0 +1,3 @@
+# Supabase API Key
+# Replace with your actual key
+SUPABASE_SECRET_KEY=your-supabase-secret-key-here
