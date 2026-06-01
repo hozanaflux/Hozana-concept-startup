@@ -160,7 +160,7 @@ function enhanceImageAltText() {
    ============================================================ */
 function initBlogSEO() {
   // Check if we're on a blog or article page
-  if (window.location.pathname === '/blog' || window.location.pathname.startsWith('/article')) {
+  if (window.location.pathname === '/blog' || window.location.pathname.startsWith('/article') || window.location.pathname === '/blog.html') {
     // Add schema markup for blog page
     if (window.location.pathname === '/blog') {
       const schema = `

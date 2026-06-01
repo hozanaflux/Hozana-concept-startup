@@ -15,7 +15,7 @@ const SUPABASE_URL  = 'https://leadvqrheziyvrwnbiio.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlYWR2cXJoZXppeXZyd25iaWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzM0MTksImV4cCI6MjA5MzU0OTQxOX0.I-L13gdtuQnsJ4ErEb-SWWfdbMUhWOkTvSFOSkNxsD0';
 
 // ─── Paths ───
-const TEMPLATE_PATH    = path.join(__dirname, '..', 'article');
+const TEMPLATE_PATH    = path.join(__dirname, '..', 'article.html');
 const OUTPUT_DIR       = path.join(__dirname, '..', 'blog-posts');
 const SITEMAP_PATH     = path.join(__dirname, '..', 'sitemap.xml');
 const SCRIPTS_DIR      = path.join(__dirname, '..', 'scripts');
