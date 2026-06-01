@@ -1370,11 +1370,15 @@ function renderRelated(allPosts, currentPost) {
 
   if (!related.length) { grid.closest('section')?.remove(); return; }
 
+  // Detect if we're in blog-posts/ subfolder — links must NOT repeat the prefix
+  const inBlogPosts = window.__ROOT_PATH__ === '../' || window.location.pathname.includes('/blog-posts/');
+  const linkPrefix = inBlogPosts ? '' : 'blog-posts/';
+
   grid.innerHTML = related.map(p => {
     const rawImg = p.cover_image || p.image || p.img || p.thumbnail || p.cover;
     const img = resolveImageURL(rawImg);
     return `
-    <a href="blog-posts/${p.slug || p.id}.html" class="related-card" style="opacity:1 !important; visibility:visible !important;">
+    <a href="${linkPrefix}${p.slug || p.id}.html" class="related-card" style="opacity:1 !important; visibility:visible !important;">
       <div style="overflow:hidden; aspect-ratio:16/9; background:#0a0a0c;">
         <img src="${img}" alt="${escapeHtml(p.title)}" class="related-img" loading="eager"
           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=70'">

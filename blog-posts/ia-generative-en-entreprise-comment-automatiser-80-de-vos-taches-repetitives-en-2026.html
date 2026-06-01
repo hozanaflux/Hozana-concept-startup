@@ -615,7 +615,7 @@ window.__STATIC_BLOG_DATA__ = {
   cover_image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80",
   excerpt: "Découvrez comment l'IA générative peut transformer votre productivité au quotidien. Guide pratique pour identifier, automatiser et optimiser vos processus métier avec les meilleurs outils d'intelligence artificielle.",
   read_time: 8,
-  views: 27,
+  views: 28,
   likes: 7,
   tags: ["IA","Générative","Automatisation","Productivité","ChatGPT","Entreprise"],
   publish_date: "2026-06-01T22:22:23.436+00:00",
@@ -659,7 +659,7 @@ window.__STATIC_BLOG_DATA__ = {
         </span>
         <span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>2 juin 2026</span>
         <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>8 min de lecture</span>
-        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>28 vues</span>
+        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>29 vues</span>
       </div>
   </div>
 </header>
@@ -815,7 +815,7 @@ window.__STATIC_BLOG_DATA__ = {
         <div style="display:flex;flex-direction:column;gap:0.875rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-eye" style="color:var(--red);"></i> Vues</span>
-            <span style="font-family:var(--font-title);font-weight:700;" id="stat-views">28</span>
+            <span style="font-family:var(--font-title);font-weight:700;" id="stat-views">29</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-heart" style="color:var(--red);"></i> Likes</span>
@@ -1354,11 +1354,15 @@ function renderRelated(allPosts, currentPost) {
 
   if (!related.length) { grid.closest('section')?.remove(); return; }
 
+  // Detect if we're in blog-posts/ subfolder — links must NOT repeat the prefix
+  const inBlogPosts = window.__ROOT_PATH__ === '../' || window.location.pathname.includes('/blog-posts/');
+  const linkPrefix = inBlogPosts ? '' : 'blog-posts/';
+
   grid.innerHTML = related.map(p => {
     const rawImg = p.cover_image || p.image || p.img || p.thumbnail || p.cover;
     const img = resolveImageURL(rawImg);
     return `
-    <a href="blog-posts/${p.slug || p.id}.html" class="related-card" style="opacity:1 !important; visibility:visible !important;">
+    <a href="${linkPrefix}${p.slug || p.id}.html" class="related-card" style="opacity:1 !important; visibility:visible !important;">
       <div style="overflow:hidden; aspect-ratio:16/9; background:#0a0a0c;">
         <img src="${img}" alt="${escapeHtml(p.title)}" class="related-img" loading="eager"
           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=70'">
