@@ -49,12 +49,11 @@ function generateSchemaMarkup(post) {
         "url": "${resolveImageURL(post.cover_image || post.image || post.img || post.thumbnail || post.cover)}",
         "width": 1200,
         "height": 630
-      },
-      "mainEntityOfPage": {
+      },      "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://www.hozanaconcept.com/blog"
+        "@id": "https://www.hozanaconcept.com/blog-posts/${post.slug || post.id}"
       }
-    }
+  }
     </script>
 
     <script type="application/ld+json">
@@ -88,7 +87,7 @@ function enhanceMetaTags(post, document) {
   const title = `${escapeHtml(post.title)} | Hozana Concept Blog`;
   const desc = escapeHtml(post.excerpt || 'Découvrez nos articles sur l\'intelligence artificielle, l\'automatisation et la croissance digitale.');
   const img = resolveImageURL(post.cover_image || post.image || post.img || post.thumbnail || post.cover);
-  const url = `https://www.hozanaconcept.com/article?id=${post.id}`;
+  const url = `https://www.hozanaconcept.com/blog-posts/${post.slug || post.id}`;
   const date = new Date(post.publish_date || post.created_at).toISOString();
 
   // Update title and description

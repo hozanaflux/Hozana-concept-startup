@@ -16,7 +16,7 @@ const SERVICE_CATS = [
     name: 'Moteur IA Principal',
     tags: 'Réseaux de Neurones · Agents Autonomes · Traitement du Langage · IA Prédictive',
     priority: true,
-    href: 'service-ia',
+    href: 'service-ia.html',
   },
   {
     id: 'branding',
@@ -24,7 +24,7 @@ const SERVICE_CATS = [
     name: 'Moteur d\'Automatisation',
     tags: 'Orchestration de Workflows · Intégration API · Logique Event-driven',
     priority: false,
-    href: 'service-branding',
+    href: 'service-branding.html',
   },
   {
     id: 'marketing',
@@ -32,7 +32,7 @@ const SERVICE_CATS = [
     name: 'Intelligence Growth',
     tags: 'Marketing Prédictif · Optimisation LTV · Publicité Autonomes',
     priority: false,
-    href: 'service-marketing',
+    href: 'service-marketing.html',
   },
   {
     id: 'dev',
@@ -40,7 +40,7 @@ const SERVICE_CATS = [
     name: 'SDK Plateforme',
     tags: 'Accès API · Documentation · Connecteurs Personnalisés · Sécurité',
     priority: false,
-    href: 'service-dev',
+    href: 'service-dev.html',
   },
   {
     id: 'business',
@@ -48,7 +48,7 @@ const SERVICE_CATS = [
     name: 'Insights Entreprise',
     tags: 'Visualisation de Données · Automatisation BI · Analytics Temps Réel',
     priority: false,
-    href: 'service-business',
+    href: 'service-business.html',
   },
   {
     id: 'consulting',
@@ -56,7 +56,7 @@ const SERVICE_CATS = [
     name: 'Stratégie Expert',
     tags: 'Architecture de Solution · Audit de Sécurité · Planification d\'Échelle',
     priority: false,
-    href: 'service-consulting',
+    href: 'service-consulting.html',
   },
 ];
 
@@ -65,12 +65,12 @@ function renderNavbar() {
   const isServicesActive = currentPage === 'platform';
 
   const simpleLinks = [
-    { href: 'index',    label: 'Accueil' },
-    { href: 'admin',    label: 'Administration' },
-    { href: 'pricing',    label: 'Formules' },
-    { href: 'blog',     label: 'Actualités' },
-    { href: 'company',    label: 'À Propos' },
-    { href: 'contact',  label: 'Nous Contacter' },
+    { href: 'index.html',    label: 'Accueil' },
+    { href: 'admin.html',    label: 'Administration' },
+    { href: 'pricing.html',  label: 'Formules' },
+    { href: 'blog.html',     label: 'Actualités' },
+    { href: 'company.html',  label: 'À Propos' },
+    { href: 'contact.html',  label: 'Nous Contacter' },
   ];
 
   // Dropdown Services item — liens vers les pages dédiées
@@ -114,7 +114,7 @@ function renderNavbar() {
 
   const mobileItems = [
     `<li><a href="index.html" ${currentPage==='index'?'class="active"':''} onclick="closeMobileMenu()">Accueil</a></li>`,
-    `<li><a href="admin" ${currentPage==='admin'?'class="active"':''} onclick="closeMobileMenu()">Administration</a></li>`,
+    `<li><a href="admin.html" ${currentPage==='admin'?'class="active"':''} onclick="closeMobileMenu()">Administration</a></li>`,
     `<li>
       <div class="mobile-dd-toggle" onclick="toggleMobileServicesDd(this)">
         <span class="${isServicesActive ? 'active' : ''}">Nos Services</span>
@@ -359,11 +359,11 @@ function renderFooter() {
               Plateforme
             </h4>
             <ul class="footer-link-list">
-              <li><a href="platform#ia">Moteur IA Principal</a></li>
-              <li><a href="platform#automation">Moteur d'Automatisation</a></li>
-              <li><a href="platform#growth">Intelligence de Croissance</a></li>
-              <li><a href="platform#content">SDK Plateforme</a></li>
-              <li><a href="platform#analytics">Perspectives Entreprise</a></li>
+              <li><a href="platform.html#ia">Moteur IA Principal</a></li>
+              <li><a href="platform.html#automation">Moteur d'Automatisation</a></li>
+              <li><a href="platform.html#growth">Intelligence de Croissance</a></li>
+              <li><a href="platform.html#content">SDK Plateforme</a></li>
+              <li><a href="platform.html#analytics">Perspectives Entreprise</a></li>
             </ul>
           </div>
 
@@ -374,7 +374,7 @@ function renderFooter() {
               Ressources
             </h4>
             <ul class="footer-link-list">
-              <li><a href="blog">Blog et Perspectives</a></li>
+              <li><a href="blog.html">Blog et Perspectives</a></li>
               <li><a href="pricing.html">Plans Tarifaires</a></li>
               <li><a href="company.html">Vision de l'Entreprise</a></li>
               <li><a href="contact.html">Nous Contacter</a></li>
@@ -735,7 +735,7 @@ const _pageExtractors = [
   {
     // CEO / founder questions
     patterns: [/ceo|fondateur|dirigeant|efro|mwanza|who is the boss|patron/i],
-    url: 'company',
+    url: 'company.html',
     extract: (html) => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
@@ -763,7 +763,7 @@ const _pageExtractors = [
   {
     // Email questions
     patterns: [/email|courriel|contacter|contact/i],
-    url: 'contact',
+    url: 'contact.html',
     extract: (html) => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
@@ -788,7 +788,7 @@ const _pageExtractors = [
   {
     // Phone / WhatsApp questions
     patterns: [/téléphone|phone|whatsapp|whatsapp/i],
-    url: 'contact',
+    url: 'contact.html',
     extract: (html) => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
@@ -804,7 +804,7 @@ const _pageExtractors = [
   {
     // Pricing questions
     patterns: [/tarif|prix|pack|combien coûte|abonnement/i],
-    url: 'pricing',
+    url: 'pricing.html',
     extract: (html) => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
