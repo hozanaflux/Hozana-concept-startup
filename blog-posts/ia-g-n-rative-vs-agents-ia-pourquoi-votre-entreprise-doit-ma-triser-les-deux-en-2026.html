@@ -605,7 +605,23 @@
       }]
     }
     </script>
-  </head>
+  <script>
+window.__STATIC_BLOG_DATA__ = {
+  id: "d0397e8b-e396-428b-8522-84dddee82019",
+  slug: "ia-g-n-rative-vs-agents-ia-pourquoi-votre-entreprise-doit-ma-triser-les-deux-en-2026",
+  title: "IA Générative vs Agents IA : Pourquoi Votre Entreprise Doit Maîtriser Les Deux en 2026",
+  author: "Hozana Concept",
+  category: "IA",
+  cover_image: "https://leadvqrheziyvrwnbiio.supabase.co/storage/v1/object/public/blog-images/1779205622147-fj42m.jpg",
+  excerpt: "Comprenez les différences critiques entre l'IA générative et les agents IA. Comment les meilleures entreprises les déploient de manière complémentaire.",
+  read_time: 5,
+  views: 3,
+  likes: 0,
+  tags: ["IA","AIAgents","GenerativeAI","Automation","AIStrategy","DigitalTransformation","BusinessAutomation","IntelligentAutomation","AIImplementation"],
+  publish_date: "2026-05-19T14:15:18.940199+00:00",
+  featured: false
+};
+</script></head>
 <body>
 
 <!-- READING PROGRESS -->
@@ -866,6 +882,19 @@ let postId = null;
    INIT
    ==================================================== */
 document.addEventListener('DOMContentLoaded', async () => {
+  // Check for static blog data (pre-rendered pages) or URL parameter
+  if (window.__STATIC_BLOG_DATA__ && window.__STATIC_BLOG_DATA__.id) {
+    postId = window.__STATIC_BLOG_DATA__.id;
+    currentPost = window.__STATIC_BLOG_DATA__;
+    // Static page — content already rendered. Enable interactive features.
+    initReadingProgress();
+    loadComments();
+    trackView();
+    // Load related articles from Supabase
+    loadRelatedForStatic();
+    return;
+  }
+
   const params = new URLSearchParams(window.location.search);
   postId = params.get('id');
 
@@ -877,6 +906,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadPost();
   initReadingProgress();
 });
+
+/* ====================================================
+   STATIC PAGE — load only related articles from Supabase
+   ==================================================== */
+async function loadRelatedForStatic() {
+  try {
+    const res = await fetch('tables/blog_posts?limit=100');
+    const data = await res.json();
+    const allPosts = data.data || [];
+    renderRelated(allPosts, currentPost);
+  } catch {
+    // Silently fail — related section stays as skeleton
+  }
+}
 
 /* ====================================================
    LOAD POST
@@ -1292,7 +1335,7 @@ function renderRelated(allPosts, currentPost) {
     const rawImg = p.cover_image || p.image || p.img || p.thumbnail || p.cover;
     const img = resolveImageURL(rawImg);
     return `
-    <a href="/article?id=${p.id}" class="related-card" style="opacity:1 !important; visibility:visible !important;">
+    <a href="/blog-posts/${p.slug || p.id}" class="related-card" style="opacity:1 !important; visibility:visible !important;">
       <div style="overflow:hidden; aspect-ratio:16/9; background:#0a0a0c;">
         <img src="${img}" alt="${escapeHtml(p.title)}" class="related-img" loading="eager"
           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=70'">

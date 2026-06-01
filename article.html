@@ -744,6 +744,19 @@ let postId = null;
    INIT
    ==================================================== */
 document.addEventListener('DOMContentLoaded', async () => {
+  // Check for static blog data (pre-rendered pages) or URL parameter
+  if (window.__STATIC_BLOG_DATA__ && window.__STATIC_BLOG_DATA__.id) {
+    postId = window.__STATIC_BLOG_DATA__.id;
+    currentPost = window.__STATIC_BLOG_DATA__;
+    // Static page — content already rendered. Enable interactive features.
+    initReadingProgress();
+    loadComments();
+    trackView();
+    // Load related articles from Supabase
+    loadRelatedForStatic();
+    return;
+  }
+
   const params = new URLSearchParams(window.location.search);
   postId = params.get('id');
 
@@ -755,6 +768,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadPost();
   initReadingProgress();
 });
+
+/* ====================================================
+   STATIC PAGE — load only related articles from Supabase
+   ==================================================== */
+async function loadRelatedForStatic() {
+  try {
+    const res = await fetch('tables/blog_posts?limit=100');
+    const data = await res.json();
+    const allPosts = data.data || [];
+    renderRelated(allPosts, currentPost);
+  } catch {
+    // Silently fail — related section stays as skeleton
+  }
+}
 
 /* ====================================================
    LOAD POST
@@ -1170,7 +1197,7 @@ function renderRelated(allPosts, currentPost) {
     const rawImg = p.cover_image || p.image || p.img || p.thumbnail || p.cover;
     const img = resolveImageURL(rawImg);
     return `
-    <a href="/article?id=${p.id}" class="related-card" style="opacity:1 !important; visibility:visible !important;">
+    <a href="/blog-posts/${p.slug || p.id}" class="related-card" style="opacity:1 !important; visibility:visible !important;">
       <div style="overflow:hidden; aspect-ratio:16/9; background:#0a0a0c;">
         <img src="${img}" alt="${escapeHtml(p.title)}" class="related-img" loading="eager"
           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=70'">

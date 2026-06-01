@@ -184,13 +184,27 @@ async function generateStaticPost(post) {
     const pageDesc = document.getElementById('page-desc');
     if (pageDesc) pageDesc.setAttribute('content', post.excerpt || `Découvrez l'article de Hozana Concept : ${post.title}`);
 
-    // ── Store postId in a data attribute for the JS to use ──
-    // The JS reads ?id=xxx from URL, so we need to inject it differently
-    const scriptTag = dom.window.document.querySelector('script');
-    if (scriptTag) {
-      // Remove the dynamic post loading from the page since content is now static
-      // We keep the interactive features (like, comment) but remove the dynamic load
-    }
+    // ── Inject static post data for client-side interactivity ──
+    // This avoids the JS needing to parse ?id= from URL or fetch from Supabase
+    const staticDataScript = dom.window.document.createElement('script');
+    staticDataScript.textContent = `
+window.__STATIC_BLOG_DATA__ = {
+  id: ${JSON.stringify(post.id)},
+  slug: ${JSON.stringify(post.slug || '')},
+  title: ${JSON.stringify(post.title)},
+  author: ${JSON.stringify(post.author || 'Hozana Concept')},
+  category: ${JSON.stringify(post.category || 'IA')},
+  cover_image: ${JSON.stringify(post.cover_image || '')},
+  excerpt: ${JSON.stringify(post.excerpt || '')},
+  read_time: ${post.read_time || 5},
+  views: ${post.views || 0},
+  likes: ${post.likes || 0},
+  tags: ${JSON.stringify(Array.isArray(post.tags) ? post.tags : (post.tags ? String(post.tags).split(',').map(t => t.trim()).filter(Boolean) : []))},
+  publish_date: ${JSON.stringify(post.publish_date || post.created_at || '')},
+  featured: ${!!post.featured}
+};
+`;
+    document.head.appendChild(staticDataScript);
 
     // ── Generate filename ──
     const slug = post.slug || post.title.toLowerCase()

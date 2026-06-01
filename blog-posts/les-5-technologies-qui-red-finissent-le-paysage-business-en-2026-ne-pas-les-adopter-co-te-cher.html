@@ -605,7 +605,23 @@
       }]
     }
     </script>
-  </head>
+  <script>
+window.__STATIC_BLOG_DATA__ = {
+  id: "549b63a7-299c-4b39-a840-f93f8e933191",
+  slug: "les-5-technologies-qui-red-finissent-le-paysage-business-en-2026-ne-pas-les-adopter-co-te-cher",
+  title: "Les 5 Technologies Qui Redéfinissent le Paysage Business en 2026 : Ne Pas Les Adopter Coûte Cher",
+  author: "Hozana Concept",
+  category: "Technologie",
+  cover_image: "https://leadvqrheziyvrwnbiio.supabase.co/storage/v1/object/public/blog-images/1779203175045-wkl8g.png",
+  excerpt: "Découvrez les 5 technologies émergentes qui transforment les business models. Lesquelles vont dominer et comment votre entreprise doit s'adapter immédiatement.",
+  read_time: 5,
+  views: 0,
+  likes: 0,
+  tags: ["TechTrends","IA","QuantumComputing","SpatialComputing","Innovation","TechFuture","DigitalTransformation","EmergingTech","Technology2026"],
+  publish_date: "2026-05-19T14:07:35.775674+00:00",
+  featured: false
+};
+</script></head>
 <body>
 
 <!-- READING PROGRESS -->
@@ -861,6 +877,19 @@ let postId = null;
    INIT
    ==================================================== */
 document.addEventListener('DOMContentLoaded', async () => {
+  // Check for static blog data (pre-rendered pages) or URL parameter
+  if (window.__STATIC_BLOG_DATA__ && window.__STATIC_BLOG_DATA__.id) {
+    postId = window.__STATIC_BLOG_DATA__.id;
+    currentPost = window.__STATIC_BLOG_DATA__;
+    // Static page — content already rendered. Enable interactive features.
+    initReadingProgress();
+    loadComments();
+    trackView();
+    // Load related articles from Supabase
+    loadRelatedForStatic();
+    return;
+  }
+
   const params = new URLSearchParams(window.location.search);
   postId = params.get('id');
 
@@ -872,6 +901,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadPost();
   initReadingProgress();
 });
+
+/* ====================================================
+   STATIC PAGE — load only related articles from Supabase
+   ==================================================== */
+async function loadRelatedForStatic() {
+  try {
+    const res = await fetch('tables/blog_posts?limit=100');
+    const data = await res.json();
+    const allPosts = data.data || [];
+    renderRelated(allPosts, currentPost);
+  } catch {
+    // Silently fail — related section stays as skeleton
+  }
+}
 
 /* ====================================================
    LOAD POST
@@ -1287,7 +1330,7 @@ function renderRelated(allPosts, currentPost) {
     const rawImg = p.cover_image || p.image || p.img || p.thumbnail || p.cover;
     const img = resolveImageURL(rawImg);
     return `
-    <a href="/article?id=${p.id}" class="related-card" style="opacity:1 !important; visibility:visible !important;">
+    <a href="/blog-posts/${p.slug || p.id}" class="related-card" style="opacity:1 !important; visibility:visible !important;">
       <div style="overflow:hidden; aspect-ratio:16/9; background:#0a0a0c;">
         <img src="${img}" alt="${escapeHtml(p.title)}" class="related-img" loading="eager"
           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=70'">
