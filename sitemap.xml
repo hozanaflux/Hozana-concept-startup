@@ -2,127 +2,67 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.hozanaconcept.com/</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <lastmod>2026-06-01T22:22:50.909Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.hozanaconcept.com/blog</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <lastmod>2026-06-01T22:22:50.909Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.hozanaconcept.com/services</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <lastmod>2026-06-01T22:22:50.909Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hozanaconcept.com/portfolio</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <lastmod>2026-06-01T22:22:50.910Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hozanaconcept.com/packs</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <lastmod>2026-06-01T22:22:50.910Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hozanaconcept.com/contact</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <lastmod>2026-06-01T22:22:50.910Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/article-de-test-freebuff</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <loc>https://www.hozanaconcept.com/blog-posts/agents-autonomes-et-no-code-la-revolution-silencieuse-du-developpement-en-2026</loc>
+    <lastmod>2026-06-01T22:22:50.910Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/deuxieme-article-test</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <loc>https://www.hozanaconcept.com/blog-posts/strategie-ia-comment-batir-une-roadmap-technologique-gagnante-pour-votre-entreprise</loc>
+    <lastmod>2026-06-01T22:22:50.910Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/bonjour-je-suis-un-article-test</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <loc>https://www.hozanaconcept.com/blog-posts/growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026</loc>
+    <lastmod>2026-06-01T22:22:50.910Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/apport-de-l-homme-pour-la-fonctionnement-de-l-ia</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <loc>https://www.hozanaconcept.com/blog-posts/automatisation-des-processus-le-guide-complet-pour-les-pme-en-2026</loc>
+    <lastmod>2026-06-01T22:22:50.910Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/linkedin-le-r-seau-professionnel-incontournable-pour-d-velopper-sa-carri-re-et-son-entreprise</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/humanoid-robots-et-automation-comment-votre-industrie-sera-transform-e-en-2026-2027</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/la-strat-gie-d-acquisition-client-en-2026-pourquoi-les-m-thodes-d-hier-ne-fonctionnent-plus</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/comment-les-fondateurs-qui-croissent-10x-plus-vite-pensent-diff-remment-sur-l-allocation-de-ressources</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/l-automatisation-des-t-ches-r-p-titives-co-te-50-moins-cher-que-vous-ne-le-pensez-voici-comment-commencer</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/ia-g-n-rative-vs-agents-ia-pourquoi-votre-entreprise-doit-ma-triser-les-deux-en-2026</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/la-strat-gie-des-trois-cercles-le-framework-que-les-meilleurs-entrepreneurs-utilisent-pour-prendre-les-d-cisions-critiques</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/les-5-technologies-qui-red-finissent-le-paysage-business-en-2026-ne-pas-les-adopter-co-te-cher</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/croissance-scalable-vs-croissance-lin-aire-comment-10x-votre-chiffre-d-affaires-sans-multiplier-vos-co-ts</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/automatisation-marketing-2026-comment-transformer-votre-quipe-en-machine-de-g-n-ration-de-revenus</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.hozanaconcept.com/blog-posts/les-agents-ia-autonomes-pourquoi-88-des-entreprises-investissent-massivement-en-2026</loc>
-    <lastmod>2026-06-01T22:14:52.590Z</lastmod>
+    <loc>https://www.hozanaconcept.com/blog-posts/ia-generative-en-entreprise-comment-automatiser-80-de-vos-taches-repetitives-en-2026</loc>
+    <lastmod>2026-06-01T22:22:50.910Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
