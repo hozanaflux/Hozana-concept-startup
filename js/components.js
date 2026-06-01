@@ -66,6 +66,7 @@ function renderNavbar() {
 
   const simpleLinks = [
     { href: 'index',    label: 'Accueil' },
+    { href: 'admin',    label: 'Administration' },
     { href: 'pricing',    label: 'Formules' },
     { href: 'blog',     label: 'Actualités' },
     { href: 'company',    label: 'À Propos' },
@@ -112,7 +113,8 @@ function renderNavbar() {
   ).join('');
 
   const mobileItems = [
-    `<li><a href="index" ${currentPage==='index'?'class="active"':''} onclick="closeMobileMenu()">Accueil</a></li>`,
+    `<li><a href="index.html" ${currentPage==='index'?'class="active"':''} onclick="closeMobileMenu()">Accueil</a></li>`,
+    `<li><a href="admin" ${currentPage==='admin'?'class="active"':''} onclick="closeMobileMenu()">Administration</a></li>`,
     `<li>
       <div class="mobile-dd-toggle" onclick="toggleMobileServicesDd(this)">
         <span class="${isServicesActive ? 'active' : ''}">Nos Services</span>
@@ -120,7 +122,7 @@ function renderNavbar() {
       </div>
       <div class="mobile-dd-list" id="mobile-services-list">${mobileDdItems}</div>
     </li>`,
-    ...simpleLinks.slice(1).map(l => {
+    ...simpleLinks.slice(2).map(l => {
       const active = currentPage === l.href ? 'class="active"' : '';
       return `<li><a href="${l.href}" ${active} onclick="closeMobileMenu()">${l.label}</a></li>`;
     })
@@ -131,7 +133,7 @@ function renderNavbar() {
     <div class="navbar-container">
 
       <!-- Logo -->
-      <a href="index" class="navbar-logo" aria-label="Hozana Concept - Accueil">
+      <a href="index.html" class="navbar-logo" aria-label="Hozana Concept - Accueil">
         <img src="images/logo-main.png" alt="Hozana Concept" class="navbar-logo-img" style="height:44px;width:auto;display:block;object-fit:contain;">
       </a>
 
@@ -330,7 +332,7 @@ function renderFooter() {
 
           <!-- Brand Column -->
           <div class="footer-brand-col reveal">
-            <a href="index" class="footer-logo-link" aria-label="Hozana Concept">
+            <a href="index.html" class="footer-logo-link" aria-label="Hozana Concept">
               <img src="images/logo-footer.png" alt="Hozana Concept" style="height:52px;width:auto;object-fit:contain;filter:brightness(0) invert(1);">
             </a>
             <p class="footer-brand-desc">
@@ -559,22 +561,7 @@ const _chatResponses = {
 };
 
 async function _getMistralResponse(msg) {
-  const MISTRAL_API_KEY = 'aqRoGw6EKTxKBnt3YlDWZ4NZ1DFKWmNS';
-  const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions';
-
-  try {
-    const response = await fetch(MISTRAL_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${MISTRAL_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'mistral-tiny',
-        messages: [
-          {
-            role: 'system',
-            content: `Tu es l'assistant IA de Hozana Concept. Tu réponds en français de manière naturelle, chaleureuse et concise, comme un collègue sympathique qui connaît bien son travail.
+  const SYSTEM_PROMPT = `Tu es l'assistant IA de Hozana Concept. Tu réponds en français de manière naturelle, chaleureuse et concise, comme un collègue sympathique qui connaît bien son travail.
 
 RÈGLES D'OR :
 1. RÉPONDS UNIQUEMENT À LA QUESTION POSÉE - rien de plus, rien de moins
@@ -589,27 +576,29 @@ EXEMPLES :
 - "Quel est votre email ?" → "Notre email est info@hozanaconcept.com"
 - "Qui est votre CEO ?" → "Notre fondateur et CEO est Efro Mwanza"
 - "Quels services proposez-vous ?" → "Nous proposons de l'IA sur mesure, de l'automatisation, de la growth digitale, du contenu IA et de l'analytics BI. Quel domaine vous intéresse ?"
-- "Je veux un devis" → "Pour un devis personnalisé, commençons par notre audit gratuit de 30 minutes. Souhaitez-vous prendre rendez-vous ?"`
+- "Je veux un devis" → "Pour un devis personnalisé, commençons par notre audit gratuit de 30 minutes. Souhaitez-vous prendre rendez-vous ?"`;
 
-          },
-          {
-            role: 'user',
-            content: msg
-          }
-        ],
-        max_tokens: 150,
-        temperature: 0.9
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: msg,
+        systemPrompt: SYSTEM_PROMPT
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Mistral API error: ${response.status}`);
+    const data = await response.json();
+
+    if (!response.ok || data.fallback) {
+      throw new Error(data.error || `API error: ${response.status}`);
     }
 
-    const data = await response.json();
-    return data.choices[0].message.content;
+    return data.reply;
   } catch (error) {
-    console.error('Mistral API error:', error);
+    console.error('[Chatbot] API proxy error:', error);
     // Fallback to rule-based responses if API fails
     return _getBotResponse(msg);
   }
@@ -946,9 +935,9 @@ function renderPageTransition() {
   el.id = 'page-transition';
   document.body.appendChild(el);
 
-  document.querySelectorAll('a[href]').forEach(link => {
+  document.querySelectorAll('a[href]:not([target="_blank"])').forEach(link => {
     const href = link.getAttribute('href');
-    if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto') || href.startsWith('tel') || href.startsWith('javascript')) return;
+    if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('https') || href.startsWith('mailto') || href.startsWith('tel') || href.startsWith('javascript') || href.startsWith('//')) return;
 
     link.addEventListener('click', (e) => {
       e.preventDefault();

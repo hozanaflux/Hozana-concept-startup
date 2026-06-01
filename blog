@@ -921,6 +921,11 @@
     
       
       
+      
+      
+      
+      
+      
       <!-- Articles grid -->
       <div>
         <div class="section-heading-row">
@@ -952,6 +957,11 @@
 
         <!-- Pagination -->
         <div class="pagination-wrap" id="pagination"></div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
       </div>
       </div>
       </div>
@@ -1421,7 +1431,7 @@ function renderPopularSidebar() {
 
   list.innerHTML = popular.map((p, i) => `
     <li>
-      <a href="/article?id=${p.id}" class="popular-item">
+      <a href="/blog-posts/${p.slug}" class="popular-item">
         <span class="popular-num">0${i + 1}</span>
         <div class="popular-info">
           <div class="popular-title">${escapeHtml(p.title)}</div>

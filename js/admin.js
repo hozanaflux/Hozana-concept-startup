@@ -365,6 +365,7 @@ function renderAnalytics() {
 /* ─── ARTICLES ─── */
 function renderPosts(data=P) {
   set('posts-count', data.length);
+
   const el = document.getElementById('posts-body');
   if (!el) return;
   if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="8">Aucun article trouvé</td></tr>`; return; }
@@ -388,6 +389,22 @@ function renderPosts(data=P) {
         <button class="act del" onclick="confirmDel(()=>delPost('${p.id}'))" title="Supprimer"><i class="fas fa-trash"></i></button>
       </div></td>
     </tr>`).join('');
+
+  // Add regenerate static blog button above the posts table
+  const postsTable = el.parentNode; // this is the table element
+  if (postsTable) {
+    let regenBtn = document.getElementById('regen-static-blog-btn');
+    if (!regenBtn) {
+      regenBtn = document.createElement('button');
+      regenBtn.id = 'regen-static-blog-btn';
+      regenBtn.className = 'btn btn-primary btn-sm mb-3';
+      regenBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Régénérer le blog statique';
+      regenBtn.onclick = regenerateStaticBlog;
+      regenBtn.title = 'Régénérer les fichiers HTML statiques pour tous les articles de blog';
+      // Insert button before the table
+      postsTable.parentNode.insertBefore(regenBtn, postsTable);
+    }
+  }
 }
 
 function filterPosts(q) { _postsFilter.q=q.toLowerCase(); applyPostsFilter(); }
@@ -422,6 +439,11 @@ async function saveArticle() {
   const title = document.getElementById('a-title').value.trim();
   if (!title) { toast('Le titre est obligatoire','err'); return; }
   const tags = document.getElementById('a-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const published = document.getElementById('a-pub').value==='true';
+  const slug = title.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/^-|-$/g,'');
   const data = {
     title, category:document.getElementById('a-cat').value,
     author:document.getElementById('a-author').value,
@@ -429,8 +451,8 @@ async function saveArticle() {
     content:document.getElementById('a-content').value,
     cover_image:document.getElementById('a-img').value,
     read_time:parseInt(document.getElementById('a-readtime').value)||5,
-    tags, published:document.getElementById('a-pub').value==='true',
-    slug:title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),
+    tags, published,
+    slug,
     updated_at:new Date().toISOString()
   };
   if (!id) { data.views=0; data.likes=0; data.created_at=new Date().toISOString(); }
@@ -449,7 +471,31 @@ async function saveArticle() {
     }
     closeModal('m-article');
     renderPosts(); renderDashPosts(); updateBadges();
+
+    // ── Auto-regenerate static blog after saving a published article ──
+    if (published) {
+      triggerStaticRegeneration();
+    }
   } catch(e) { console.error(e); toast('Erreur lors de la sauvegarde','err'); }
+}
+
+/* ─── Trigger static blog regeneration ─── */
+async function triggerStaticRegeneration() {
+  try {
+    // Try calling the Vercel serverless function
+    const resp = await fetch('/api/regenerate-blog', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (resp.ok) {
+      toast('Page statique générée automatiquement ✓','ok');
+    } else {
+      console.warn('Static blog regeneration API returned:', resp.status);
+    }
+  } catch (err) {
+    // Silently fail — the manual button is still available
+    console.warn('Static regeneration not available (API route may not be running locally):', err.message);
+  }
 }
 
 async function delPost(id) {
@@ -920,6 +966,48 @@ function fmt(dt) {
   if (!dt) return '—';
   try { return new Date(dt).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}); }
   catch { return '—'; }
+}
+
+/* ─── STATIC BLOG REGENERATION ─── */
+async function regenerateStaticBlog() {
+  const btn = document.getElementById('regen-static-blog-btn');
+  if (!btn) return;
+
+  // Disable button and show loading state
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Régénération en cours...';
+
+  try {
+    // Show toast notification
+    toast('Démarrage de la régénération du blog statique...','info');
+
+    // Execute the deployment script using fetch to trigger Vercel serverless function
+    // or use the existing deploy script via Node.js if available
+    const response = await fetch('/api/regenerate-blog', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      toast('Blog statique régénéré avec succès !','ok');
+      // Optionally refresh the posts list to see updated counts
+      await loadAll();
+    } else {
+      // Fallback: instruct user to run the script manually
+      toast('Régénération initiée. Veuillez exécuter le script de déploiement si nécessaire.','info');
+      console.log('Static blog regeneration triggered via API');
+    }
+  } catch (error) {
+    console.error('Error regenerating static blog:', error);
+    // Fallback: show instructions for manual regeneration
+    toast('Erreur lors de la régénération automatique. Exécutez manuellement: npm run deploy-blog','err');
+  } finally {
+    // Re-enable button
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-sync-alt"></i> Régénérer le blog statique';
+  }
 }
 
 /* ─── BOOT ─── */

@@ -12,7 +12,7 @@ const { execSync } = require('child_process');
 // Configuration
 const BLOG_POSTS_DIR = path.join(__dirname, '../blog-posts');
 const SITEMAP_PATH = path.join(__dirname, '../sitemap.xml');
-const BLOG_HTML_PATH = path.join(__dirname, '../blog.html');
+const BLOG_HTML_PATH = path.join(__dirname, '../blog'); // Fichier sans extension .html
 const TEST_ARTICLE_SLUG = 'test-article';
 const TEST_ARTICLE_PATH = path.join(BLOG_POSTS_DIR, `${TEST_ARTICLE_SLUG}.html`);
 const GENERATE_SCRIPT = path.join(__dirname, '../js/generate-static-blog.js');

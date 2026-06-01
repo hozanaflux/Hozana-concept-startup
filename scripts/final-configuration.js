@@ -13,7 +13,7 @@ const { execSync } = require('child_process');
 const PROJECT_ROOT = path.join(__dirname, '..');
 const BLOG_POSTS_DIR = path.join(PROJECT_ROOT, 'blog-posts');
 const SITEMAP_PATH = path.join(PROJECT_ROOT, 'sitemap.xml');
-const BLOG_HTML_PATH = path.join(PROJECT_ROOT, 'blog.html');
+const BLOG_HTML_PATH = path.join(PROJECT_ROOT, 'blog'); // Fichier nommé 'blog' (sans extension .html)
 const POST_PUBLISH_HOOK_PATH = path.join(PROJECT_ROOT, 'scripts', 'post-publish-hook.js');
 
 // Function to configure web server
@@ -30,8 +30,8 @@ location /blog-posts/ {
   try_files $uri $uri/ =404;
 }
 
-# Serve blog.html
-location /blog.html {
+# Serve blog page
+location /blog {
   alias ${BLOG_HTML_PATH};
 }
 
