@@ -94,7 +94,7 @@ function renderNavbar() {
       <div class="nav-dropdown-panel" id="nav-services-panel" role="menu">
         <div class="dd-header">
           <span class="dd-header-title">Nos 6 pôles d'expertise</span>
-          <a class="dd-header-cta" href="platform">Tout voir <i class="fas fa-arrow-right"></i></a>
+          <a class="dd-header-cta" href="platform.html">Tout voir <i class="fas fa-arrow-right"></i></a>
         </div>
         <div class="dd-grid">${ddCats}</div>
       </div>
@@ -151,7 +151,7 @@ function renderNavbar() {
             <div class="theme-toggle-thumb" id="theme-thumb">🌙</div>
           </div>
         </button>
-        <a href="contact" class="btn btn-primary btn-sm navbar-cta" aria-label="Démarrer un projet">Démarrer →</a>
+        <a href="contact.html" class="btn btn-primary btn-sm navbar-cta" aria-label="Démarrer un projet">Démarrer →</a>
         <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -174,7 +174,7 @@ function renderNavbar() {
       ${mobileItems}
     </ul>
     <div class="mobile-menu-footer">
-      <a href="contact" class="btn btn-primary w-full" style="justify-content:center;" onclick="closeMobileMenu()">
+      <a href="contact.html" class="btn btn-primary w-full" style="justify-content:center;" onclick="closeMobileMenu()">
         <i class="fas fa-rocket"></i> Démarrer mon projet
       </a>
       <div class="mobile-contact-info">
@@ -375,9 +375,9 @@ function renderFooter() {
             </h4>
             <ul class="footer-link-list">
               <li><a href="blog">Blog et Perspectives</a></li>
-              <li><a href="pricing">Plans Tarifaires</a></li>
-              <li><a href="company">Vision de l'Entreprise</a></li>
-              <li><a href="contact">Nous Contacter</a></li>
+              <li><a href="pricing.html">Plans Tarifaires</a></li>
+              <li><a href="company.html">Vision de l'Entreprise</a></li>
+              <li><a href="contact.html">Nous Contacter</a></li>
               <li><a href="pricing#enterprise">Démo Entreprise</a></li>
             </ul>
           </div>
@@ -412,10 +412,10 @@ function renderFooter() {
               Légal
             </h4>
             <ul class="footer-link-list">
-              <li><a href="privacy">Politique de Confidentialité</a></li>
-              <li><a href="legal">Mentions Légales</a></li>
-              <li><a href="terms">Termes & Conditions</a></li>
-              <li><a href="refund">Politique de Remboursement</a></li>
+              <li><a href="privacy.html">Politique de Confidentialité</a></li>
+              <li><a href="legal.html">Mentions Légales</a></li>
+              <li><a href="terms.html">Termes & Conditions</a></li>
+              <li><a href="refund.html">Politique de Remboursement</a></li>
             </ul>
           </div>
 
@@ -447,13 +447,13 @@ function renderFooter() {
             © ${year} <strong>Hozana Concept</strong>. Tous droits réservés.
           </p>
           <div class="footer-bottom-links">
-            <a href="privacy">Confidentialité</a>
+            <a href="privacy.html">Confidentialité</a>
             <span class="sep">·</span>
-            <a href="legal">Mentions Légales</a>
+            <a href="legal.html">Mentions Légales</a>
             <span class="sep">·</span>
-            <a href="terms">Termes & Conditions</a>
+            <a href="terms.html">Termes & Conditions</a>
             <span class="sep">·</span>
-            <a href="refund">Politique de Remboursement</a>
+            <a href="refund.html">Politique de Remboursement</a>
           </div>
           <div class="footer-status">
             <span class="status-indicator online"></span>
@@ -499,7 +499,7 @@ function renderCookiePopup() {
       <div class="cookie-content">
         <h3>Votre vie privée nous importe</h3>
         <p>Nous utilisons des cookies pour améliorer votre expérience. Vous pouvez accepter ou refuser les cookies non essentiels.</p>
-        <a href="privacy">En savoir plus →</a>
+        <a href="privacy.html">En savoir plus →</a>
       </div>
       <div class="cookie-actions">
         <button class="btn btn-glass btn-sm" id="decline-cookies">Refuser</button>
