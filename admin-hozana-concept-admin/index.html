@@ -8,7 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
   <script src="/js/supabase-config.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -353,6 +355,33 @@ select.form-ctrl option { background: #1a1a22; }
 
 /* STATUS SELECT inline */
 .status-sel { padding: .25rem .5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--font); font-size: .72rem; outline: none; cursor: pointer; }
+
+/* ── QUILL EDITOR (thème sombre) ── */
+.ql-toolbar { background: var(--surface2); border: 1px solid var(--border) !important; border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important; font-family: var(--font) !important; }
+.ql-toolbar .ql-stroke { stroke: var(--muted) !important; }
+.ql-toolbar .ql-fill { fill: var(--muted) !important; }
+.ql-toolbar button:hover .ql-stroke { stroke: var(--text) !important; }
+.ql-toolbar button:hover .ql-fill { fill: var(--text) !important; }
+.ql-toolbar button.ql-active .ql-stroke { stroke: var(--red) !important; }
+.ql-toolbar button.ql-active .ql-fill { fill: var(--red) !important; }
+.ql-toolbar .ql-picker-label { color: var(--muted) !important; }
+.ql-toolbar .ql-picker-label .ql-stroke { stroke: var(--muted) !important; }
+.ql-toolbar .ql-picker-label:hover { color: var(--text) !important; }
+.ql-toolbar .ql-picker-options { background: var(--surface2) !important; border: 1px solid var(--border) !important; border-radius: var(--radius-sm) !important; color: var(--text) !important; }
+.ql-toolbar .ql-picker-item:hover { color: var(--red) !important; }
+.ql-editor { min-height: 300px; font-size: 0.95rem; line-height: 1.8; color: var(--text); }
+.ql-editor.ql-blank::before { color: var(--muted2) !important; font-style: normal !important; }
+.ql-editor h1 { font-family: var(--font-title); font-size: 1.6rem; font-weight: 800; color: var(--text); }
+.ql-editor h2 { font-family: var(--font-title); font-size: 1.3rem; font-weight: 700; color: var(--text); }
+.ql-editor h3 { font-family: var(--font-title); font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.ql-editor p { margin-bottom: 0.5rem; }
+.ql-editor blockquote { border-left: 3px solid var(--red); padding-left: 1rem; color: var(--muted); font-style: italic; }
+.ql-editor pre.ql-syntax { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; color: #FF9090; font-size: 0.8rem; }
+.ql-editor a { color: var(--red-light); text-decoration: underline; }
+.ql-editor img { max-width: 100%; border-radius: var(--radius-sm); margin: 0.5rem 0; }
+.ql-editor ul, .ql-editor ol { padding-left: 1.5rem; }
+.ql-editor li { margin-bottom: 0.25rem; }
+#quill-editor .ql-editor { padding: 1rem; }
 </style>
 </head>
 <body>
@@ -1002,8 +1031,36 @@ select.form-ctrl option { background: #1a1a22; }
           <textarea class="form-ctrl" id="a-excerpt" rows="2" placeholder="Résumé court (160 car. max)"></textarea>
         </div>
         <div class="form-grp full">
-          <label class="form-label">Contenu HTML *</label>
-          <textarea class="form-ctrl" id="a-content" rows="9" placeholder="<p>Votre contenu HTML…</p>"></textarea>
+          <label class="form-label">Contenu éditeur visuel *</label>
+          <div id="quill-toolbar">
+            <span class="ql-formats">
+              <select class="ql-header"><option value="1">Titre 1</option><option value="2">Titre 2</option><option value="3">Titre 3</option><option value="false">Normal</option></select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-bold"></button>
+              <button class="ql-italic"></button>
+              <button class="ql-underline"></button>
+              <button class="ql-strike"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-list" value="ordered"></button>
+              <button class="ql-list" value="bullet"></button>
+            </span>
+            <span class="ql-formats">
+              <select class="ql-align"></select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-link"></button>
+              <button class="ql-image"></button>
+              <button class="ql-code-block"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-blockquote"></button>
+              <button class="ql-clean"></button>
+            </span>
+          </div>
+          <div id="quill-editor" style="min-height:300px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:0.95rem;line-height:1.7;"></div>
+          <textarea id="a-content" style="display:none;"></textarea>
         </div>
         <div class="form-grp">
           <label class="form-label">Image couverture</label>
@@ -1469,6 +1526,38 @@ function applyPostsFilter() {
   }));
 }
 
+/* ─── QUILL INIT ─── */
+let quillEditor = null;
+function initQuill() {
+  const container = document.getElementById('quill-editor');
+  if (!container || quillEditor) return;
+  quillEditor = new Quill(container, {
+    theme: 'snow',
+    modules: {
+      toolbar: '#quill-toolbar'
+    },
+    placeholder: 'Rédigez votre article ici…'
+  });
+  // Restore pre-set content from hidden textarea (fix race condition on first open)
+  const savedContent = document.getElementById('a-content').value;
+  if (savedContent) {
+    quillEditor.root.innerHTML = savedContent;
+  }
+  // Sync hidden textarea on every change
+  quillEditor.on('text-change', () => {
+    document.getElementById('a-content').value = quillEditor.root.innerHTML;
+  });
+}
+// Init Quill when article modal opens
+const origOpenModal = openModal;
+openModal = function(id) {
+  origOpenModal(id);
+  if (id === 'm-article') {
+    // Small delay to ensure the modal is rendered
+    setTimeout(initQuill, 50);
+  }
+};
+
 function openArticleModal(post=null) {
   document.getElementById('m-article-title').textContent = post?'Modifier l\'article':'Nouvel article';
   document.getElementById('a-id').value = post?.id||'';
@@ -1476,7 +1565,12 @@ function openArticleModal(post=null) {
   document.getElementById('a-cat').value = post?.category||'IA';
   document.getElementById('a-author').value = post?.author||'Marcus Hozana';
   document.getElementById('a-excerpt').value = post?.excerpt||'';
-  document.getElementById('a-content').value = post?.content||'';
+  // Always save content to hidden textarea as fallback for Quill lazy init
+  document.getElementById('a-content').value = post?.content || '';
+  // If Quill already initialized, set directly
+  if (window.quillEditor) {
+    quillEditor.root.innerHTML = post?.content || '<p></p>';
+  }
   document.getElementById('a-img').value = post?.cover_image||'';
   document.getElementById('a-readtime').value = post?.read_time||5;
   document.getElementById('a-tags').value = Array.isArray(post?.tags)?post.tags.join(', '):(post?.tags||'');
@@ -1494,7 +1588,7 @@ async function saveArticle() {
     title, category:document.getElementById('a-cat').value,
     author:document.getElementById('a-author').value,
     excerpt:document.getElementById('a-excerpt').value,
-    content:document.getElementById('a-content').value,
+    content: window.quillEditor ? quillEditor.root.innerHTML : document.getElementById('a-content').value,
     cover_image:document.getElementById('a-img').value,
     read_time:parseInt(document.getElementById('a-readtime').value)||5,
     tags, published:document.getElementById('a-pub').value==='true',
