@@ -66,7 +66,6 @@ function renderNavbar() {
 
   const simpleLinks = [
     { href: 'index.html',    label: 'Accueil' },
-    { href: 'admin.html',    label: 'Administration' },
     { href: 'pricing.html',  label: 'Formules' },
     { href: 'blog.html',     label: 'Actualités' },
     { href: 'company.html',  label: 'À Propos' },
@@ -114,7 +113,6 @@ function renderNavbar() {
 
   const mobileItems = [
     `<li><a href="index.html" ${currentPage==='index'?'class="active"':''} onclick="closeMobileMenu()">Accueil</a></li>`,
-    `<li><a href="admin.html" ${currentPage==='admin'?'class="active"':''} onclick="closeMobileMenu()">Administration</a></li>`,
     `<li>
       <div class="mobile-dd-toggle" onclick="toggleMobileServicesDd(this)">
         <span class="${isServicesActive ? 'active' : ''}">Nos Services</span>
@@ -122,7 +120,7 @@ function renderNavbar() {
       </div>
       <div class="mobile-dd-list" id="mobile-services-list">${mobileDdItems}</div>
     </li>`,
-    ...simpleLinks.slice(2).map(l => {
+    ...simpleLinks.slice(1).map(l => {
       const active = currentPage === l.href ? 'class="active"' : '';
       return `<li><a href="${l.href}" ${active} onclick="closeMobileMenu()">${l.label}</a></li>`;
     })
