@@ -1588,7 +1588,8 @@ function initScrollUI() {
   const bodyEl = document.getElementById('article-body');
 
   const totalReadTime = currentPost?.read_time || 5;
-  let totalScrollHeight = 0;
+  const heroEl = document.getElementById('article-hero');
+  const heroH = heroEl?.offsetHeight || 600;
   let lastPercent = -1;
 
   window.addEventListener('scroll', () => {
@@ -1599,18 +1600,13 @@ function initScrollUI() {
     const percent = Math.min(scrollY / maxScroll, 1);
 
     // Floating share visible after hero
-    if (floatingShare) {
-      const heroH = document.getElementById('article-hero')?.offsetHeight || 600;
-      floatingShare.classList.toggle('visible', scrollY > heroH * 0.7);
-    }
+    floatingShare?.classList.toggle('visible', scrollY > heroH * 0.7);
 
     // Back to top
-    if (backToTop) {
-      backToTop.classList.toggle('visible', scrollY > winH);
-    }
+    backToTop?.classList.toggle('visible', scrollY > winH);
 
     // Reading time remaining
-    if (readingTimeEl && timeText && bodyEl) {
+    if (readingTimeEl && timeText) {
       readingTimeEl.classList.toggle('visible', scrollY > 300 && scrollY < maxScroll - 200);
       const remaining = Math.max(1, Math.round(totalReadTime * (1 - percent)));
       const pct = Math.round(percent * 100);
