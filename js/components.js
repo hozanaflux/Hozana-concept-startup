@@ -5,6 +5,10 @@
 
 'use strict';
 
+// ── Root path helper for blog-posts subfolder support ──
+const R_ = window.__ROOT_PATH__ || '';
+const root = () => R_;
+
 // ============================================================
 // NAVBAR — effet glass uniquement sur le groupe de liens
 // ============================================================
@@ -16,7 +20,7 @@ const SERVICE_CATS = [
     name: 'Moteur IA Principal',
     tags: 'Réseaux de Neurones · Agents Autonomes · Traitement du Langage · IA Prédictive',
     priority: true,
-    href: 'service-ia.html',
+    href: '',
   },
   {
     id: 'branding',
@@ -24,7 +28,7 @@ const SERVICE_CATS = [
     name: 'Moteur d\'Automatisation',
     tags: 'Orchestration de Workflows · Intégration API · Logique Event-driven',
     priority: false,
-    href: 'service-branding.html',
+    href: '',
   },
   {
     id: 'marketing',
@@ -32,7 +36,7 @@ const SERVICE_CATS = [
     name: 'Intelligence Growth',
     tags: 'Marketing Prédictif · Optimisation LTV · Publicité Autonomes',
     priority: false,
-    href: 'service-marketing.html',
+    href: '',
   },
   {
     id: 'dev',
@@ -40,7 +44,7 @@ const SERVICE_CATS = [
     name: 'SDK Plateforme',
     tags: 'Accès API · Documentation · Connecteurs Personnalisés · Sécurité',
     priority: false,
-    href: 'service-dev.html',
+    href: '',
   },
   {
     id: 'business',
@@ -48,7 +52,7 @@ const SERVICE_CATS = [
     name: 'Insights Entreprise',
     tags: 'Visualisation de Données · Automatisation BI · Analytics Temps Réel',
     priority: false,
-    href: 'service-business.html',
+    href: '',
   },
   {
     id: 'consulting',
@@ -56,7 +60,7 @@ const SERVICE_CATS = [
     name: 'Stratégie Expert',
     tags: 'Architecture de Solution · Audit de Sécurité · Planification d\'Échelle',
     priority: false,
-    href: 'service-consulting.html',
+    href: '',
   },
 ];
 
@@ -65,16 +69,17 @@ function renderNavbar() {
   const isServicesActive = currentPage === 'platform';
 
   const simpleLinks = [
-    { href: 'index.html',    label: 'Accueil' },
-    { href: 'pricing.html',  label: 'Formules' },
-    { href: 'blog.html',     label: 'Actualités' },
-    { href: 'company.html',  label: 'À Propos' },
-    { href: 'contact.html',  label: 'Nous Contacter' },
+    { href: R_ + 'index.html',    label: 'Accueil' },
+    { href: R_ + 'pricing.html',  label: 'Formules' },
+    { href: R_ + 'blog.html',     label: 'Actualités' },
+    { href: R_ + 'company.html',  label: 'À Propos' },
+    { href: R_ + 'contact.html',  label: 'Nous Contacter' },
   ];
 
   // Dropdown Services item — liens vers les pages dédiées
-  const ddCats = SERVICE_CATS.map(c => `
-    <a class="dd-cat" href="${c.href}" onclick="closeMobileMenu()">
+  const servicePages = ['service-ia.html','service-branding.html','service-marketing.html','service-dev.html','service-business.html','service-consulting.html'];
+  const ddCats = SERVICE_CATS.map((c, i) => `
+    <a class="dd-cat" href="${root()}${servicePages[i]}" onclick="closeMobileMenu()">
       <div class="dd-cat-icon">${c.icon}</div>
       <div class="dd-cat-body">
         <div class="dd-cat-name">
@@ -93,26 +98,26 @@ function renderNavbar() {
       <div class="nav-dropdown-panel" id="nav-services-panel" role="menu">
         <div class="dd-header">
           <span class="dd-header-title">Nos 6 pôles d'expertise</span>
-          <a class="dd-header-cta" href="platform.html">Tout voir <i class="fas fa-arrow-right"></i></a>
+          <a class="dd-header-cta" href="${root()}platform.html">Tout voir <i class="fas fa-arrow-right"></i></a>
         </div>
         <div class="dd-grid">${ddCats}</div>
       </div>
     </li>`;
 
   const navItems = simpleLinks.map(l => {
-    const active = (currentPage === l.href || (currentPage === '' && l.href === 'index')) ? 'active' : '';
+    const active = (currentPage === l.href.split('/').pop() || (currentPage === '' && l.href.endsWith('index.html'))) ? 'active' : '';
     return `<li><a href="${l.href}" class="${active}">${l.label}</a></li>`;
   });
   // Insérer Services après Accueil
   navItems.splice(1, 0, servicesDropdown);
 
   // Mobile dropdown Services — liens vers les pages dédiées
-  const mobileDdItems = SERVICE_CATS.map(c =>
-    `<a href="${c.href}" onclick="closeMobileMenu()">${c.icon} ${c.name}</a>`
+  const mobileDdItems = SERVICE_CATS.map((c, i) =>
+    `<a href="${root()}${servicePages[i]}" onclick="closeMobileMenu()">${c.icon} ${c.name}</a>`
   ).join('');
 
   const mobileItems = [
-    `<li><a href="index.html" ${currentPage==='index'?'class="active"':''} onclick="closeMobileMenu()">Accueil</a></li>`,
+    `<li><a href="${R_}index.html" ${currentPage==='index'||currentPage===''?'class="active"':''} onclick="closeMobileMenu()">Accueil</a></li>`,
     `<li>
       <div class="mobile-dd-toggle" onclick="toggleMobileServicesDd(this)">
         <span class="${isServicesActive ? 'active' : ''}">Nos Services</span>
@@ -121,7 +126,7 @@ function renderNavbar() {
       <div class="mobile-dd-list" id="mobile-services-list">${mobileDdItems}</div>
     </li>`,
     ...simpleLinks.slice(1).map(l => {
-      const active = currentPage === l.href ? 'class="active"' : '';
+      const active = currentPage === l.href.split('/').pop() || (currentPage === '' && l.href.endsWith('index.html')) ? 'class="active"' : '';
       return `<li><a href="${l.href}" ${active} onclick="closeMobileMenu()">${l.label}</a></li>`;
     })
   ].join('');
@@ -131,8 +136,8 @@ function renderNavbar() {
     <div class="navbar-container">
 
       <!-- Logo -->
-      <a href="index.html" class="navbar-logo" aria-label="Hozana Concept - Accueil">
-        <img src="images/logo-main.png" alt="Hozana Concept" class="navbar-logo-img" style="height:44px;width:auto;display:block;object-fit:contain;">
+      <a href="${root()}index.html" class="navbar-logo" aria-label="Hozana Concept - Accueil">
+        <img src="${root()}images/logo-main.png" alt="Hozana Concept" class="navbar-logo-img" style="height:44px;width:auto;display:block;object-fit:contain;">
       </a>
 
       <!-- Nav links pill glass -->
@@ -149,7 +154,7 @@ function renderNavbar() {
             <div class="theme-toggle-thumb" id="theme-thumb">🌙</div>
           </div>
         </button>
-        <a href="contact.html" class="btn btn-primary btn-sm navbar-cta" aria-label="Démarrer un projet">Démarrer →</a>
+        <a href="${root()}contact.html" class="btn btn-primary btn-sm navbar-cta" aria-label="Démarrer un projet">Démarrer →</a>
         <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -163,7 +168,7 @@ function renderNavbar() {
   <!-- Mobile Menu Panel -->
   <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile" aria-hidden="true">
     <div class="mobile-menu-header">
-      <img src="images/logo-main.png" alt="Hozana Concept" style="height:36px;width:auto;object-fit:contain;">
+      <img src="${root()}images/logo-main.png" alt="Hozana Concept" style="height:36px;width:auto;object-fit:contain;">
       <button class="mobile-close" onclick="closeMobileMenu()" aria-label="Fermer le menu">
         <i class="fas fa-times"></i>
       </button>
@@ -172,7 +177,7 @@ function renderNavbar() {
       ${mobileItems}
     </ul>
     <div class="mobile-menu-footer">
-      <a href="contact.html" class="btn btn-primary w-full" style="justify-content:center;" onclick="closeMobileMenu()">
+      <a href="${root()}contact.html" class="btn btn-primary w-full" style="justify-content:center;" onclick="closeMobileMenu()">
         <i class="fas fa-rocket"></i> Démarrer mon projet
       </a>
       <div class="mobile-contact-info">
@@ -330,8 +335,8 @@ function renderFooter() {
 
           <!-- Brand Column -->
           <div class="footer-brand-col reveal">
-            <a href="index.html" class="footer-logo-link" aria-label="Hozana Concept">
-              <img src="images/logo-footer.png" alt="Hozana Concept" style="height:52px;width:auto;object-fit:contain;filter:brightness(0) invert(1);">
+            <a href="${root()}index.html" class="footer-logo-link" aria-label="Hozana Concept">
+              <img src="${root()}images/logo-footer.png" alt="Hozana Concept" style="height:52px;width:auto;object-fit:contain;filter:brightness(0) invert(1);">
             </a>
             <p class="footer-brand-desc">
               Plateforme IA de nouvelle génération opérant dans le monde entier. Nous automatisons, accélérons et transformons les entreprises ambitieuses grâce à l'intelligence artificielle.
@@ -357,11 +362,11 @@ function renderFooter() {
               Plateforme
             </h4>
             <ul class="footer-link-list">
-              <li><a href="platform.html#ia">Moteur IA Principal</a></li>
-              <li><a href="platform.html#automation">Moteur d'Automatisation</a></li>
-              <li><a href="platform.html#growth">Intelligence de Croissance</a></li>
-              <li><a href="platform.html#content">SDK Plateforme</a></li>
-              <li><a href="platform.html#analytics">Perspectives Entreprise</a></li>
+              <li><a href="${root()}platform.html#ia">Moteur IA Principal</a></li>
+              <li><a href="${root()}platform.html#automation">Moteur d'Automatisation</a></li>
+              <li><a href="${root()}platform.html#growth">Intelligence de Croissance</a></li>
+              <li><a href="${root()}platform.html#content">SDK Plateforme</a></li>
+              <li><a href="${root()}platform.html#analytics">Perspectives Entreprise</a></li>
             </ul>
           </div>
 
@@ -372,11 +377,11 @@ function renderFooter() {
               Ressources
             </h4>
             <ul class="footer-link-list">
-              <li><a href="blog.html">Blog et Perspectives</a></li>
-              <li><a href="pricing.html">Plans Tarifaires</a></li>
-              <li><a href="company.html">Vision de l'Entreprise</a></li>
-              <li><a href="contact.html">Nous Contacter</a></li>
-              <li><a href="pricing#enterprise">Démo Entreprise</a></li>
+              <li><a href="${root()}blog.html">Blog et Perspectives</a></li>
+              <li><a href="${root()}pricing.html">Plans Tarifaires</a></li>
+              <li><a href="${root()}company.html">Vision de l'Entreprise</a></li>
+              <li><a href="${root()}contact.html">Nous Contacter</a></li>
+              <li><a href="${root()}pricing.html#enterprise">Démo Entreprise</a></li>
             </ul>
           </div>
 
@@ -410,10 +415,10 @@ function renderFooter() {
               Légal
             </h4>
             <ul class="footer-link-list">
-              <li><a href="privacy.html">Politique de Confidentialité</a></li>
-              <li><a href="legal.html">Mentions Légales</a></li>
-              <li><a href="terms.html">Termes & Conditions</a></li>
-              <li><a href="refund.html">Politique de Remboursement</a></li>
+              <li><a href="${root()}privacy.html">Politique de Confidentialité</a></li>
+              <li><a href="${root()}legal.html">Mentions Légales</a></li>
+              <li><a href="${root()}terms.html">Termes & Conditions</a></li>
+              <li><a href="${root()}refund.html">Politique de Remboursement</a></li>
             </ul>
           </div>
 
@@ -445,13 +450,13 @@ function renderFooter() {
             © ${year} <strong>Hozana Concept</strong>. Tous droits réservés.
           </p>
           <div class="footer-bottom-links">
-            <a href="privacy.html">Confidentialité</a>
+            <a href="${root()}privacy.html">Confidentialité</a>
             <span class="sep">·</span>
-            <a href="legal.html">Mentions Légales</a>
+            <a href="${root()}legal.html">Mentions Légales</a>
             <span class="sep">·</span>
-            <a href="terms.html">Termes & Conditions</a>
+            <a href="${root()}terms.html">Termes & Conditions</a>
             <span class="sep">·</span>
-            <a href="refund.html">Politique de Remboursement</a>
+            <a href="${root()}refund.html">Politique de Remboursement</a>
           </div>
           <div class="footer-status">
             <span class="status-indicator online"></span>

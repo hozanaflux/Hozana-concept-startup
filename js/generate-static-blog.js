@@ -184,6 +184,12 @@ async function generateStaticPost(post) {
     const pageDesc = document.getElementById('page-desc');
     if (pageDesc) pageDesc.setAttribute('content', post.excerpt || `Découvrez l'article de Hozana Concept : ${post.title}`);
 
+    // ── Set root path for blog-posts subfolder ──
+    // This allows components.js (navbar, footer) to resolve paths correctly
+    const rootPathScript = dom.window.document.createElement('script');
+    rootPathScript.textContent = 'window.__ROOT_PATH__ = "../";';
+    document.head.insertBefore(rootPathScript, document.head.firstChild);
+
     // ── Inject static post data for client-side interactivity ──
     // This avoids the JS needing to parse ?id= from URL or fetch from Supabase
     const staticDataScript = dom.window.document.createElement('script');
