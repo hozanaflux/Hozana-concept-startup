@@ -214,8 +214,9 @@ window.__STATIC_BLOG_DATA__ = {
     const filename = `${slug}.html`;
     const filepath = path.join(OUTPUT_DIR, filename);
 
-    // ── Serialize and write ──
-    const html = dom.serialize();
+    // ── Serialize and fix relative paths ──
+    let html = dom.serialize();
+    html = fixRelativePaths(html);
     fs.writeFileSync(filepath, html);
 
     console.log(`✅ Generated: ${filename}`);
@@ -395,6 +396,27 @@ function convertPlainTextToHtml(text) {
     }
     return `<p>${para}</p>`;
   }).join('\n');
+}
+
+/* ============================================================
+   FIX RELATIVE PATHS — blog-posts/ is a subfolder, so we need
+   to prefix relative paths with ../ so they resolve correctly
+   ============================================================ */
+function fixRelativePaths(html) {
+  // Fix CSS references
+  html = html.replace(/(href=")(css\/)/g, '$1../$2');
+  html = html.replace(/(src=")(js\/)/g, '$1../$2');
+  html = html.replace(/(href=")(js\/)/g, '$1../$2');
+  
+  // Fix image paths (only relative ones)
+  html = html.replace(/(src=")(images\/)/g, '$1../$2');
+  html = html.replace(/(href=")(images\/)/g, '$1../$2');
+
+  // Fix navigation links to root pages
+  html = html.replace(/href="blog\.html"/g, 'href="../blog.html"');
+  html = html.replace(/href="contact\.html"/g, 'href="../contact.html"');
+
+  return html;
 }
 
 // ─── Run if called directly ───
