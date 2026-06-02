@@ -11,7 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
-  <script src="/js/supabase-config.js"></script>
+  <script src="../js/supabase-config.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1208,9 +1208,66 @@ const LBLS = { new:'Nouveau', contacted:'Contacté', qualified:'Qualifié', conv
 const PIPE_COLS = ['new','contacted','qualified','converted'];
 
 /* ─── AUTH ─── */
+// ── Fallback SUPABASE config (si supabase-config.js ne charge pas) ──
+if (typeof SUPABASE_URL === 'undefined') {
+  var SUPABASE_URL  = 'https://leadvqrheziyvrwnbiio.supabase.co';
+  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlYWR2cXJoZXppeXZyd25iaWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzM0MTksImV4cCI6MjA5MzU0OTQxOX0.I-L13gdtuQnsJ4ErEb-SWWfdbMUhWOkTvSFOSkNxsD0';
+}
+
+/* ─── SHA-256 (Web Crypto avec fallback pur JS pour file://) ─── */
 async function sha256(s) {
-  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+  // Try native Web Crypto (HTTPS/localhost)
+  if (window.crypto && window.crypto.subtle) {
+    try {
+      const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+      return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+    } catch (e) { /* fallback to JS below */ }
+  }
+  // Pure JS fallback (file://, insecure contexts)
+  return sha256JS(s);
+}
+
+function sha256JS(s) {
+  // SHA-256 pure JS implementation (c) Chris Veness, MIT License
+  // Convert string to UTF-8 bytes
+  const utf8 = unescape(encodeURIComponent(s));
+  const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  const ROTR = (n,x) => (x>>>n)|(x<<(32-n));
+  const Σ0 = x => ROTR(2,x)^ROTR(13,x)^ROTR(22,x);
+  const Σ1 = x => ROTR(6,x)^ROTR(11,x)^ROTR(25,x);
+  const σ0 = x => ROTR(7,x)^ROTR(18,x)^(x>>>3);
+  const σ1 = x => ROTR(17,x)^ROTR(19,x)^(x>>>10);
+  const Ch = (x,y,z) => (x&y)^(~x&z);
+  const Maj = (x,y,z) => (x&y)^(x&z)^(y&z);
+  let H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  let msg = utf8 + String.fromCharCode(0x80);
+  const l = msg.length/4 + 2;
+  const N = Math.ceil(l/16);
+  const M = new Array(N);
+  for (let i=0; i<N; i++) {
+    M[i] = new Array(16);
+    for (let j=0; j<16; j++) {
+      M[i][j] = (msg.charCodeAt(i*64+j*4+0)<<24)|(msg.charCodeAt(i*64+j*4+1)<<16)|(msg.charCodeAt(i*64+j*4+2)<<8)|(msg.charCodeAt(i*64+j*4+3)<<0)>>>0;
+    }
+  }
+  const lenHi = Math.floor(((msg.length-1)*8)/Math.pow(2,32));
+  const lenLo = ((msg.length-1)*8)>>>0;
+  M[N-1][14] = lenHi;
+  M[N-1][15] = lenLo;
+  for (let i=0; i<N; i++) {
+    const W = new Array(64);
+    for (let t=0; t<16; t++) W[t] = M[i][t];
+    for (let t=16; t<64; t++) W[t] = (σ1(W[t-2])+W[t-7]+σ0(W[t-15])+W[t-16])>>>0;
+    let a=H[0], b=H[1], c=H[2], d=H[3], e=H[4], f=H[5], g=H[6], h=H[7];
+    for (let t=0; t<64; t++) {
+      const T1 = (h+Σ1(e)+Ch(e,f,g)+K[t]+W[t])>>>0;
+      const T2 = (Σ0(a)+Maj(a,b,c))>>>0;
+      h=g; g=f; f=e; e=(d+T1)>>>0; d=c; c=b; b=a; a=(T1+T2)>>>0;
+    }
+    H[0]=(H[0]+a)>>>0; H[1]=(H[1]+b)>>>0; H[2]=(H[2]+c)>>>0; H[3]=(H[3]+d)>>>0;
+    H[4]=(H[4]+e)>>>0; H[5]=(H[5]+f)>>>0; H[6]=(H[6]+g)>>>0; H[7]=(H[7]+h)>>>0;
+  }
+  return H.map(x => ('00000000'+(x>>>0).toString(16)).slice(-8)).join('');
 }
 function togglePwd() {
   const i = document.getElementById('l-pass');
