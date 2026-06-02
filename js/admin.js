@@ -1,45 +1,96 @@
-'use strict';
-
 /* ─── STATE ─── */
-let P = [], COM = [], LEADS = [], VIEWS = [], ORDERS = [], PF = [], SVCS = [], PACKS = [];
+// ── Admin credentials hash (fallback si supabase-config.js ne charge pas) ──
+if (typeof ADMIN_EMAIL_HASH === 'undefined') {
+  window.ADMIN_EMAIL_HASH    = 'a4976d615b70ef9383759e67e205e204fad71ebddeed9ab327662b389c8d21e4';
+  window.ADMIN_PASSWORD_HASH = 'cb2e6d595374831518b59caec6590572569c1d989f19a807e4fc4db9c1a96383';
+}
+
+let P = [], COM = [], LEADS = [], VIEWS = [], ORDERS = [], PF = [], PACKS = [], SERVICES = [];
 let CH = {};
 let _delCb = null;
 let _postsFilter = { q: '', cat: '' };
 let _leadsFilter = { q: '', status: '' };
 let _ordersFilter = { q: '', status: '' };
-let _pfFilter = '';
-let _comFilter = '';
-
 const LBLS = { new:'Nouveau', contacted:'Contacté', qualified:'Qualifié', converted:'Converti', lost:'Perdu' };
 const PIPE_COLS = ['new','contacted','qualified','converted'];
 
 /* ─── AUTH ─── */
-async function sha256(s) {
-  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+// ── Fallback SUPABASE config (si supabase-config.js ne charge pas) ──
+if (typeof SUPABASE_URL === 'undefined') {
+  window.SUPABASE_URL  = 'https://leadvqrheziyvrwnbiio.supabase.co';
+  window.SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlYWR2cXJoZXppeXZyd25iaWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzM0MTksImV4cCI6MjA5MzU0OTQxOX0.I-L13gdtuQnsJ4ErEb-SWWfdbMUhWOkTvSFOSkNxsD0';
 }
 
+/* ─── SHA-256 (Web Crypto avec fallback pur JS pour file://) ─── */
+async function sha256(s) {
+  // Try native Web Crypto (HTTPS/localhost)
+  if (window.crypto && window.crypto.subtle) {
+    try {
+      const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+      return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+    } catch (e) { /* fallback to JS below */ }
+  }
+  // Pure JS fallback (file://, insecure contexts)
+  return sha256JS(s);
+}
+
+function sha256JS(s) {
+  // SHA-256 pure JS implementation (c) Chris Veness, MIT License
+  // Convert string to UTF-8 bytes
+  const utf8 = unescape(encodeURIComponent(s));
+  const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  const ROTR = (n,x) => (x>>>n)|(x<<(32-n));
+  const Σ0 = x => ROTR(2,x)^ROTR(13,x)^ROTR(22,x);
+  const Σ1 = x => ROTR(6,x)^ROTR(11,x)^ROTR(25,x);
+  const σ0 = x => ROTR(7,x)^ROTR(18,x)^(x>>>3);
+  const σ1 = x => ROTR(17,x)^ROTR(19,x)^(x>>>10);
+  const Ch = (x,y,z) => (x&y)^(~x&z);
+  const Maj = (x,y,z) => (x&y)^(x&z)^(y&z);
+  let H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  let msg = utf8 + String.fromCharCode(0x80);
+  const l = msg.length/4 + 2;
+  const N = Math.ceil(l/16);
+  const M = new Array(N);
+  for (let i=0; i<N; i++) {
+    M[i] = new Array(16);
+    for (let j=0; j<16; j++) {
+      M[i][j] = (msg.charCodeAt(i*64+j*4+0)<<24)|(msg.charCodeAt(i*64+j*4+1)<<16)|(msg.charCodeAt(i*64+j*4+2)<<8)|(msg.charCodeAt(i*64+j*4+3)<<0)>>>0;
+    }
+  }
+  const lenHi = Math.floor(((msg.length-1)*8)/Math.pow(2,32));
+  const lenLo = ((msg.length-1)*8)>>>0;
+  M[N-1][14] = lenHi;
+  M[N-1][15] = lenLo;
+  for (let i=0; i<N; i++) {
+    const W = new Array(64);
+    for (let t=0; t<16; t++) W[t] = M[i][t];
+    for (let t=16; t<64; t++) W[t] = (σ1(W[t-2])+W[t-7]+σ0(W[t-15])+W[t-16])>>>0;
+    let a=H[0], b=H[1], c=H[2], d=H[3], e=H[4], f=H[5], g=H[6], h=H[7];
+    for (let t=0; t<64; t++) {
+      const T1 = (h+Σ1(e)+Ch(e,f,g)+K[t]+W[t])>>>0;
+      const T2 = (Σ0(a)+Maj(a,b,c))>>>0;
+      h=g; g=f; f=e; e=(d+T1)>>>0; d=c; c=b; b=a; a=(T1+T2)>>>0;
+    }
+    H[0]=(H[0]+a)>>>0; H[1]=(H[1]+b)>>>0; H[2]=(H[2]+c)>>>0; H[3]=(H[3]+d)>>>0;
+    H[4]=(H[4]+e)>>>0; H[5]=(H[5]+f)>>>0; H[6]=(H[6]+g)>>>0; H[7]=(H[7]+h)>>>0;
+  }
+  return H.map(x => ('00000000'+(x>>>0).toString(16)).slice(-8)).join('');
+}
 function togglePwd() {
   const i = document.getElementById('l-pass');
   const ic = document.getElementById('eye-ico');
-  if (!i || !ic) return;
   i.type = i.type === 'password' ? 'text' : 'password';
   ic.className = i.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
 }
-
 async function doLogin(e) {
   e.preventDefault();
   const btn = document.getElementById('l-btn');
   const err = document.getElementById('l-err');
-  if (!btn || !err) return;
-  
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification…';
   err.style.display = 'none';
-  
   const email = document.getElementById('l-email').value.trim().toLowerCase();
   const pass  = document.getElementById('l-pass').value;
-  
   try {
     const [eh, ph] = await Promise.all([sha256(email), sha256(pass)]);
     if (eh === ADMIN_EMAIL_HASH && ph === ADMIN_PASSWORD_HASH) {
@@ -53,97 +104,80 @@ async function doLogin(e) {
       btn.disabled = false;
       btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Connexion';
     }
-  } catch (e) {
-    console.error(e);
+  } catch {
     err.style.display = 'block';
     err.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erreur, réessayez.';
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Connexion';
   }
 }
-
 function doLogout() {
   sessionStorage.removeItem('hzn-auth');
   location.reload();
 }
 
 /* ─── NAVIGATION ─── */
-const TITLES = { 
-  dashboard:'Dashboard', 
-  analytics:'Analytics', 
-  articles:'Articles', 
-  portfolio:'Portfolio', 
-  services:'Services',
-  packs:'Packs & Tarifs',
-  leads:'Leads CRM', 
-  orders:'Commandes', 
-  comments:'Commentaires', 
-  settings:'Paramètres' 
-};
-
-const CTA = { 
-  articles: { label:'Nouvel article', fn:'openArticleModal()' }, 
-  portfolio: { label:'Nouveau projet', fn:'openPfModal()' },
-  services: { label:'Nouveau service', fn:'openServiceModal()' },
-  packs: { label:'Nouveau pack', fn:'openPackModal()' }
-};
-
+const TITLES = { dashboard:'Dashboard', analytics:'Analytics', articles:'Articles', portfolio:'Portfolio', leads:'Leads CRM', packs:'Packs Tarifs', orders:'Commandes', services:'Services', comments:'Commentaires', settings:'Paramètres' };
+const CTA = { articles:{ label:'Nouvel article', fn:'openArticleModal()' }, portfolio:{ label:'Nouveau projet', fn:'openPfModal()' }, packs:{ label:'Nouveau pack', fn:'openPackModal()' }, services:{ label:'Nouveau service', fn:'openServiceModal()' } };
 function nav(btn, panel) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  const target = document.getElementById('panel-' + panel);
-  if (target) target.classList.add('active');
-  
-  const titleEl = document.getElementById('page-title');
-  if (titleEl) titleEl.textContent = TITLES[panel] || panel;
-  
+  document.getElementById('panel-'+panel)?.classList.add('active');
+  document.getElementById('page-title').textContent = TITLES[panel] || panel;
   const cta = CTA[panel];
   const ctaEl = document.getElementById('topbar-cta');
-  if (ctaEl) {
-    if (cta) {
-      ctaEl.innerHTML = `<i class="fas fa-plus"></i> ${cta.label}`;
-      ctaEl.setAttribute('onclick', cta.fn);
-      ctaEl.style.display = '';
-    } else {
-      ctaEl.style.display = 'none';
-    }
+  if (cta) {
+    ctaEl.innerHTML = `<i class="fas fa-plus"></i> ${cta.label}`;
+    ctaEl.setAttribute('onclick', cta.fn);
+    ctaEl.style.display = '';
+  } else {
+    ctaEl.style.display = 'none';
   }
-  
+  // Trigger renders when entering specific panels to ensure visibility
+  if (panel === 'dashboard') { renderDashLeads(); renderDashPosts(); renderCharts(); }
   if (panel === 'analytics') renderAnalytics();
-  const sidebar = document.getElementById('sidebar');
-  if (sidebar) sidebar.classList.remove('open');
+  if (panel === 'articles')  applyPostsFilter();
+  if (panel === 'portfolio') renderPortfolio();
+  if (panel === 'leads')     renderLeads();
+  if (panel === 'packs')     renderPacks();
+  if (panel === 'services')  renderServices();
+  if (panel === 'orders')    renderOrders();
+  if (panel === 'comments')  renderComments();
+
+  document.getElementById('sidebar').classList.remove('open');
 }
 
 /* ─── DATA LOAD ─── */
 async function initApp() {
   await loadAll();
 }
-
 async function loadAll() {
+  console.log('[Admin] Loading data...');
   try {
-    const [pr, cr, lr, vr, or, pfr, sr, pkr] = await Promise.allSettled([
+    const [pr,cr,lr,vr,or,pfr, pkr, svr] = await Promise.allSettled([
       fetch('tables/blog_posts?order=created_at.desc&limit=200').then(r=>r.json()),
       fetch('tables/comments?order=created_at.desc&limit=300').then(r=>r.json()),
       fetch('tables/leads?order=created_at.desc&limit=300').then(r=>r.json()),
       fetch('tables/page_views?limit=1000').then(r=>r.json()),
       fetch('tables/orders?order=created_at.desc&limit=300').then(r=>r.json()),
       fetch('tables/portfolio_projects?order=sort_order.asc&limit=200').then(r=>r.json()),
-      fetch('tables/services?order=sort_order.asc&limit=100').then(r=>r.json()),
       fetch('tables/packs?order=sort_order.asc&limit=50').then(r=>r.json()),
+      fetch('tables/services_list?order=sort_order.asc&limit=50').then(r=>r.json()),
     ]);
     
-    if (pr.status==='fulfilled') P     = pr.value.data||[];
-    if (cr.status==='fulfilled') COM   = cr.value.data||[];
-    if (lr.status==='fulfilled') LEADS = lr.value.data||[];
-    if (vr.status==='fulfilled') VIEWS = vr.value.data||[];
-    if (or.status==='fulfilled') ORDERS= or.value.data||[];
-    if (pfr.status==='fulfilled') PF   = pfr.value.data||[];
-    if (sr.status==='fulfilled') SVCS  = sr.value.data||[];
-    if (pkr.status==='fulfilled') PACKS = pkr.value.data||[];
+    if (pr.status==='fulfilled' && pr.value) P = pr.value.data || [];
+    if (cr.status==='fulfilled' && cr.value) COM = cr.value.data || [];
+    if (lr.status==='fulfilled' && lr.value) LEADS = lr.value.data || [];
+    if (vr.status==='fulfilled' && vr.value) VIEWS = vr.value.data || [];
+    if (or.status==='fulfilled' && or.value) ORDERS = or.value.data || [];
+    if (pfr.status==='fulfilled' && pfr.value) PF = pfr.value.data || [];
+    if (pkr.status==='fulfilled' && pkr.value) PACKS = pkr.value.data || [];
+    if (svr.status==='fulfilled' && svr.value) SERVICES = svr.value.data || [];
+
+    console.log('[Admin] Data loaded:', { posts: P.length, leads: LEADS.length, packs: PACKS.length });
   } catch(e) { 
-    console.error(e);
+    console.error('[Admin] loadAll error:', e);
     toast('Erreur de chargement','err'); 
   }
 
@@ -152,15 +186,14 @@ async function loadAll() {
   renderDashLeads();
   renderDashPosts();
   renderCharts();
-  renderPosts();
+  applyPostsFilter();
   renderPortfolio();
-  renderServices();
-  renderPacks();
   renderLeads();
+  renderPacks();
+  renderServices();
   renderOrders();
   renderComments();
 }
-
 async function refreshAll() {
   toast('Actualisation…','info');
   await loadAll();
@@ -171,17 +204,12 @@ async function refreshAll() {
 function updateBadges() {
   set('badge-posts', P.length);
   set('badge-pf', PF.length);
-  set('badge-svcs', SVCS.length);
-  set('badge-packs', PACKS.length);
   set('badge-com', COM.filter(c=>!c.approved).length||COM.length);
   set('badge-leads', LEADS.filter(l=>l.status==='new').length);
   set('badge-orders', ORDERS.filter(o=>o.status==='paid').length);
+  set('badge-packs', PACKS.length);
 }
-
-function set(id,v) { 
-  const el=document.getElementById(id); 
-  if(el) el.textContent=v; 
-}
+function set(id,v) { const el=document.getElementById(id); if(el) el.textContent=v; }
 
 /* ─── KPIs ─── */
 function renderKPIs() {
@@ -190,12 +218,10 @@ function renderKPIs() {
   const paid = ORDERS.filter(o=>o.status==='paid');
   const rev  = paid.reduce((s,o)=>s+(parseInt(o.amount)||0),0);
   const topPack = (() => {
-    const m={}; 
-    paid.forEach(o=>{ m[o.pack]=(m[o.pack]||0)+1; });
+    const m={}; paid.forEach(o=>{ m[o.pack]=(m[o.pack]||0)+1; });
     const e=Object.entries(m).sort((a,b)=>b[1]-a[1])[0];
     return e?e[0]:'—';
   })();
-  
   set('k-leads', LEADS.length);
   set('k-leads-new', `↑ ${newLeads} nouveau${newLeads>1?'x':''} ce mois`);
   set('k-posts', pubPosts);
@@ -203,7 +229,6 @@ function renderKPIs() {
   set('k-orders', paid.length);
   set('k-orders-sub', `Pack: ${topPack}`);
   set('k-rev', rev.toLocaleString('fr-FR')+'€');
-  
   set('ord-paid', paid.length);
   set('ord-rev', rev.toLocaleString('fr-FR')+'€');
   set('ord-top', topPack);
@@ -211,12 +236,10 @@ function renderKPIs() {
 
 /* ─── DASHBOARD TABLES ─── */
 const SB = { new:'badge-blue', contacted:'badge-yellow', qualified:'badge-purple', converted:'badge-green', lost:'badge-gray' };
-
 function renderDashLeads() {
   const el = document.getElementById('dash-leads');
-  if (!el) return;
   const data = LEADS.slice(0,5);
-  if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="5">Aucun lead pour l'instant</td></tr>`; return; }
+  if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="6">Aucun lead pour l'instant</td></tr>`; return; }
   el.innerHTML = data.map(l=>`
     <tr>
       <td><div style="display:flex;align-items:center;gap:.625rem;">
@@ -227,9 +250,11 @@ function renderDashLeads() {
       <td class="t-muted t-sm">${l.source||'—'}</td>
       <td><span class="badge ${SB[l.status]||'badge-blue'}">${LBLS[l.status]||'Nouveau'}</span></td>
       <td class="t-muted t-sm">${fmt(l.created_at)}</td>
+      <td><div class="acts">
+        <button class="act" onclick="viewLead('${l.id}')" title="Voir détails"><i class="fas fa-eye"></i></button>
+      </div></td>
     </tr>`).join('');
 }
-
 function renderDashPosts() {
   const el = document.getElementById('dash-posts');
   if (!el) return;
@@ -237,7 +262,12 @@ function renderDashPosts() {
   if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="5">Aucun article</td></tr>`; return; }
   el.innerHTML = data.map(p=>`
     <tr>
-      <td><div class="text-clip t-strong">${p.title}</div></td>
+      <td><div style="display:flex;align-items:center;gap:.625rem;">
+        <div class="thumb-wrap" style="width:40px;height:28px;">
+          ${p.cover_image ? `<img class="thumb" src="${p.cover_image}" onerror="this.parentElement.innerHTML='<i class=\'fas fa-image\' style=\'font-size:.6rem;color:var(--muted);\'></i>'">` : `<i class="fas fa-image" style="font-size:.6rem;color:var(--muted);"></i>`}
+        </div>
+        <div class="text-clip t-strong" style="max-width:160px;">${p.title}</div>
+      </div></td>
       <td><span class="badge badge-red">${p.category||'—'}</span></td>
       <td class="t-sm">${(p.views||0).toLocaleString()}</td>
       <td class="t-sm">❤️ ${p.likes||0}</td>
@@ -246,18 +276,11 @@ function renderDashPosts() {
 }
 
 /* ─── CHARTS ─── */
-const CO = { 
-  responsive:true, 
-  maintainAspectRatio:false,
-  plugins:{ 
-    legend:{ labels:{ color:'rgba(240,240,245,.5)', font:{ family:'Space Grotesk', size:11 } } } 
-  },
-  scales:{ 
-    x:{ ticks:{ color:'rgba(240,240,245,.35)', font:{size:10} }, grid:{ color:'rgba(255,255,255,.05)' } },
-    y:{ ticks:{ color:'rgba(240,240,245,.35)', font:{size:10} }, grid:{ color:'rgba(255,255,255,.05)' } } 
-  }
+const CO = { responsive:true, maintainAspectRatio:false,
+  plugins:{ legend:{ labels:{ color:'rgba(240,240,245,.5)', font:{ family:'Space Grotesk', size:11 } } } },
+  scales:{ x:{ ticks:{ color:'rgba(240,240,245,.35)', font:{size:10} }, grid:{ color:'rgba(255,255,255,.05)' } },
+           y:{ ticks:{ color:'rgba(240,240,245,.35)', font:{size:10} }, grid:{ color:'rgba(255,255,255,.05)' } } }
 };
-
 function mkChart(id, type, labels, datasets, extraOpts={}) {
   const ctx = document.getElementById(id);
   if (!ctx) return;
@@ -272,100 +295,68 @@ function renderCharts() {
     const d=new Date(); d.setDate(d.getDate()-i);
     const ds=d.toISOString().split('T')[0];
     days.push(i===0?'Auj.':i===1?'Hier':d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}));
-    dayCounts.push(LEADS.filter(l=>l.created_at && l.created_at.startsWith(ds)).length);
+    dayCounts.push(LEADS.filter(l=>l.created_at&&l.created_at.startsWith&&l.created_at.startsWith(ds)).length);
   }
-  
   mkChart('chart-leads-line','line',
-    days.filter((_,i)=>i%3===0||i===29), 
-    [{ 
-      label:'Leads', 
-      data:dayCounts.filter((_,i)=>i%3===0||i===29),
-      borderColor:'#FF2E2E', 
-      backgroundColor:'rgba(255,46,46,.08)',
-      fill:true, tension:.4, pointRadius:3, pointBackgroundColor:'#FF2E2E', borderWidth:2 
-    }]
-  );
+    days.filter((_,i)=>i%3===0||i===29), dayCounts.filter((_,i)=>i%3===0||i===29),
+    [{ label:'Leads', data:dayCounts.filter((_,i)=>i%3===0||i===29),
+      borderColor:'#FF2E2E', backgroundColor:'rgba(255,46,46,.08)',
+      fill:true, tension:.4, pointRadius:3, pointBackgroundColor:'#FF2E2E', borderWidth:2 }]);
 
   // Leads donut
-  const src={}; 
-  LEADS.forEach(l=>{ src[l.source||'direct']=(src[l.source||'direct']||0)+1; });
-  
+  const src={}; LEADS.forEach(l=>{ src[l.source||'direct']=(src[l.source||'direct']||0)+1; });
   mkChart('chart-leads-donut','doughnut',
-    Object.keys(src), 
-    [{ 
-      data:Object.values(src),
+    Object.keys(src), [{ data:Object.values(src),
       backgroundColor:['#FF2E2E','#FF6A00','#3b82f6','#22c55e','#8b5cf6','#f59e0b'],
-      borderWidth:0, hoverOffset:8 
-    }],
-    { 
-      scales:{}, 
-      plugins:{ legend:{ position:'bottom', labels:{ color:'rgba(240,240,245,.5)', boxWidth:12, font:{size:11} } } } 
-    }
-  );
+      borderWidth:0, hoverOffset:8 }],
+    { scales:{}, plugins:{ legend:{ position:'bottom', labels:{ color:'rgba(240,240,245,.5)', boxWidth:12, font:{size:11} } } } });
 }
 
 function renderAnalytics() {
   const totalLikes = P.reduce((s,p)=>s+(p.likes||0),0);
   const uniq = new Set(VIEWS.map(v=>v.visitor_id)).size;
   const conv = VIEWS.length>0?((LEADS.length/VIEWS.length)*100).toFixed(1):'0';
-  
   set('an-views', VIEWS.length.toLocaleString());
   set('an-uniq', uniq.toLocaleString());
   set('an-likes', totalLikes.toLocaleString());
   set('an-conv', conv+'%');
 
   // Pages table
-  const pMap={}; 
-  VIEWS.forEach(v=>{ pMap[v.page||'index']=(pMap[v.page||'index']||0)+1; });
+  const pMap={}; VIEWS.forEach(v=>{ pMap[v.page||'index.html']=(pMap[v.page||'index.html']||0)+1; });
   const tot = Object.values(pMap).reduce((s,v)=>s+v,0);
   const el = document.getElementById('an-pages');
-  if (el) {
-    el.innerHTML = Object.entries(pMap).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([pg,cnt])=>`
-      <tr>
-        <td class="t-sm">${pg}</td>
-        <td class="t-sm">${cnt}</td>
-        <td><div style="display:flex;align-items:center;gap:.5rem;">
-          <div style="height:5px;background:rgba(255,255,255,.07);border-radius:3px;width:80px;overflow:hidden;">
-            <div style="height:100%;width:${tot?Math.round(cnt/tot*100):0}%;background:var(--grad);border-radius:3px;"></div>
-          </div>
-          <span class="t-sm">${tot?Math.round(cnt/tot*100):0}%</span>
-        </div></td>
-      </tr>`).join('')||`<tr class="empty-row"><td colspan="3">Aucune donnée</td></tr>`;
-  }
+  el.innerHTML = Object.entries(pMap).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([pg,cnt])=>`
+    <tr>
+      <td class="t-sm">${pg}</td>
+      <td class="t-sm">${cnt}</td>
+      <td><div style="display:flex;align-items:center;gap:.5rem;">
+        <div style="height:5px;background:rgba(255,255,255,.07);border-radius:3px;width:80px;overflow:hidden;">
+          <div style="height:100%;width:${tot?Math.round(cnt/tot*100):0}%;background:var(--grad);border-radius:3px;"></div>
+        </div>
+        <span class="t-sm">${tot?Math.round(cnt/tot*100):0}%</span>
+      </div></td>
+    </tr>`).join('')||`<tr class="empty-row"><td colspan="3">Aucune donnée</td></tr>`;
 
-  // Charts
+  // Cat chart
   setTimeout(()=>{
-    const cc={}; 
-    P.forEach(p=>{ cc[p.category||'IA']=(cc[p.category||'IA']||0)+1; });
+    const cc={}; P.forEach(p=>{ cc[p.category||'IA']=(cc[p.category||'IA']||0)+1; });
     mkChart('chart-cat','bar',Object.keys(cc),
-      [{ 
-        data:Object.values(cc), 
-        backgroundColor:['#FF2E2E','#FF6A00','#3b82f6','#22c55e','#8b5cf6'],
-        borderRadius:4, borderWidth:0 
-      }],
-      { scales:CO.scales, plugins:{ legend:{display:false} } }
-    );
+      [{ data:Object.values(cc), backgroundColor:['#FF2E2E','#FF6A00','#3b82f6','#22c55e','#8b5cf6'],
+        borderRadius:4, borderWidth:0 }],
+      { scales:CO.scales, plugins:{ legend:{display:false} } });
 
-    const pc={}; 
-    ORDERS.filter(o=>o.status==='paid').forEach(o=>{ pc[o.pack]=(pc[o.pack]||0)+1; });
+    const pc={}; ORDERS.filter(o=>o.status==='paid').forEach(o=>{ pc[o.pack]=(pc[o.pack]||0)+1; });
     mkChart('chart-packs','doughnut',Object.keys(pc),
-      [{ 
-        data:Object.values(pc), 
-        backgroundColor:['#FF2E2E','#FF6A00','#3b82f6','#22c55e'], 
-        borderWidth:0, hoverOffset:6 
-      }],
-      { 
-        scales:{}, 
-        plugins:{ legend:{ position:'bottom', labels:{ color:'rgba(240,240,245,.5)', boxWidth:12, font:{size:11} } } } 
-      }
-    );
-  }, 150);
+      [{ data:Object.values(pc), backgroundColor:['#FF2E2E','#FF6A00','#3b82f6','#22c55e'], borderWidth:0, hoverOffset:6 }],
+      { scales:{}, plugins:{ legend:{ position:'bottom', labels:{ color:'rgba(240,240,245,.5)', boxWidth:12, font:{size:11} } } } });
+  }, 80);
 }
 
 /* ─── ARTICLES ─── */
+let _postsData = [];
 function renderPosts(data=P) {
+  _postsData = data;
   set('posts-count', data.length);
-
   const el = document.getElementById('posts-body');
   if (!el) return;
   if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="8">Aucun article trouvé</td></tr>`; return; }
@@ -373,7 +364,9 @@ function renderPosts(data=P) {
     <tr>
       <td>
         <div style="display:flex;align-items:center;gap:.625rem;">
-          <img class="thumb" src="${p.cover_image||''}" onerror="this.style.display='none'">
+          <div class="thumb-wrap">
+            ${p.cover_image ? `<img class="thumb" src="${p.cover_image}" onerror="this.parentElement.innerHTML='<div class=\'thumb-placeholder\'><i class=\'fas fa-image\'></i></div>'">` : `<div class="thumb-placeholder"><i class="fas fa-image"></i></div>`}
+          </div>
           <div class="text-clip t-strong">${p.title}</div>
         </div>
       </td>
@@ -384,29 +377,15 @@ function renderPosts(data=P) {
       <td><span class="badge ${p.published!==false?'badge-green':'badge-gray'}">${p.published!==false?'Publié':'Brouillon'}</span></td>
       <td class="t-muted t-sm">${fmt(p.created_at)}</td>
       <td><div class="acts">
+        <button class="act ${p.published!==false?'ok':'warn'}" onclick="togglePostStatus('${p.id}')" title="${p.published!==false?'Passer en brouillon':'Publier'}">
+          <i class="fas fa-${p.published!==false?'check-circle':'pause-circle'}"></i>
+        </button>
         <button class="act" onclick="editArticle('${p.id}')" title="Modifier"><i class="fas fa-edit"></i></button>
-        <a class="act" href="/article?id=${p.id}" target="_blank" title="Voir"><i class="fas fa-eye"></i></a>
+        <a class="act" href="/article.html?id=${p.id}" target="_blank" title="Voir"><i class="fas fa-eye"></i></a>
         <button class="act del" onclick="confirmDel(()=>delPost('${p.id}'))" title="Supprimer"><i class="fas fa-trash"></i></button>
       </div></td>
     </tr>`).join('');
-
-  // Add regenerate static blog button above the posts table
-  const postsTable = el.parentNode; // this is the table element
-  if (postsTable) {
-    let regenBtn = document.getElementById('regen-static-blog-btn');
-    if (!regenBtn) {
-      regenBtn = document.createElement('button');
-      regenBtn.id = 'regen-static-blog-btn';
-      regenBtn.className = 'btn btn-primary btn-sm mb-3';
-      regenBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Régénérer le blog statique';
-      regenBtn.onclick = regenerateStaticBlog;
-      regenBtn.title = 'Régénérer les fichiers HTML statiques pour tous les articles de blog';
-      // Insert button before the table
-      postsTable.parentNode.insertBefore(regenBtn, postsTable);
-    }
-  }
 }
-
 function filterPosts(q) { _postsFilter.q=q.toLowerCase(); applyPostsFilter(); }
 function filterPostsCat(c) { _postsFilter.cat=c; applyPostsFilter(); }
 function applyPostsFilter() {
@@ -417,6 +396,57 @@ function applyPostsFilter() {
   }));
 }
 
+/* ─── QUILL INIT ─── */
+let quillEditor = null;
+function initQuill() {
+  const container = document.getElementById('quill-editor');
+  // Prevent double init — Quill ajoute la classe ql-container sur le div cible
+  if (!container || container.classList.contains('ql-container')) return;
+  
+  // Register ImageResize module — NE PAS enregister si ce n'est pas un constructeur valide
+  if (typeof ImageResize === 'function') {
+    Quill.register('modules/imageResize', ImageResize);
+  }
+  
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ align: [] }],
+      ['link', 'image', 'code-block'],
+      ['blockquote', 'clean']
+    ]
+  };
+  // N'ajouter imageResize QUE si le module est effectivement disponible
+  if (typeof ImageResize !== 'undefined' && typeof ImageResize === 'function') {
+    quillModules.imageResize = {};
+  }
+  quillEditor = new Quill(container, {
+    theme: 'snow',
+    modules: quillModules,
+    placeholder: 'Rédigez votre article ici…'
+  });
+  // Restore pre-set content from hidden textarea (fix race condition on first open)
+  const savedContent = document.getElementById('a-content').value;
+  if (savedContent) {
+    quillEditor.root.innerHTML = savedContent;
+  }
+  // Sync hidden textarea on every change
+  quillEditor.on('text-change', () => {
+    document.getElementById('a-content').value = quillEditor.root.innerHTML;
+  });
+}
+// Init Quill when article modal opens
+const origOpenModal = openModal;
+openModal = function(id) {
+  origOpenModal(id);
+  if (id === 'm-article') {
+    // Small delay to ensure the modal is rendered
+    setTimeout(initQuill, 50);
+  }
+};
+
 function openArticleModal(post=null) {
   document.getElementById('m-article-title').textContent = post?'Modifier l\'article':'Nouvel article';
   document.getElementById('a-id').value = post?.id||'';
@@ -424,77 +454,96 @@ function openArticleModal(post=null) {
   document.getElementById('a-cat').value = post?.category||'IA';
   document.getElementById('a-author').value = post?.author||'Marcus Hozana';
   document.getElementById('a-excerpt').value = post?.excerpt||'';
-  document.getElementById('a-content').value = post?.content||'';
+  // Always save content to hidden textarea as fallback for Quill lazy init
+  document.getElementById('a-content').value = post?.content || '';
+  // If Quill already initialized, set directly
+  if (quillEditor) {
+    quillEditor.root.innerHTML = post?.content || '<p></p>';
+  }
   document.getElementById('a-img').value = post?.cover_image||'';
   document.getElementById('a-readtime').value = post?.read_time||5;
   document.getElementById('a-tags').value = Array.isArray(post?.tags)?post.tags.join(', '):(post?.tags||'');
   document.getElementById('a-pub').value = post?.published!==false?'true':'false';
   openModal('m-article');
 }
-
 function editArticle(id) { const p=P.find(x=>x.id===id); if(p) openArticleModal(p); }
 
-async function saveArticle() {
+async function saveArticle(genPage=false) {
   const id = document.getElementById('a-id').value;
   const title = document.getElementById('a-title').value.trim();
   if (!title) { toast('Le titre est obligatoire','err'); return; }
   const tags = document.getElementById('a-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
-  const published = document.getElementById('a-pub').value==='true';
-  const slug = title.toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g,'-')
-    .replace(/^-|-$/g,'');
   const data = {
     title, category:document.getElementById('a-cat').value,
     author:document.getElementById('a-author').value,
     excerpt:document.getElementById('a-excerpt').value,
-    content:document.getElementById('a-content').value,
+    content: quillEditor ? quillEditor.root.innerHTML : document.getElementById('a-content').value,
     cover_image:document.getElementById('a-img').value,
     read_time:parseInt(document.getElementById('a-readtime').value)||5,
-    tags, published,
-    slug,
+    tags, published:document.getElementById('a-pub').value==='true',
+    slug:title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),
     updated_at:new Date().toISOString()
   };
   if (!id) { data.views=0; data.likes=0; data.created_at=new Date().toISOString(); }
+  
+  // ── DEBUG: tracer le contenu sauvegardé ──
+  console.log('[saveArticle] Content length:', (data.content || '').length);
+  console.log('[saveArticle] Content preview:', (data.content || '').substring(0, 120));
+  console.log('[saveArticle] quillEditor exists:', !!quillEditor);
+  console.log('[saveArticle] Mode:', id ? 'UPDATE' : 'CREATE', 'ID:', id || 'new');
+  
   try {
     if (id) {
       const r = await fetch(`tables/blog_posts/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      if (!r.ok) throw new Error(`Supabase PATCH failed: ${r.status}`);
       const up = await r.json();
+      if (!up || up.error) throw new Error(up?.error || 'Réponse vide');
       const i = P.findIndex(p=>p.id===id);
       if (i>-1) P[i]={...P[i],...up};
       toast('Article mis à jour ✓','ok');
+      // Auto-régénérer la page statique après UPDATE aussi
+      if (!genPage && data.published !== false) {
+        setTimeout(() => generateArticlePage(), 500);
+      }
     } else {
       const r = await fetch('tables/blog_posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      if (!r.ok) throw new Error(`Supabase POST failed: ${r.status}`);
       const cr = await r.json();
-      if (cr) P.unshift(cr);
+      if (!cr || cr.error) throw new Error(cr?.error || 'Réponse vide');
+      if (cr) {
+        P.unshift(cr);
+        document.getElementById('a-id').value = cr.id;
+      }
       toast('Article créé ✓','ok');
+      if (!genPage && data.published !== false) {
+        setTimeout(() => generateArticlePage(), 500);
+      }
     }
     closeModal('m-article');
     renderPosts(); renderDashPosts(); updateBadges();
-
-    // ── Auto-regenerate static blog after saving a published article ──
-    if (published) {
-      triggerStaticRegeneration();
-    }
-  } catch(e) { console.error(e); toast('Erreur lors de la sauvegarde','err'); }
+  } catch(e) { 
+    console.error('[saveArticle] Error:', e);
+    toast('Erreur: ' + (e.message || 'sauvegarde échouée'),'err'); 
+  }
 }
 
-/* ─── Trigger static blog regeneration ─── */
-async function triggerStaticRegeneration() {
+async function togglePostStatus(id) {
+  const p = P.find(x => x.id === id);
+  if (!p) return;
+  const newStatus = p.published === false; // toggle: if false -> true, if true/undefined -> false
   try {
-    // Try calling the Vercel serverless function
-    const resp = await fetch('/api/regenerate-blog', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
+    await fetch(`tables/blog_posts/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ published: newStatus })
     });
-    if (resp.ok) {
-      toast('Page statique générée automatiquement ✓','ok');
-    } else {
-      console.warn('Static blog regeneration API returned:', resp.status);
-    }
-  } catch (err) {
-    // Silently fail — the manual button is still available
-    console.warn('Static regeneration not available (API route may not be running locally):', err.message);
+    p.published = newStatus;
+    renderPosts();
+    renderDashPosts();
+    renderKPIs();
+    toast(newStatus ? 'Article publié ✓' : 'Article mis en brouillon', 'ok');
+  } catch {
+    toast('Erreur lors du changement de statut', 'err');
   }
 }
 
@@ -506,6 +555,7 @@ async function delPost(id) {
 }
 
 /* ─── PORTFOLIO ─── */
+let _pfFilter = '';
 function renderPortfolio(data=PF) {
   set('pf-count', PF.length);
   const el = document.getElementById('pf-grid');
@@ -517,9 +567,11 @@ function renderPortfolio(data=PF) {
   }
   el.innerHTML = filtered.map(p=>`
     <div class="pf-card">
-      ${p.image
-        ? `<img class="pf-img" src="${p.image}" alt="${p.title}" onerror="this.parentElement.querySelector('.pf-img').remove()">`
-        : `<div class="pf-img-placeholder"><i class="fas fa-image"></i></div>`}
+      <div class="pf-img-wrap" style="height:160px; overflow:hidden; background:var(--surface2); position:relative;">
+        ${p.image
+          ? `<img class="pf-img" src="${p.image}" alt="${p.title}" style="width:100%; height:100%; object-fit:cover;" onerror="this.parentElement.innerHTML='<div class=\'thumb-placeholder\' style=\'display:flex; height:100%; align-items:center; justify-content:center; color:var(--muted);\'><i class=\'fas fa-image fa-2x\'></i></div>'">`
+          : `<div class="pf-img-placeholder" style="display:flex; height:100%; align-items:center; justify-content:center; color:var(--muted);"><i class="fas fa-image fa-2x"></i></div>`}
+      </div>
       <div class="pf-body">
         <div class="pf-cat">${p.category||'—'}${p.featured?' ⭐':''}</div>
         <div class="pf-name" title="${p.title}">${p.title}</div>
@@ -532,7 +584,6 @@ function renderPortfolio(data=PF) {
       </div>
     </div>`).join('');
 }
-
 function filterPortfolio(cat) { _pfFilter=cat; renderPortfolio(); }
 
 function openPfModal(proj=null) {
@@ -549,13 +600,11 @@ function openPfModal(proj=null) {
   previewPfImg(proj?.image||'');
   openModal('m-portfolio');
 }
-
 function editPortfolio(id) { const p=PF.find(x=>x.id===id); if(p) openPfModal(p); }
 
 function previewPfImg(url) {
   const wrap = document.getElementById('pf-img-preview-wrap');
   const img  = document.getElementById('pf-img-preview');
-  if (!wrap || !img) return;
   if (url) { img.src=url; wrap.style.display='block'; }
   else { wrap.style.display='none'; }
 }
@@ -586,162 +635,13 @@ async function savePortfolio() {
     }
     closeModal('m-portfolio');
     renderPortfolio(); updateBadges();
-  } catch(e) { console.error(e); toast('Erreur lors de la sauvegarde','err'); }
+  } catch { toast('Erreur lors de la sauvegarde','err'); }
 }
-
 async function delPortfolio(id) {
   await fetch(`tables/portfolio_projects/${id}`,{method:'DELETE'});
   PF = PF.filter(p=>p.id!==id);
   renderPortfolio(); updateBadges();
   toast('Projet supprimé','ok');
-}
-
-/* ─── SERVICES ─── */
-function renderServices() {
-  set('svcs-count', SVCS.length);
-  const el = document.getElementById('svcs-body');
-  if (!el) return;
-  if (!SVCS.length) { el.innerHTML=`<tr class="empty-row"><td colspan="6">Aucun service défini</td></tr>`; return; }
-  el.innerHTML = SVCS.map(s=>`
-    <tr>
-      <td><div class="t-strong t-sm">${s.title}</div></td>
-      <td class="t-muted t-sm">${s.category_label||'—'}</td>
-      <td class="t-muted t-sm">${s.slug}</td>
-      <td><span class="badge ${s.is_star?'badge-orange':'badge-gray'}">${s.is_star?'⭐ Star':'Normal'}</span></td>
-      <td class="t-sm">${s.sort_order||0}</td>
-      <td><div class="acts">
-        <button class="act" onclick="editService('${s.id}')" title="Modifier"><i class="fas fa-edit"></i></button>
-        <button class="act del" onclick="confirmDel(()=>delService('${s.id}'))" title="Supprimer"><i class="fas fa-trash"></i></button>
-      </div></td>
-    </tr>`).join('');
-}
-
-function openServiceModal(svc=null) {
-  document.getElementById('m-svc-title').textContent = svc?'Modifier le service':'Nouveau service';
-  document.getElementById('svc-id').value = svc?.id||'';
-  document.getElementById('svc-title').value = svc?.title||'';
-  document.getElementById('svc-slug').value = svc?.slug||'';
-  document.getElementById('svc-icon').value = svc?.icon||'';
-  document.getElementById('svc-cat').value = svc?.category_label||'';
-  document.getElementById('svc-desc').value = svc?.description||'';
-  document.getElementById('svc-order').value = svc?.sort_order||0;
-  document.getElementById('svc-star').value = svc?.is_star?'true':'false';
-  document.getElementById('svc-features').value = Array.isArray(svc?.features)?svc.features.join('\n'):'';
-  openModal('m-service');
-}
-
-function editService(id) { const s=SVCS.find(x=>x.id===id); if(s) openServiceModal(s); }
-
-async function saveService() {
-  const id = document.getElementById('svc-id').value;
-  const title = document.getElementById('svc-title').value.trim();
-  if (!title) { toast('Titre obligatoire','err'); return; }
-  const data = {
-    title, slug:document.getElementById('svc-slug').value.trim() || title.toLowerCase().replace(/[^a-z0-9]+/g,'-'),
-    icon:document.getElementById('svc-icon').value,
-    category_label:document.getElementById('svc-cat').value,
-    description:document.getElementById('svc-desc').value,
-    sort_order:parseInt(document.getElementById('svc-order').value)||0,
-    is_star:document.getElementById('svc-star').value==='true',
-    features:document.getElementById('svc-features').value.split('\n').map(f=>f.trim()).filter(Boolean)
-  };
-  try {
-    if (id) {
-      const r = await fetch(`tables/services/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-      const up = await r.json();
-      const i=SVCS.findIndex(x=>x.id===id); if(i>-1) SVCS[i]={...SVCS[i],...up};
-      toast('Service mis à jour ✓','ok');
-    } else {
-      const r = await fetch('tables/services',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-      const cr = await r.json(); if(cr) SVCS.push(cr);
-      toast('Service ajouté ✓','ok');
-    }
-    closeModal('m-service');
-    renderServices(); updateBadges();
-  } catch(e) { console.error(e); toast('Erreur sauvegarde','err'); }
-}
-
-async function delService(id) {
-  await fetch(`tables/services/${id}`,{method:'DELETE'});
-  SVCS = SVCS.filter(x=>x.id!==id);
-  renderServices(); updateBadges();
-  toast('Service supprimé','ok');
-}
-
-/* ─── PACKS ─── */
-function renderPacks() {
-  set('packs-count', PACKS.length);
-  const el = document.getElementById('packs-body');
-  if (!el) return;
-  if (!PACKS.length) { el.innerHTML=`<tr class="empty-row"><td colspan="6">Aucun pack défini</td></tr>`; return; }
-  el.innerHTML = PACKS.map(p=>`
-    <tr>
-      <td><div class="t-strong t-sm">${p.name}</div></td>
-      <td class="t-sm">${p.price_monthly||0}€ / ${p.price_annual||0}€</td>
-      <td><span class="badge ${p.is_featured?'badge-purple':'badge-gray'}">${p.is_featured?'⭐ Featured':'Normal'}</span></td>
-      <td class="t-muted t-sm">${p.badge_text||'—'}</td>
-      <td class="t-sm">${p.sort_order||0}</td>
-      <td><div class="acts">
-        <button class="act" onclick="editPack('${p.id}')" title="Modifier"><i class="fas fa-edit"></i></button>
-        <button class="act del" onclick="confirmDel(()=>delPack('${p.id}'))" title="Supprimer"><i class="fas fa-trash"></i></button>
-      </div></td>
-    </tr>`).join('');
-}
-
-function openPackModal(pack=null) {
-  document.getElementById('m-pack-title').textContent = pack?'Modifier le pack':'Nouveau pack';
-  document.getElementById('pk-id').value = pack?.id||'';
-  document.getElementById('pk-name').value = pack?.name||'';
-  document.getElementById('pk-slug').value = pack?.slug||'';
-  document.getElementById('pk-price-m').value = pack?.price_monthly||0;
-  document.getElementById('pk-price-a').value = pack?.price_annual||0;
-  document.getElementById('pk-badge').value = pack?.badge_text||'';
-  document.getElementById('pk-desc').value = pack?.description||'';
-  document.getElementById('pk-order').value = pack?.sort_order||0;
-  document.getElementById('pk-feat').value = pack?.is_featured?'true':'false';
-  document.getElementById('pk-features').value = Array.isArray(pack?.features)?pack.features.join('\n'):'';
-  document.getElementById('pk-excluded').value = Array.isArray(pack?.excluded_features)?pack.excluded_features.join('\n'):'';
-  openModal('m-pack');
-}
-
-function editPack(id) { const p=PACKS.find(x=>x.id===id); if(p) openPackModal(p); }
-
-async function savePack() {
-  const id = document.getElementById('pk-id').value;
-  const name = document.getElementById('pk-name').value.trim();
-  if (!name) { toast('Nom obligatoire','err'); return; }
-  const data = {
-    name, slug:document.getElementById('pk-slug').value.trim() || name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),
-    price_monthly:parseInt(document.getElementById('pk-price-m').value)||0,
-    price_annual:parseInt(document.getElementById('pk-price-a').value)||0,
-    badge_text:document.getElementById('pk-badge').value,
-    description:document.getElementById('pk-desc').value,
-    sort_order:parseInt(document.getElementById('pk-order').value)||0,
-    is_featured:document.getElementById('pk-feat').value==='true',
-    features:document.getElementById('pk-features').value.split('\n').map(f=>f.trim()).filter(Boolean),
-    excluded_features:document.getElementById('pk-excluded').value.split('\n').map(f=>f.trim()).filter(Boolean)
-  };
-  try {
-    if (id) {
-      const r = await fetch(`tables/packs/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-      const up = await r.json();
-      const i=PACKS.findIndex(x=>x.id===id); if(i>-1) PACKS[i]={...PACKS[i],...up};
-      toast('Pack mis à jour ✓','ok');
-    } else {
-      const r = await fetch('tables/packs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-      const cr = await r.json(); if(cr) PACKS.push(cr);
-      toast('Pack ajouté ✓','ok');
-    }
-    closeModal('m-pack');
-    renderPacks(); updateBadges();
-  } catch(e) { console.error(e); toast('Erreur sauvegarde','err'); }
-}
-
-async function delPack(id) {
-  await fetch(`tables/packs/${id}`,{method:'DELETE'});
-  PACKS = PACKS.filter(x=>x.id!==id);
-  renderPacks(); updateBadges();
-  toast('Pack supprimé','ok');
 }
 
 /* ─── LEADS ─── */
@@ -768,20 +668,20 @@ function renderLeads(data=LEADS) {
       <td>
         <select class="status-sel" onchange="updateLeadStatus('${l.id}',this.value)">
           ${PIPE_COLS.map(s=>`<option value="${s}" ${l.status===s?'selected':''}>${LBLS[s]}</option>`).join('')}
-          <option value="lost" ${l.status==='lost'?'selected':''}>Perdu</option>
         </select>
       </td>
       <td class="t-muted t-sm">${fmt(l.created_at)}</td>
-      <td><div class="acts"><button class="act del" onclick="confirmDel(()=>delLead('${l.id}'))"><i class="fas fa-trash"></i></button></div></td>
+      <td><div class="acts">
+        <button class="act" onclick="viewLead('${l.id}')" title="Voir détails"><i class="fas fa-eye"></i></button>
+        <button class="act del" onclick="confirmDel(()=>delLead('${l.id}'))"><i class="fas fa-trash"></i></button>
+      </div></td>
     </tr>`).join('');
 }
-
 function filterLeads(q) { _leadsFilter.q=q.toLowerCase(); renderLeads(); }
 function filterLeadsStatus(s) { _leadsFilter.status=s; renderLeads(); }
 
 function renderPipeline() {
   const el = document.getElementById('leads-pipeline');
-  if (!el) return;
   const colors = { new:'#60a5fa', contacted:'#facc15', qualified:'#c084fc', converted:'#4ade80' };
   el.innerHTML = PIPE_COLS.map(col=>{
     const items = LEADS.filter(l=>l.status===col);
@@ -792,7 +692,7 @@ function renderPipeline() {
           <span class="pipe-count">${items.length}</span>
         </div>
         ${items.slice(0,5).map(l=>`
-          <div class="pipe-item">
+          <div class="pipe-item" onclick="viewLead('${l.id}')">
             <div class="pipe-item-name">${l.name||l.email||'—'}</div>
             <div class="pipe-item-meta">${l.service||l.source||'—'} · ${fmt(l.created_at)}</div>
           </div>`).join('')}
@@ -801,13 +701,35 @@ function renderPipeline() {
   }).join('');
 }
 
+function viewLead(id) {
+  const l = LEADS.find(x => x.id === id);
+  if (!l) return;
+  document.getElementById('v-lead-name').textContent = l.name || '—';
+  document.getElementById('v-lead-email').textContent = l.email || '—';
+  document.getElementById('v-lead-phone').textContent = l.phone || '—';
+  document.getElementById('v-lead-company').textContent = l.company || '—';
+  document.getElementById('v-lead-service').textContent = l.service || '—';
+  document.getElementById('v-lead-source').textContent = l.source || '—';
+  document.getElementById('v-lead-message').textContent = l.message || 'Aucun message.';
+  
+  const replyBtn = document.getElementById('v-lead-reply');
+  if (l.email) {
+    const subject = encodeURIComponent(`Hozana Concept — Réponse à votre demande (${l.service || 'Contact'})`);
+    replyBtn.href = `mailto:${l.email}?subject=${subject}`;
+    replyBtn.style.display = 'inline-flex';
+  } else {
+    replyBtn.style.display = 'none';
+  }
+  
+  openModal('m-lead');
+}
+
 async function updateLeadStatus(id, status) {
   await fetch(`tables/leads/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
   const l=LEADS.find(x=>x.id===id); if(l) l.status=status;
   renderPipeline(); updateBadges();
   toast('Statut mis à jour ✓','ok');
 }
-
 async function delLead(id) {
   await fetch(`tables/leads/${id}`,{method:'DELETE'});
   LEADS=LEADS.filter(l=>l.id!==id);
@@ -815,10 +737,194 @@ async function delLead(id) {
   toast('Lead supprimé','ok');
 }
 
+/* ─── GENERATE ARTICLE PAGE ─── */
+let _generatingPage = false;
+async function generateArticlePage() {
+  if (_generatingPage) return;
+  _generatingPage = true;
+  try {
+    let id = document.getElementById('a-id').value;
+    if (!id) {
+      await saveArticle(true);
+      id = document.getElementById('a-id').value;
+    }
+    try {
+      const res = await fetch('/api/regenerate-blog', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        toast('Page générée ✓', 'ok');
+      } else {
+        toast('Erreur: ' + (data.message || 'inconnue'), 'err');
+      }
+    } catch {
+      toast('Erreur réseau - la page dynamique fonctionne déjà ✓', 'info');
+    }
+  } finally {
+    _generatingPage = false;
+  }
+}
+
+/* ─── REGENERATE STATIC BLOG ─── */
+async function regenerateBlog() {
+  const btn = document.getElementById('btn-regenerate');
+  const status = document.getElementById('regenerate-status');
+  if (!btn || !status) return;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération en cours…';
+  status.innerHTML = '<span style="color:var(--orange);">Appel API en cours…</span>';
+  try {
+    const res = await fetch('/api/regenerate-blog', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      status.innerHTML = `<span style="color:#4ade80;">✅ ${data.message || 'Blog régénéré avec succès'}</span>`;
+      toast('Blog régénéré ✓','ok');
+    } else {
+      status.innerHTML = `<span style="color:var(--red);">❌ ${data.message || 'Erreur'}</span>`;
+      toast('Erreur régénération','err');
+    }
+  } catch (e) {
+    status.innerHTML = `<span style="color:var(--red);">❌ Erreur : ${e.message}</span>`;
+    toast('Erreur réseau','err');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-sync-alt"></i> Régénérer tous les articles statiques';
+  }
+}
+
+/* ─── PACKS ─── */
+function renderPacks(data=PACKS) {
+  set('packs-count', data.length);
+  const el = document.getElementById('packs-body');
+  if (!el) return;
+  if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="6">Aucun pack</td></tr>`; return; }
+  el.innerHTML = data.map(p=>`
+    <tr>
+      <td><div class="t-strong t-sm">${p.name}</div><div class="t-muted" style="font-size:.7rem;">${p.badge||''}</div></td>
+      <td class="t-sm">${p.price||'—'}</td>
+      <td class="t-muted t-sm">${p.period||'—'}</td>
+      <td><span class="badge ${p.is_featured?'badge-green':'badge-gray'}">${p.is_featured?'Oui':'Non'}</span></td>
+      <td class="t-sm">${p.sort_order||0}</td>
+      <td><div class="acts">
+        <button class="act" onclick="editPack('${p.id}')" title="Modifier"><i class="fas fa-edit"></i></button>
+        <button class="act del" onclick="confirmDel(()=>delPack('${p.id}'))" title="Supprimer"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function openPackModal(p=null) {
+  document.getElementById('m-pack-title').textContent = p?'Modifier le pack':'Nouveau pack';
+  document.getElementById('pk-id').value = p?.id||'';
+  document.getElementById('pk-name').value = p?.name||'';
+  document.getElementById('pk-badge').value = p?.badge||'';
+  document.getElementById('pk-price').value = p?.price||'';
+  document.getElementById('pk-period').value = p?.period||'par mois';
+  document.getElementById('pk-desc').value = p?.description||'';
+  document.getElementById('pk-features').value = Array.isArray(p?.features)?p.features.join('\n'):'';
+  document.getElementById('pk-features-excluded').value = Array.isArray(p?.features_excluded)?p.features_excluded.join('\n'):'';
+  document.getElementById('pk-featured').value = p?.is_featured?'true':'false';
+  document.getElementById('pk-order').value = p?.sort_order||0;
+  document.getElementById('pk-link').value = p?.link||'';
+  openModal('m-pack');
+}
+function editPack(id) { const p=PACKS.find(x=>x.id===id); if(p) openPackModal(p); }
+
+async function savePack() {
+  const id = document.getElementById('pk-id').value;
+  const name = document.getElementById('pk-name').value.trim();
+  if (!name) return toast('Le nom est requis','err');
+  const features = document.getElementById('pk-features').value.split('\n').filter(Boolean);
+  const features_excluded = document.getElementById('pk-features-excluded').value.split('\n').filter(Boolean);
+  const data = {
+    name, badge:document.getElementById('pk-badge').value,
+    price:document.getElementById('pk-price').value,
+    period:document.getElementById('pk-period').value,
+    description:document.getElementById('pk-desc').value,
+    features, features_excluded,
+    is_featured:document.getElementById('pk-featured').value==='true',
+    sort_order:parseInt(document.getElementById('pk-order').value)||0,
+    link:document.getElementById('pk-link').value
+  };
+  try {
+    if (id) {
+      const r = await fetch(`tables/packs/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      const up = await r.json(); const i=PACKS.findIndex(x=>x.id===id); if(i>-1) PACKS[i]={...PACKS[i],...up};
+      toast('Pack mis à jour ✓','ok');
+    } else {
+      const r = await fetch('tables/packs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      const cr = await r.json(); if(cr) PACKS.push(cr);
+      toast('Pack ajouté ✓','ok');
+    }
+    closeModal('m-pack'); renderPacks(); updateBadges();
+  } catch { toast('Erreur sauvegarde','err'); }
+}
+async function delPack(id) {
+  await fetch(`tables/packs/${id}`,{method:'DELETE'});
+  PACKS=PACKS.filter(x=>x.id!==id);
+  renderPacks(); updateBadges(); toast('Pack supprimé','ok');
+}
+
+/* ─── SERVICES ─── */
+function renderServices(data=SERVICES) {
+  set('services-count', data.length);
+  const el = document.getElementById('services-body');
+  if (!el) return;
+  if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="4">Aucun service</td></tr>`; return; }
+  el.innerHTML = data.map(s=>`
+    <tr>
+      <td><div class="t-strong t-sm">${s.title}</div><div class="t-muted" style="font-size:.7rem;max-width:300px;">${s.description||''}</div></td>
+      <td class="t-sm"><i class="${s.icon||'fas fa-cube'}"></i> ${s.icon||'—'}</td>
+      <td class="t-sm">${s.sort_order||0}</td>
+      <td><div class="acts">
+        <button class="act" onclick="editService('${s.id}')" title="Modifier"><i class="fas fa-edit"></i></button>
+        <button class="act del" onclick="confirmDel(()=>delService('${s.id}'))" title="Supprimer"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+function openServiceModal(s=null) {
+  document.getElementById('m-service-title').textContent = s?'Modifier le service':'Nouveau service';
+  document.getElementById('sv-id').value = s?.id||'';
+  document.getElementById('sv-title').value = s?.title||'';
+  document.getElementById('sv-icon').value = s?.icon||'fas fa-robot';
+  document.getElementById('sv-order').value = s?.sort_order||0;
+  document.getElementById('sv-desc').value = s?.description||'';
+  document.getElementById('sv-features').value = Array.isArray(s?.features)?s.features.join('\n'):'';
+  openModal('m-service');
+}
+function editService(id) { const s=SERVICES.find(x=>x.id===id); if(s) openServiceModal(s); }
+
+async function saveService() {
+  const id = document.getElementById('sv-id').value;
+  const title = document.getElementById('sv-title').value.trim();
+  if (!title) return toast('Le titre est requis','err');
+  const features = document.getElementById('sv-features').value.split('\n').filter(Boolean);
+  const data = {
+    title, icon:document.getElementById('sv-icon').value,
+    sort_order:parseInt(document.getElementById('sv-order').value)||0,
+    description:document.getElementById('sv-desc').value,
+    features
+  };
+  try {
+    if (id) {
+      const r = await fetch(`tables/services_list/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      const up = await r.json(); const i=SERVICES.findIndex(x=>x.id===id); if(i>-1) SERVICES[i]={...SERVICES[i],...up};
+      toast('Service mis à jour ✓','ok');
+    } else {
+      const r = await fetch('tables/services_list',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      const cr = await r.json(); if(cr) SERVICES.push(cr);
+      toast('Service ajouté ✓','ok');
+    }
+    closeModal('m-service'); renderServices(); updateBadges();
+  } catch { toast('Erreur sauvegarde','err'); }
+}
+async function delService(id) {
+  await fetch(`tables/services_list/${id}`,{method:'DELETE'});
+  SERVICES=SERVICES.filter(x=>x.id!==id);
+  renderServices(); updateBadges(); toast('Service supprimé','ok');
+}
+
 /* ─── ORDERS ─── */
 const OS = { paid:'badge-green', pending:'badge-gray', cancelled:'badge-red', refunded:'badge-yellow' };
 const OL = { paid:'✅ Payé', pending:'⏳ En attente', cancelled:'❌ Annulé', refunded:'↩ Remboursé' };
-
 function renderOrders(data=ORDERS) {
   renderKPIs();
   const el = document.getElementById('orders-body');
@@ -845,22 +951,19 @@ function renderOrders(data=ORDERS) {
       <td class="t-muted t-sm">${fmt(o.created_at)}</td>
       <td><div class="acts">
         ${o.status!=='paid'?`<button class="act ok" onclick="setOrderPaid('${o.id}')" title="Marquer payé"><i class="fas fa-check"></i></button>`:''}
-        <button class="act del" onclick="confirmDel(()=>delOrder('${o.id}'))" title="Supprimer"><i class="fas fa-trash"></i></button>
+        <button class="act del" onclick="confirmDel(()=>delOrder('${o.id}'))"><i class="fas fa-trash"></i></button>
       </div></td>
     </tr>`;
   }).join('');
 }
-
 function filterOrders(q) { _ordersFilter.q=q.toLowerCase(); renderOrders(); }
 function filterOrdersStatus(s) { _ordersFilter.status=s; renderOrders(); }
-
 async function setOrderPaid(id) {
   await fetch(`tables/orders/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'paid'})});
   const o=ORDERS.find(x=>x.id===id); if(o) o.status='paid';
   renderOrders(); updateBadges(); renderKPIs();
   toast('Commande marquée payée ✓','ok');
 }
-
 async function delOrder(id) {
   await fetch(`tables/orders/${id}`,{method:'DELETE'});
   ORDERS=ORDERS.filter(o=>o.id!==id);
@@ -869,6 +972,7 @@ async function delOrder(id) {
 }
 
 /* ─── COMMENTS ─── */
+let _comFilter = '';
 function renderComments() {
   set('com-count', COM.filter(c=>!c.approved).length);
   const el = document.getElementById('com-body');
@@ -889,21 +993,18 @@ function renderComments() {
       <td><span class="badge ${c.approved?'badge-green':'badge-yellow'}">${c.approved?'Approuvé':'En attente'}</span></td>
       <td><div class="acts">
         ${!c.approved?`<button class="act ok" onclick="approveComment('${c.id}')" title="Approuver"><i class="fas fa-check"></i></button>`:''}
-        <button class="act del" onclick="confirmDel(()=>delComment('${c.id}'))" title="Supprimer"><i class="fas fa-trash"></i></button>
+        <button class="act del" onclick="confirmDel(()=>delComment('${c.id}'))"><i class="fas fa-trash"></i></button>
       </div></td>
     </tr>`;
   }).join('');
 }
-
 function filterComments(v) { _comFilter=v; renderComments(); }
-
 async function approveComment(id) {
   await fetch(`tables/comments/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({approved:true})});
   const c=COM.find(x=>x.id===id); if(c) c.approved=true;
   renderComments(); updateBadges();
   toast('Commentaire approuvé ✓','ok');
 }
-
 async function delComment(id) {
   await fetch(`tables/comments/${id}`,{method:'DELETE'});
   COM=COM.filter(c=>c.id!==id);
@@ -920,45 +1021,88 @@ function setTheme(t) {
 /* ─── CONFIRM DELETE ─── */
 function confirmDel(cb) {
   _delCb = cb;
-  const confirmBtn = document.getElementById('confirm-ok');
-  if (confirmBtn) {
-    confirmBtn.onclick = async () => {
-      try { await _delCb(); } catch (e) { console.error(e); toast('Erreur suppression','err'); }
-      closeModal('m-confirm');
-    };
-  }
+  document.getElementById('confirm-ok').onclick = async () => {
+    try { await _delCb(); } catch { toast('Erreur suppression','err'); }
+    closeModal('m-confirm');
+  };
   openModal('m-confirm');
 }
 
 /* ─── MODAL UTILS ─── */
-function openModal(id) { 
-  const el = document.getElementById(id);
-  if (el) el.classList.add('open'); 
-}
-
-function closeModal(id) { 
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('open'); 
-}
-
-function closeIfBg(e,id) { 
-  if(e.target===document.getElementById(id)) closeModal(id); 
-}
-
-document.addEventListener('keydown', e=>{ 
-  if(e.key==='Escape') document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open')); 
-});
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeIfBg(e,id) { if(e.target===document.getElementById(id)) closeModal(id); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open')); });
 
 /* ─── TOAST ─── */
 function toast(msg, type='info') {
   const area = document.getElementById('toast-area');
-  if (!area) return;
   const t = document.createElement('div');
   t.className = 'toast'+(type==='ok'?' ok':type==='err'?' err':type==='warn'?' warn':'');
   const icons = {ok:'✅', err:'❌', warn:'⚠️', info:'ℹ️'};
   t.innerHTML = `${icons[type]||'💬'} ${msg}`;
   area.appendChild(t);
   setTimeout(()=>t.remove(), 3500);
+}
+
+/* ─── FILE UPLOAD (Supabase Storage) ─── */
+async function uploadToSupabase(file, bucket = 'blog-images') {
+  const ext = file.name.split('.').pop();
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${ext}`;
+  const filePath = fileName;
+
+  const url = `${SUPABASE_URL}/storage/v1/object/${bucket}/${filePath}`;
+  
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON}`,
+        'apikey': SUPABASE_ANON,
+        'Content-Type': file.type,
+        'x-upsert': 'true'
+      },
+      body: file
+    });
+
+    if (!resp.ok) {
+      const errorData = await resp.json().catch(() => ({ message: resp.statusText }));
+      throw new Error(errorData.message || 'Upload failed');
+    }
+    
+    // Construct public URL
+    return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${filePath}`;
+  } catch (err) {
+    console.error('[Storage] Upload error details:', err);
+    throw err;
+  }
+}
+
+async function handleFileUpload(input, targetId, callback) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  if (file.size > 5 * 1024 * 1024) {
+    toast('Image trop lourde (max 5Mo)', 'err');
+    input.value = '';
+    return;
+  }
+  
+  toast('Téléchargement en cours...', 'info');
+  try {
+    const publicUrl = await uploadToSupabase(file);
+    document.getElementById(targetId).value = publicUrl;
+    if (callback) callback(publicUrl);
+    toast('Image stockée sur Supabase ✓', 'ok');
+  } catch (err) {
+    let msg = 'Erreur: ' + err.message;
+    if (err.message.includes('bucket not found')) {
+      msg = 'Erreur: Le bucket "blog-images" n\'existe pas.';
+    } else if (err.message.includes('New policies')) {
+      msg = 'Erreur: Permissions (RLS) manquantes sur le bucket.';
+    }
+    toast(msg, 'err');
+  }
 }
 
 /* ─── HELPERS ─── */
@@ -968,102 +1112,13 @@ function fmt(dt) {
   catch { return '—'; }
 }
 
-/* ─── STATIC BLOG REGENERATION ─── */
-async function regenerateStaticBlog() {
-  const btn = document.getElementById('regen-static-blog-btn');
-  if (!btn) return;
-
-  // Disable button and show loading state
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Régénération en cours...';
-
-  try {
-    // Show toast notification
-    toast('Démarrage de la régénération du blog statique...','info');
-
-    // Execute the deployment script using fetch to trigger Vercel serverless function
-    // or use the existing deploy script via Node.js if available
-    const response = await fetch('/api/regenerate-blog', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (response.ok) {
-      toast('Blog statique régénéré avec succès !','ok');
-      // Optionally refresh the posts list to see updated counts
-      await loadAll();
-    } else {
-      // Fallback: instruct user to run the script manually
-      toast('Régénération initiée. Veuillez exécuter le script de déploiement si nécessaire.','info');
-      console.log('Static blog regeneration triggered via API');
-    }
-  } catch (error) {
-    console.error('Error regenerating static blog:', error);
-    // Fallback: show instructions for manual regeneration
-    toast('Erreur lors de la régénération automatique. Exécutez manuellement: npm run deploy-blog','err');
-  } finally {
-    // Re-enable button
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-sync-alt"></i> Régénérer le blog statique';
-  }
-}
-
 /* ─── BOOT ─── */
 document.addEventListener('DOMContentLoaded', () => {
   const theme = localStorage.getItem('hzn-theme')||'dark';
   document.documentElement.setAttribute('data-theme', theme);
-  
-  const loginForm = document.getElementById('login-form');
-  if (loginForm) loginForm.onsubmit = doLogin;
-
   if (sessionStorage.getItem('hzn-auth')==='1') {
-    const loginScreen = document.getElementById('login-screen');
-    const adminApp = document.getElementById('admin-app');
-    if (loginScreen) loginScreen.style.display = 'none';
-    if (adminApp) adminApp.style.display = 'flex';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'flex';
     initApp();
   }
 });
-
-// Export to window for inline attributes
-window.nav = nav;
-window.refreshAll = refreshAll;
-window.doLogout = doLogout;
-window.togglePwd = togglePwd;
-window.openArticleModal = openArticleModal;
-window.editArticle = editArticle;
-window.saveArticle = saveArticle;
-window.confirmDel = confirmDel;
-window.delPost = delPost;
-window.filterPosts = filterPosts;
-window.filterPostsCat = filterPostsCat;
-window.openPfModal = openPfModal;
-window.editPortfolio = editPortfolio;
-window.savePortfolio = savePortfolio;
-window.delPortfolio = delPortfolio;
-window.filterPortfolio = filterPortfolio;
-window.previewPfImg = previewPfImg;
-window.updateLeadStatus = updateLeadStatus;
-window.delLead = delLead;
-window.filterLeads = filterLeads;
-window.filterLeadsStatus = filterLeadsStatus;
-window.setOrderPaid = setOrderPaid;
-window.delOrder = delOrder;
-window.filterOrders = filterOrders;
-window.filterOrdersStatus = filterOrdersStatus;
-window.approveComment = approveComment;
-window.delComment = delComment;
-window.filterComments = filterComments;
-window.closeModal = closeModal;
-window.closeIfBg = closeIfBg;
-window.setTheme = setTheme;
-window.openServiceModal = openServiceModal;
-window.editService = editService;
-window.saveService = saveService;
-window.delService = delService;
-window.openPackModal = openPackModal;
-window.editPack = editPack;
-window.savePack = savePack;
-window.delPack = delPack;
