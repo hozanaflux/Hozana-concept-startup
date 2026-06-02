@@ -1194,8 +1194,8 @@ select.form-ctrl option { background: #1a1a22; }
 /* ─── STATE ─── */
 // ── Admin credentials hash (fallback si supabase-config.js ne charge pas) ──
 if (typeof ADMIN_EMAIL_HASH === 'undefined') {
-  var ADMIN_EMAIL_HASH    = 'a4976d615b70ef9383759e67e205e204fad71ebddeed9ab327662b389c8d21e4';
-  var ADMIN_PASSWORD_HASH = 'cb2e6d595374831518b59caec6590572569c1d989f19a807e4fc4db9c1a96383';
+  window.ADMIN_EMAIL_HASH    = 'a4976d615b70ef9383759e67e205e204fad71ebddeed9ab327662b389c8d21e4';
+  window.ADMIN_PASSWORD_HASH = 'cb2e6d595374831518b59caec6590572569c1d989f19a807e4fc4db9c1a96383';
 }
 
 let P = [], COM = [], LEADS = [], VIEWS = [], ORDERS = [], PF = [], PACKS = [], SERVICES = [];
@@ -1210,8 +1210,8 @@ const PIPE_COLS = ['new','contacted','qualified','converted'];
 /* ─── AUTH ─── */
 // ── Fallback SUPABASE config (si supabase-config.js ne charge pas) ──
 if (typeof SUPABASE_URL === 'undefined') {
-  var SUPABASE_URL  = 'https://leadvqrheziyvrwnbiio.supabase.co';
-  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlYWR2cXJoZXppeXZyd25iaWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzM0MTksImV4cCI6MjA5MzU0OTQxOX0.I-L13gdtuQnsJ4ErEb-SWWfdbMUhWOkTvSFOSkNxsD0';
+  window.SUPABASE_URL  = 'https://leadvqrheziyvrwnbiio.supabase.co';
+  window.SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlYWR2cXJoZXppeXZyd25iaWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzM0MTksImV4cCI6MjA5MzU0OTQxOX0.I-L13gdtuQnsJ4ErEb-SWWfdbMUhWOkTvSFOSkNxsD0';
 }
 
 /* ─── SHA-256 (Web Crypto avec fallback pur JS pour file://) ─── */
