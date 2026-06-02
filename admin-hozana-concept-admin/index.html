@@ -1192,6 +1192,12 @@ select.form-ctrl option { background: #1a1a22; }
 'use strict';
 
 /* ─── STATE ─── */
+// ── Admin credentials hash (fallback si supabase-config.js ne charge pas) ──
+if (typeof ADMIN_EMAIL_HASH === 'undefined') {
+  var ADMIN_EMAIL_HASH    = 'a4976d615b70ef9383759e67e205e204fad71ebddeed9ab327662b389c8d21e4';
+  var ADMIN_PASSWORD_HASH = 'cb2e6d595374831518b59caec6590572569c1d989f19a807e4fc4db9c1a96383';
+}
+
 let P = [], COM = [], LEADS = [], VIEWS = [], ORDERS = [], PF = [], PACKS = [], SERVICES = [];
 let CH = {};
 let _delCb = null;
