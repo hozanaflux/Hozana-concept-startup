@@ -6,13 +6,30 @@ if (typeof ADMIN_EMAIL_HASH === 'undefined') {
 }
 
 let P = [], COM = [], LEADS = [], VIEWS = [], ORDERS = [], PF = [], PACKS = [], SERVICES = [];
+let AUDITS = [];
 let CH = {};
 let _delCb = null;
 let _postsFilter = { q: '', cat: '' };
 let _leadsFilter = { q: '', status: '' };
+let _auditsFilter = { q: '', status: '' };
 let _ordersFilter = { q: '', status: '' };
 const LBLS = { new:'Nouveau', contacted:'Contacté', qualified:'Qualifié', converted:'Converti', lost:'Perdu' };
 const PIPE_COLS = ['new','contacted','qualified','converted'];
+
+function slugifyTitle(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-{2,}/g, '-') || 'article';
+}
+
+function articleStaticPath(post) {
+  const slug = post?.slug || slugifyTitle(post?.title || post?.id);
+  return post?.published === false ? `/article.html?id=${post.id}` : `/blog-posts/${slug}.html`;
+}
 
 /* ─── AUTH ─── */
 // ── Fallback SUPABASE config (si supabase-config.js ne charge pas) ──
@@ -117,7 +134,7 @@ function doLogout() {
 }
 
 /* ─── NAVIGATION ─── */
-const TITLES = { dashboard:'Dashboard', analytics:'Analytics', articles:'Articles', portfolio:'Portfolio', leads:'Leads CRM', packs:'Packs Tarifs', orders:'Commandes', services:'Services', comments:'Commentaires', settings:'Paramètres' };
+const TITLES = { dashboard:'Dashboard', analytics:'Analytics', articles:'Articles', portfolio:'Portfolio', leads:'Leads CRM', audits:'Audits IA', packs:'Packs Tarifs', orders:'Commandes', services:'Services', comments:'Commentaires', settings:'Paramètres' };
 const CTA = { articles:{ label:'Nouvel article', fn:'openArticleModal()' }, portfolio:{ label:'Nouveau projet', fn:'openPfModal()' }, packs:{ label:'Nouveau pack', fn:'openPackModal()' }, services:{ label:'Nouveau service', fn:'openServiceModal()' } };
 function nav(btn, panel) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -140,6 +157,7 @@ function nav(btn, panel) {
   if (panel === 'articles')  applyPostsFilter();
   if (panel === 'portfolio') renderPortfolio();
   if (panel === 'leads')     renderLeads();
+  if (panel === 'audits')    renderAudits();
   if (panel === 'packs')     renderPacks();
   if (panel === 'services')  renderServices();
   if (panel === 'orders')    renderOrders();
@@ -155,7 +173,7 @@ async function initApp() {
 async function loadAll() {
   console.log('[Admin] Loading data...');
   try {
-    const [pr,cr,lr,vr,or,pfr, pkr, svr] = await Promise.allSettled([
+    const [pr,cr,lr,vr,or,pfr, pkr, svr, ar] = await Promise.allSettled([
       fetch('tables/blog_posts?order=created_at.desc&limit=200').then(r=>r.json()),
       fetch('tables/comments?order=created_at.desc&limit=300').then(r=>r.json()),
       fetch('tables/leads?order=created_at.desc&limit=300').then(r=>r.json()),
@@ -164,7 +182,10 @@ async function loadAll() {
       fetch('tables/portfolio_projects?order=sort_order.asc&limit=200').then(r=>r.json()),
       fetch('tables/packs?order=sort_order.asc&limit=50').then(r=>r.json()),
       fetch('tables/services_list?order=sort_order.asc&limit=50').then(r=>r.json()),
+      fetch('tables/audits?order=created_at.desc&limit=100').then(r=>r.json()),
     ]);
+    
+    if (ar.status==='fulfilled' && ar.value) AUDITS = Array.isArray(ar.value.data) ? ar.value.data : [];
     
     if (pr.status==='fulfilled' && pr.value) P = pr.value.data || [];
     if (cr.status==='fulfilled' && cr.value) COM = cr.value.data || [];
@@ -192,7 +213,7 @@ async function loadAll() {
   renderPacks();
   renderServices();
   renderOrders();
-  renderComments();
+  renderAudits();
 }
 async function refreshAll() {
   toast('Actualisation…','info');
@@ -206,6 +227,7 @@ function updateBadges() {
   set('badge-pf', PF.length);
   set('badge-com', COM.filter(c=>!c.approved).length||COM.length);
   set('badge-leads', LEADS.filter(l=>l.status==='new').length);
+  set('badge-audits', AUDITS.filter(a=>a.status==='new').length);
   set('badge-orders', ORDERS.filter(o=>o.status==='paid').length);
   set('badge-packs', PACKS.length);
 }
@@ -360,7 +382,9 @@ function renderPosts(data=P) {
   const el = document.getElementById('posts-body');
   if (!el) return;
   if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="8">Aucun article trouvé</td></tr>`; return; }
-  el.innerHTML = data.map(p=>`
+  el.innerHTML = data.map(p=>{
+    const publicUrl = articleStaticPath(p);
+    return `
     <tr>
       <td>
         <div style="display:flex;align-items:center;gap:.625rem;">
@@ -381,10 +405,11 @@ function renderPosts(data=P) {
           <i class="fas fa-${p.published!==false?'check-circle':'pause-circle'}"></i>
         </button>
         <button class="act" onclick="editArticle('${p.id}')" title="Modifier"><i class="fas fa-edit"></i></button>
-        <a class="act" href="/article.html?id=${p.id}" target="_blank" title="Voir"><i class="fas fa-eye"></i></a>
+        <a class="act" href="${publicUrl}" target="_blank" title="Voir la page publique"><i class="fas fa-eye"></i></a>
         <button class="act del" onclick="confirmDel(()=>delPost('${p.id}'))" title="Supprimer"><i class="fas fa-trash"></i></button>
       </div></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 function filterPosts(q) { _postsFilter.q=q.toLowerCase(); applyPostsFilter(); }
 function filterPostsCat(c) { _postsFilter.cat=c; applyPostsFilter(); }
@@ -481,10 +506,18 @@ async function saveArticle(genPage=false) {
     cover_image:document.getElementById('a-img').value,
     read_time:parseInt(document.getElementById('a-readtime').value)||5,
     tags, published:document.getElementById('a-pub').value==='true',
-    slug:title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),
+    slug:slugifyTitle(title),
     updated_at:new Date().toISOString()
   };
-  if (!id) { data.views=0; data.likes=0; data.created_at=new Date().toISOString(); }
+  if (!id) {
+    data.views=0;
+    data.likes=0;
+    data.created_at=new Date().toISOString();
+    data.publish_date = data.published ? new Date().toISOString() : null;
+  } else if (data.published) {
+    const current = P.find(p => p.id === id);
+    if (!current?.publish_date) data.publish_date = new Date().toISOString();
+  }
   
   // ── DEBUG: tracer le contenu sauvegardé ──
   console.log('[saveArticle] Content length:', (data.content || '').length);
@@ -501,9 +534,8 @@ async function saveArticle(genPage=false) {
       const i = P.findIndex(p=>p.id===id);
       if (i>-1) P[i]={...P[i],...up};
       toast('Article mis à jour ✓','ok');
-      // Auto-régénérer la page statique après UPDATE aussi
       if (!genPage && data.published !== false) {
-        setTimeout(() => generateArticlePage(), 500);
+        await triggerStaticBlogGeneration({ silent: true });
       }
     } else {
       const r = await fetch('tables/blog_posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
@@ -516,7 +548,7 @@ async function saveArticle(genPage=false) {
       }
       toast('Article créé ✓','ok');
       if (!genPage && data.published !== false) {
-        setTimeout(() => generateArticlePage(), 500);
+        await triggerStaticBlogGeneration({ silent: true });
       }
     }
     closeModal('m-article');
@@ -535,13 +567,19 @@ async function togglePostStatus(id) {
     await fetch(`tables/blog_posts/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ published: newStatus })
+      body: JSON.stringify({
+        published: newStatus,
+        updated_at: new Date().toISOString(),
+        ...(newStatus && !p.publish_date ? { publish_date: new Date().toISOString() } : {})
+      })
     });
     p.published = newStatus;
+    if (newStatus && !p.publish_date) p.publish_date = new Date().toISOString();
     renderPosts();
     renderDashPosts();
     renderKPIs();
     toast(newStatus ? 'Article publié ✓' : 'Article mis en brouillon', 'ok');
+    await triggerStaticBlogGeneration({ silent: true });
   } catch {
     toast('Erreur lors du changement de statut', 'err');
   }
@@ -737,9 +775,129 @@ async function delLead(id) {
   toast('Lead supprimé','ok');
 }
 
+/* ─── AUDITS ─── */
+function renderAudits(data=AUDITS) {
+  set('audits-count', AUDITS.length);
+  const el = document.getElementById('audits-body');
+  if (!el) return;
+  const filtered = data.filter(a=>{
+    const mq=!_auditsFilter.q||(a.name||'').toLowerCase().includes(_auditsFilter.q)||(a.email||'').toLowerCase().includes(_auditsFilter.q)||(a.company||'').toLowerCase().includes(_auditsFilter.q);
+    const ms=!_auditsFilter.status||a.status===_auditsFilter.status;
+    return mq&&ms;
+  });
+  if (!filtered.length) { el.innerHTML=`<tr class="empty-row"><td colspan="8">Aucun audit</td></tr>`; return; }
+  el.innerHTML = filtered.map(a=>{
+    const initials = (a.name||a.email||'?')[0]?.toUpperCase()||'?';
+    return `
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:.625rem;">
+        <div class="avatar">${initials}</div>
+        <div><div class="t-strong t-sm">${a.name||'—'}</div><div class="t-muted" style="font-size:.7rem;">${a.company||''}</div></div>
+      </div></td>
+      <td class="t-muted t-sm">${a.email||'—'}</td>
+      <td class="t-muted t-sm">${a.company||'—'}</td>
+      <td class="t-muted t-sm">${a.sector||'—'}</td>
+      <td><span class="badge ${a.maturity_score>=7?'badge-green':a.maturity_score>=4?'badge-yellow':'badge-blue'}" style="font-size:.7rem;">${a.maturity_score||'?'}/10</span></td>
+      <td>
+        <select class="status-sel" onchange="updateAuditStatus('${a.id}',this.value)">
+          ${PIPE_COLS.map(s=>`<option value="${s}" ${a.status===s?'selected':''}>${LBLS[s]}</option>`).join('')}
+        </select>
+      </td>
+      <td class="t-muted t-sm">${fmt(a.created_at)}</td>
+      <td><div class="acts">
+        <button class="act" onclick="viewAudit('${a.id}')" title="Voir détails"><i class="fas fa-eye"></i></button>
+        <button class="act del" onclick="confirmDel(()=>delAudit('${a.id}'))"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterAudits(q) { _auditsFilter.q=q.toLowerCase(); renderAudits(); }
+function filterAuditsStatus(s) { _auditsFilter.status=s; renderAudits(); }
+
+async function updateAuditStatus(id, status) {
+  await fetch(`tables/audits/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
+  const a=AUDITS.find(x=>x.id===id); if(a) a.status=status;
+  updateBadges();
+  toast('Statut mis à jour ✓','ok');
+}
+
+async function delAudit(id) {
+  await fetch(`tables/audits/${id}`,{method:'DELETE'});
+  AUDITS=AUDITS.filter(a=>a.id!==id);
+  renderAudits(); updateBadges();
+  toast('Audit supprimé','ok');
+}
+
+function viewAudit(id) {
+  const a = AUDITS.find(x => x.id === id);
+  if (!a) return;
+  
+  const scoreColor = a.maturity_score>=7?'#4ade80':a.maturity_score>=4?'#facc15':'#60a5fa';
+  
+  const html = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="form-grp"><label class="form-label">Nom</label><div class="t-strong">${a.name||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Email</label><div class="t-muted">${a.email||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Téléphone</label><div class="t-muted">${a.phone||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Entreprise</label><div class="t-muted">${a.company||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Secteur</label><div class="t-muted">${a.sector||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Score maturité</label><div style="font-size:1.5rem;font-weight:800;color:${scoreColor};">${a.maturity_score||'?'}/10</div></div>
+    </div>
+    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+      <div class="form-grp"><label class="form-label">Maturité digitale</label><div class="t-muted">${a.maturity||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Outils utilisés</label><div class="t-muted">${a.tools||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Portée / trafic</label><div class="t-muted">${a.reach||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Défi principal</label><div class="t-muted">${a.top_challenge||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Processus manuels</label><div class="t-muted">${a.manual_processes||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Usage IA</label><div class="t-muted">${a.ia_usage||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Heures répétitives/sem</label><div class="t-muted">${a.repetitive_hours||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Objectif principal</label><div class="t-muted">${a.main_goal||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Concurrence</label><div class="t-muted">${a.competition||'—'}</div></div>
+      <div class="form-grp"><label class="form-label">Budget</label><div class="t-muted">${a.budget||'—'}</div></div>
+    </div>
+    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+      <div class="form-grp"><label class="form-label">Message / Notes</label>
+        <div style="background:var(--surface2);padding:1rem;border-radius:var(--radius-sm);border:1px solid var(--border);white-space:pre-wrap;line-height:1.6;">${a.message||'Aucune note'}</div>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('audit-detail-view').innerHTML = html;
+  
+  const replyBtn = document.getElementById('v-audit-reply');
+  if (a.email) {
+    const subject = encodeURIComponent('Hozana Concept — Suite de votre audit IA gratuit');
+    replyBtn.href = `mailto:${a.email}?subject=${subject}`;
+    replyBtn.style.display = 'inline-flex';
+  } else {
+    replyBtn.style.display = 'none';
+  }
+  
+  openModal('m-audit');
+}
+
 /* ─── GENERATE ARTICLE PAGE ─── */
 let _generatingPage = false;
-async function generateArticlePage() {
+async function triggerStaticBlogGeneration(options = {}) {
+  const silent = !!options.silent;
+  try {
+    const res = await fetch('/api/regenerate-blog', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      if (!silent) toast(data.message || 'Page générée ✓', 'ok');
+      else if (data.mode === 'deploy-hook') toast('Publication SEO programmée ✓', 'ok');
+    } else {
+      toast('SEO statique: ' + (data.message || data.error || 'génération non disponible'), 'err');
+    }
+    return data;
+  } catch (e) {
+    toast('SEO statique indisponible: ' + (e.message || 'erreur réseau'), silent ? 'info' : 'err');
+    return { success: false, error: e.message };
+  }
+}
+
+async function generateArticlePage(options = {}) {
   if (_generatingPage) return;
   _generatingPage = true;
   try {
@@ -748,17 +906,7 @@ async function generateArticlePage() {
       await saveArticle(true);
       id = document.getElementById('a-id').value;
     }
-    try {
-      const res = await fetch('/api/regenerate-blog', { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
-        toast('Page générée ✓', 'ok');
-      } else {
-        toast('Erreur: ' + (data.message || 'inconnue'), 'err');
-      }
-    } catch {
-      toast('Erreur réseau - la page dynamique fonctionne déjà ✓', 'info');
-    }
+    await triggerStaticBlogGeneration(options);
   } finally {
     _generatingPage = false;
   }
@@ -779,7 +927,7 @@ async function regenerateBlog() {
       status.innerHTML = `<span style="color:#4ade80;">✅ ${data.message || 'Blog régénéré avec succès'}</span>`;
       toast('Blog régénéré ✓','ok');
     } else {
-      status.innerHTML = `<span style="color:var(--red);">❌ ${data.message || 'Erreur'}</span>`;
+      status.innerHTML = `<span style="color:var(--red);">❌ ${data.message || data.error || 'Erreur'}</span>`;
       toast('Erreur régénération','err');
     }
   } catch (e) {

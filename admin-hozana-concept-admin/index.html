@@ -85,6 +85,10 @@
       <i class="fas fa-user-plus"></i> Leads CRM
       <span class="badge" id="badge-leads">0</span>
     </button>
+    <button class="nav-btn" data-panel="audits" onclick="nav(this,'audits')">
+      <i class="fas fa-clipboard-check"></i> Audits IA
+      <span class="badge" id="badge-audits">0</span>
+    </button>
     <button class="nav-btn" data-panel="packs" onclick="nav(this,'packs')">
       <i class="fas fa-box"></i> Packs Tarifs
       <span class="badge" id="badge-packs">0</span>
@@ -404,6 +408,32 @@
         </div>
       </div>
 
+      <!-- ══════════ AUDITS ══════════ -->
+      <div class="panel" id="panel-audits">
+        <div class="pipeline" id="audits-pipeline"></div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title"><i class="fas fa-clipboard-check" style="color:var(--red)"></i> Tous les audits IA (<span id="audits-count">0</span>)</div>
+            <div class="card-tools">
+              <input type="text" class="search" placeholder="Nom, email, entreprise…" oninput="filterAudits(this.value)">
+              <select class="filter-select" onchange="filterAuditsStatus(this.value)">
+                <option value="">Tous statuts</option>
+                <option value="new">Nouveau</option>
+                <option value="contacted">Contacté</option>
+                <option value="qualified">Qualifié</option>
+                <option value="converted">Converti</option>
+              </select>
+            </div>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Contact</th><th>Email</th><th>Entreprise</th><th>Secteur</th><th>Score</th><th>Statut</th><th>Date</th><th></th></tr></thead>
+              <tbody id="audits-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- ══════════ COMMENTAIRES ══════════ -->
       <div class="panel" id="panel-comments">
         <div class="card">
@@ -426,7 +456,24 @@
         </div>
       </div>
 
-      <!-- ══════════ PARAMÈTRES ══════════ -->
+    <!-- LEAD AUDIT MODAL -->
+    <div class="overlay" id="m-audit" onclick="closeIfBg(event,'m-audit')">
+      <div class="modal" style="max-width:720px;">
+        <div class="modal-head">
+          <div class="modal-title">Détails de l'audit IA</div>
+          <button class="modal-close" onclick="closeModal('m-audit')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <div id="audit-detail-view"></div>
+        </div>
+        <div class="modal-foot">
+          <a id="v-audit-reply" href="#" class="btn btn-ghost" style="display:none;"><i class="fas fa-reply"></i> Répondre par email</a>
+          <button class="btn btn-primary" onclick="closeModal('m-audit')">Fermer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ PARAMÈTRES ══════════ -->
       <div class="panel" id="panel-settings">
         <div class="settings-grid">
           <div class="setting-card">
@@ -455,7 +502,7 @@
           <div class="setting-card">
             <h3><i class="fas fa-file-export" style="color:#22c55e"></i> Génération statique</h3>
             <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">
-              Les articles sont affichés dynamiquement via Supabase. <br>Pour le SEO, vous pouvez générer des fichiers HTML statiques dans <code style="color:var(--red);">blog-posts/</code>.
+              Les articles sont affichés dynamiquement via Supabase. <br>Pour le SEO, le build génère des fichiers HTML statiques dans <code style="color:var(--red);">blog-posts/</code>. En production, configurez <code style="color:var(--red);">VERCEL_DEPLOY_HOOK_URL</code> pour relancer automatiquement le build après publication.
             </p>
             <button class="btn btn-primary btn-sm" onclick="regenerateBlog()" id="btn-regenerate">
               <i class="fas fa-sync-alt"></i> Régénérer tous les articles statiques
@@ -804,4 +851,6 @@
 
 <!-- ══════════════════════════════════════
      JAVASCRIPT
-══════════════════════════════════════ -->
+══════════════════════════════════════ -->
+</body>
+</html>

@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "build": "node js/generate-static-blog.js",
+    "generate:blog": "node js/generate-static-blog.js"
+  },
   "dependencies": {
     "jsdom": "^29.1.1"
   }

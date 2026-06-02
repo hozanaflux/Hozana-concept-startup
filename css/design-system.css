@@ -495,6 +495,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
+  position: relative;
 }
 
 .navbar-logo {
@@ -973,19 +974,13 @@ h1, h2, h3, h4, h5, h6 {
    ============================================================ */
 footer {
   background: var(--black-2);
-  border-top: 1px solid var(--glass-border);
   padding: var(--space-3xl) 2rem var(--space-xl);
   position: relative;
   overflow: hidden;
 }
 
 footer::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 50%; transform: translateX(-50%);
-  width: 600px; height: 1px;
-  background: var(--grad-red);
-  opacity: 0.5;
+  display: none;
 }
 
 .footer-grid {
@@ -1480,7 +1475,7 @@ textarea.form-control {
    ============================================================ */
 [data-theme="light"] footer {
   background: #07111F !important;
-  border-top: 1px solid rgba(255,255,255,0.05) !important;
+  border-top: none !important;
 }
 [data-theme="light"] footer::before {
   opacity: 0.6;

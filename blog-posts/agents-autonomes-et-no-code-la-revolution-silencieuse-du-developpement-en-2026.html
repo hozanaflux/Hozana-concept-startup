@@ -81,6 +81,17 @@
       line-height: 1.85;
       color: var(--white-80);
     }
+    .article-body h1 {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--white);
+      margin: 3.5rem 0 1.25rem;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      padding-top: 0.5rem;
+      border-top: 2px solid var(--glass-border);
+    }
     .article-body h2 {
       font-family: var(--font-title);
       font-size: 1.65rem;
@@ -99,7 +110,7 @@
       color: var(--white);
       margin: 2.25rem 0 0.875rem;
     }
-    .article-body p { margin-bottom: 1.5rem; }
+    .article-body p { margin-bottom: 1.5rem; line-height: 1.85; }
     .article-body a {
       color: var(--red-light);
       text-decoration: underline;
@@ -138,6 +149,7 @@
       flex-direction: column;
       gap: 0.5rem;
     }
+    .article-body li { margin-bottom: 0.25rem; }
     .article-body li::marker {
       color: var(--red);
     }
@@ -166,9 +178,11 @@
       font-size: 0.875rem;
     }
     .article-body img {
-      width: 100%;
+      max-width: 100%;
+      height: auto;
       border-radius: var(--radius-md);
       margin: 1.5rem 0;
+      display: block;
     }
     .article-body strong { color: var(--white); font-weight: 700; }
     .article-body hr {
@@ -528,7 +542,7 @@
     <meta property="og:title" content="Agents Autonomes et No-Code : La Révolution Silencieuse du Développement en 2026 | Hozana Concept Blog">
     <meta property="og:description" content="Plongée dans l'univers des agents IA autonomes et du no-code : comment ces technologies transforment la création de services digitaux et permettent aux entreprises de développer sans développeurs.">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://www.hozanaconcept.com/blog-posts/agents-autonomes-et-no-code-la-revolution-silencieuse-du-developpement-en-2026">
+    <meta property="og:url" content="https://www.hozanaconcept.com/blog-posts/agents-autonomes-et-no-code-la-revolution-silencieuse-du-developpement-en-2026.html">
     <meta property="og:image" content="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&amp;q=80">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -544,7 +558,7 @@
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&amp;q=80">
     <meta name="twitter:site" content="@HozanaConcept">
     <meta name="twitter:creator" content="@HozanaConcept">
-  <link rel="canonical" href="https://www.hozanaconcept.com/blog-posts/agents-autonomes-et-no-code-la-revolution-silencieuse-du-developpement-en-2026">
+  <link rel="canonical" href="https://www.hozanaconcept.com/blog-posts/agents-autonomes-et-no-code-la-revolution-silencieuse-du-developpement-en-2026.html">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -579,7 +593,7 @@
         "height": 630
       },      "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://www.hozanaconcept.com/blog-posts/agents-autonomes-et-no-code-la-revolution-silencieuse-du-developpement-en-2026"
+        "@id": "https://www.hozanaconcept.com/blog-posts/agents-autonomes-et-no-code-la-revolution-silencieuse-du-developpement-en-2026.html"
       }
   }
     </script>
@@ -615,7 +629,7 @@ window.__STATIC_BLOG_DATA__ = {
   cover_image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80",
   excerpt: "Plongée dans l'univers des agents IA autonomes et du no-code : comment ces technologies transforment la création de services digitaux et permettent aux entreprises de développer sans développeurs.",
   read_time: 7,
-  views: 26,
+  views: 27,
   likes: 3,
   tags: ["Technologie","Agents IA","No-Code","Développement","Innovation","Automatisation"],
   publish_date: "2026-06-01T22:22:25.483+00:00",
@@ -659,7 +673,7 @@ window.__STATIC_BLOG_DATA__ = {
         </span>
         <span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>2 juin 2026</span>
         <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>7 min de lecture</span>
-        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>27 vues</span>
+        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>28 vues</span>
       </div>
   </div>
 </header>
@@ -813,7 +827,7 @@ window.__STATIC_BLOG_DATA__ = {
         <div style="display:flex;flex-direction:column;gap:0.875rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-eye" style="color:var(--red);"></i> Vues</span>
-            <span style="font-family:var(--font-title);font-weight:700;" id="stat-views">27</span>
+            <span style="font-family:var(--font-title);font-weight:700;" id="stat-views">28</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:0.85rem;color:var(--white-50);font-family:var(--font-accent);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-heart" style="color:var(--red);"></i> Likes</span>
@@ -1216,55 +1230,46 @@ async function toggleLike() {
 }
 
 /* ====================================================
-   COMMENTS
+   COMMENTS — Supabase (réels)
    ==================================================== */
 async function loadComments() {
   const list = document.getElementById('comments-list');
   const countEl = document.getElementById('comments-count');
   const statEl = document.getElementById('stat-comments');
 
-  // Simulated comments (would come from a comments table)
-  const sampleComments = [
-    {
-      id: 1,
-      name: 'Sophie M.',
-      initials: 'SM',
-      date: '15 Jan. 2025',
-      text: 'Article très intéressant ! J\'ai déjà commencé à implémenter ces stratégies dans mon entreprise. Les résultats sont bluffants après seulement 2 semaines.'
-    },
-    {
-      id: 2,
-      name: 'Thomas K.',
-      initials: 'TK',
-      date: '18 Jan. 2025',
-      text: 'Excellente synthèse sur les possibilités de l\'IA. Je recommande particulièrement la section sur les outils no-code qui permet vraiment à tout entrepreneur de se lancer sans connaissances techniques.'
-    }
-  ];
+  if (!list) return;
 
-  allComments = sampleComments;
+  try {
+    const res = await fetch(`tables/comments?post_id=eq.${postId}&order=created_at.asc`);
+    const data = await res.json();
+    allComments = (data.data || []).filter(c => c.approved !== false);
+  } catch {
+    allComments = [];
+  }
 
   if (countEl) countEl.textContent = `(${allComments.length})`;
   if (statEl) statEl.textContent = allComments.length;
-
-  if (!list) return;
 
   if (!allComments.length) {
     list.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--white-40);font-style:italic;">Soyez le premier à commenter cet article !</div>`;
     return;
   }
 
-  list.innerHTML = allComments.map(c => `
+  list.innerHTML = allComments.map(c => {
+    const initials = (c.author_name || 'A').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    const date = formatDate(c.created_at) || 'Récemment';
+    return `
     <div class="comment-item">
-      <div class="comment-avatar">${c.initials}</div>
+      <div class="comment-avatar">${initials}</div>
       <div class="comment-body">
         <div class="comment-header">
-          <span class="comment-author">${escapeHtml(c.name)}</span>
-          <span class="comment-date">${c.date}</span>
+          <span class="comment-author">${escapeHtml(c.author_name)}</span>
+          <span class="comment-date">${date}</span>
         </div>
-        <p class="comment-text">${escapeHtml(c.text)}</p>
+        <p class="comment-text">${escapeHtml(c.content)}</p>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 async function submitComment() {
@@ -1281,46 +1286,50 @@ async function submitComment() {
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...'; }
 
   try {
-    // Save lead + comment reference
-    await fetch('tables/leads', {
+    // Save to Supabase comments table
+    const res = await fetch('tables/comments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, name, source: `comment-${postId}`, status: 'new', message: text.substring(0, 200) })
+      body: JSON.stringify({
+        post_id: postId,
+        author_name: name,
+        author_email: email,
+        content: text,
+        approved: false  // Needs moderation
+      })
     });
+    const saved = await res.json();
 
-    // Add comment to DOM
+    // Add comment to DOM immediately (pending approval)
     const list = document.getElementById('comments-list');
-    const newComment = {
-      name, initials: name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase(),
-      date: 'À l\'instant', text
-    };
-
-    allComments.push(newComment);
     const emptyMsg = list?.querySelector('[style*="Soyez le premier"]');
     if (emptyMsg) emptyMsg.remove();
 
+    const initials = name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
     const el = document.createElement('div');
     el.className = 'comment-item';
     el.style.animation = 'fadeInUp 0.4s ease';
     el.innerHTML = `
-      <div class="comment-avatar">${newComment.initials}</div>
+      <div class="comment-avatar">${initials}</div>
       <div class="comment-body">
         <div class="comment-header">
-          <span class="comment-author">${escapeHtml(newComment.name)}</span>
-          <span class="comment-date">${newComment.date}</span>
-          <span class="badge badge-red" style="font-size:0.65rem;">Nouveau</span>
+          <span class="comment-author">${escapeHtml(name)}</span>
+          <span class="comment-date">À l'instant</span>
+          <span class="badge badge-yellow" style="font-size:0.65rem;">En attente de modération</span>
         </div>
-        <p class="comment-text">${escapeHtml(newComment.text)}</p>
+        <p class="comment-text">${escapeHtml(text)}</p>
       </div>
     `;
     list?.insertBefore(el, list.firstChild);
 
+    // Update counts (even if not yet approved, user sees their own comment)
+    allComments.unshift({ id: saved?.id, author_name: name, content: text, created_at: new Date().toISOString(), approved: false });
     const countEl = document.getElementById('comments-count');
     const statEl = document.getElementById('stat-comments');
     if (countEl) countEl.textContent = `(${allComments.length})`;
     if (statEl) statEl.textContent = allComments.length;
 
-    window.HC?.showToast('✅ Commentaire publié !', 'success');
+    window.HC?.showToast('✅ Commentaire soumis ! Visible après modération.', 'success');
 
     // Reset form
     ['comment-name', 'comment-email', 'comment-text'].forEach(id => {

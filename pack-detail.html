@@ -1515,62 +1515,27 @@ async function initPage() {
   const params = new URLSearchParams(window.location.search);
   const packName = params.get('pack') || 'Growth';
   
+  // Normalise le nom du pack depuis l'URL (ex: "Growth" → "growth")
+  // et sélectionne le pack correspondant depuis nos données locales riches
+  const key = packName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  currentPack = PACKS[key] || PACKS.growth;
+  
+  // Tentative de merge avec les données Supabase (prix mis à jour via admin)
   try {
     const res = await fetch(`tables/packs?name=eq.${encodeURIComponent(packName)}`);
-    const json = await res.json();
-    const packData = json.data ? json.data[0] : null;
-    
-    if (packData) {
-      const isFeatured = packData.is_featured === true || String(packData.is_featured) === 'true';
-      const basePrice = parseInt(packData.price) || 0;
-
-      currentPack = {
-        name: packData.name,
-        emoji: packData.name === 'Starter' ? '🚀' : (packData.name === 'Elite' ? '🏆' : '⚡'),
-        tagline: packData.badge || (isFeatured ? '⭐ Le plus populaire' : 'Solution IA & Digital'),
-        description: packData.description || '',
-        priceMonthly: basePrice,
-        priceAnnual: Math.round(basePrice * 0.8),
-        badge: packData.name,
-        badgeClass: isFeatured ? 'badge-red' : 'badge-glass',
-        color: isFeatured ? 'rgba(255,46,46,0.08)' : 'rgba(255,255,255,0.08)',
-        borderColor: isFeatured ? 'rgba(255,46,46,0.3)' : 'rgba(255,255,255,0.1)',
-        featured: isFeatured,
-        featureGroups: [
-          {
-            title: '✅ Inclus dans votre pack',
-            features: (packData.features || []).map(f => ({ name: f, desc: '', type: 'check' }))
-          },
-          {
-            title: '❌ Non inclus',
-            features: (packData.features_excluded || []).map(f => ({ name: f, desc: '', type: 'x' }))
-          }
-        ],
-        timeline: [
-          { week: 'Semaine 1', title: 'Audit & Stratégie', desc: 'Analyse de vos processus actuels et définition de la roadmap.' },
-          { week: 'Semaine 2-3', title: 'Déploiement', desc: 'Configuration et mise en place des solutions IA et automatisations.' },
-          { week: 'Semaine 4', title: 'Optimisation', desc: 'Tests, ajustements et lancement officiel.' }
-        ],
-        results: [
-          { metric: '24/7', label: 'Disponibilité de votre IA' },
-          { metric: '-40%', label: 'Réduction des tâches manuelles' },
-          { metric: 'ROI', label: 'Mesurable dès le premier mois' }
-        ],
-        testimonial: {
-          text: 'Une solution qui a radicalement changé notre productivité.',
-          name: 'Client Hozana',
-          role: 'Entrepreneur',
-          initials: 'HC'
-        },
-        sidebarFeatures: packData.features || []
-      };
-    } else {
-      // Fallback
-      currentPack = PACKS.growth;
+    if (res.ok) {
+      const json = await res.json();
+      const packData = json.data ? json.data[0] : null;
+      if (packData && packData.price) {
+        const priceNum = parseInt(packData.price.replace(/[^0-9]/g, ''));
+        if (!isNaN(priceNum) && priceNum > 0) {
+          currentPack.priceMonthly = priceNum;
+          currentPack.priceAnnual = Math.round(priceNum * 0.8);
+        }
+      }
     }
   } catch (e) {
-    console.error('Error fetching pack:', e);
-    currentPack = PACKS.growth;
+    // Les données locales sont toujours disponibles — aucun problème
   }
 
   renderPackHero();

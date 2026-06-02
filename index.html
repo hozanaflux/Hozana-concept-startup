@@ -163,10 +163,10 @@
     /* ── Titre hero — taille maîtrisée ── */
     .hero-slide-title {
       font-family: var(--font-title);
-      font-size: clamp(1.875rem, 3.5vw, 2.875rem);
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
       font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
       margin-bottom: 1rem;
       color: var(--white);
     }
@@ -387,10 +387,10 @@
 
     /* ── Espace respirant en haut du hero ── */
     #hero.hero {
-      /* Le padding est géré par les slides (position:absolute) */
       padding-top: 0;
       padding-bottom: 0;
       min-height: 100svh;
+      overflow: hidden;
     }
 
     /* ── Responsive Hero ── */
@@ -411,7 +411,7 @@
     }
     @media (max-width: 640px) {
       .hero-slide { padding-top: calc(var(--nav-height) + 2.5rem); padding-bottom: 6rem; }
-      .hero-slide-title { font-size: 1.5rem; }
+      .hero-slide-title { font-size: clamp(1.75rem, 6vw, 2.5rem); }
       .hero-slide-subtitle { font-size: 0.875rem; }
       .hero-slide-actions { flex-direction: column; align-items: center; }
       .hero-slide-actions .btn { width: 100%; max-width: 280px; justify-content: center; }
@@ -614,7 +614,8 @@
     /* ============================================================
        GALERIE / PORTFOLIO
        ============================================================ */
-    .portfolio-section { position: relative; }
+    /* -- 3D Circular Gallery -- */
+    .portfolio-section { position: relative; overflow: hidden; }
     .portfolio-filter-bar {
       display: flex;
       gap: 0.5rem;
@@ -637,243 +638,141 @@
     .pf-btn:hover { border-color: rgba(255,46,46,0.4); color: var(--white); }
     .pf-btn.active { background: var(--grad-red); border-color: transparent; color: white; }
 
-    .portfolio-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-      grid-auto-flow: dense; /* Fill gaps efficiently */
-    }
-    .portfolio-item {
+    /* 3D Gallery Container */
+    .gallery-3d-wrap {
       position: relative;
-      border-radius: var(--radius-xl);
+      width: 100%;
+      height: 600px;
+      perspective: 2000px;
       overflow: hidden;
-      aspect-ratio: 4/3;
-      cursor: pointer;
-      group: true;
-      transition: transform var(--trans-bounce), box-shadow var(--trans-base);
+      cursor: grab;
+      user-select: none;
     }
-    .portfolio-item:hover { transform: translateY(-6px); box-shadow: 0 30px 70px rgba(0,0,0,0.5); }
-    .portfolio-item.large { grid-column: span 2; aspect-ratio: 16/9; }
-    .portfolio-item.tall { grid-row: span 2; aspect-ratio: auto; }
+    .gallery-3d-wrap:active { cursor: grabbing; }
 
-    .portfolio-img {
+            .gallery-3d-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+    }
+
+            .gallery-item-3d {
+      position: absolute;
+      width: 300px;
+      height: 400px;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      cursor: pointer;
+      transition: box-shadow 0.4s ease;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+            .gallery-item-3d:hover {
+      box-shadow: 0 30px 80px rgba(255,46,46,0.25);
+      z-index: 10;
+    }
+    .gallery-item-3d img {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.6s ease;
+      transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);
     }
-    .portfolio-item:hover .portfolio-img { transform: scale(1.06); }
+    .gallery-item-3d:hover img { transform: scale(1.08); }
 
-    .portfolio-overlay {
+    .gallery-item-3d .card-overlay {
       position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
+      bottom: 0;
+      left: 0;
+      width: 100%;
       padding: 1.5rem;
-      opacity: 0;
-      transition: opacity var(--trans-base);
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+      pointer-events: none;
     }
-    .portfolio-item:hover .portfolio-overlay { opacity: 1; }
-
-    .portfolio-overlay-always {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 60%);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 1.25rem;
-    }
-
-    .pf-cat-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      background: var(--grad-red);
-      color: white;
-      font-size: 0.7rem;
+    .gallery-item-3d .card-overlay h3 {
       font-family: var(--font-accent);
-      font-weight: 700;
-      padding: 0.25rem 0.625rem;
-      border-radius: var(--radius-full);
-      margin-bottom: 0.5rem;
-      width: fit-content;
-    }
-    .pf-title {
-      font-family: var(--font-title);
-      font-size: 1rem;
+      font-size: 1.125rem;
       font-weight: 700;
       color: white;
-      margin-bottom: 0.25rem;
+      margin: 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
-    .pf-sub {
-      font-size: 0.78rem;
+    .gallery-item-3d .card-overlay em {
+      font-size: 0.8rem;
       color: rgba(255,255,255,0.7);
-      font-family: var(--font-accent);
+      font-style: italic;
     }
-    .pf-hover-icon {
-      position: absolute;
-      top: 1rem; right: 1rem;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 0.875rem;
-      opacity: 0;
-      transition: opacity var(--trans-base);
+    .gallery-item-3d .card-overlay .photo-by {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 0.25rem;
     }
-    .portfolio-item:hover .pf-hover-icon { opacity: 1; }
 
-    /* ── Responsive ── */
+    /* Scroll indicator */
+    .gallery-scroll-hint {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      color: var(--white-30);
+      font-family: var(--font-accent);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      pointer-events: none;
+      opacity: 0.5;
+      transition: opacity 0.5s ease;
+    }
+    .gallery-scroll-hint i { animation: hintBounce 2s ease-in-out infinite; }
+    @keyframes hintBounce {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(6px); }
+    }
+
+    /* Responsive */
     @media (max-width: 1024px) {
-      .charts-grid { grid-template-columns: 1fr 1fr; }
-      .portfolio-grid { grid-template-columns: 1fr 1fr; }
-      .portfolio-item.large { grid-column: span 1; aspect-ratio: 4/3; }
-      .kpi-band { grid-template-columns: 1fr 1fr; }
+      .gallery-3d-wrap { height: 500px; }
+      .gallery-item-3d { width: 240px; height: 320px; }
     }
     @media (max-width: 768px) {
-      .charts-grid { grid-template-columns: 1fr; }
-      .portfolio-grid { grid-template-columns: 1fr; }
-      .portfolio-item.large, .portfolio-item.tall { grid-column: span 1; grid-row: span 1; aspect-ratio: 4/3; }
-      .hero-arrow { display: none; }
-      .kpi-band { grid-template-columns: 1fr 1fr; }
+      .gallery-3d-wrap { height: 420px; }
+      .gallery-item-3d { width: 200px; height: 270px; }
+      .gallery-3d-wrap { perspective: 1200px; }
     }
-
-    /* ── Pack badge visible (override glass overflow) ── */
-    .glass.pack-card.featured,
-    .glass.pack-card-full.featured {
-      overflow: visible !important;
+    @media (max-width: 480px) {
+      .gallery-3d-wrap { height: 360px; }
+      .gallery-item-3d { width: 160px; height: 220px; }
+      .gallery-item-3d .card-overlay { padding: 0.75rem; }
+      .gallery-item-3d .card-overlay h3 { font-size: 0.9rem; }
+      .gallery-item-3d .card-overlay em { font-size: 0.65rem; }
+      .gallery-scroll-hint { display: none; }
     }
-    .glass.pack-card.featured::before,
-    .glass.pack-card-full.featured::before {
-      display: none;
-    }
-
-    /* --- Featured numbers hover strip --- */
-    .trust-strip {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      padding: 0;
-      flex-wrap: nowrap;
-      overflow: hidden;
-    }
-    .trust-item {
-      flex: 1;
-      text-align: center;
-      padding: 2rem 1rem;
-      position: relative;
-      transition: background var(--trans-base);
-    }
-    .trust-item:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      right: 0; top: 20%; bottom: 20%;
-      width: 1px;
-      background: var(--glass-border);
-    }
-    .trust-item:hover {
-      background: rgba(255,46,46,0.04);
-    }
-
-    /* --- Social proof logos --- */
-    .partner-logos {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2.5rem;
-      flex-wrap: wrap;
-    }
-    .partner-logo {
-      font-family: var(--font-accent);
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      color: var(--white-20);
-      transition: color var(--trans-base);
-      text-transform: uppercase;
-    }
-    .partner-logo:hover { color: var(--white-50); }
-
-    /* --- Comparison section --- */
-    .comparison-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      align-items: stretch;
-    }
-    .comparison-col {
-      border-radius: var(--radius-xl);
-      padding: 2.5rem;
-    }
-    .comparison-col.before {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .comparison-col.after {
-      background: linear-gradient(135deg, rgba(255,46,46,0.07), rgba(255,106,0,0.04));
-      border: 1px solid rgba(255,46,46,0.18);
-    }
-    .comparison-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1.75rem;
-    }
-    .comparison-icon {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-    }
-    .comparison-label {
-      font-family: var(--font-accent);
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-    .comparison-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.875rem;
-    }
-    .comparison-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      font-size: 0.9rem;
-      color: var(--white-70);
-    }
-    .comparison-list .icon {
-      flex-shrink: 0;
-      margin-top: 1px;
-      font-size: 0.875rem;
-    }
-    .before .icon { color: rgba(255,100,100,0.8); }
-    .after  .icon { color: var(--red); }
-
-    /* --- CTA Gradient band --- */
     .cta-band {
       background: linear-gradient(135deg, rgba(255,46,46,0.1) 0%, rgba(255,106,0,0.07) 50%, rgba(255,46,46,0.05) 100%);
-      border: 1px solid rgba(255,46,46,0.15);
+      border: none;
       border-radius: var(--radius-xl);
       padding: 5rem 3rem;
-      text-align: center;
+      text-align: center !important;
       position: relative;
       overflow: hidden;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
-    /* Grid pattern */
+    .cta-band > div {
+      width: 100% !important;
+      text-align: center !important;
+    }
+    #cta { padding-bottom: 0; }
+    #footer-placeholder { padding-top: 0; }
+
     .cta-band::before {
       content: '';
       position: absolute;
@@ -900,8 +799,147 @@
       .charts-grid { grid-template-columns: 1fr 1fr; }
       .services-4-grid { gap: 1rem; }
     }
+    .comparison-grid {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+      gap: clamp(1.5rem, 3vw, 2.75rem) !important;
+      max-width: 1120px !important;
+      margin: 0 auto !important;
+      align-items: stretch !important;
+      justify-content: center !important;
+      position: relative;
+    }
+    .comparison-col {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: clamp(1.5rem, 2.5vw, 2rem);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: relative;
+    }
+    .comparison-col.before {
+      border-color: rgba(255,255,255,0.10);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.018)),
+        rgba(255,255,255,0.02);
+    }
+    .comparison-col.after {
+      border-color: rgba(255,46,46,0.24);
+      background:
+        radial-gradient(circle at 90% 0%, rgba(255,46,46,0.16), transparent 34%),
+        linear-gradient(180deg, rgba(255,46,46,0.075), rgba(255,106,0,0.026)),
+        rgba(255,255,255,0.025);
+    }
+    .comparison-header {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      padding-bottom: 1.1rem;
+      margin-bottom: 1.1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .comparison-icon {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .comparison-label {
+      font-family: var(--font-title);
+      font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+    .comparison-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.85rem;
+      flex: 1;
+    }
+    .comparison-list li {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr);
+      gap: 0.75rem;
+      align-items: start;
+      color: var(--white-70);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.055);
+    }
+    .comparison-list li:last-child { border-bottom: 0; }
+    .comparison-list .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.5;
+    }
+    .comparison-list.before .icon { color: rgba(248,113,113,0.85); }
+    .comparison-list.after .icon { color: var(--red); }
+    .comparison-vs {
+      align-self: center;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-title);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      color: var(--white);
+      background: var(--grad-red);
+      box-shadow: 0 16px 42px rgba(255,46,46,0.28);
+      position: relative;
+      z-index: 2;
+    }
+    .comparison-vs::before,
+    .comparison-vs::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      width: 1px;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, rgba(255,46,46,0.35), transparent);
+      transform: translateX(-50%);
+      z-index: -1;
+    }
+    .comparison-vs::before { bottom: calc(100% + 0.75rem); }
+    .comparison-vs::after { top: calc(100% + 0.75rem); }
+    @media (max-width: 900px) {
+      .comparison-grid {
+        grid-template-columns: 1fr !important;
+        max-width: 620px !important;
+      }
+      .comparison-vs {
+        justify-self: center;
+        width: 46px;
+        height: 46px;
+        margin: -0.25rem 0;
+      }
+      .comparison-vs::before,
+      .comparison-vs::after {
+        width: 110px;
+        height: 1px;
+        top: 50%;
+        left: auto;
+        transform: translateY(-50%);
+        background: linear-gradient(to right, transparent, rgba(255,46,46,0.35), transparent);
+      }
+      .comparison-vs::before { right: calc(100% + 0.75rem); bottom: auto; }
+      .comparison-vs::after { left: calc(100% + 0.75rem); }
+    }
     @media (max-width: 768px) {
-      .comparison-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .comparison-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
       .comparison-col { padding: 1.75rem 1.25rem; }
       .trust-strip { flex-wrap: wrap; gap: 1rem; padding: 1rem; }
       .trust-item:not(:last-child)::after { display: none; }
@@ -924,7 +962,7 @@
     @media (max-width: 480px) {
       .radial-stats { grid-template-columns: repeat(2, 1fr); }
       .trust-strip { justify-content: center; }
-      .hero-slide-title { font-size: 1.5rem !important; line-height: 1.2; }
+      .hero-slide-title { font-size: 1.625rem !important; line-height: 1.15; }
       .slide-badge { font-size: 0.65rem; padding: 0.3rem 0.7rem; }
       #hero-slide-2 .s-anim.d5 { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; }
       /* Slide 3 stats — 2 colonnes sur très petit écran */
@@ -1012,14 +1050,13 @@
             <i class="fas fa-robot"></i> IA & Marketing Digital
           </div>
           <h1 class="hero-slide-title s-anim d2">
-            Boostez votre business<br>
-            avec <span class="gradient-text">l'Intelligence Artificielle</span>
+            <span class="gradient-text">L'IA</span> au service de votre<br>croissance.
           </h1>
           <p class="hero-slide-subtitle s-anim d3">
             Chatbots, campagnes IA, automatisation marketing… Nous utilisons les meilleurs outils IA — <strong style="color:var(--white);">ChatGPT, Make, n8n</strong> — pour attirer plus de clients et vendre davantage, en automatique.
           </p>
           <div class="hero-slide-actions s-anim d4">
-            <a href="contact.html" class="btn btn-primary">
+            <a href="audit.html" class="btn btn-primary">
               <i class="fas fa-rocket"></i> Audit gratuit 30 min
             </a>
             <a href="services.html" class="btn btn-glass">
@@ -1174,7 +1211,7 @@
           <div class="slide-badge s-anim d1" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.9);display:inline-flex;backdrop-filter:blur(8px);">
             <i class="fas fa-chart-line"></i> Consulting & Coaching Premium
           </div>
-          <h1 class="hero-slide-title s-anim d2" style="font-size:clamp(2rem,4vw,3.25rem);">
+          <h1 class="hero-slide-title s-anim d2">
             Stratégie, Audit &<br>
             <span style="background:linear-gradient(135deg,#fff 30%,#FF8C42 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Transformation Digitale</span>
           </h1>
@@ -1182,7 +1219,7 @@
             Audit complet de votre écosystème digital, stratégie IA sur mesure et coaching individuel. Nous vous guidons de <strong style="color:var(--white);">la vision à l'exécution</strong> avec des résultats mesurables dès le premier mois.
           </p>
           <div class="hero-slide-actions s-anim d4" style="justify-content:center;">
-            <a href="contact.html" class="btn btn-primary">
+            <a href="audit.html" class="btn btn-primary">
               <i class="fas fa-search"></i> Audit gratuit
             </a>
             <a href="service-consulting.html" class="btn btn-glass">
@@ -1276,7 +1313,7 @@
   <div class="container">
     <div class="text-center mb-lg reveal">
       <div class="section-label">Ce que nous faisons pour vous</div>
-      <h2 class="text-h2">Tout ce qu'il faut pour <span class="gradient-text">réussir en ligne</span></h2>
+      <h2 class="text-h1">Tout ce qu'il faut pour <span class="gradient-text">réussir en ligne</span></h2>
       <p style="color:var(--white-60);max-width:580px;margin:1rem auto 0;font-size:1rem;line-height:1.75;">
         Pas besoin de maîtriser la technique. On prend tout en charge — IA, apps, design, coaching — pour que votre business génère plus de revenus, automatiquement, pendant que vous faites ce que vous faites de mieux.
       </p>
@@ -1553,39 +1590,40 @@
 </section>
 
 <!-- ============================================================
-     3c. GALERIE PORTFOLIO PREVIEW
+     <!-- ============================================================
+     3c. GALERIE PORTFOLIO 3D
      ============================================================ -->
 <section class="portfolio-section section" id="portfolio" style="background:var(--black-2);">
   <div class="container">
     <div class="flex justify-between items-center mb-lg reveal" style="flex-wrap:wrap;gap:1rem;">
       <div>
-        <div class="section-label">Portfolio & Réalisations</div>
-        <h2 class="text-h1">Ce que nous avons <span class="gradient-text">créé</span></h2>
+        <div class="section-label">Portfolio & Realisations</div>
+        <h2 class="text-h1">Ce que nous avons <span class="gradient-text">cree</span></h2>
       </div>
       <a href="portfolio.html" class="btn btn-glass">Voir tout le portfolio <i class="fas fa-arrow-right"></i></a>
     </div>
 
     <!-- Filter bar -->
     <div class="portfolio-filter-bar reveal">
-      <button class="pf-btn active" data-filter="all" onclick="filterPortfolio('all',this)">Tout</button>
-      <button class="pf-btn" data-filter="web" onclick="filterPortfolio('web',this)">Sites Web</button>
-      <button class="pf-btn" data-filter="design" onclick="filterPortfolio('design',this)">Design & Branding</button>
-      <button class="pf-btn" data-filter="social" onclick="filterPortfolio('social',this)">Réseaux Sociaux</button>
-      <button class="pf-btn" data-filter="app" onclick="filterPortfolio('app',this)">Applications</button>
+      <button class="pf-btn active" data-filter="all" onclick="filterGallery('all',this)">Tout</button>
+      <button class="pf-btn" data-filter="web" onclick="filterGallery('web',this)">Sites Web</button>
+      <button class="pf-btn" data-filter="design" onclick="filterGallery('design',this)">Design & Branding</button>
+      <button class="pf-btn" data-filter="social" onclick="filterGallery('social',this)">Reseaux Sociaux</button>
+      <button class="pf-btn" data-filter="app" onclick="filterGallery('app',this)">Applications</button>
     </div>
 
-    <!-- Portfolio grid -->
-    <div class="portfolio-grid" id="portfolio-grid">
-      <!-- Chargement dynamique avec méthode Force Display -->
-      <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--white-30);">Initialisation des projets...</div>
-    </div>
-
-
-    <div class="text-center mt-lg reveal">
-      <a href="portfolio.html" class="btn btn-primary btn-lg">
-        <i class="fas fa-th-large"></i> Voir tout le portfolio
-      </a>
-      <p style="margin-top:0.75rem;font-size:0.8rem;color:var(--white-40);">+50 projets réalisés · Sites web, design, applications</p>
+    <!-- 3D Gallery -->
+    <div class="gallery-3d-wrap reveal" id="gallery-3d-wrap">
+      <div class="gallery-3d-stage" id="gallery-3d-stage">
+        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--white-30);font-family:var(--font-accent);font-size:0.9rem;">
+          <i class="fas fa-spinner fa-spin" style="margin-right:0.5rem;"></i>Chargement des projets...
+        </div>
+      </div>
+      <div class="gallery-scroll-hint" id="gallery-scroll-hint">
+        <span>Scrollez</span>
+        <i class="fas fa-arrow-right"></i>
+        <span>pour explorer</span>
+      </div>
     </div>
   </div>
 </section>
@@ -1666,7 +1704,7 @@
     </div>
 
     <div class="comparison-grid">
-      <div class="comparison-col before reveal delay-1">
+      <div class="comparison-col glass pack-card before reveal delay-1">
         <div class="comparison-header">
           <div class="comparison-icon" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);"><i class="fas fa-xmark" style="color:rgba(255,130,130,0.8);font-size:0.9rem;"></i></div>
           <div>
@@ -1684,7 +1722,9 @@
         </ul>
       </div>
 
-      <div class="comparison-col after reveal delay-2">
+      <div class="comparison-vs" aria-hidden="true">VS</div>
+
+      <div class="comparison-col glass pack-card after reveal delay-2">
         <div class="comparison-header">
           <div class="comparison-icon" style="background:rgba(255,46,46,0.12);border:1px solid rgba(255,46,46,0.2);"><i class="fas fa-rocket" style="color:var(--red);"></i></div>
           <div>
@@ -1732,7 +1772,7 @@
     </div>
 
     <div class="text-center mt-lg reveal">
-      <a href="packs.html" class="btn btn-outline btn-lg">Comparer tous les packs <i class="fas fa-arrow-right"></i></a>
+      <a href="pricing.html" class="btn btn-outline btn-lg">Comparer tous les packs <i class="fas fa-arrow-right"></i></a>
     </div>
   </div>
 </section>
@@ -1845,12 +1885,12 @@
         <span></span><span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span><span></span>
       </div>
-      <div style="position:relative;z-index:1;">
+      <div style="position:relative;z-index:1;text-align:center;">
         <div class="section-label" style="justify-content:center;">Passez à l'action</div>
-        <h2 class="text-display" style="margin:1rem 0 1.5rem;">
+        <h2 class="text-h1" style="margin:1rem 0 1.5rem;text-align:center;">
           Votre prochain client,<br>votre prochaine vente —<br><span class="gradient-text">l'IA peut les obtenir pour vous</span>
         </h2>
-        <p class="text-body-lg" style="max-width:560px;margin:0 auto 2.5rem;">
+        <p class="text-body-lg" style="max-width:560px;margin:0 auto 2.5rem;text-align:center;">
           50+ entreprises ont déjà fait le saut. L’audit est gratuit, sans engagement, et vous repartez avec un plan d’action concret — que vous travailliez avec nous ou non. Vous n’avez rien à perdre.
         </p>
         <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
@@ -1858,11 +1898,11 @@
             <i class="fas fa-rocket"></i>
             Lancer mon projet IA
           </a>
-          <a href="packs.html" class="btn btn-glass btn-lg">
+          <a href="pricing.html" class="btn btn-glass btn-lg">
             Voir les packs
           </a>
         </div>
-        <p style="margin-top:1.5rem;font-size:0.875rem;color:var(--white-40);">
+        <p style="margin-top:1.5rem;font-size:0.875rem;color:var(--white-40);text-align:center;">
           <i class="fas fa-check" style="color:var(--red);margin-right:0.25rem;"></i> Audit gratuit ·
           <i class="fas fa-check" style="color:var(--red);margin:0 0.25rem;"></i> Sans engagement ·
           <i class="fas fa-check" style="color:var(--red);margin:0 0.25rem;"></i> Résultats en 30 jours
@@ -1871,8 +1911,7 @@
     </div>
   </div>
 </section>
-
-<!-- FOOTER -->
+<div style="height:2px;background:linear-gradient(90deg,transparent 0%,rgba(255,46,46,0.6) 20%,rgba(255,106,0,0.8) 50%,rgba(255,46,46,0.6) 80%,transparent 100%);position:relative;box-shadow:0 0 15px rgba(255,106,0,0.3);"></div>
 <div id="footer-placeholder"></div>
 
 <!-- SCRIPTS -->
@@ -2246,85 +2285,313 @@ function resolveImageURL(path) {
   return `${SUPABASE_URL}/storage/v1/object/public/blog-images/${p}`;
 }
 
+/* -- 3D Circular Gallery -- */
+let galleryRotation = 0;
+let galleryIsScrolling = false;
+let galleryItems = [];
+let galleryFilter = 'all';
+
+function initCircularGallery(projects) {
+  const stage = document.getElementById('gallery-3d-stage');
+  if (!stage) return;
+
+  // Filter out duplicates and build gallery items
+  const seen = new Set();
+  const unique = [];
+  for (const p of projects) {
+    const id = p.id || p.title || Math.random();
+    if (seen.has(id)) continue;
+    seen.add(id);
+    unique.push(p);
+  }
+  const items = unique.slice(0, 12);
+  galleryItems = items;
+
+  if (!items.length) {
+    stage.innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--white-30);font-family:var(--font-accent);">Aucun projet.</div>';
+    return;
+  }
+
+  const anglePerItem = 360 / items.length;
+  const radius = Math.min(600, 350 + items.length * 20);
+  const baseW = 300;
+  const baseH = 400;
+
+  let html = '';
+  items.forEach((p, i) => {
+    const rawImg = p.image || p.image_url || p.cover_image || p.img || p.imageUrl || p.photo || p.cover || p.thumbnail;
+    const img = resolveImageURL(rawImg);
+    const title = p.title || p.name || 'Projet';
+    const cat = p.category || 'web';
+    const desc = p.description || p.subtitle || '';
+    const itemAngle = i * anglePerItem;
+
+    let filterCat = 'web';
+    const c = (cat || '').toLowerCase();
+    if (c.includes('design') || c.includes('brand')) filterCat = 'design';
+    else if (c.includes('ia') || c.includes('sol')) filterCat = 'ia';
+    else if (c.includes('app') || c.includes('mob')) filterCat = 'app';
+    else if (c.includes('soc') || c.includes('reseau')) filterCat = 'social';
+
+    html += `
+      <div class="gallery-item-3d" data-cat="${filterCat}" data-index="${i}"
+           style="left:calc(50% - 150px);top:calc(50% - 200px);transform:rotateY(${itemAngle}deg) translateZ(${radius}px);opacity:1;"
+           onclick="location.href='portfolio.html'">
+        <img src="${img}" alt="${title}" loading="eager"
+             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=800&fit=crop'">
+        <div class="card-overlay">
+          <h3>${title}</h3>
+          <em>${cat}</em>
+          <div class="photo-by">${desc || 'Solution sur mesure'}</div>
+        </div>
+      </div>`;
+  });
+
+  stage.innerHTML = html;
+
+  // Init rotation controller
+  initGalleryRotation(items.length, anglePerItem, radius);
+}
+
+function initGalleryRotation(itemCount, anglePerItem, radius) {
+  const stage = document.getElementById('gallery-3d-stage');
+  const wrap = document.getElementById('gallery-3d-wrap');
+  const hint = document.getElementById('gallery-scroll-hint');
+  if (!stage || !wrap) return;
+
+  let rafId = null;
+  let isDragging = false;
+  let lastX = 0;
+  let velocity = 0;
+  let currentRot = galleryRotation;
+  let targetRot = galleryRotation;
+  let lastStageRot = -999;
+
+  // Cache cards ONCE instead of querySelectorAll every frame
+  const cards = Array.from(stage.children).filter(function(el) {
+    return el.classList.contains('gallery-item-3d');
+  });
+  const angles = [];
+  for (var i = 0; i < cards.length; i++) {
+    var idx = parseInt(cards[i].dataset.index) || 0;
+    angles[i] = idx * anglePerItem;
+  }
+
+    // Cache last rendered values per card to avoid unnecessary DOM writes
+  var lastCardTransforms = new Array(cards.length).fill('');
+  var lastCardOpacities = new Array(cards.length).fill(-1);
+  var lastCardZIndices = new Array(cards.length).fill(-999);
+
+    // Cache last rendered values per card to avoid unnecessary DOM writes
+  var lastCardTransforms = new Array(cards.length).fill('');
+  var lastCardOpacities = new Array(cards.length).fill(-1);
+  var lastCardZIndices = new Array(cards.length).fill(-999);
+
+  function updateItems() {
+    var totalRot = currentRot % 360;
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      // Skip hidden cards (filtered out)
+      if (card.style.display === 'none') continue;
+
+      var itemAngle = angles[i];
+      var relativeAngle = ((itemAngle + totalRot) % 360 + 360) % 360;
+      var normalized = relativeAngle > 180 ? 360 - relativeAngle : relativeAngle;
+      var opacity = Math.max(0.2, 1 - (normalized / 180));
+      var zIndex = Math.round(100 - normalized);
+
+      // Only write transform when it actually changes
+      var newTransform = 'rotateY(' + itemAngle + 'deg) translateZ(' + radius + 'px)';
+      if (lastCardTransforms[i] !== newTransform) {
+        card.style.transform = newTransform;
+        lastCardTransforms[i] = newTransform;
+      }
+
+      // Only write opacity when it actually changes
+      var roundedOpacity = Math.round(opacity * 100) / 100;
+      if (Math.abs(lastCardOpacities[i] - roundedOpacity) > 0.01) {
+        card.style.opacity = roundedOpacity;
+        lastCardOpacities[i] = roundedOpacity;
+      }
+
+      // Only update pointerEvents/zIndex when crossing threshold
+      var newPointerEvents = opacity < 0.3 ? 'none' : '';
+      if (card.style.pointerEvents !== newPointerEvents) {
+        card.style.pointerEvents = newPointerEvents;
+      }
+      if (zIndex !== lastCardZIndices[i]) {
+        card.style.zIndex = zIndex;
+        lastCardZIndices[i] = zIndex;
+      }
+    }
+  }
+
+      function applyStageTransform() {
+    var stageRot = Math.round(currentRot * 10) / 10;
+    if (Math.abs(stageRot - lastStageRot) > 0.15) {
+      stage.style.transform = 'rotateY(' + (Math.round(currentRot * 10) / 10) + 'deg)';
+      lastStageRot = stageRot;
+    }
+  }
+
+  function autoRotate() {
+    if (!isDragging && !galleryIsScrolling) {
+      // Auto-rotation lente quand inactif
+      if (Math.abs(velocity) < 0.01) {
+        currentRot = (currentRot + 0.08) % 360;
+        targetRot = currentRot;
+      } else {
+        // Deceleration: velocity seule, pas de lerp (evite le double-smoothing)
+        targetRot = (targetRot + velocity) % 360;
+        velocity *= 0.94;
+        currentRot = targetRot;
+      }
+    }
+
+    // Pendant interaction directe : pas de lerp, reponse instantanee
+    if (isDragging || galleryIsScrolling) {
+      currentRot = targetRot;
+    }
+
+    galleryRotation = currentRot;
+    applyStageTransform();
+    updateItems();
+
+    if (Math.abs(velocity) > 0.001 || Math.abs(currentRot - targetRot) > 0.01 || isDragging) {
+      rafId = requestAnimationFrame(autoRotate);
+    } else {
+      rafId = null;
+    }
+  }
+
+  var scrollTimer = null;
+  function handleScroll() {
+    galleryIsScrolling = true;
+    var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    var progress = scrollable > 0 ? window.scrollY / scrollable : 0;
+    targetRot = progress * 360;
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function() { galleryIsScrolling = false; }, 150);
+    if (!rafId) {
+      rafId = requestAnimationFrame(autoRotate);
+    }
+  }
+
+  function onPointerDown(e) {
+    isDragging = true;
+    lastX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+    velocity = 0;
+    if (hint) hint.style.opacity = '0';
+    if (e.cancelable) e.preventDefault();
+  }
+  function onPointerMove(e) {
+    if (!isDragging) return;
+    var x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+    var delta = x - lastX;
+    lastX = x;
+    targetRot = (targetRot + delta * 0.3) % 360;
+    velocity = delta * 0.3;
+  }
+  function onPointerUp() {
+    isDragging = false;
+    if (rafId === null) {
+      rafId = requestAnimationFrame(autoRotate);
+    }
+  }
+      function onWheel(e) {
+    // Pas de preventDefault - le scroll de la page doit rester fluide
+    targetRot = (targetRot + e.deltaY * 0.1) % 360;
+    velocity = e.deltaY * 0.1;
+    if (rafId === null) {
+      rafId = requestAnimationFrame(autoRotate);
+    }
+  }
+
+  wrap.addEventListener('mousedown', onPointerDown);
+  window.addEventListener('mousemove', onPointerMove);
+  window.addEventListener('mouseup', onPointerUp);
+  wrap.addEventListener('touchstart', onPointerDown, { passive: false });
+  window.addEventListener('touchmove', onPointerMove, { passive: true });
+  window.addEventListener('touchend', onPointerUp);
+  wrap.addEventListener('wheel', onWheel, { passive: true });
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
+  // Hide hint after first interaction
+  function hideHint() { if (hint) hint.style.opacity = '0'; }
+  wrap.addEventListener('wheel', hideHint, { passive: true, once: true });
+  window.addEventListener('scroll', function() { if (window.scrollY > 100) hideHint(); }, { passive: true, once: true });
+  wrap.addEventListener('mousedown', hideHint, { once: true });
+
+  // Initial render (synchronous, no rAF needed)
+  currentRot = galleryRotation;
+  targetRot = galleryRotation;
+  updateItems();
+  applyStageTransform();
+
+  // Pause/resume animation when gallery enters/leaves viewport
+  var galleryObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        if (rafId === null) {
+          rafId = requestAnimationFrame(autoRotate);
+        }
+      } else {
+        if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+      }
+    });
+  }, { threshold: 0 });
+  galleryObserver.observe(wrap);
+
+  rafId = requestAnimationFrame(autoRotate);
+
+  window._galleryCleanup = function() {
+    if (rafId !== null) cancelAnimationFrame(rafId);
+    rafId = null;
+    galleryObserver.disconnect();
+  };
+
+  window.addEventListener('beforeunload', window._galleryCleanup);
+}
+
+/* -- Gallery Filter -- */
+function filterGallery(cat, btn) {
+  galleryFilter = cat;
+  document.querySelectorAll('.pf-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+
+  document.querySelectorAll('.gallery-item-3d').forEach(function(card) {
+    const itemCat = card.dataset.cat;
+    if (cat === 'all' || itemCat === cat) {
+      card.style.display = '';
+      card.style.visibility = 'visible';
+    } else {
+      card.style.display = 'none';
+      card.style.visibility = 'hidden';
+    }
+  });
+}
+
+/* -- Load Portfolio Preview (3D version) -- */
 async function loadPortfolioPreview() {
-  const grid = document.getElementById('portfolio-grid');
-  if (!grid) return;
+  const stage = document.getElementById('gallery-3d-stage');
+  if (!stage) return;
 
   try {
-    // On demande 7 projets pour le nouveau design cascade pro
-    const res = await fetch('tables/portfolio_projects?order=sort_order.asc,id.desc&limit=7');
+    const res = await fetch('tables/portfolio_projects?order=sort_order.asc,id.desc&limit=12');
     const data = await res.json();
-    
     let projects = data.data || [];
-    
+
     if (!projects.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--white-30);">Aucun projet en base.</div>';
+      stage.innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--white-30);font-family:var(--font-accent);">Aucun projet en base.</div>';
       return;
     }
 
-    grid.innerHTML = projects.map((p, i) => {
-      const rawImg = p.image || p.image_url || p.cover_image || p.img || p.imageUrl || p.photo || p.cover || p.thumbnail;
-      const img = resolveImageURL(rawImg);
-      const title = p.title || p.name || 'Projet';
-      const cat = p.category || 'Innovation';
-      const desc = p.description || 'Solution sur mesure';
-      
-      // DESIGN CASCADE PRO : 
-      // - Le 1er est large (span 2, occupe gauche/milieu ligne 1)
-      // - Le 7ème est large (span 2, occupera milieu/droite ligne 3 via grid-auto-flow:dense)
-      const isLarge = (i === 0 || i === 6) ? 'large' : '';
-      
-      let filterCat = 'web';
-      const c = cat.toLowerCase();
-      if (c.includes('design') || c.includes('brand')) filterCat = 'design';
-      else if (c.includes('ia') || c.includes('sol')) filterCat = 'ia';
-      else if (c.includes('app') || c.includes('mob')) filterCat = 'app';
-      else if (c.includes('soc')) filterCat = 'social';
-
-      return `
-        <div class="portfolio-item ${isLarge} reveal delay-${i+1}" data-cat="${filterCat}" onclick="location.href='portfolio.html'" style="opacity:1 !important; visibility:visible !important;">
-          <img src="${img}" alt="${title}" class="portfolio-img" loading="eager" 
-               onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600'">
-          <div class="portfolio-overlay-always">
-            <div class="pf-cat-badge">${cat}</div>
-            <div class="pf-title">${title}</div>
-            <div class="pf-sub">${desc}</div>
-          </div>
-          <div class="portfolio-overlay">
-            <div class="pf-cat-badge">${cat}</div>
-            <div class="pf-title">${title}</div>
-            <div class="pf-sub">Voir le détail <i class="fas fa-arrow-right"></i></div>
-          </div>
-          <div class="pf-hover-icon"><i class="fas fa-expand"></i></div>
-        </div>
-      `;
-    }).join('');
-
-    // Re-trigger scroll reveal pour les nouveaux éléments
-    if (window.reObserveReveals) window.reObserveReveals();
+    initCircularGallery(projects);
 
   } catch (err) {
-    console.warn('Portfolio preview failed:', err);
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--white-30);">Erreur de chargement.</div>';
+    console.warn('3D Gallery load failed:', err);
+    stage.innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--white-30);font-family:var(--font-accent);">Erreur de chargement.</div>';
   }
-}
-
-function filterPortfolio(cat, btn) {
-  // Update buttons
-  document.querySelectorAll('.pf-btn').forEach(b => b.classList.remove('active'));
-  btn?.classList.add('active');
-
-  // Filter items
-  document.querySelectorAll('.portfolio-item').forEach(item => {
-    const itemCat = item.dataset.cat;
-    if (cat === 'all' || itemCat === cat) {
-      item.style.display = '';
-      item.style.opacity = '1';
-    } else {
-      item.style.opacity = '0';
-      item.style.display = 'none';
-    }
-  });
 }
 
 /* ============================================================

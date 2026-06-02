@@ -63,6 +63,11 @@ async function fetchPublishedPosts() {
    ============================================================ */
 async function generateStaticPost(post) {
   try {
+    const slug = post.slug || post.title.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '') || `article-${post.id || Date.now()}`;
+    post = { ...post, slug };
     const dom = new JSDOM(templateContent);
     const document = dom.window.document;
 
@@ -79,12 +84,12 @@ async function generateStaticPost(post) {
     // ── Fix canonical URL to point to static page ──
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) {
-      canonicalLink.setAttribute('href', `https://www.hozanaconcept.com/blog-posts/${post.slug}`);
+      canonicalLink.setAttribute('href', `https://www.hozanaconcept.com/blog-posts/${slug}.html`);
     }
     // Also fix og:url
     const ogUrl = document.querySelector('meta[property="og:url"]');
     if (ogUrl) {
-      ogUrl.setAttribute('content', `https://www.hozanaconcept.com/blog-posts/${post.slug}`);
+      ogUrl.setAttribute('content', `https://www.hozanaconcept.com/blog-posts/${slug}.html`);
     }
 
     // ── Update content ──
@@ -213,10 +218,6 @@ window.__STATIC_BLOG_DATA__ = {
     document.head.appendChild(staticDataScript);
 
     // ── Generate filename ──
-    const slug = post.slug || post.title.toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
     const filename = `${slug}.html`;
     const filepath = path.join(OUTPUT_DIR, filename);
 
@@ -245,9 +246,9 @@ function generateSitemap(posts) {
   const mainPages = [
     { loc: 'https://www.hozanaconcept.com/', priority: '1.0', changefreq: 'weekly' },
     { loc: 'https://www.hozanaconcept.com/blog', priority: '0.9', changefreq: 'daily' },
-    { loc: 'https://www.hozanaconcept.com/services', priority: '0.8', changefreq: 'monthly' },
+    { loc: 'https://www.hozanaconcept.com/platform', priority: '0.8', changefreq: 'monthly' },
     { loc: 'https://www.hozanaconcept.com/portfolio', priority: '0.8', changefreq: 'monthly' },
-    { loc: 'https://www.hozanaconcept.com/packs', priority: '0.8', changefreq: 'monthly' },
+    { loc: 'https://www.hozanaconcept.com/pricing', priority: '0.8', changefreq: 'monthly' },
     { loc: 'https://www.hozanaconcept.com/contact', priority: '0.7', changefreq: 'monthly' },
   ];
 
@@ -265,7 +266,7 @@ function generateSitemap(posts) {
     if (post && post.filename) {
       const slug = post.filename.replace('.html', '');
       sitemap += `  <url>
-    <loc>${baseUrl}${slug}</loc>
+    <loc>${baseUrl}${slug}.html</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

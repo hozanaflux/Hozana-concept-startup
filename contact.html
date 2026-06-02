@@ -79,16 +79,49 @@
       background: #1a1a1a;
       color: white;
     }
+    @media (max-width: 1024px) {
+      .contact-layout { gap: 3rem; }
+    }
     @media (max-width: 768px) {
-      .contact-layout { grid-template-columns: 1fr; gap: 2rem; }
+      .contact-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      .contact-hero { padding: calc(var(--nav-height) + 2.5rem) 1.25rem 3rem; }
+      .contact-hero h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); }
       .map-section { padding: 3rem 1.25rem; }
-      .map-overlay-card { position: relative; bottom: auto; left: auto; margin-top: 1rem; border-radius: var(--radius-lg); }
-      .contact-info-list { gap: 1rem; }
+      .map-overlay-card { position: relative; bottom: auto; left: auto; margin: 1rem 1rem auto; border-radius: var(--radius-lg); max-width: none; }
       .map-wrapper { border-radius: 12px; }
+      .map-iframe { height: 280px; }
+      .faq-section { padding: 3rem 1.25rem; }
+      .faq-q { padding: 1rem 1.125rem; }
+      .faq-a-inner { padding: 0 1.125rem 1rem; }
+      .faq-list { gap: 0.75rem; }
+      .contact-info-item { padding: 1rem; }
+      #form-container > .glass-heavy { padding: 1.5rem !important; }
+      .success-screen { padding: 1.5rem; }
     }
     @media (max-width: 480px) {
-      .contact-layout { padding: 0; }
-      .form-row { flex-direction: column; }
+      .contact-layout { padding: 0; gap: 2rem; }
+      .contact-hero { padding: calc(var(--nav-height) + 2rem) 1rem 2.5rem; }
+      .contact-info-item { flex-direction: column; align-items: center; text-align: center; }
+      .map-section { padding: 2rem 1rem; }
+      .map-iframe { height: 220px; }
+      .map-overlay-card { margin: 0.75rem; padding: 1rem; }
+      .map-overlay-card .map-overlay-title { font-size: 0.9rem; }
+      .map-overlay-card .map-overlay-item { font-size: 0.75rem; }
+      .faq-section { padding: 2rem 1rem; }
+      .faq-q { padding: 0.875rem 1rem; gap: 0.75rem; }
+      .faq-q-text { font-size: 0.85rem; }
+      .faq-a-inner { padding: 0 1rem 0.875rem; font-size: 0.82rem; }
+      .faq-icon { width: 24px; height: 24px; font-size: 0.65rem; }
+      #form-container > .glass-heavy { padding: 1.25rem !important; }
+      #form-container h2 { font-size: 1.25rem; }
+      .contact-info-item .contact-icon { width: 40px; height: 40px; font-size: 0.95rem; }
+      .section-label { font-size: 0.65rem; }
+      .faq-list .reveal + .reveal:last-child { margin-bottom: 0; }
+    }
+    @media (max-width: 380px) {
+      .map-iframe { height: 180px; }
+      .contact-hero h1 { font-size: 1.375rem; }
+      .container { padding-left: 0.75rem; padding-right: 0.75rem; }
     }
 
     /* === MAP === */
@@ -237,7 +270,7 @@
 
       <!-- Left: Info -->
       <div>
-        <h2 class="text-h2 reveal" style="margin-bottom:2rem;">Plusieurs façons de <span class="gradient-text">nous joindre</span></h2>
+        <h2 class="text-h1 reveal" style="margin-bottom:2rem;">Plusieurs façons de <span class="gradient-text">nous joindre</span></h2>
 
         <div class="reveal delay-1">
           <div class="contact-info-item">
@@ -300,7 +333,7 @@
       <!-- Right: Form -->
       <div class="reveal-right">
         <div class="glass-heavy" style="padding:2.5rem;border-radius:var(--radius-xl);" id="form-container">
-          <h2 class="text-h2" style="margin-bottom:0.5rem;">Demande de <span class="gradient-text">contact</span></h2>
+          <h2 class="text-h1" style="margin-bottom:0.5rem;">Demande de <span class="gradient-text">contact</span></h2>
           <p style="font-size:0.875rem;color:var(--white-50);margin-bottom:2rem;">Tous les champs * sont obligatoires.</p>
 
           <form id="contact-form" onsubmit="submitContact(event)" novalidate>
@@ -392,7 +425,7 @@
   <div class="container">
     <div class="text-center mb-lg reveal">
       <div class="section-label">Global Presence</div>
-      <h2 class="text-h2"><span class="gradient-text">Worldwide</span> Reach, Active Everywhere</h2>
+      <h2 class="text-h1"><span class="gradient-text">Worldwide</span> Reach, Active Everywhere</h2>
       <p style="color:var(--white-60);margin-top:0.75rem;max-width:500px;margin-left:auto;margin-right:auto;">
         Operating as a decentralized AI Platform. We serve clients worldwide through our high-performance cloud infrastructure.
       </p>
@@ -430,7 +463,7 @@
   <div class="container">
     <div class="text-center mb-lg reveal">
       <div class="section-label">Questions fréquentes</div>
-      <h2 class="text-h2">Tout ce que vous voulez <span class="gradient-text">savoir</span></h2>
+      <h2 class="text-h1">Tout ce que vous voulez <span class="gradient-text">savoir</span></h2>
       <p style="color:var(--white-60);margin-top:0.75rem;max-width:520px;margin-left:auto;margin-right:auto;">
         Pas encore convaincu ? Voici les réponses aux questions que nos clients posent le plus souvent avant de démarrer.
       </p>

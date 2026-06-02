@@ -221,6 +221,42 @@ VALUES
 ON CONFLICT DO NOTHING;
 
 -- ============================================================
+-- TABLE : audits (Audit IA gratuit — réponses formulaire)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS audits (
+  id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name            TEXT,
+  email           TEXT,
+  phone           TEXT,
+  company         TEXT,
+  sector          TEXT,
+  maturity        TEXT,
+  tools           TEXT,
+  reach           TEXT,
+  top_challenge   TEXT,
+  manual_processes TEXT,
+  ia_usage        TEXT,
+  repetitive_hours TEXT,
+  main_goal       TEXT,
+  competition     TEXT,
+  budget          TEXT,
+  message         TEXT,
+  maturity_score  INTEGER DEFAULT 0,
+  source          TEXT DEFAULT 'audit_page',
+  status          TEXT DEFAULT 'new',
+  audit_notes     TEXT,
+  created_at      TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at      TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+ALTER TABLE audits ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "anon_all" ON audits;
+CREATE POLICY "anon_all" ON audits FOR ALL TO anon USING (true) WITH CHECK (true);
+
+CREATE INDEX IF NOT EXISTS idx_audits_created ON audits (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_audits_status  ON audits (status);
+
+-- ============================================================
 -- INDEXES (performance)
 -- ============================================================
 CREATE INDEX IF NOT EXISTS idx_posts_published ON blog_posts (published);

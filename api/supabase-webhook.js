@@ -9,6 +9,8 @@ const { execSync } = require('child_process');
 
 // Optional: set WEBHOOK_SECRET env var in Vercel to secure the endpoint
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || null;
+const isVercelRuntime = !!process.env.VERCEL;
+const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
 
 module.exports = async (req, res) => {
   // ── CORS ──
@@ -69,6 +71,30 @@ module.exports = async (req, res) => {
 
     // ── Run the static blog generator ──
     console.log('[Supabase Webhook] Starting static blog generation...');
+
+    if (isVercelRuntime) {
+      if (!deployHookUrl) {
+        return res.status(202).json({
+          success: false,
+          mode: 'vercel-runtime',
+          event,
+          error: 'Génération statique non persistante sur Vercel',
+          message: 'Configure VERCEL_DEPLOY_HOOK_URL pour déclencher un build après publication.'
+        });
+      }
+
+      const hookResponse = await fetch(deployHookUrl, { method: 'POST' });
+      if (!hookResponse.ok) {
+        throw new Error(`Deploy hook failed: ${hookResponse.status} ${hookResponse.statusText}`);
+      }
+
+      return res.status(202).json({
+        success: true,
+        mode: 'deploy-hook',
+        event,
+        message: 'Webhook reçu. Nouveau build Vercel déclenché pour publier les pages statiques.'
+      });
+    }
 
     const generatorPath = path.join(process.cwd(), 'js', 'generate-static-blog.js');
     const output = execSync(`node "${generatorPath}"`, {

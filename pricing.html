@@ -496,7 +496,7 @@
           ${features.map(f => `<li>${f}</li>`).join('')}
           ${excluded.map(f => `<li class="excluded">${f}</li>`).join('')}
         </ul>
-        <a href="${p.price === 'Sur Devis' ? '/contact?pack=' + encodeURIComponent(p.name) : '/pack-detail?pack=' + encodeURIComponent(p.name)}" class="btn ${isFeatured ? 'btn-primary' : 'btn-glass'} w-full mt-lg" style="justify-content:center;">
+        <a href="${p.price === 'Sur Devis' ? '/contact?pack=' + encodeURIComponent(p.name) : 'pack-detail.html?pack=' + encodeURIComponent(p.name)}" class="btn ${isFeatured ? 'btn-primary' : 'btn-glass'} w-full mt-lg" style="justify-content:center;">
           ${p.price === 'Sur Devis' ? 'Discutons de votre projet →' : 'Choisir ce pack →'}
         </a>
       </div>`;

@@ -7,6 +7,9 @@
 const path = require('path');
 const { execSync } = require('child_process');
 
+const isVercelRuntime = !!process.env.VERCEL;
+const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
+
 module.exports = async (req, res) => {
   // ── CORS ──
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -24,6 +27,28 @@ module.exports = async (req, res) => {
   console.log('[Regenerate Blog] Starting static blog generation...');
 
   try {
+    if (isVercelRuntime) {
+      if (!deployHookUrl) {
+        return res.status(202).json({
+          success: false,
+          mode: 'vercel-runtime',
+          error: 'Génération statique non persistante sur Vercel',
+          message: 'Ajoute VERCEL_DEPLOY_HOOK_URL dans les variables Vercel. Après publication, l’admin déclenchera un nouveau build qui générera les pages statiques durablement.'
+        });
+      }
+
+      const hookResponse = await fetch(deployHookUrl, { method: 'POST' });
+      if (!hookResponse.ok) {
+        throw new Error(`Deploy hook failed: ${hookResponse.status} ${hookResponse.statusText}`);
+      }
+
+      return res.status(202).json({
+        success: true,
+        mode: 'deploy-hook',
+        message: 'Publication enregistrée. Nouveau build Vercel déclenché pour générer les pages statiques SEO.'
+      });
+    }
+
     const generatorPath = path.join(process.cwd(), 'js', 'generate-static-blog.js');
 
     // Run the generator script

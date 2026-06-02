@@ -73,7 +73,7 @@ function renderNavbar() {
     { href: R_ + 'pricing.html',  label: 'Formules' },
     { href: R_ + 'blog.html',     label: 'Actualités' },
     { href: R_ + 'company.html',  label: 'À Propos' },
-    { href: R_ + 'contact.html',  label: 'Nous Contacter' },
+    { href: R_ + 'contact.html',  label: 'Contact' },
   ];
 
   // Dropdown Services item — liens vers les pages dédiées
@@ -93,7 +93,7 @@ function renderNavbar() {
   const servicesDropdown = `
     <li class="nav-dropdown-wrap" id="nav-services-wrap">
       <span class="nav-dropdown-trigger ${isServicesActive ? 'active' : ''}" id="nav-services-trigger" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
-        Nos Services <i class="fas fa-chevron-down dd-chevron"></i>
+        Service <i class="fas fa-chevron-down dd-chevron"></i>
       </span>
       <div class="nav-dropdown-panel" id="nav-services-panel" role="menu">
         <div class="dd-header">
@@ -120,7 +120,7 @@ function renderNavbar() {
     `<li><a href="${R_}index.html" ${currentPage==='index'||currentPage===''?'class="active"':''} onclick="closeMobileMenu()">Accueil</a></li>`,
     `<li>
       <div class="mobile-dd-toggle" onclick="toggleMobileServicesDd(this)">
-        <span class="${isServicesActive ? 'active' : ''}">Nos Services</span>
+        <span class="${isServicesActive ? 'active' : ''}">Service</span>
         <i class="fas fa-chevron-down" style="font-size:0.7rem;opacity:0.5;transition:transform 0.25s;"></i>
       </div>
       <div class="mobile-dd-list" id="mobile-services-list">${mobileDdItems}</div>
@@ -325,8 +325,6 @@ function renderFooter() {
   const year = new Date().getFullYear();
   const html = `
   <footer class="footer-premium" id="site-footer">
-    <!-- Top decorative line -->
-    <div class="footer-top-glow"></div>
 
     <!-- Main grid -->
     <div class="footer-main">
@@ -380,7 +378,7 @@ function renderFooter() {
               <li><a href="${root()}blog.html">Blog et Perspectives</a></li>
               <li><a href="${root()}pricing.html">Plans Tarifaires</a></li>
               <li><a href="${root()}company.html">Vision de l'Entreprise</a></li>
-              <li><a href="${root()}contact.html">Nous Contacter</a></li>
+              <li><a href="${root()}contact.html">Contact</a></li>
               <li><a href="${root()}pricing.html#enterprise">Démo Entreprise</a></li>
             </ul>
           </div>
@@ -431,7 +429,7 @@ function renderFooter() {
       <div class="container">
         <div class="newsletter-strip-inner reveal">
           <div class="newsletter-strip-text">
-            <h3>📬 Recevez nos perspectives IA chaque semaine</h3>
+            <h3>Recevez nos perspectives IA chaque semaine</h3>
             <p>Rejoignez +1 200 entrepreneurs abonnés à notre newsletter.</p>
           </div>
           <form class="newsletter-strip-form" onsubmit="footerSubscribe(event)">
