@@ -1315,7 +1315,7 @@ function renderFeaturedCard(post) {
   const date = formatDate(post.publish_date || post.created_at);
   const initials = (post.author || 'HC').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
   const img = post.cover_image || post.image_url || post.image || 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1200&q=80';
-  const link = post.slug ? `blog-posts/${post.slug}.html` : `blog-posts/${post.id}.html`;
+  const link = `article.html?id=${post.id}`;
 
   return `
   <a href="${link}" class="blog-featured-card reveal visible" style="text-decoration:none;">
@@ -1357,7 +1357,7 @@ function renderArticleCard(post) {
   const initials = (post.author || 'HC').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
   const img = post.cover_image || post.image_url || post.image || 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=70';
   const query = (document.getElementById('search-input')?.value || '').trim();
-  const link = post.slug ? `blog-posts/${post.slug}.html` : `blog-posts/${post.id}.html`;
+  const link = `article.html?id=${post.id}`;
 
   return `
   <a href="${link}" class="article-card reveal visible">
@@ -1403,7 +1403,7 @@ function renderPopularSidebar() {
   if (!popular.length) { list.innerHTML = ''; return; }
 
   list.innerHTML = popular.map((p, i) => {
-    const link = p.slug ? `blog-posts/${p.slug}.html` : `blog-posts/${p.id}.html`;
+    const link = `article.html?id=${p.id}`;
     return `
     <li>
       <a href="${link}" class="popular-item">

@@ -844,6 +844,16 @@ select.form-ctrl option { background: #1a1a22; }
             </div>
           </div>
           <div class="setting-card">
+            <h3><i class="fas fa-file-export" style="color:#22c55e"></i> Génération statique</h3>
+            <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">
+              Les articles sont affichés dynamiquement via Supabase. <br>Pour le SEO, vous pouvez générer des fichiers HTML statiques dans <code style="color:var(--red);">blog-posts/</code>.
+            </p>
+            <button class="btn btn-primary btn-sm" onclick="regenerateBlog()" id="btn-regenerate">
+              <i class="fas fa-sync-alt"></i> Régénérer tous les articles statiques
+            </button>
+            <div id="regenerate-status" style="margin-top:.5rem;font-size:.75rem;color:var(--muted);"></div>
+          </div>
+          <div class="setting-card">
             <h3><i class="fas fa-database" style="color:#3b82f6"></i> Base de données</h3>
             <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">
               Projet Supabase : <code style="color:var(--red);">leadvqrheziyvrwnbiio</code><br>
@@ -1894,6 +1904,33 @@ async function delLead(id) {
   LEADS=LEADS.filter(l=>l.id!==id);
   renderLeads(); renderDashLeads(); updateBadges(); renderKPIs();
   toast('Lead supprimé','ok');
+}
+
+/* ─── REGENERATE STATIC BLOG ─── */
+async function regenerateBlog() {
+  const btn = document.getElementById('btn-regenerate');
+  const status = document.getElementById('regenerate-status');
+  if (!btn || !status) return;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération en cours…';
+  status.innerHTML = '<span style="color:var(--orange);">Appel API en cours…</span>';
+  try {
+    const res = await fetch('/api/regenerate-blog', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      status.innerHTML = `<span style="color:#4ade80;">✅ ${data.message || 'Blog régénéré avec succès'}</span>`;
+      toast('Blog régénéré ✓','ok');
+    } else {
+      status.innerHTML = `<span style="color:var(--red);">❌ ${data.message || 'Erreur'}</span>`;
+      toast('Erreur régénération','err');
+    }
+  } catch (e) {
+    status.innerHTML = `<span style="color:var(--red);">❌ Erreur : ${e.message}</span>`;
+    toast('Erreur réseau','err');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-sync-alt"></i> Régénérer tous les articles statiques';
+  }
 }
 
 /* ─── PACKS ─── */
