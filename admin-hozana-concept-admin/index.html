@@ -11,6 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
   <script src="../js/supabase-config.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -371,9 +372,9 @@ select.form-ctrl option { background: #1a1a22; }
 .ql-toolbar .ql-picker-item:hover { color: var(--red) !important; }
 .ql-editor { min-height: 300px; font-size: 0.95rem; line-height: 1.8; color: var(--text); }
 .ql-editor.ql-blank::before { color: var(--muted2) !important; font-style: normal !important; }
-.ql-editor h1 { font-family: var(--font-title); font-size: 1.6rem; font-weight: 800; color: var(--text); }
-.ql-editor h2 { font-family: var(--font-title); font-size: 1.3rem; font-weight: 700; color: var(--text); }
-.ql-editor h3 { font-family: var(--font-title); font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.ql-editor h1 { font-family: var(--font-title); font-size: 1.6rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; }
+.ql-editor h2 { font-family: var(--font-title); font-size: 1.3rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+.ql-editor h3 { font-family: var(--font-title); font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
 .ql-editor p { margin-bottom: 0.5rem; }
 .ql-editor blockquote { border-left: 3px solid var(--red); padding-left: 1rem; color: var(--muted); font-style: italic; }
 .ql-editor pre.ql-syntax { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; color: #FF9090; font-size: 0.8rem; }
@@ -382,6 +383,29 @@ select.form-ctrl option { background: #1a1a22; }
 .ql-editor ul, .ql-editor ol { padding-left: 1.5rem; }
 .ql-editor li { margin-bottom: 0.25rem; }
 #quill-editor .ql-editor { padding: 1rem; }
+
+/* ── QUILL IMAGE RESIZE HANDLES ── */
+.ql-editor img { transition: filter 0.15s ease; }
+.ql-editor img[src] { cursor: default; }
+.image-resize-handle {
+  background: var(--red) !important;
+  border: 2px solid #fff !important;
+  border-radius: 50% !important;
+  width: 10px !important;
+  height: 10px !important;
+  box-shadow: 0 0 6px rgba(0,0,0,0.5);
+}
+.image-resize-handle::after {
+  display: none;
+}
+.image-resize-handle-nw { cursor: nw-resize !important; }
+.image-resize-handle-ne { cursor: ne-resize !important; }
+.image-resize-handle-sw { cursor: sw-resize !important; }
+.image-resize-handle-se { cursor: se-resize !important; }
+/* Image overlay during resize */
+.image-resize-overlay {
+  background: rgba(0,0,0,0.3) !important;
+}
 </style>
 </head>
 <body>
@@ -1032,33 +1056,6 @@ select.form-ctrl option { background: #1a1a22; }
         </div>
         <div class="form-grp full">
           <label class="form-label">Contenu éditeur visuel *</label>
-          <div id="quill-toolbar">
-            <span class="ql-formats">
-              <select class="ql-header"><option value="1">Titre 1</option><option value="2">Titre 2</option><option value="3">Titre 3</option><option value="false">Normal</option></select>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-bold"></button>
-              <button class="ql-italic"></button>
-              <button class="ql-underline"></button>
-              <button class="ql-strike"></button>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-list" value="ordered"></button>
-              <button class="ql-list" value="bullet"></button>
-            </span>
-            <span class="ql-formats">
-              <select class="ql-align"></select>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-link"></button>
-              <button class="ql-image"></button>
-              <button class="ql-code-block"></button>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-blockquote"></button>
-              <button class="ql-clean"></button>
-            </span>
-          </div>
           <div id="quill-editor" style="min-height:300px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:0.95rem;line-height:1.7;"></div>
           <textarea id="a-content" style="display:none;"></textarea>
         </div>
@@ -1592,10 +1589,24 @@ let quillEditor = null;
 function initQuill() {
   const container = document.getElementById('quill-editor');
   if (!container || quillEditor) return;
+  
+  // Register ImageResize module
+  if (typeof ImageResize !== 'undefined') {
+    Quill.register('modules/imageResize', ImageResize);
+  }
+  
   quillEditor = new Quill(container, {
     theme: 'snow',
     modules: {
-      toolbar: '#quill-toolbar'
+      toolbar: [
+        [{ header: [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        [{ align: [] }],
+        ['link', 'image', 'code-block'],
+        ['blockquote', 'clean']
+      ],
+      imageResize: {}
     },
     placeholder: 'Rédigez votre article ici…'
   });

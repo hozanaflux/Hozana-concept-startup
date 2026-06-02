@@ -83,6 +83,17 @@
       line-height: 1.85;
       color: var(--white-80);
     }
+    .article-body h1 {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--white);
+      margin: 3.5rem 0 1.25rem;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      padding-top: 0.5rem;
+      border-top: 2px solid var(--glass-border);
+    }
     .article-body h2 {
       font-family: var(--font-title);
       font-size: 1.65rem;
@@ -101,7 +112,7 @@
       color: var(--white);
       margin: 2.25rem 0 0.875rem;
     }
-    .article-body p { margin-bottom: 1.5rem; }
+    .article-body p { margin-bottom: 1.5rem; line-height: 1.85; }
     .article-body a {
       color: var(--red-light);
       text-decoration: underline;
@@ -140,6 +151,7 @@
       flex-direction: column;
       gap: 0.5rem;
     }
+    .article-body li { margin-bottom: 0.25rem; }
     .article-body li::marker {
       color: var(--red);
     }
@@ -168,9 +180,11 @@
       font-size: 0.875rem;
     }
     .article-body img {
-      width: 100%;
+      max-width: 100%;
+      height: auto;
       border-radius: var(--radius-md);
       margin: 1.5rem 0;
+      display: block;
     }
     .article-body strong { color: var(--white); font-weight: 700; }
     .article-body hr {
