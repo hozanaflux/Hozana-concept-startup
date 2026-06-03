@@ -7,76 +7,85 @@
 
 // Supabase configuration (needed for resolveImageURL in Node.js context)
 const SUPABASE_URL = 'https://leadvqrheziyvrwnbiio.supabase.co';
+const SITE_URL = 'https://www.hozanaconcept.com';
+const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1200&q=80';
+const LOGO_URL = `${SITE_URL}/images/logo-main.png`;
 
 /* ============================================================
    SCHEMA MARKUP GENERATION
    ============================================================ */
 function generateSchemaMarkup(post) {
-  const date = new Date(post.publish_date || post.created_at).toISOString();
+  const date = safeIsoDate(post.publish_date || post.created_at || post.updated_at);
+  const modified = safeIsoDate(post.updated_at || post.publish_date || post.created_at);
   const author = post.author || 'Hozana Concept';
-  const initials = author.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  const slug = post.slug || post.id;
+  const canonicalUrl = `${SITE_URL}/blog-posts/${slug}.html`;
+  const imageUrl = absoluteUrl(resolveImageURL(post.cover_image || post.image || post.img || post.thumbnail || post.cover));
+  const keywords = normalizeTags(post.tags);
+
+  const blogPosting = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title || '',
+    description: post.excerpt || '',
+    datePublished: date,
+    dateModified: modified,
+    inLanguage: 'fr-FR',
+    isAccessibleForFree: true,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonicalUrl
+    },
+    author: {
+      '@type': 'Person',
+      name: author
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Hozana Concept',
+      logo: {
+        '@type': 'ImageObject',
+        url: LOGO_URL,
+        width: 512,
+        height: 512
+      }
+    },
+    image: {
+      '@type': 'ImageObject',
+      url: imageUrl,
+      width: 1200,
+      height: 630
+    },
+    url: canonicalUrl
+  };
+
+  if (keywords.length) blogPosting.keywords = keywords.join(', ');
+  if (post.category) blogPosting.articleSection = post.category;
+
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [{
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Accueil',
+      item: SITE_URL
+    }, {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Blog',
+      item: `${SITE_URL}/blog`
+    }, {
+      '@type': 'ListItem',
+      position: 3,
+      name: post.title || '',
+      item: canonicalUrl
+    }]
+  };
 
   return `
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": "${escapeHtml(post.title)}",
-      "description": "${escapeHtml(post.excerpt || '')}",
-      "datePublished": "${date}",
-      "dateModified": "${date}",
-      "author": {
-        "@type": "Person",
-        "name": "${author}",
-        "image": {
-          "@type": "ImageObject",
-          "url": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=120&q=80",
-          "caption": "${author}"
-        }
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Hozana Concept",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=120&q=80",
-          "width": 120,
-          "height": 120
-        }
-      },
-      "image": {
-        "@type": "ImageObject",
-        "url": "${resolveImageURL(post.cover_image || post.image || post.img || post.thumbnail || post.cover)}",
-        "width": 1200,
-        "height": 630
-      },      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://www.hozanaconcept.com/blog-posts/${post.slug || post.id}.html"
-      }
-  }
-    </script>
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [{
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Accueil",
-        "item": "https://www.hozanaconcept.com"
-      },{
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Blog",
-        "item": "https://www.hozanaconcept.com/blog"
-      },{
-        "@type": "ListItem",
-        "position": 3,
-        "name": "${escapeHtml(post.title)}"
-      }]
-    }
-    </script>
+    <script type="application/ld+json">${jsonLd(blogPosting)}</script>
+    <script type="application/ld+json">${jsonLd(breadcrumb)}</script>
   `;
 }
 
@@ -84,58 +93,45 @@ function generateSchemaMarkup(post) {
    META TAGS ENHANCEMENT
    ============================================================ */
 function enhanceMetaTags(post, document) {
-  const title = `${escapeHtml(post.title)} | Hozana Concept Blog`;
-  const desc = escapeHtml(post.excerpt || 'Découvrez nos articles sur l\'intelligence artificielle, l\'automatisation et la croissance digitale.');
-  const img = resolveImageURL(post.cover_image || post.image || post.img || post.thumbnail || post.cover);
-  const url = `https://www.hozanaconcept.com/blog-posts/${post.slug || post.id}.html`;
-  const date = new Date(post.publish_date || post.created_at).toISOString();
+  const title = `${post.title || 'Article'} | Hozana Concept Blog`;
+  const desc = truncate(post.excerpt || 'Découvrez nos articles sur l\'intelligence artificielle, l\'automatisation et la croissance digitale.', 160);
+  const slug = post.slug || post.id;
+  const img = absoluteUrl(resolveImageURL(post.cover_image || post.image || post.img || post.thumbnail || post.cover));
+  const url = `${SITE_URL}/blog-posts/${slug}.html`;
+  const date = safeIsoDate(post.publish_date || post.created_at || post.updated_at);
+  const modified = safeIsoDate(post.updated_at || post.publish_date || post.created_at);
 
-  // Update title and description
   document.title = title;
-  const descMeta = document.querySelector('meta[name="description"]');
-  if (descMeta) {
-    descMeta.setAttribute('content', desc);
-  } else {
-    const newDescMeta = document.createElement('meta');
-    newDescMeta.setAttribute('name', 'description');
-    newDescMeta.setAttribute('content', desc);
-    document.head.appendChild(newDescMeta);
-  }
+  upsertMeta(document, 'name', 'description', desc);
+  upsertMeta(document, 'name', 'robots', 'index, follow, max-image-preview:large');
 
-  // Add Open Graph tags
-  const ogTags = `
-    <meta property="og:title" content="${title}">
-    <meta property="og:description" content="${desc}">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="${url}">
-    <meta property="og:image" content="${img}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Hozana Concept">
-    <meta property="article:published_time" content="${date}">
-    <meta property="article:modified_time" content="${date}">
-    <meta property="article:author" content="${escapeHtml(post.author || 'Hozana Concept')}">
-    <meta property="article:section" content="${escapeHtml(post.category || 'IA')}">
-  `;
-
-  // Add Twitter Card tags
-  const twitterTags = `
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${title}">
-    <meta name="twitter:description" content="${desc}">
-    <meta name="twitter:image" content="${img}">
-    <meta name="twitter:site" content="@HozanaConcept">
-    <meta name="twitter:creator" content="@HozanaConcept">
-  `;
-
-  // Add canonical URL
-  const canonical = `<link rel="canonical" href="${url}">`;
-
-  // Remove existing meta tags to avoid duplicates
   document.querySelectorAll('meta[property^="og:"], meta[name^="twitter:"], link[rel="canonical"]').forEach(el => el.remove());
 
-  // Add new meta tags
-  document.head.insertAdjacentHTML('beforeend', ogTags + twitterTags + canonical);
+  [
+    ['property', 'og:title', title],
+    ['property', 'og:description', desc],
+    ['property', 'og:type', 'article'],
+    ['property', 'og:url', url],
+    ['property', 'og:image', img],
+    ['property', 'og:image:width', '1200'],
+    ['property', 'og:image:height', '630'],
+    ['property', 'og:site_name', 'Hozana Concept'],
+    ['property', 'article:published_time', date],
+    ['property', 'article:modified_time', modified],
+    ['property', 'article:author', post.author || 'Hozana Concept'],
+    ['property', 'article:section', post.category || 'IA'],
+    ['name', 'twitter:card', 'summary_large_image'],
+    ['name', 'twitter:title', title],
+    ['name', 'twitter:description', desc],
+    ['name', 'twitter:image', img],
+    ['name', 'twitter:site', '@HozanaConcept'],
+    ['name', 'twitter:creator', '@HozanaConcept']
+  ].forEach(([attr, key, content]) => upsertMeta(document, attr, key, content));
+
+  const canonical = document.createElement('link');
+  canonical.setAttribute('rel', 'canonical');
+  canonical.setAttribute('href', url);
+  document.head.appendChild(canonical);
 }
 
 /* ============================================================
@@ -148,15 +144,10 @@ function enhanceImageAltText(document) {
       if (parent) {
         const caption = parent.querySelector('figcaption, .caption, .alt-text');
         if (caption) {
-          img.alt = escapeHtml(caption.textContent.trim());
+          img.alt = caption.textContent.trim();
         } else {
-          // Try to get alt text from surrounding text
           const text = parent.textContent.trim();
-          if (text.length > 0 && text.length < 100) {
-            img.alt = escapeHtml(text);
-          } else {
-            img.alt = 'Image relative à l\'article';
-          }
+          img.alt = text.length > 0 && text.length < 100 ? text : 'Image relative à l\'article';
         }
       } else {
         img.alt = 'Image relative à l\'article';
@@ -169,12 +160,54 @@ function enhanceImageAltText(document) {
    HELPER FUNCTIONS
    ============================================================ */
 function resolveImageURL(path) {
-  if (!path || typeof path !== 'string') return 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=70';
+  if (!path || typeof path !== 'string') return DEFAULT_IMAGE;
   const p = path.trim();
   if (p.startsWith('http') || p.startsWith('data:')) return p;
-  if (p.startsWith('images/')) return p;
-  if (!p.includes('/')) return `images/${p}`;
+  if (p.startsWith('/')) return `${SITE_URL}${p}`;
+  if (p.startsWith('images/')) return `${SITE_URL}/${p}`;
+  if (!p.includes('/')) return `${SITE_URL}/images/${p}`;
   return `${SUPABASE_URL}/storage/v1/object/public/blog-images/${p}`;
+}
+
+function absoluteUrl(url) {
+  if (!url || url.startsWith('http') || url.startsWith('data:')) return url || DEFAULT_IMAGE;
+  if (url.startsWith('/')) return `${SITE_URL}${url}`;
+  return `${SITE_URL}/${url.replace(/^\.\.\//, '')}`;
+}
+
+function safeIsoDate(value) {
+  const d = value ? new Date(value) : new Date();
+  return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+}
+
+function normalizeTags(tags) {
+  if (Array.isArray(tags)) return tags.map(t => String(t).trim()).filter(Boolean);
+  if (typeof tags === 'string') return tags.split(',').map(t => t.trim()).filter(Boolean);
+  return [];
+}
+
+function upsertMeta(document, attr, key, content) {
+  if (content === undefined || content === null) return;
+  let el = document.querySelector(`meta[${attr}="${cssEscape(key)}"]`);
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attr, key);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', String(content));
+}
+
+function cssEscape(value) {
+  return String(value).replace(/"/g, '\\"');
+}
+
+function jsonLd(data) {
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+
+function truncate(str, max) {
+  const s = String(str || '').replace(/\s+/g, ' ').trim();
+  return s.length > max ? `${s.slice(0, max - 1).trim()}…` : s;
 }
 
 function escapeHtml(str) {

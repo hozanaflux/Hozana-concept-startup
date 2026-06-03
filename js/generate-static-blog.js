@@ -13,11 +13,13 @@ const { generateSchemaMarkup, enhanceMetaTags, enhanceImageAltText } = require('
 // ─── Supabase Config (public anon key — safe for server-side) ───
 const SUPABASE_URL  = 'https://leadvqrheziyvrwnbiio.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlYWR2cXJoZXppeXZyd25iaWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzM0MTksImV4cCI6MjA5MzU0OTQxOX0.I-L13gdtuQnsJ4ErEb-SWWfdbMUhWOkTvSFOSkNxsD0';
+const SITE_URL      = 'https://www.hozanaconcept.com';
 
 // ─── Paths ───
 const TEMPLATE_PATH    = path.join(__dirname, '..', 'article.html');
 const OUTPUT_DIR       = path.join(__dirname, '..', 'blog-posts');
 const SITEMAP_PATH     = path.join(__dirname, '..', 'sitemap.xml');
+const ROBOTS_PATH      = path.join(__dirname, '..', 'robots.txt');
 const SCRIPTS_DIR      = path.join(__dirname, '..', 'scripts');
 
 // Ensure output directory exists
@@ -38,7 +40,7 @@ try {
    FETCH POSTS FROM SUPABASE
    ============================================================ */
 async function fetchPublishedPosts() {
-  const url = `${SUPABASE_URL}/rest/v1/blog_posts?select=*&published=eq.true&order=created_at.desc`;
+  const url = `${SUPABASE_URL}/rest/v1/blog_posts?select=*&published=eq.true&order=publish_date.desc.nullslast,created_at.desc`;
 
   const headers = {
     'apikey':        SUPABASE_ANON,
@@ -47,7 +49,7 @@ async function fetchPublishedPosts() {
   };
 
   // Use Node.js 18+ global fetch
-  const response = await fetch(url, { headers });
+  const response = await fetch(url, { headers, cache: 'no-store' });
 
   if (!response.ok) {
     throw new Error(`Supabase fetch failed: ${response.status} ${response.statusText}`);
@@ -63,10 +65,7 @@ async function fetchPublishedPosts() {
    ============================================================ */
 async function generateStaticPost(post) {
   try {
-    const slug = post.slug || post.title.toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '') || `article-${post.id || Date.now()}`;
+    const slug = post.slug || slugify(post.title || post.id) || `article-${post.id || Date.now()}`;
     post = { ...post, slug };
     const dom = new JSDOM(templateContent);
     const document = dom.window.document;
@@ -80,17 +79,6 @@ async function generateStaticPost(post) {
 
     // ── Image alt text ──
     enhanceImageAltText(document);
-
-    // ── Fix canonical URL to point to static page ──
-    const canonicalLink = document.querySelector('link[rel="canonical"]');
-    if (canonicalLink) {
-      canonicalLink.setAttribute('href', `https://www.hozanaconcept.com/blog-posts/${slug}.html`);
-    }
-    // Also fix og:url
-    const ogUrl = document.querySelector('meta[property="og:url"]');
-    if (ogUrl) {
-      ogUrl.setAttribute('content', `https://www.hozanaconcept.com/blog-posts/${slug}.html`);
-    }
 
     // ── Update content ──
     const titleEl = document.getElementById('article-title');
@@ -142,6 +130,7 @@ async function generateStaticPost(post) {
       }
 
       bodyEl.innerHTML = content || '<p>Contenu à venir...</p>';
+      normalizeArticleBodyImages(bodyEl, post.title);
     }
 
     // ── Tags ──
@@ -205,13 +194,14 @@ window.__STATIC_BLOG_DATA__ = {
   title: ${JSON.stringify(post.title)},
   author: ${JSON.stringify(post.author || 'Hozana Concept')},
   category: ${JSON.stringify(post.category || 'IA')},
-  cover_image: ${JSON.stringify(post.cover_image || '')},
+  cover_image: ${JSON.stringify(post.cover_image || post.image || post.img || post.thumbnail || post.cover || '')},
   excerpt: ${JSON.stringify(post.excerpt || '')},
   read_time: ${post.read_time || 5},
   views: ${post.views || 0},
   likes: ${post.likes || 0},
   tags: ${JSON.stringify(Array.isArray(post.tags) ? post.tags : (post.tags ? String(post.tags).split(',').map(t => t.trim()).filter(Boolean) : []))},
   publish_date: ${JSON.stringify(post.publish_date || post.created_at || '')},
+  updated_at: ${JSON.stringify(post.updated_at || post.publish_date || post.created_at || '')},
   featured: ${!!post.featured}
 };
 `;
@@ -227,7 +217,7 @@ window.__STATIC_BLOG_DATA__ = {
     fs.writeFileSync(filepath, html);
 
     console.log(`✅ Generated: ${filename}`);
-    return { filename, slug, title: post.title, id: post.id };
+    return { filename, slug, title: post.title, id: post.id, post };
   } catch (err) {
     console.error(`❌ Error generating post "${post.title || post.id}":`, err.message);
     return null;
@@ -238,24 +228,25 @@ window.__STATIC_BLOG_DATA__ = {
    SITEMAP GENERATOR
    ============================================================ */
 function generateSitemap(posts) {
-  const baseUrl = 'https://www.hozanaconcept.com/blog-posts/';
+  const baseUrl = `${SITE_URL}/blog-posts/`;
+  const now = new Date().toISOString();
   let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
   // Add main pages
   const mainPages = [
-    { loc: 'https://www.hozanaconcept.com/', priority: '1.0', changefreq: 'weekly' },
-    { loc: 'https://www.hozanaconcept.com/blog', priority: '0.9', changefreq: 'daily' },
-    { loc: 'https://www.hozanaconcept.com/platform', priority: '0.8', changefreq: 'monthly' },
-    { loc: 'https://www.hozanaconcept.com/portfolio', priority: '0.8', changefreq: 'monthly' },
-    { loc: 'https://www.hozanaconcept.com/pricing', priority: '0.8', changefreq: 'monthly' },
-    { loc: 'https://www.hozanaconcept.com/contact', priority: '0.7', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/`, priority: '1.0', changefreq: 'weekly' },
+    { loc: `${SITE_URL}/blog`, priority: '0.9', changefreq: 'daily' },
+    { loc: `${SITE_URL}/platform`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/portfolio`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/pricing`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/contact`, priority: '0.7', changefreq: 'monthly' },
   ];
 
   for (const page of mainPages) {
     sitemap += `  <url>
     <loc>${page.loc}</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
+    <lastmod>${now}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
   </url>\n`;
@@ -265,9 +256,10 @@ function generateSitemap(posts) {
   posts.forEach(post => {
     if (post && post.filename) {
       const slug = post.filename.replace('.html', '');
+      const lastmod = safeIsoDate(post.post?.updated_at || post.post?.publish_date || post.post?.created_at || now);
       sitemap += `  <url>
     <loc>${baseUrl}${slug}.html</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
+    <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>\n`;
@@ -278,6 +270,16 @@ function generateSitemap(posts) {
 
   fs.writeFileSync(SITEMAP_PATH, sitemap);
   console.log('🗺️  Sitemap generated successfully');
+}
+
+function generateRobotsTxt() {
+  const robots = `User-agent: *
+Allow: /
+
+Sitemap: ${SITE_URL}/sitemap.xml
+`;
+  fs.writeFileSync(ROBOTS_PATH, robots);
+  console.log('🤖 robots.txt generated successfully');
 }
 
 /* ============================================================
@@ -295,6 +297,7 @@ async function generateStaticBlog() {
       console.log('⚠️  No published posts found.');
       // Still generate an empty sitemap with main pages
       generateSitemap([]);
+      generateRobotsTxt();
       console.log(`\n✅ Done in ${((Date.now() - startTime) / 1000).toFixed(1)}s`);
       return [];
     }
@@ -308,6 +311,7 @@ async function generateStaticBlog() {
 
     // 3. Generate sitemap
     generateSitemap(generatedPosts);
+    generateRobotsTxt();
 
     // 4. Clean up old files that no longer match any post
     cleanupOldFiles(generatedPosts);
@@ -354,6 +358,32 @@ function resolveImageURL(imgPath) {
   if (p.startsWith('images/')) return p;
   if (!p.includes('/')) return `images/${p}`;
   return `${SUPABASE_URL}/storage/v1/object/public/blog-images/${p}`;
+}
+
+function slugify(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+    .replace(/-{2,}/g, '-');
+}
+
+function safeIsoDate(value) {
+  const date = value ? new Date(value) : new Date();
+  return isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
+}
+
+function normalizeArticleBodyImages(bodyEl, title) {
+  bodyEl.querySelectorAll('img').forEach((img, index) => {
+    const src = img.getAttribute('src');
+    if (src) img.setAttribute('src', resolveImageURL(src));
+    if (!img.getAttribute('alt')) {
+      img.setAttribute('alt', index === 0 ? title || 'Image article Hozana Concept' : `Image ${index + 1} de l'article`);
+    }
+    img.setAttribute('loading', index === 0 ? 'eager' : 'lazy');
+    img.setAttribute('decoding', 'async');
+  });
 }
 
 function escapeHtml(str) {
