@@ -877,7 +877,7 @@ function viewAudit(id) {
   openModal('m-audit');
 }
 
-/* ─── GENERATE ARTICLE PAGE ─── */
+/* ─── GENERATE STATIC SEO PAGES ─── */
 let _generatingPage = false;
 async function triggerStaticBlogGeneration(options = {}) {
   const silent = !!options.silent;
@@ -886,7 +886,7 @@ async function triggerStaticBlogGeneration(options = {}) {
     const data = await res.json();
     if (data.success) {
       if (!silent) toast(data.message || 'Page générée ✓', 'ok');
-      else if (data.mode === 'deploy-hook') toast('Publication SEO programmée ✓', 'ok');
+      else if (data.mode === 'deploy-hook' || data.mode === 'github-action') toast('Publication SEO programmée ✓', 'ok');
     } else {
       toast('SEO statique: ' + (data.message || data.error || 'génération non disponible'), 'err');
     }
@@ -1003,12 +1003,14 @@ async function savePack() {
       toast('Pack ajouté ✓','ok');
     }
     closeModal('m-pack'); renderPacks(); updateBadges();
+    await triggerStaticBlogGeneration({ silent: true });
   } catch { toast('Erreur sauvegarde','err'); }
 }
 async function delPack(id) {
   await fetch(`tables/packs/${id}`,{method:'DELETE'});
   PACKS=PACKS.filter(x=>x.id!==id);
   renderPacks(); updateBadges(); toast('Pack supprimé','ok');
+  await triggerStaticBlogGeneration({ silent: true });
 }
 
 /* ─── SERVICES ─── */

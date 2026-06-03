@@ -63,6 +63,8 @@ module.exports = async (req, res) => {
           console.log(`[Supabase Webhook] Article "${record.title || record.id}" is not published — skipping regeneration`);
           return res.status(200).json({ success: true, skipped: true, reason: 'not_published' });
         }
+      } else if (payload.table === 'packs' || payload.type === 'pack_changed') {
+        console.log(`[Supabase Webhook] Pack "${record.name || record.id}" changed — regenerating pricing and pack pages...`);
       } else {
         console.log(`[Supabase Webhook] Event on ${table} — no action needed`);
         return res.status(200).json({ success: true, skipped: true, reason: 'wrong_table' });

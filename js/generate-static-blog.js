@@ -626,12 +626,14 @@ function enrichPack(row) {
   const features = normalizeList(row.features).length ? normalizeList(row.features) : defaults.sidebarFeatures;
   const excluded = normalizeList(row.features_excluded);
   const description = row.description || defaults.description || '';
+  const explicitSlug = slugify(row.slug || extractPackSlugFromLink(row.link));
+  const fallbackSlug = key === 'starter' ? 'starter' : slugify(name.replace(/^pack\s+/i, ''));
 
   return {
     ...defaults,
     ...row,
     key,
-    slug: key === 'starter' ? 'starter' : slugify(name.replace(/^pack\s+/i, '')),
+    slug: explicitSlug || fallbackSlug || key,
     name,
     priceMonthly,
     priceAnnual: priceMonthly ? Math.round(priceMonthly * 0.8) : 0,
@@ -656,6 +658,12 @@ function enrichPack(row) {
     color: defaults.color || 'rgba(255,255,255,0.08)',
     borderColor: defaults.borderColor || 'rgba(255,255,255,0.1)'
   };
+}
+
+function extractPackSlugFromLink(link) {
+  const value = String(link || '').trim();
+  const match = value.match(/pack-details\/([^/?#]+)\.html/i);
+  return match ? match[1] : '';
 }
 
 function getPackDefaults(key) {
