@@ -7,8 +7,10 @@
 const path = require('path');
 const { execSync } = require('child_process');
 
+const DEPLOY_HOOK_URL = 'https://api.vercel.com/v1/integrations/deploy/prj_s2d74jqlzblz72UezN2XUORZAGW3/dKFNTCUowm';
 const isVercelRuntime = !!process.env.VERCEL;
-const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
+const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || DEPLOY_HOOK_URL;
+const GITHUB_REPO = 'hozanaflux/Hozana-concept-startup';
 
 module.exports = async (req, res) => {
   // ── CORS ──
@@ -28,24 +30,38 @@ module.exports = async (req, res) => {
 
   try {
     if (isVercelRuntime) {
-      if (!deployHookUrl) {
-        return res.status(202).json({
-          success: false,
-          mode: 'vercel-runtime',
-          error: 'Génération statique non persistante sur Vercel',
-          message: 'Ajoute VERCEL_DEPLOY_HOOK_URL dans les variables Vercel. Après publication, l’admin déclenchera un nouveau build qui générera les pages statiques durablement.'
-        });
-      }
-
+      // 1. Déclencher le Vercel Deploy Hook (build + déploiement)
       const hookResponse = await fetch(deployHookUrl, { method: 'POST' });
       if (!hookResponse.ok) {
         throw new Error(`Deploy hook failed: ${hookResponse.status} ${hookResponse.statusText}`);
       }
 
+      // 2. Déclencher le GitHub Action (commit des fichiers générés sur GitHub)
+      const githubToken = process.env.GH_TOKEN;
+      if (githubToken) {
+        const ghResponse = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/dispatches`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/vnd.github.v3+json',
+            'Authorization': `Bearer ${githubToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ event_type: 'generate-blog' })
+        });
+        if (!ghResponse.ok) {
+          const ghError = await ghResponse.text().catch(() => '');
+          console.warn(`[Regenerate Blog] GitHub Action trigger warning: ${ghResponse.status} ${ghError}`);
+        } else {
+          console.log('[Regenerate Blog] GitHub Action triggered successfully');
+        }
+      } else {
+        console.log('[Regenerate Blog] GH_TOKEN not set - skipping GitHub Action trigger');
+      }
+
       return res.status(202).json({
         success: true,
         mode: 'deploy-hook',
-        message: 'Publication enregistrée. Nouveau build Vercel déclenché pour générer les pages statiques SEO.'
+        message: 'Publication enregistrée. Build Vercel déclenché + commit GitHub si GH_TOKEN configuré.'
       });
     }
 
