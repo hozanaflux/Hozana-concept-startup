@@ -1040,6 +1040,13 @@ function renderStaticPackHero(pack) {
 }
 
 function injectPackOptions(document, options = []) {
+  const existingList = document.getElementById('checkout-options-list');
+  const existingBlock = document.getElementById('checkout-options-block');
+  if (existingList && options.length) {
+    existingList.innerHTML = options.map(renderCheckoutOption).join('');
+    if (existingBlock) existingBlock.style.display = 'block';
+    return;
+  }
   const summary = document.querySelector('.money-back');
   if (!summary || !options.length) return;
   const block = document.createElement('div');

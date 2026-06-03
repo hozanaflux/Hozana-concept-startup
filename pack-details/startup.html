@@ -1364,10 +1364,11 @@ window.__STATIC_PACK_DATA__ = {"name":"startup","description":"une offre spécia
         <div class="money-back">
           <i class="fas fa-undo"></i>
           <div><strong>Garantie 30 jours</strong><br>Satisfait ou remboursé, sans condition, sans question.</div>
-        </div><div id="checkout-options-block" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
-    <p style="font-size:0.75rem;font-family:var(--font-accent);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--white-30);margin-bottom:0.875rem;">Options recommandées</p>
-    <div id="checkout-options-list" style="display:flex;flex-direction:column;gap:0.6rem;">
+        </div>
 
+        <div id="checkout-options-block" style="display: block; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+          <p style="font-size:0.75rem;font-family:var(--font-accent);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--white-30);margin-bottom:0.875rem;">Options recommandées</p>
+          <div id="checkout-options-list" style="display:flex;flex-direction:column;gap:0.6rem;">
       <button type="button" data-checkout-option="34bd53b6-7a52-4594-bb50-5c20b8b649a6" onclick="toggleCheckoutOption({&quot;id&quot;:&quot;34bd53b6-7a52-4594-bb50-5c20b8b649a6&quot;,&quot;name&quot;:&quot;workflow&quot;,&quot;price&quot;:100,&quot;period&quot;:&quot;par mois&quot;,&quot;description&quot;:&quot;Ajout d'un chatbot IA avancé supplémentaire à votre solution existante.&quot;}, this)" style="width:100%;text-align:left;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:0.75rem;display:flex;justify-content:space-between;gap:0.75rem;color:var(--white);cursor:pointer;">
         <span><strong style="display:block;font-size:0.82rem;">workflow</strong><small style="color:var(--white-50);line-height:1.3;">Ajout d'un chatbot IA avancé supplémentaire à votre solution existante.</small></span>
         <span style="font-family:var(--font-accent);font-weight:700;color:var(--red);white-space:nowrap;">+100€</span>
@@ -1375,8 +1376,8 @@ window.__STATIC_PACK_DATA__ = {"name":"startup","description":"une offre spécia
       <button type="button" data-checkout-option="a3a55b9c-07ce-42ac-a41e-a5ff77a21381" onclick="toggleCheckoutOption({&quot;id&quot;:&quot;a3a55b9c-07ce-42ac-a41e-a5ff77a21381&quot;,&quot;name&quot;:&quot;chatbot&quot;,&quot;price&quot;:100,&quot;period&quot;:&quot;par mois&quot;,&quot;description&quot;:&quot;Ajout d'un chatbot IA avancé supplémentaire à votre solution existante.&quot;}, this)" style="width:100%;text-align:left;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:0.75rem;display:flex;justify-content:space-between;gap:0.75rem;color:var(--white);cursor:pointer;">
         <span><strong style="display:block;font-size:0.82rem;">chatbot</strong><small style="color:var(--white-50);line-height:1.3;">Ajout d'un chatbot IA avancé supplémentaire à votre solution existante.</small></span>
         <span style="font-family:var(--font-accent);font-weight:700;color:var(--red);white-space:nowrap;">+100€</span>
-      </button>
-    </div></div>
+      </button></div>
+        </div>
 
         <!-- What's included mini -->
         <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--glass-border);">
@@ -1644,6 +1645,7 @@ async function initPage() {
   renderFAQ();
   renderSidebarFeatures();
   loadCartOptions();
+  loadCheckoutOptions();
   updateSummary();
 
   document.title = `${currentPack.name} | Hozana Concept`;
@@ -1822,6 +1824,51 @@ function loadCartOptions() {
   document.querySelectorAll('[data-checkout-option]').forEach(btn => {
     if (selectedOptions.some(option => option.id === btn.dataset.checkoutOption)) btn.classList.add('checkout-option-active');
   });
+}
+
+async function loadCheckoutOptions() {
+  const list = document.getElementById('checkout-options-list');
+  const block = document.getElementById('checkout-options-block');
+  if (!list || !block) return;
+
+  try {
+    const res = await fetch('tables/packs?order=sort_order.asc');
+    const json = await res.json();
+    const options = (json.data || []).filter(isCheckoutOption);
+    if (!options.length || list.children.length) return;
+    list.innerHTML = options.map(renderCheckoutOptionButton).join('');
+    block.style.display = 'block';
+    loadCartOptions();
+  } catch (e) {
+    console.warn('Options checkout indisponibles:', e);
+  }
+}
+
+function isCheckoutOption(item) {
+  const explicit = String(item?.item_type || item?.type || item?.category || '').toLowerCase();
+  const buttonText = String(item?.button_text || '').toLowerCase();
+  return explicit === 'option' || buttonText.includes('ajouter au panier');
+}
+
+function renderCheckoutOptionButton(option) {
+  const payload = {
+    id: option.id || option.name,
+    name: option.name,
+    price: parsePackPrice(option.price),
+    period: option.period || 'par mois',
+    description: option.description || ''
+  };
+  const encoded = encodeURIComponent(JSON.stringify(payload));
+  return `
+    <button type="button" data-checkout-option="${payload.id}" onclick="toggleCheckoutOption(JSON.parse(decodeURIComponent('${encoded}')), this)" style="width:100%;text-align:left;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:0.75rem;display:flex;justify-content:space-between;gap:0.75rem;color:var(--white);cursor:pointer;">
+      <span><strong style="display:block;font-size:0.82rem;">${option.name}</strong><small style="color:var(--white-50);line-height:1.3;">${option.description || ''}</small></span>
+      <span style="font-family:var(--font-accent);font-weight:700;color:var(--red);white-space:nowrap;">+${payload.price.toLocaleString('fr-FR')}€</span>
+    </button>`;
+}
+
+function parsePackPrice(value) {
+  const n = parseInt(String(value || '').replace(/[^0-9]/g, ''), 10);
+  return Number.isFinite(n) ? n : 0;
 }
 
 function persistCartOptions() {
