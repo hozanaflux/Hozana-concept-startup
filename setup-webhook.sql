@@ -1,10 +1,11 @@
 -- ============================================================
--- HOZANA CONCEPT — Setup Webhook Automatique
--- Active la régénération des pages statiques quand un
--- article est publié ou modifié dans Supabase
+-- HOZANA CONCEPT — Webhook Blog Statique Automatique
+-- Déclenche un build Vercel dès qu'un article est publié ou
+-- modifié dans Supabase, puis une GitHub Action génère et commit
+-- les pages statiques SEO dans le repo.
 --
 -- 🔧 Exécuter dans : Supabase Dashboard → SQL Editor
--- 📌 Prérequis : Aucun (pg_net est pré-installé sur Supabase)
+-- 📌 Prérequis : pg_net (pré-installé sur Supabase)
 -- ============================================================
 
 -- ============================================================
@@ -14,7 +15,8 @@ CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
 -- ============================================================
 -- 2. Créer la fonction trigger
---    Envoie une requête HTTP POST à notre API Vercel
+--    Envoie une requête HTTP POST à l'API Vercel /api/regenerate-blog.
+--    Cette API déclenche GitHub Actions via repository_dispatch.
 --    SEULEMENT quand le contenu de l'article est modifié
 --    (ignore les màj de vues/likes pour éviter la surcharge)
 -- ============================================================
@@ -27,18 +29,14 @@ AS $$
 DECLARE
   _should_trigger BOOLEAN;
 BEGIN
-  -- Par défaut, on ne déclenche pas
   _should_trigger := false;
 
   IF TG_OP = 'INSERT' THEN
-    -- Nouvel article : ne déclencher que s'il est publié
     IF NEW.published = true THEN
       _should_trigger := true;
     END IF;
 
   ELSIF TG_OP = 'UPDATE' THEN
-    -- Mise à jour : ne déclencher que si le CONTENU a changé
-    -- (pas les vues/likes)
     IF NEW.published = true AND (
       OLD.title        IS DISTINCT FROM NEW.title OR
       OLD.slug         IS DISTINCT FROM NEW.slug OR
@@ -57,17 +55,16 @@ BEGIN
     END IF;
 
   ELSIF TG_OP = 'DELETE' THEN
-    -- Suppression : toujours déclencher pour nettoyer l'orphelin
     IF OLD.published = true THEN
       _should_trigger := true;
     END IF;
   END IF;
 
-  -- Envoyer la requête HTTP si nécessaire
+  -- Envoyer la requête à l'API de régénération si nécessaire
   IF _should_trigger THEN
     PERFORM
       net.http_post(
-        url := 'https://www.hozanaconcept.com/api/supabase-webhook',
+        url := 'https://www.hozanaconcept.com/api/regenerate-blog',
         headers := jsonb_build_object(
           'Content-Type', 'application/json'
         ),
@@ -81,8 +78,6 @@ BEGIN
       );
   END IF;
 
-  -- Pour INSERT/UPDATE, retourner NEW (obligatoire pour AFTER trigger)
-  -- Pour DELETE, retourner OLD
   IF TG_OP = 'DELETE' THEN
     RETURN OLD;
   END IF;
@@ -92,7 +87,6 @@ $$;
 
 -- ============================================================
 -- 3. Créer le trigger sur la table blog_posts
---    Se déclenche APRÈS insertion, mise à jour OU suppression
 -- ============================================================
 DROP TRIGGER IF EXISTS trg_blog_posts_webhook ON public.blog_posts;
 
@@ -104,7 +98,6 @@ EXECUTE FUNCTION public.handle_blog_posts_change();
 -- ============================================================
 -- ✅ VÉRIFICATION
 -- ============================================================
--- Pour vérifier que le trigger est bien actif :
 SELECT
   trigger_name,
   event_manipulation,
@@ -112,28 +105,6 @@ SELECT
   action_statement
 FROM information_schema.triggers
 WHERE event_object_table = 'blog_posts';
-
--- ============================================================
--- ⚙️ OPTIONNEL : Variable d'environnement
--- Pour sécuriser le webhook, ajouter dans Vercel :
---   WEBHOOK_SECRET = <une_chaine_secrete>
--- Puis décommenter la ligne ci-dessous remplacer <SECRET> :
--- ============================================================
--- PERFORM
---   net.http_post(
---     url := 'https://www.hozanaconcept.com/api/supabase-webhook',
---     headers := jsonb_build_object(
---       'Content-Type', 'application/json',
---       'X-Webhook-Secret', '<SECRET>'
---     ),
---     body := jsonb_build_object(
---       'type', TG_OP,
---       'table', TG_TABLE_NAME,
---       'schema', TG_TABLE_SCHEMA,
---       'record', row_to_json(NEW.*),
---       'old_record', CASE WHEN TG_OP = 'UPDATE' THEN row_to_json(OLD.*) ELSE NULL END
---     )
---   );
 
 -- ============================================================
 -- ❌ SUPPRESSION (si besoin de désactiver)

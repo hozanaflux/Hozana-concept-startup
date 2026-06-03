@@ -1,11 +1,21 @@
-
-# Hozana Concept Post-Publish Hook Configuration
-
-# Hook to run after article publication
-# This hook will trigger the static blog generation process
-
-# To set up the hook in your CMS:
-# 1. Add a webhook to your CMS that points to: C:\Users\amado\Downloads\hozana concept\my website\scripts\post-publish-hook.js
-# 2. Configure the webhook to trigger on article publish/update events
-# 3. Set the webhook to send a POST request to the hook script
-  
+# Hozana Concept — Configuration de génération blog statique
+#
+# Quand un article est publié ou modifié dans Supabase, un trigger
+# PostgreSQL appelle l'API :
+#   https://www.hozanaconcept.com/api/regenerate-blog
+#
+# Cette API déclenche la GitHub Action `.github/workflows/generate-blog.yml`.
+# L'action exécute `node js/generate-static-blog.js`, commit les fichiers
+# `blog-posts/*.html`, `sitemap.xml`, `robots.txt`, puis le push GitHub
+# déclenche un nouveau déploiement Vercel.
+#
+# Architecture :
+#   [Supabase/Admin] -> [API Vercel] -> [GitHub Action] -> [Commit GitHub] -> [Vercel]
+#
+# Variables Vercel nécessaires :
+#   GH_TOKEN=<GitHub Personal Access Token>
+#   GITHUB_REPO=hozanaflux/Hozana-concept-startup
+#
+# Optionnel :
+#   VERCEL_DEPLOY_HOOK_URL=<deploy hook Vercel>
+#   GITHUB_DISPATCH_EVENT=generate-blog

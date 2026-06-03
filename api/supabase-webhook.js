@@ -1,7 +1,8 @@
 /* ============================================================
    Hozana Concept — Supabase Webhook Endpoint
-   Called automatically when a blog_post is inserted/updated
-   Triggers static blog regeneration for published articles
+   Endpoint secondaire pour déclencher la régénération du blog.
+   La voie principale déclenche GitHub Actions pour commiter
+   les pages statiques générées dans le repo.
    ============================================================ */
 
 const path = require('path');
@@ -11,6 +12,8 @@ const { execSync } = require('child_process');
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || null;
 const isVercelRuntime = !!process.env.VERCEL;
 const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
+const GITHUB_REPO = process.env.GITHUB_REPO || 'hozanaflux/Hozana-concept-startup';
+const GITHUB_DISPATCH_EVENT = process.env.GITHUB_DISPATCH_EVENT || 'generate-blog';
 
 module.exports = async (req, res) => {
   // ── CORS ──
@@ -73,26 +76,56 @@ module.exports = async (req, res) => {
     console.log('[Supabase Webhook] Starting static blog generation...');
 
     if (isVercelRuntime) {
-      if (!deployHookUrl) {
+      const githubToken = process.env.GH_TOKEN;
+      if (githubToken) {
+        const ghResponse = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/dispatches`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/vnd.github+json',
+            'Authorization': `Bearer ${githubToken}`,
+            'Content-Type': 'application/json',
+            'X-GitHub-Api-Version': '2022-11-28'
+          },
+          body: JSON.stringify({
+            event_type: GITHUB_DISPATCH_EVENT,
+            client_payload: {
+              source: 'supabase-webhook',
+              event,
+              requested_at: new Date().toISOString()
+            }
+          })
+        });
+        if (!ghResponse.ok) {
+          const ghError = await ghResponse.text().catch(() => '');
+          throw new Error(`GitHub dispatch failed: ${ghResponse.status} ${ghError}`);
+        }
+
         return res.status(202).json({
-          success: false,
-          mode: 'vercel-runtime',
+          success: true,
+          mode: 'github-action',
           event,
-          error: 'Génération statique non persistante sur Vercel',
-          message: 'Configure VERCEL_DEPLOY_HOOK_URL pour déclencher un build après publication.'
+          message: 'Webhook reçu. GitHub Action déclenchée pour générer et commiter les pages statiques.'
         });
       }
 
-      const hookResponse = await fetch(deployHookUrl, { method: 'POST' });
-      if (!hookResponse.ok) {
-        throw new Error(`Deploy hook failed: ${hookResponse.status} ${hookResponse.statusText}`);
+      if (deployHookUrl) {
+        const hookResponse = await fetch(deployHookUrl, { method: 'POST' });
+        if (!hookResponse.ok) {
+          throw new Error(`Deploy hook failed: ${hookResponse.status} ${hookResponse.statusText}`);
+        }
+
+        return res.status(202).json({
+          success: true,
+          mode: 'deploy-hook-only',
+          event,
+          message: 'Build Vercel déclenché, mais GH_TOKEN manque : les pages ne seront pas commitées dans GitHub.'
+        });
       }
 
-      return res.status(202).json({
-        success: true,
-        mode: 'deploy-hook',
-        event,
-        message: 'Webhook reçu. Nouveau build Vercel déclenché pour publier les pages statiques.'
+      return res.status(500).json({
+        success: false,
+        error: 'GH_TOKEN manquant',
+        message: 'Ajoute GH_TOKEN dans Vercel pour déclencher la GitHub Action qui commit les pages statiques.'
       });
     }
 

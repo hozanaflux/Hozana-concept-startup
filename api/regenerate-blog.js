@@ -7,10 +7,10 @@
 const path = require('path');
 const { execSync } = require('child_process');
 
-const DEPLOY_HOOK_URL = 'https://api.vercel.com/v1/integrations/deploy/prj_s2d74jqlzblz72UezN2XUORZAGW3/dKFNTCUowm';
 const isVercelRuntime = !!process.env.VERCEL;
-const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || DEPLOY_HOOK_URL;
-const GITHUB_REPO = 'hozanaflux/Hozana-concept-startup';
+const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
+const GITHUB_REPO = process.env.GITHUB_REPO || 'hozanaflux/Hozana-concept-startup';
+const GITHUB_DISPATCH_EVENT = process.env.GITHUB_DISPATCH_EVENT || 'generate-blog';
 
 module.exports = async (req, res) => {
   // ── CORS ──
@@ -30,38 +30,56 @@ module.exports = async (req, res) => {
 
   try {
     if (isVercelRuntime) {
-      // 1. Déclencher le Vercel Deploy Hook (build + déploiement)
-      const hookResponse = await fetch(deployHookUrl, { method: 'POST' });
-      if (!hookResponse.ok) {
-        throw new Error(`Deploy hook failed: ${hookResponse.status} ${hookResponse.statusText}`);
-      }
-
-      // 2. Déclencher le GitHub Action (commit des fichiers générés sur GitHub)
+      // Déclencher GitHub Actions : c'est ce qui génère puis commit les fichiers dans le repo.
       const githubToken = process.env.GH_TOKEN;
       if (githubToken) {
         const ghResponse = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/dispatches`, {
           method: 'POST',
           headers: {
-            'Accept': 'application/vnd.github.v3+json',
+            'Accept': 'application/vnd.github+json',
             'Authorization': `Bearer ${githubToken}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-GitHub-Api-Version': '2022-11-28'
           },
-          body: JSON.stringify({ event_type: 'generate-blog' })
+          body: JSON.stringify({
+            event_type: GITHUB_DISPATCH_EVENT,
+            client_payload: {
+              source: 'vercel-api',
+              requested_at: new Date().toISOString()
+            }
+          })
         });
         if (!ghResponse.ok) {
           const ghError = await ghResponse.text().catch(() => '');
-          console.warn(`[Regenerate Blog] GitHub Action trigger warning: ${ghResponse.status} ${ghError}`);
-        } else {
-          console.log('[Regenerate Blog] GitHub Action triggered successfully');
+          throw new Error(`GitHub dispatch failed: ${ghResponse.status} ${ghError}`);
         }
-      } else {
-        console.log('[Regenerate Blog] GH_TOKEN not set - skipping GitHub Action trigger');
+
+        console.log('[Regenerate Blog] GitHub Action triggered successfully');
+
+        return res.status(202).json({
+          success: true,
+          mode: 'github-action',
+          message: 'Publication enregistrée. GitHub Action déclenchée pour générer et commiter les pages statiques.'
+        });
       }
 
-      return res.status(202).json({
-        success: true,
-        mode: 'deploy-hook',
-        message: 'Publication enregistrée. Build Vercel déclenché + commit GitHub si GH_TOKEN configuré.'
+      if (deployHookUrl) {
+        const hookResponse = await fetch(deployHookUrl, { method: 'POST' });
+        if (!hookResponse.ok) {
+          throw new Error(`Deploy hook failed: ${hookResponse.status} ${hookResponse.statusText}`);
+        }
+
+        return res.status(202).json({
+          success: true,
+          mode: 'deploy-hook-only',
+          message: 'Build Vercel déclenché, mais GH_TOKEN manque : les pages seront visibles sur Vercel sans être commitées dans GitHub.'
+        });
+      }
+
+      return res.status(500).json({
+        success: false,
+        error: 'GH_TOKEN manquant',
+        message: 'Ajoute GH_TOKEN dans les variables Vercel pour déclencher la GitHub Action qui commit les pages statiques.'
       });
     }
 
