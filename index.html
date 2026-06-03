@@ -51,7 +51,7 @@
       align-items: center;
       justify-content: center;
       /* Décalage sous la navbar — évite le texte collé au nav */
-      padding: calc(var(--nav-height) + 5rem) 0 6rem;
+      padding: calc(var(--nav-height) + 6.5rem) 0 7.5rem;
       opacity: 0;
       pointer-events: none;
       overflow: visible;
@@ -399,7 +399,7 @@
     #hero.hero {
       padding-top: 0;
       padding-bottom: 0;
-      min-height: min(860px, 100svh);
+      min-height: clamp(860px, 100svh, 980px);
       overflow: hidden;
     }
 
@@ -419,7 +419,7 @@
         inset: auto;
         display: none;
         min-height: auto;
-        padding: calc(var(--nav-height) + 4rem) 0 5.5rem;
+        padding: calc(var(--nav-height) + 4.75rem) 0 6.25rem;
         transform: none;
       }
       .hero-slide.active {
@@ -463,10 +463,10 @@
       .fb-1 { top: -10px; left: 4%; }
       .fb-2 { bottom: -8px; left: 2%; }
       .fb-3 { top: 14%; right: 0; }
-      .hero-slider-controls { bottom: 1.25rem; }
+      .hero-slider-controls { bottom: 2.25rem; }
     }
     @media (max-width: 640px) {
-      .hero-slide { padding: calc(var(--nav-height) + 3rem) 0 5rem; }
+      .hero-slide { padding: calc(var(--nav-height) + 3.75rem) 0 5.75rem; }
       .hero-content {
         gap: 1.1rem;
         padding: 0 1.25rem;
