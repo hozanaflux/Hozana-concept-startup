@@ -55,7 +55,7 @@
       padding-bottom: 5rem;
       opacity: 0;
       pointer-events: none;
-      overflow-y: auto;
+      overflow: visible;
       transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1);
       transform: translateX(30px);
     }
@@ -395,28 +395,120 @@
 
     /* ── Responsive Hero ── */
     @media (max-width: 1024px) {
-      .hero-slide { padding-top: calc(var(--nav-height) + 3.5rem); }
+      #hero.hero {
+        min-height: auto;
+        overflow: hidden;
+      }
+      .hero-slides-container {
+        position: relative;
+        inset: auto;
+        min-height: 0;
+      }
+      .hero-slide {
+        position: relative;
+        inset: auto;
+        display: none;
+        min-height: auto;
+        padding-top: calc(var(--nav-height) + 2.75rem);
+        padding-bottom: 5.75rem;
+        transform: none;
+      }
+      .hero-slide.active {
+        display: flex;
+        transform: none;
+      }
       .hero-content {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 1.5rem;
         padding: 0 1.5rem;
         text-align: center;
+        max-width: 760px;
       }
-      .hero-text { max-width: 100%; }
-      .hero-slide-subtitle { max-width: 100%; }
+      .hero-text {
+        max-width: 100%;
+        order: 1 !important;
+      }
+      .hero-slide-subtitle {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
       .hero-slide-actions { justify-content: center; }
       .hero-slide-features { align-items: center; }
-      .hero-visual { display: none; }
-      .hero-slider-controls { bottom: 1.5rem; }
+      .hero-visual {
+        display: flex;
+        order: 2 !important;
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
+      }
+      .slide-visual-card {
+        max-width: 100%;
+        border-radius: 16px;
+        padding: 1.15rem;
+      }
+      .float-badge {
+        transform: scale(0.86);
+        transform-origin: center;
+      }
+      .fb-1 { top: -10px; left: 4%; }
+      .fb-2 { bottom: -8px; left: 2%; }
+      .fb-3 { top: 14%; right: 0; }
+      .hero-slider-controls { bottom: 1.25rem; }
     }
     @media (max-width: 640px) {
-      .hero-slide { padding-top: calc(var(--nav-height) + 2.5rem); padding-bottom: 6rem; }
-      .hero-slide-title { font-size: clamp(1.75rem, 6vw, 2.5rem); }
-      .hero-slide-subtitle { font-size: 0.875rem; }
+      .hero-slide { padding-top: calc(var(--nav-height) + 1.6rem); padding-bottom: 5.5rem; }
+      .hero-content {
+        gap: 1.1rem;
+        padding: 0 1rem;
+      }
+      .hero-slide-title {
+        font-size: clamp(1.95rem, 9.5vw, 2.75rem);
+        line-height: 1.06;
+        margin-bottom: 0.85rem;
+      }
+      .hero-slide-subtitle {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.2rem;
+      }
       .hero-slide-actions { flex-direction: column; align-items: center; }
-      .hero-slide-actions .btn { width: 100%; max-width: 280px; justify-content: center; }
+      .hero-slide-actions .btn { width: 100%; max-width: 320px; justify-content: center; }
       .hero-arrow { display: none; }
-      .slide-badge { font-size: 0.7rem; }
+      .slide-badge {
+        max-width: 100%;
+        font-size: 0.68rem;
+        white-space: normal;
+        justify-content: center;
+        line-height: 1.3;
+        margin-bottom: 0.85rem;
+      }
+      .hero-visual {
+        max-width: 100%;
+      }
+      .slide-visual-card {
+        padding: 0.95rem;
+        box-shadow: 0 18px 45px rgba(0,0,0,0.42);
+      }
+      .ia-metric-row {
+        display: grid;
+        grid-template-columns: minmax(88px, 1fr) minmax(92px, 1.2fr) auto;
+        gap: 0.55rem;
+        margin-bottom: 0.55rem;
+        text-align: left;
+      }
+      .ia-metric-bar {
+        margin: 0;
+        align-self: center;
+      }
+      .dev-window {
+        font-size: 0.62rem;
+        overflow: hidden;
+      }
+      .form-course-item { padding: 0.5rem; }
+      .form-course-title { font-size: 0.72rem; }
+      .form-course-sub { font-size: 0.64rem; }
+      .float-badge { display: none; }
     }
 
     /* ============================================================
@@ -741,13 +833,75 @@
       .gallery-item-3d { width: 240px; height: 320px; }
     }
     @media (max-width: 768px) {
-      .gallery-3d-wrap { height: 420px; }
-      .gallery-item-3d { width: 200px; height: 270px; }
-      .gallery-3d-wrap { perspective: 1200px; }
+      .portfolio-section .flex.justify-between {
+        align-items: flex-start !important;
+      }
+      .portfolio-filter-bar {
+        justify-content: flex-start;
+        gap: 0.55rem;
+        margin-bottom: 1.5rem;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding: 0.15rem 0 0.7rem;
+        scrollbar-width: none;
+      }
+      .portfolio-filter-bar::-webkit-scrollbar { display: none; }
+      .pf-btn {
+        flex: 0 0 auto;
+        padding: 0.55rem 0.9rem;
+        font-size: 0.76rem;
+      }
+      .gallery-3d-wrap {
+        height: auto;
+        min-height: 0;
+        perspective: none;
+        overflow: visible;
+        cursor: default;
+        user-select: auto;
+      }
+      .gallery-3d-stage {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.85rem;
+        height: auto;
+        transform: none !important;
+        transform-style: flat;
+      }
+      .gallery-item-3d {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        width: auto !important;
+        height: auto !important;
+        aspect-ratio: 4 / 5;
+        transform: none !important;
+        opacity: 1 !important;
+        border-radius: 14px;
+        box-shadow: 0 14px 34px rgba(0,0,0,0.36);
+      }
+      .gallery-item-3d:hover img { transform: none; }
+      .gallery-item-3d .card-overlay {
+        padding: 1rem;
+        background: linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.05));
+      }
+      .gallery-item-3d .card-overlay h3 {
+        font-size: 0.92rem;
+        line-height: 1.25;
+      }
+      .gallery-item-3d .card-overlay em,
+      .gallery-item-3d .card-overlay .photo-by {
+        font-size: 0.68rem;
+      }
+      .gallery-scroll-hint { display: none; }
     }
     @media (max-width: 480px) {
-      .gallery-3d-wrap { height: 360px; }
-      .gallery-item-3d { width: 160px; height: 220px; }
+      .gallery-3d-stage {
+        grid-template-columns: 1fr;
+        gap: 0.95rem;
+      }
+      .gallery-item-3d {
+        aspect-ratio: 16 / 11;
+      }
       .gallery-item-3d .card-overlay { padding: 0.75rem; }
       .gallery-item-3d .card-overlay h3 { font-size: 0.9rem; }
       .gallery-item-3d .card-overlay em { font-size: 0.65rem; }
@@ -962,8 +1116,8 @@
     @media (max-width: 480px) {
       .radial-stats { grid-template-columns: repeat(2, 1fr); }
       .trust-strip { justify-content: center; }
-      .hero-slide-title { font-size: 1.625rem !important; line-height: 1.15; }
-      .slide-badge { font-size: 0.65rem; padding: 0.3rem 0.7rem; }
+      .hero-slide-title { font-size: clamp(1.95rem, 9.5vw, 2.75rem) !important; line-height: 1.06; }
+      .slide-badge { font-size: 0.68rem; padding: 0.35rem 0.75rem; }
       #hero-slide-2 .s-anim.d5 { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; }
       /* Slide 3 stats — 2 colonnes sur très petit écran */
       #hero-slide-2 [style*='grid-template-columns:repeat(4'] { grid-template-columns: repeat(2,1fr) !important; gap: 0.75rem !important; }
@@ -2287,7 +2441,6 @@ function resolveImageURL(path) {
 
 /* -- 3D Circular Gallery -- */
 let galleryRotation = 0;
-let galleryIsScrolling = false;
 let galleryItems = [];
 let galleryFilter = 'all';
 
@@ -2349,6 +2502,10 @@ function initCircularGallery(projects) {
 
   stage.innerHTML = html;
 
+  if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
+    return;
+  }
+
   // Init rotation controller
   initGalleryRotation(items.length, anglePerItem, radius);
 }
@@ -2376,11 +2533,6 @@ function initGalleryRotation(itemCount, anglePerItem, radius) {
     var idx = parseInt(cards[i].dataset.index) || 0;
     angles[i] = idx * anglePerItem;
   }
-
-    // Cache last rendered values per card to avoid unnecessary DOM writes
-  var lastCardTransforms = new Array(cards.length).fill('');
-  var lastCardOpacities = new Array(cards.length).fill(-1);
-  var lastCardZIndices = new Array(cards.length).fill(-999);
 
     // Cache last rendered values per card to avoid unnecessary DOM writes
   var lastCardTransforms = new Array(cards.length).fill('');
@@ -2435,7 +2587,7 @@ function initGalleryRotation(itemCount, anglePerItem, radius) {
   }
 
   function autoRotate() {
-    if (!isDragging && !galleryIsScrolling) {
+    if (!isDragging) {
       // Auto-rotation lente quand inactif
       if (Math.abs(velocity) < 0.01) {
         currentRot = (currentRot + 0.08) % 360;
@@ -2449,7 +2601,7 @@ function initGalleryRotation(itemCount, anglePerItem, radius) {
     }
 
     // Pendant interaction directe : pas de lerp, reponse instantanee
-    if (isDragging || galleryIsScrolling) {
+    if (isDragging) {
       currentRot = targetRot;
     }
 
@@ -2461,19 +2613,6 @@ function initGalleryRotation(itemCount, anglePerItem, radius) {
       rafId = requestAnimationFrame(autoRotate);
     } else {
       rafId = null;
-    }
-  }
-
-  var scrollTimer = null;
-  function handleScroll() {
-    galleryIsScrolling = true;
-    var scrollable = document.documentElement.scrollHeight - window.innerHeight;
-    var progress = scrollable > 0 ? window.scrollY / scrollable : 0;
-    targetRot = progress * 360;
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(function() { galleryIsScrolling = false; }, 150);
-    if (!rafId) {
-      rafId = requestAnimationFrame(autoRotate);
     }
   }
 
@@ -2514,7 +2653,6 @@ function initGalleryRotation(itemCount, anglePerItem, radius) {
   window.addEventListener('touchmove', onPointerMove, { passive: true });
   window.addEventListener('touchend', onPointerUp);
   wrap.addEventListener('wheel', onWheel, { passive: true });
-  window.addEventListener('scroll', handleScroll, { passive: true });
 
   // Hide hint after first interaction
   function hideHint() { if (hint) hint.style.opacity = '0'; }
