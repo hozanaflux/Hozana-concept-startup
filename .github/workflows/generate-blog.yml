@@ -1,4 +1,4 @@
-name: Générer le blog statique
+name: Générer les pages statiques SEO
 
 on:
   # Déclenchement manuel depuis GitHub UI
@@ -27,18 +27,18 @@ jobs:
       - name: Installer les dépendances
         run: npm ci
 
-      - name: Générer les pages statiques du blog
+      - name: Générer les pages statiques SEO
         run: node js/generate-static-blog.js
 
       - name: Commiter les fichiers générés
         run: |
           git config user.name "Hozana Bot"
           git config user.email "bot@hozanaconcept.com"
-          git add -A blog-posts/ sitemap.xml robots.txt
+          git add -A blog-posts/ pack-details/ blog.html pricing.html sitemap.xml robots.txt
           if git diff --staged --quiet; then
             echo "Aucun changement détecté"
           else
-            git commit -m "📝 Pages statiques du blog générées automatiquement"
+            git commit -m "📝 Pages statiques SEO générées automatiquement"
             git push
             echo "✅ Pages générées et commitées sur GitHub"
           fi
