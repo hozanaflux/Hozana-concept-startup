@@ -4,6 +4,7 @@
     "generate:blog": "node js/generate-static-blog.js"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
     "jsdom": "^29.1.1"
   }
 }
