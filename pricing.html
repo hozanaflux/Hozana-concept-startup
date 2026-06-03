@@ -370,26 +370,37 @@
       <p class="text-body-lg mt-sm">Personnalisez n'importe quel pack avec nos modules complémentaires.</p>
     </div>
 
-    <div class="grid-3">
-      <div class="glass card reveal delay-1">
+    <div class="grid-3" id="options-container">
+      <div class="glass card reveal" data-option-card="">
         <div class="card-icon"><i class="fas fa-robot" style="background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i></div>
         <h3 class="card-title">Chatbot Supplémentaire</h3>
-        <p class="card-text">Ajout d'un chatbot IA avancé supplémentaire à votre solution existante.</p>
-        <div style="margin-top:1rem;font-family:var(--font-title);font-size:1.25rem;font-weight:700;">+ 150€/mois</div>
+        <p class="card-text">Ajout d un chatbot IA avancé supplémentaire à votre solution existante.</p>
+
+        <div style="margin-top:1rem;font-family:var(--font-title);font-size:1.25rem;font-weight:700;">+ 150€<span style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-body);font-weight:400;"> par mois</span></div>
+        <button class="btn btn-glass w-full mt-lg" style="justify-content:center;" onclick="addPricingOptionToCart({&quot;id&quot;:&quot;chatbot-supplementaire&quot;,&quot;name&quot;:&quot;Chatbot Supplémentaire&quot;,&quot;price&quot;:150,&quot;period&quot;:&quot;par mois&quot;,&quot;description&quot;:&quot;Ajout d un chatbot IA avancé supplémentaire à votre solution existante.&quot;});">
+          Ajouter au panier
+        </button>
       </div>
-      <div class="glass card reveal delay-2">
+      <div class="glass card reveal" data-option-card="">
         <div class="card-icon"><i class="fas fa-cogs" style="background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i></div>
         <h3 class="card-title">Workflow Complexe</h3>
-        <p class="card-text">Développement d'un workflow d'automatisation avancé supplémentaire.</p>
-        <div style="margin-top:1rem;font-family:var(--font-title);font-size:1.25rem;font-weight:700;">+ 200€/mois</div>
+        <p class="card-text">Développement d un workflow d automatisation avancé supplémentaire.</p>
+
+        <div style="margin-top:1rem;font-family:var(--font-title);font-size:1.25rem;font-weight:700;">+ 200€<span style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-body);font-weight:400;"> par mois</span></div>
+        <button class="btn btn-glass w-full mt-lg" style="justify-content:center;" onclick="addPricingOptionToCart({&quot;id&quot;:&quot;workflow-complexe&quot;,&quot;name&quot;:&quot;Workflow Complexe&quot;,&quot;price&quot;:200,&quot;period&quot;:&quot;par mois&quot;,&quot;description&quot;:&quot;Développement d un workflow d automatisation avancé supplémentaire.&quot;});">
+          Ajouter au panier
+        </button>
       </div>
-      <div class="glass card reveal delay-3">
+      <div class="glass card reveal" data-option-card="">
         <div class="card-icon"><i class="fas fa-file-alt" style="background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i></div>
         <h3 class="card-title">Pack Contenu +50</h3>
-        <p class="card-text">50 pièces de contenu IA supplémentaires par mois (articles, posts, emails...).</p>
-        <div style="margin-top:1rem;font-family:var(--font-title);font-size:1.25rem;font-weight:700;">+ 250€/mois</div>
-      </div>
-    </div>
+        <p class="card-text">50 pièces de contenu IA supplémentaires par mois : articles, posts, emails.</p>
+
+        <div style="margin-top:1rem;font-family:var(--font-title);font-size:1.25rem;font-weight:700;">+ 250€<span style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-body);font-weight:400;"> par mois</span></div>
+        <button class="btn btn-glass w-full mt-lg" style="justify-content:center;" onclick="addPricingOptionToCart({&quot;id&quot;:&quot;contenu-50&quot;,&quot;name&quot;:&quot;Pack Contenu +50&quot;,&quot;price&quot;:250,&quot;period&quot;:&quot;par mois&quot;,&quot;description&quot;:&quot;50 pièces de contenu IA supplémentaires par mois : articles, posts, emails.&quot;});">
+          Ajouter au panier
+        </button>
+      </div></div>
   </div>
 </section>
 
@@ -517,10 +528,16 @@
   /* ─── DYNAMIC PACKS ─── */
   document.addEventListener('DOMContentLoaded', async () => {
     try {
-      const res = await fetch('tables/packs?order=sort_order.asc');
-      const json = await res.json();
-      const packs = json.data || [];
+      const [packsRes, optionsRes] = await Promise.all([
+        fetch('tables/packs?order=sort_order.asc'),
+        fetch('tables/pack_options?order=sort_order.asc')
+      ]);
+      const packsJson = await packsRes.json();
+      const optionsJson = optionsRes.ok ? await optionsRes.json() : { data: [] };
+      const packs = (packsJson.data || []).filter(p => !isPricingOption(p));
+      const options = optionsJson.data || [];
       renderPacks(packs);
+      renderPricingOptions(options);
     } catch (e) {
       console.error('Erreur packs:', e);
     }
@@ -578,7 +595,61 @@
     // Trigger reveals if core.js is loaded
     if (window.initReveals) window.initReveals();
   }
+
+  function isPricingOption(item) {
+    const explicit = String(item?.item_type || item?.type || item?.category || '').toLowerCase();
+    const buttonText = String(item?.button_text || '').toLowerCase();
+    return explicit === 'option' || buttonText.includes('ajouter au panier');
+  }
+
+  function renderPricingOptions(options) {
+    const container = document.getElementById('options-container');
+    if (!container || !options.length) return;
+    container.innerHTML = options.map((option, i) => {
+      const price = parsePricingPrice(option.price);
+      const oldPrice = parsePricingPrice(option.old_price);
+      const payload = encodeURIComponent(JSON.stringify({
+        id: option.id || option.name,
+        name: option.name,
+        price,
+        period: option.period || 'par mois',
+        description: option.description || ''
+      }));
+      return `
+      <div class="glass card reveal delay-${Math.min(i + 1, 3)}">
+        <div class="card-icon"><i class="${pricingOptionIcon(option.name)}" style="background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i></div>
+        <h3 class="card-title">${option.name}</h3>
+        <p class="card-text">${option.description || ''}</p>
+        ${oldPrice ? `<div style="font-size:0.85rem;color:var(--white-30);text-decoration:line-through;margin-top:0.25rem;">${oldPrice.toLocaleString('fr-FR')}€</div>` : ''}
+        <div style="margin-top:1rem;font-family:var(--font-title);font-size:1.25rem;font-weight:700;">+ ${price.toLocaleString('fr-FR')}€<span style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-body);font-weight:400;"> ${option.period || 'par mois'}</span></div>
+        <button class="btn btn-glass w-full mt-lg" style="justify-content:center;" onclick="addPricingOptionToCart(JSON.parse(decodeURIComponent('${payload}')))">Ajouter au panier</button>
+      </div>`;
+    }).join('');
+    if (window.initReveals) window.initReveals();
+  }
+
+  function addPricingOptionToCart(option) {
+    const key = 'hcCartOptions';
+    const current = JSON.parse(localStorage.getItem(key) || '[]');
+    if (!current.some(item => item.id === option.id)) current.push(option);
+    localStorage.setItem(key, JSON.stringify(current));
+    window.HC?.showToast?.('Option ajoutée au panier', 'success');
+  }
+
+  function parsePricingPrice(value) {
+    const n = parseInt(String(value || '').replace(/[^0-9]/g, ''), 10);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function pricingOptionIcon(name) {
+    const n = String(name || '').toLowerCase();
+    if (n.includes('workflow')) return 'fas fa-cogs';
+    if (n.includes('contenu') || n.includes('content')) return 'fas fa-file-alt';
+    if (n.includes('support')) return 'fas fa-headset';
+    return 'fas fa-robot';
+  }
 </script>
+
 
 
 

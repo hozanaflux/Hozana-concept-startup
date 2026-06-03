@@ -172,6 +172,42 @@ AFTER INSERT OR UPDATE OR DELETE ON public.packs
 FOR EACH ROW
 EXECUTE FUNCTION public.handle_packs_change();
 
+CREATE OR REPLACE FUNCTION public.handle_pack_options_change()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+BEGIN
+  PERFORM
+    net.http_post(
+      url := 'https://www.hozanaconcept.com/api/regenerate-blog',
+      headers := jsonb_build_object(
+        'Content-Type', 'application/json'
+      ),
+      body := jsonb_build_object(
+        'type', TG_OP,
+        'table', TG_TABLE_NAME,
+        'schema', TG_TABLE_SCHEMA,
+        'record', CASE WHEN TG_OP = 'DELETE' THEN NULL ELSE row_to_json(NEW.*) END,
+        'old_record', CASE WHEN TG_OP = 'UPDATE' OR TG_OP = 'DELETE' THEN row_to_json(OLD.*) ELSE NULL END
+      )
+    );
+
+  IF TG_OP = 'DELETE' THEN
+    RETURN OLD;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_pack_options_webhook ON public.pack_options;
+
+CREATE TRIGGER trg_pack_options_webhook
+AFTER INSERT OR UPDATE OR DELETE ON public.pack_options
+FOR EACH ROW
+EXECUTE FUNCTION public.handle_pack_options_change();
+
 -- ============================================================
 -- ✅ VÉRIFICATION
 -- ============================================================

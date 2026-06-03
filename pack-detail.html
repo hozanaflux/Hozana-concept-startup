@@ -1758,9 +1758,9 @@ async function loadCheckoutOptions() {
   if (!list || !block) return;
 
   try {
-    const res = await fetch('tables/packs?order=sort_order.asc');
+    const res = await fetch('tables/pack_options?order=sort_order.asc');
     const json = await res.json();
-    const options = (json.data || []).filter(isCheckoutOption);
+    const options = json.data || [];
     if (!options.length || list.children.length) return;
     list.innerHTML = options.map(renderCheckoutOptionButton).join('');
     block.style.display = 'block';
@@ -1768,12 +1768,6 @@ async function loadCheckoutOptions() {
   } catch (e) {
     console.warn('Options checkout indisponibles:', e);
   }
-}
-
-function isCheckoutOption(item) {
-  const explicit = String(item?.item_type || item?.type || item?.category || '').toLowerCase();
-  const buttonText = String(item?.button_text || '').toLowerCase();
-  return explicit === 'option' || buttonText.includes('ajouter au panier');
 }
 
 function renderCheckoutOptionButton(option) {

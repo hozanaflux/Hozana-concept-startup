@@ -119,6 +119,25 @@ ALTER TABLE packs ADD COLUMN IF NOT EXISTS old_price TEXT;
 ALTER TABLE packs ADD COLUMN IF NOT EXISTS comparison JSONB DEFAULT '{}'::jsonb;
 
 -- ============================================================
+-- TABLE : pack_options
+-- Options complémentaires affichées sous la page pricing et dans
+-- le récapitulatif de commande. Séparées des packs pour éviter
+-- tout mélange dans l'affichage public.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS pack_options (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name        TEXT NOT NULL,
+  description TEXT,
+  price       TEXT,
+  old_price   TEXT,
+  period      TEXT DEFAULT 'par mois',
+  features    TEXT[] DEFAULT '{}',
+  badge       TEXT,
+  sort_order  INTEGER DEFAULT 0,
+  created_at  TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- ============================================================
 -- TABLE : services_list
 -- ============================================================
 CREATE TABLE IF NOT EXISTS services_list (
@@ -151,11 +170,15 @@ CREATE TABLE IF NOT EXISTS portfolio_projects (
 -- ROW LEVEL SECURITY (Packs, Services, Portfolio)
 -- ============================================================
 ALTER TABLE packs              ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pack_options       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE services_list       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE portfolio_projects ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "anon_all" ON packs;
 CREATE POLICY "anon_all" ON packs FOR ALL TO anon USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "anon_all" ON pack_options;
+CREATE POLICY "anon_all" ON pack_options FOR ALL TO anon USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "anon_all" ON services_list;
 CREATE POLICY "anon_all" ON services_list FOR ALL TO anon USING (true) WITH CHECK (true);

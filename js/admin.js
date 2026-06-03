@@ -5,7 +5,7 @@ if (typeof ADMIN_EMAIL_HASH === 'undefined') {
   window.ADMIN_PASSWORD_HASH = 'cb2e6d595374831518b59caec6590572569c1d989f19a807e4fc4db9c1a96383';
 }
 
-let P = [], COM = [], LEADS = [], VIEWS = [], ORDERS = [], PF = [], PACKS = [], SERVICES = [];
+let P = [], COM = [], LEADS = [], VIEWS = [], ORDERS = [], PF = [], PACKS = [], OPTIONS = [], SERVICES = [];
 let AUDITS = [];
 let CH = {};
 let _delCb = null;
@@ -158,7 +158,7 @@ function nav(btn, panel) {
   if (panel === 'portfolio') renderPortfolio();
   if (panel === 'leads')     renderLeads();
   if (panel === 'audits')    renderAudits();
-  if (panel === 'packs')     renderPacks();
+  if (panel === 'packs')     { renderPacks(); renderOptions(); }
   if (panel === 'services')  renderServices();
   if (panel === 'orders')    renderOrders();
   if (panel === 'comments')  renderComments();
@@ -173,7 +173,7 @@ async function initApp() {
 async function loadAll() {
   console.log('[Admin] Loading data...');
   try {
-    const [pr,cr,lr,vr,or,pfr, pkr, svr, ar] = await Promise.allSettled([
+    const [pr,cr,lr,vr,or,pfr, pkr, opr, svr, ar] = await Promise.allSettled([
       fetch('tables/blog_posts?order=created_at.desc&limit=200').then(r=>r.json()),
       fetch('tables/comments?order=created_at.desc&limit=300').then(r=>r.json()),
       fetch('tables/leads?order=created_at.desc&limit=300').then(r=>r.json()),
@@ -181,6 +181,7 @@ async function loadAll() {
       fetch('tables/orders?order=created_at.desc&limit=300').then(r=>r.json()),
       fetch('tables/portfolio_projects?order=sort_order.asc&limit=200').then(r=>r.json()),
       fetch('tables/packs?order=sort_order.asc&limit=50').then(r=>r.json()),
+      fetch('tables/pack_options?order=sort_order.asc&limit=100').then(r=>r.json()),
       fetch('tables/services_list?order=sort_order.asc&limit=50').then(r=>r.json()),
       fetch('tables/audits?order=created_at.desc&limit=100').then(r=>r.json()),
     ]);
@@ -193,10 +194,11 @@ async function loadAll() {
     if (vr.status==='fulfilled' && vr.value) VIEWS = vr.value.data || [];
     if (or.status==='fulfilled' && or.value) ORDERS = or.value.data || [];
     if (pfr.status==='fulfilled' && pfr.value) PF = pfr.value.data || [];
-    if (pkr.status==='fulfilled' && pkr.value) PACKS = pkr.value.data || [];
+    if (pkr.status==='fulfilled' && pkr.value) PACKS = (pkr.value.data || []).filter(p => packItemType(p) !== 'option');
+    if (opr.status==='fulfilled' && opr.value) OPTIONS = opr.value.data || [];
     if (svr.status==='fulfilled' && svr.value) SERVICES = svr.value.data || [];
 
-    console.log('[Admin] Data loaded:', { posts: P.length, leads: LEADS.length, packs: PACKS.length });
+    console.log('[Admin] Data loaded:', { posts: P.length, leads: LEADS.length, packs: PACKS.length, options: OPTIONS.length });
   } catch(e) { 
     console.error('[Admin] loadAll error:', e);
     toast('Erreur de chargement','err'); 
@@ -211,6 +213,7 @@ async function loadAll() {
   renderPortfolio();
   renderLeads();
   renderPacks();
+  renderOptions();
   renderServices();
   renderOrders();
   renderAudits();
@@ -941,15 +944,14 @@ async function regenerateBlog() {
 
 /* ─── PACKS ─── */
 function renderPacks(data=PACKS) {
-  const rows = data.filter(p => p && p.id && p.name);
+  const rows = data.filter(p => p && p.id && p.name && packItemType(p) !== 'option');
   set('packs-count', rows.length);
   const el = document.getElementById('packs-body');
   if (!el) return;
-  if (!rows.length) { el.innerHTML=`<tr class="empty-row"><td colspan="7">Aucune offre</td></tr>`; return; }
+  if (!rows.length) { el.innerHTML=`<tr class="empty-row"><td colspan="6">Aucun pack</td></tr>`; return; }
   el.innerHTML = rows.map(p=>`
     <tr>
       <td><div class="t-strong t-sm">${p.name}</div><div class="t-muted" style="font-size:.7rem;">${p.badge||''}</div></td>
-      <td><span class="badge ${packItemType(p)==='option'?'badge-yellow':'badge-gray'}">${packItemType(p)==='option'?'Option':'Pack'}</span></td>
       <td class="t-sm">${p.price||'—'}</td>
       <td class="t-muted t-sm">${p.period||'—'}</td>
       <td><span class="badge ${p.is_featured?'badge-green':'badge-gray'}">${p.is_featured?'Oui':'Non'}</span></td>
@@ -962,9 +964,8 @@ function renderPacks(data=PACKS) {
 }
 
 function openPackModal(p=null) {
-  document.getElementById('m-pack-title').textContent = p?'Modifier l’offre':'Nouvelle offre';
+  document.getElementById('m-pack-title').textContent = p?'Modifier le pack':'Nouveau pack';
   document.getElementById('pk-id').value = p?.id||'';
-  document.getElementById('pk-item-type').value = packItemType(p);
   document.getElementById('pk-name').value = p?.name||'';
   document.getElementById('pk-badge').value = p?.badge||'';
   document.getElementById('pk-price').value = p?.price||'';
@@ -978,7 +979,6 @@ function openPackModal(p=null) {
   document.getElementById('pk-order').value = p?.sort_order||0;
   document.getElementById('pk-link').value = p?.link||'';
   document.getElementById('pk-comparison').value = comparisonToText(p?.comparison || p?.compare || p?.comparison_rows);
-  togglePackFormMode();
   openModal('m-pack');
 }
 function editPack(id) {
@@ -992,15 +992,6 @@ function packItemType(p) {
   const explicit = String(p?.item_type || p?.type || p?.category || '').toLowerCase();
   const buttonText = String(p?.button_text || '').toLowerCase();
   return explicit === 'option' || buttonText.includes('ajouter au panier') ? 'option' : 'pack';
-}
-
-function togglePackFormMode() {
-  const isOption = document.getElementById('pk-item-type')?.value === 'option';
-  document.querySelectorAll('#m-pack .pack-only').forEach(el => {
-    el.style.display = isOption ? 'none' : '';
-  });
-  const title = document.getElementById('m-pack-title');
-  if (title && !document.getElementById('pk-id').value) title.textContent = isOption ? 'Nouvelle option' : 'Nouveau pack';
 }
 
 function comparisonToText(value) {
@@ -1028,12 +1019,11 @@ async function parseJsonSafe(response) {
 
 function isMissingColumnError(payload) {
   const msg = `${payload?.message || ''} ${payload?.details || ''} ${payload?.hint || ''}`;
-  return /column|schema cache|could not find|item_type|old_price|comparison/i.test(msg);
+  return /column|schema cache|could not find|item_type|old_price|comparison|pack_options/i.test(msg);
 }
 
 function legacyPackPayload(data) {
   const legacy = { ...data };
-  delete legacy.item_type;
   delete legacy.old_price;
   delete legacy.comparison;
   return legacy;
@@ -1066,23 +1056,21 @@ async function savePack() {
   if (!name) return toast('Le nom est requis','err');
   const features = document.getElementById('pk-features').value.split('\n').filter(Boolean);
   const features_excluded = document.getElementById('pk-features-excluded').value.split('\n').filter(Boolean);
-  const itemType = document.getElementById('pk-item-type').value;
   const buttonMode = document.getElementById('pk-button-mode').value;
   const manualLink = document.getElementById('pk-link').value.trim();
   const data = {
     name, badge:document.getElementById('pk-badge').value,
-    item_type:itemType,
     price:document.getElementById('pk-price').value,
     old_price:document.getElementById('pk-old-price').value,
     period:document.getElementById('pk-period').value,
     description:document.getElementById('pk-desc').value,
     features, features_excluded,
-    is_featured:itemType === 'pack' && document.getElementById('pk-featured').value==='true',
+    is_featured:document.getElementById('pk-featured').value==='true',
     sort_order:parseInt(document.getElementById('pk-order').value)||0,
-    link: itemType === 'option' ? '' : (buttonMode === 'contact' ? (manualLink || `contact.html?pack=${encodeURIComponent(name)}`) : manualLink),
-    button_text: itemType === 'option' ? 'Ajouter au panier' : (buttonMode === 'contact' ? 'Contactez-nous' : 'Voir le détail du pack'),
+    link: buttonMode === 'contact' ? (manualLink || `contact.html?pack=${encodeURIComponent(name)}`) : manualLink,
+    button_text: buttonMode === 'contact' ? 'Contactez-nous' : 'Voir le détail du pack',
     button_class: buttonMode === 'contact' ? 'btn-primary' : '',
-    comparison: itemType === 'pack' ? comparisonFromText(document.getElementById('pk-comparison').value) : {}
+    comparison: comparisonFromText(document.getElementById('pk-comparison').value)
   };
   try {
     if (id) {
@@ -1108,6 +1096,97 @@ async function delPack(id) {
   if (!res.ok) return toast('Erreur suppression','err');
   PACKS=PACKS.filter(x=>x.id!==id);
   renderPacks(); updateBadges(); toast('Offre supprimée','ok');
+  await triggerStaticBlogGeneration({ silent: true });
+}
+
+/* ─── OPTIONS TARIFAIRES ─── */
+function renderOptions(data=OPTIONS) {
+  const rows = data.filter(o => o && o.id && o.name);
+  set('options-count', rows.length);
+  const el = document.getElementById('options-body');
+  if (!el) return;
+  if (!rows.length) { el.innerHTML=`<tr class="empty-row"><td colspan="5">Aucune option</td></tr>`; return; }
+  el.innerHTML = rows.map(o=>`
+    <tr>
+      <td><div class="t-strong t-sm">${o.name}</div><div class="t-muted" style="font-size:.7rem;">${o.description||''}</div></td>
+      <td class="t-sm">${o.price||'—'}</td>
+      <td class="t-muted t-sm">${o.period||'—'}</td>
+      <td class="t-sm">${o.sort_order||0}</td>
+      <td><div class="acts">
+        <button class="act" onclick="editOption('${o.id}')" title="Modifier"><i class="fas fa-edit"></i></button>
+        <button class="act del" onclick="confirmDel(()=>delOption('${o.id}'))" title="Supprimer"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function openOptionModal(o=null) {
+  document.getElementById('m-option-title').textContent = o ? 'Modifier l’option' : 'Nouvelle option';
+  document.getElementById('op-id').value = o?.id || '';
+  document.getElementById('op-name').value = o?.name || '';
+  document.getElementById('op-badge').value = o?.badge || '';
+  document.getElementById('op-price').value = o?.price || '';
+  document.getElementById('op-old-price').value = o?.old_price || '';
+  document.getElementById('op-period').value = o?.period || 'par mois';
+  document.getElementById('op-order').value = o?.sort_order || 0;
+  document.getElementById('op-desc').value = o?.description || '';
+  document.getElementById('op-features').value = Array.isArray(o?.features) ? o.features.join('\n') : '';
+  openModal('m-option');
+}
+
+function editOption(id) {
+  if (!id || id === 'undefined') return toast('Option invalide','err');
+  const option = OPTIONS.find(o => o.id === id);
+  if (option) openOptionModal(option);
+  else toast('Option introuvable','err');
+}
+
+async function saveOption() {
+  const id = document.getElementById('op-id').value;
+  const name = document.getElementById('op-name').value.trim();
+  if (!name) return toast('Le nom est requis','err');
+  const data = {
+    name,
+    badge: document.getElementById('op-badge').value,
+    price: document.getElementById('op-price').value,
+    old_price: document.getElementById('op-old-price').value,
+    period: document.getElementById('op-period').value,
+    sort_order: parseInt(document.getElementById('op-order').value, 10) || 0,
+    description: document.getElementById('op-desc').value,
+    features: document.getElementById('op-features').value.split('\n').map(v => v.trim()).filter(Boolean)
+  };
+  try {
+    const saved = await saveOptionToSupabase(id, data);
+    if (id) {
+      const i = OPTIONS.findIndex(o => o.id === id);
+      if (i > -1) OPTIONS[i] = { ...OPTIONS[i], ...saved };
+    } else {
+      OPTIONS.push(saved);
+    }
+    closeModal('m-option'); renderOptions(); updateBadges();
+    toast(id ? 'Option mise à jour ✓' : 'Option ajoutée ✓','ok');
+    await triggerStaticBlogGeneration({ silent: true });
+  } catch (e) {
+    console.error('[Admin] saveOption failed:', e);
+    toast(e.message || 'Erreur option','err');
+  }
+}
+
+async function saveOptionToSupabase(id, data) {
+  const url = id ? `tables/pack_options/${id}` : 'tables/pack_options';
+  const method = id ? 'PATCH' : 'POST';
+  const response = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+  const payload = await parseJsonSafe(response);
+  if (!response.ok) throw new Error(payload?.message || 'Table pack_options indisponible');
+  if (!payload || !payload.id || !payload.name) throw new Error('Réponse Supabase invalide');
+  return payload;
+}
+
+async function delOption(id) {
+  if (!id || id === 'undefined') return toast('Option invalide','err');
+  const res = await fetch(`tables/pack_options/${id}`,{method:'DELETE'});
+  if (!res.ok) return toast('Erreur suppression option','err');
+  OPTIONS = OPTIONS.filter(o => o.id !== id);
+  renderOptions(); updateBadges(); toast('Option supprimée','ok');
   await triggerStaticBlogGeneration({ silent: true });
 }
 

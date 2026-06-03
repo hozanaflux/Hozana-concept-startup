@@ -87,14 +87,33 @@ async function fetchCatalog() {
     const rows = await response.json();
     const enriched = Array.isArray(rows) ? rows.map(enrichPack) : [];
     const packRows = enriched.filter(item => item.itemType !== 'option');
-    const optionRows = enriched.filter(item => item.itemType === 'option');
     const packs = normalizeFeaturedPack(packRows.length ? mergeWithDefaultPacks(packRows) : fallback);
-    const options = optionRows.length ? optionRows : getDefaultOptions();
+    const options = await fetchPackOptions();
     console.log(`📦 Fetched ${packs.length} pricing pack(s) and ${options.length} option(s) from Supabase`);
     return { packs, options };
   } catch (err) {
     console.warn(`⚠️  Could not fetch packs from Supabase (${err.message}). Using static fallback packs.`);
     return { packs: fallback, options: getDefaultOptions() };
+  }
+}
+
+async function fetchPackOptions() {
+  const url = `${SUPABASE_URL}/rest/v1/pack_options?select=*&order=sort_order.asc.nullslast,name.asc`;
+  const headers = {
+    'apikey': SUPABASE_ANON,
+    'Authorization': 'Bearer ' + SUPABASE_ANON,
+    'Accept': 'application/json'
+  };
+
+  try {
+    const response = await fetch(url, { headers, cache: 'no-store' });
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+    const rows = await response.json();
+    const options = Array.isArray(rows) ? rows.map(enrichOption) : [];
+    return options.length ? options : getDefaultOptions();
+  } catch (err) {
+    console.warn(`⚠️  Could not fetch pack_options from Supabase (${err.message}). Using static fallback options.`);
+    return getDefaultOptions();
   }
 }
 
@@ -687,6 +706,16 @@ function resolvePackButtonText(row, contactMode) {
   const isGenericText = /^(démarrer|demarrer|choisir|choisir ce pack|voir le détail du pack|voir le detail du pack)/i.test(savedText);
   if (contactMode && (!savedText || isGenericText)) return 'Contactez-nous';
   return savedText || (contactMode ? 'Contactez-nous' : 'Voir le détail du pack');
+}
+
+function enrichOption(row) {
+  return enrichPack({
+    ...row,
+    item_type: 'option',
+    button_text: 'Ajouter au panier',
+    button_class: 'btn-glass',
+    link: ''
+  });
 }
 
 function enrichPack(row) {

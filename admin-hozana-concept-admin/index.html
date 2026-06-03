@@ -330,17 +330,33 @@
       <div class="panel" id="panel-packs">
         <div class="card">
           <div class="card-head">
-            <div class="card-title"><i class="fas fa-box"></i> Packs & Options Tarifs (<span id="packs-count">0</span>)</div>
+            <div class="card-title"><i class="fas fa-box"></i> Packs Tarifs (<span id="packs-count">0</span>)</div>
             <div class="card-tools">
-              <button class="btn btn-primary btn-sm" onclick="openPackModal()"><i class="fas fa-plus"></i> Nouvelle offre</button>
+              <button class="btn btn-primary btn-sm" onclick="openPackModal()"><i class="fas fa-plus"></i> Nouveau pack</button>
             </div>
           </div>
           <div class="tbl-wrap">
             <table>
               <thead>
-                <tr><th>Offre</th><th>Type</th><th>Prix</th><th>Période</th><th>Mis en avant</th><th>Ordre</th><th>Actions</th></tr>
+                <tr><th>Pack</th><th>Prix</th><th>Période</th><th>Mis en avant</th><th>Ordre</th><th>Actions</th></tr>
               </thead>
               <tbody id="packs-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card" style="margin-top:1rem;">
+          <div class="card-head">
+            <div class="card-title"><i class="fas fa-puzzle-piece"></i> Options complémentaires (<span id="options-count">0</span>)</div>
+            <div class="card-tools">
+              <button class="btn btn-primary btn-sm" onclick="openOptionModal()"><i class="fas fa-plus"></i> Nouvelle option</button>
+            </div>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr><th>Option</th><th>Prix</th><th>Période</th><th>Ordre</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="options-body"></tbody>
             </table>
           </div>
         </div>
@@ -549,14 +565,7 @@
       <input type="hidden" id="pk-id">
       <div class="form-row">
         <div class="form-grp">
-          <label class="form-label">Catégorie de publication</label>
-          <select class="form-ctrl" id="pk-item-type" onchange="togglePackFormMode()">
-            <option value="pack">Pack tarifaire</option>
-            <option value="option">Option complémentaire</option>
-          </select>
-        </div>
-        <div class="form-grp">
-          <label class="form-label">Nom de l'offre *</label>
+          <label class="form-label">Nom du pack *</label>
           <input class="form-ctrl" id="pk-name" placeholder="ex: Starter, Growth..." required>
         </div>
         <div class="form-grp">
@@ -587,14 +596,14 @@
           <label class="form-label">Fonctionnalités NON incluses (une par ligne)</label>
           <textarea class="form-ctrl" id="pk-features-excluded" rows="3" placeholder="Analytics avancés&#10;Support 24h..."></textarea>
         </div>
-        <div class="form-grp pack-only">
+        <div class="form-grp">
           <label class="form-label">Mis en avant ⭐</label>
           <select class="form-ctrl" id="pk-featured">
             <option value="false">Non</option>
             <option value="true">Oui</option>
           </select>
         </div>
-        <div class="form-grp pack-only">
+        <div class="form-grp">
           <label class="form-label">Action du bouton utilisateur</label>
           <select class="form-ctrl" id="pk-button-mode">
             <option value="detail">Page détail du pack</option>
@@ -609,7 +618,7 @@
           <label class="form-label">Lien (URL — ex: contact.html?pack=starter)</label>
           <input class="form-ctrl" id="pk-link" placeholder="contact.html?pack=...">
         </div>
-        <div class="form-grp full pack-only">
+        <div class="form-grp full">
           <label class="form-label">Tableau comparatif (une ligne par fonctionnalité)</label>
           <textarea class="form-ctrl" id="pk-comparison" rows="5" placeholder="Chatbot IA: 3 avancés&#10;Workflows automatisés: 10&#10;SLA support: 24h prioritaire"></textarea>
         </div>
@@ -618,6 +627,59 @@
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('m-pack')">Annuler</button>
       <button class="btn btn-primary" onclick="savePack()"><i class="fas fa-save"></i> Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL — OPTION
+══════════════════════════════════════ -->
+<div class="overlay" id="m-option" onclick="closeIfBg(event,'m-option')">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="m-option-title">Nouvelle option</div>
+      <button class="modal-close" onclick="closeModal('m-option')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="op-id">
+      <div class="form-row">
+        <div class="form-grp">
+          <label class="form-label">Nom de l'option *</label>
+          <input class="form-ctrl" id="op-name" placeholder="ex: Chatbot supplémentaire">
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Badge (optionnel)</label>
+          <input class="form-ctrl" id="op-badge" placeholder="ex: IA">
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Prix (HT)</label>
+          <input class="form-ctrl" id="op-price" placeholder="ex: 150€">
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Ancien prix barré</label>
+          <input class="form-ctrl" id="op-old-price" placeholder="ex: 250€">
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Période</label>
+          <input class="form-ctrl" id="op-period" placeholder="ex: par mois">
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Ordre d'affichage</label>
+          <input class="form-ctrl" id="op-order" type="number" value="0">
+        </div>
+        <div class="form-grp full">
+          <label class="form-label">Description courte</label>
+          <textarea class="form-ctrl" id="op-desc" rows="2"></textarea>
+        </div>
+        <div class="form-grp full">
+          <label class="form-label">Points inclus (une par ligne)</label>
+          <textarea class="form-ctrl" id="op-features" rows="4" placeholder="Configuration&#10;Intégration site"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('m-option')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveOption()"><i class="fas fa-save"></i> Sauvegarder</button>
     </div>
   </div>
 </div>
