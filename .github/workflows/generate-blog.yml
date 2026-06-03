@@ -1,0 +1,44 @@
+name: Générer le blog statique
+
+on:
+  # Déclenchement manuel depuis GitHub UI
+  workflow_dispatch:
+
+  # Déclenchement via API (appelé par le panneau admin)
+  repository_dispatch:
+    types: [generate-blog]
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Générer les pages statiques du blog
+        run: node js/generate-static-blog.js
+
+      - name: Commiter les fichiers générés
+        run: |
+          git config user.name "Hozana Bot"
+          git config user.email "bot@hozanaconcept.com"
+          git add -A blog-posts/ sitemap.xml robots.txt
+          if git diff --staged --quiet; then
+            echo "Aucun changement détecté"
+          else
+            git commit -m "📝 Pages statiques du blog générées automatiquement"
+            git push
+            echo "✅ Pages générées et commitées sur GitHub"
+          fi
