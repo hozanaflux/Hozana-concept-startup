@@ -970,6 +970,7 @@ function openPackModal(p=null) {
   document.getElementById('pk-features').value = Array.isArray(p?.features)?p.features.join('\n'):'';
   document.getElementById('pk-features-excluded').value = Array.isArray(p?.features_excluded)?p.features_excluded.join('\n'):'';
   document.getElementById('pk-featured').value = p?.is_featured?'true':'false';
+  document.getElementById('pk-button-mode').value = /contact/i.test(p?.link || '') || /contact/i.test(p?.button_text || '') ? 'contact' : 'detail';
   document.getElementById('pk-order').value = p?.sort_order||0;
   document.getElementById('pk-link').value = p?.link||'';
   openModal('m-pack');
@@ -982,6 +983,8 @@ async function savePack() {
   if (!name) return toast('Le nom est requis','err');
   const features = document.getElementById('pk-features').value.split('\n').filter(Boolean);
   const features_excluded = document.getElementById('pk-features-excluded').value.split('\n').filter(Boolean);
+  const buttonMode = document.getElementById('pk-button-mode').value;
+  const manualLink = document.getElementById('pk-link').value.trim();
   const data = {
     name, badge:document.getElementById('pk-badge').value,
     price:document.getElementById('pk-price').value,
@@ -990,7 +993,9 @@ async function savePack() {
     features, features_excluded,
     is_featured:document.getElementById('pk-featured').value==='true',
     sort_order:parseInt(document.getElementById('pk-order').value)||0,
-    link:document.getElementById('pk-link').value
+    link: buttonMode === 'contact' ? (manualLink || `contact.html?pack=${encodeURIComponent(name)}`) : manualLink,
+    button_text: buttonMode === 'contact' ? 'Contactez-nous' : 'Voir le détail du pack',
+    button_class: buttonMode === 'contact' ? 'btn-primary' : ''
   };
   try {
     if (id) {

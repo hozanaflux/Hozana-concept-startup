@@ -80,7 +80,7 @@ async function fetchPacks() {
     const response = await fetch(url, { headers, cache: 'no-store' });
     if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
     const rows = await response.json();
-    const packs = Array.isArray(rows) && rows.length ? mergeWithDefaultPacks(rows.map(enrichPack)) : fallback;
+    const packs = normalizeFeaturedPack(Array.isArray(rows) && rows.length ? mergeWithDefaultPacks(rows.map(enrichPack)) : fallback);
     console.log(`📦 Fetched ${packs.length} pricing pack(s) from Supabase`);
     return packs;
   } catch (err) {
@@ -435,6 +435,7 @@ window.__STATIC_PACK_DATA__ = ${JSON.stringify({
       priceMonthly: pack.priceMonthly,
       priceAnnual: pack.priceAnnual,
       badge: pack.badge,
+      featured: pack.isFeatured,
       isFeatured: pack.isFeatured
     })};`;
     document.head.insertBefore(staticScript, document.head.firstChild);
@@ -615,6 +616,26 @@ function mergeWithDefaultPacks(packs) {
   return [...byKey.values()].sort((a, b) => (a.sort_order || 99) - (b.sort_order || 99));
 }
 
+function normalizeFeaturedPack(packs) {
+  const featured = packs.find(pack => pack.key === 'growth' && pack.isFeatured) || packs.find(pack => pack.isFeatured);
+  return packs.map(pack => {
+    const isFeatured = featured ? pack.slug === featured.slug : false;
+    const isContact = /contact/i.test(pack.buttonHref || '') || /contact/i.test(pack.buttonText || '');
+    return {
+      ...pack,
+      isFeatured,
+      buttonClass: isContact ? 'btn-primary' : (isFeatured ? 'btn-primary' : 'btn-glass')
+    };
+  });
+}
+
+function resolvePackButtonText(row, contactMode) {
+  const savedText = String(row.button_text || '').trim();
+  const isGenericText = /^(démarrer|demarrer|choisir|choisir ce pack|voir le détail du pack|voir le detail du pack)/i.test(savedText);
+  if (contactMode && (!savedText || isGenericText)) return 'Contactez-nous';
+  return savedText || (contactMode ? 'Contactez-nous' : 'Voir le détail du pack');
+}
+
 function enrichPack(row) {
   let name = row.name || row.title || 'Pack IA';
   const key = packKey(name);
@@ -628,12 +649,18 @@ function enrichPack(row) {
   const description = row.description || defaults.description || '';
   const explicitSlug = slugify(row.slug || extractPackSlugFromLink(row.link));
   const fallbackSlug = key === 'starter' ? 'starter' : slugify(name.replace(/^pack\s+/i, ''));
+  const isFeatured = row.is_featured === true || String(row.is_featured) === 'true';
+  const hasFeaturedValue = row.is_featured !== undefined && row.is_featured !== null;
+  const isEnterprise = key === 'enterprise' || String(row.price || '').toLowerCase().includes('devis');
+  const slug = explicitSlug || fallbackSlug || key;
+  const buttonHref = row.link || (isEnterprise ? `contact.html?pack=${encodeURIComponent(name)}` : `pack-details/${slug}.html`);
+  const contactMode = /contact/i.test(buttonHref) || isEnterprise;
 
   return {
     ...defaults,
     ...row,
     key,
-    slug: explicitSlug || fallbackSlug || key,
+    slug,
     name,
     priceMonthly,
     priceAnnual: priceMonthly ? Math.round(priceMonthly * 0.8) : 0,
@@ -642,8 +669,11 @@ function enrichPack(row) {
     description,
     features,
     excluded,
-    isFeatured: row.is_featured === true || String(row.is_featured) === 'true' || defaults.featured === true,
-    isEnterprise: key === 'enterprise' || String(row.price || '').toLowerCase().includes('devis'),
+    isFeatured: hasFeaturedValue ? isFeatured : defaults.featured === true,
+    isEnterprise,
+    buttonHref,
+    buttonText: resolvePackButtonText(row, contactMode),
+    buttonClass: row.button_class || (isFeatured ? 'btn-primary' : 'btn-glass'),
     sidebarFeatures: defaults.sidebarFeatures.length ? defaults.sidebarFeatures : features.slice(0, 7),
     featureGroups: defaults.featureGroups.length ? defaults.featureGroups : [{
       title: 'Inclus dans le pack',
@@ -761,13 +791,13 @@ function resolveImageURL(imgPath) {
 }
 
 function renderStaticPackCard(pack) {
-  const detailHref = pack.isEnterprise ? 'contact.html?pack=Enterprise' : `pack-details/${pack.slug}.html`;
+  const detailHref = pack.buttonHref || (pack.isEnterprise ? `contact.html?pack=${encodeURIComponent(pack.name)}` : `pack-details/${pack.slug}.html`);
   const features = pack.features.slice(0, 7).map(f => `<li>${escapeHtml(f)}</li>`).join('');
   const excluded = pack.excluded.map(f => `<li class="excluded">${escapeHtml(f)}</li>`).join('');
   const priceId = `${pack.key}-price`;
   return `
       <article class="glass pack-card-full ${pack.isFeatured ? 'featured' : ''} reveal" itemscope itemtype="https://schema.org/Product">
-        ${pack.isFeatured ? '<div class="pack-badge">Le plus populaire</div>' : ''}
+        ${pack.isFeatured ? `<div class="pack-badge">${escapeHtml(pack.badge || 'Mis en avant')}</div>` : ''}
         <div style="margin-top:0.5rem;">
           <div class="badge badge-glass" style="width:fit-content;opacity:0.75;font-size:0.7rem;" itemprop="name">${escapeHtml(pack.name)}</div>
           <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="${pack.isFeatured ? 'gradient-text' : ''}" id="${priceId}" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
@@ -779,8 +809,8 @@ function renderStaticPackCard(pack) {
         </div>
         <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">${escapeHtml(pack.description)}</p>
         <ul class="pack-features" style="flex:1;">${features}${excluded}</ul>
-        <a href="${detailHref}" class="btn ${pack.isFeatured ? 'btn-primary' : 'btn-glass'} w-full mt-lg" style="justify-content:center;">
-          ${pack.isEnterprise ? 'Discutons de votre projet' : 'Voir le détail du pack'}
+        <a href="${detailHref}" class="btn ${pack.buttonClass || (pack.isFeatured ? 'btn-primary' : 'btn-glass')} w-full mt-lg" style="justify-content:center;">
+          ${escapeHtml(pack.buttonText || (pack.isEnterprise ? 'Contactez-nous' : 'Voir le détail du pack'))}
         </a>
       </article>`;
 }
@@ -851,7 +881,7 @@ function renderStaticPackHero(pack) {
   return `
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
       <div class="badge ${pack.badgeClass}" style="font-size:0.875rem;">${pack.emoji} ${escapeHtml(pack.badge)}</div>
-      ${pack.isFeatured ? '<div class="badge badge-glass" style="font-size:0.75rem;">Le plus populaire</div>' : ''}
+      ${pack.isFeatured ? '<div class="badge badge-glass" style="font-size:0.75rem;">Mis en avant</div>' : ''}
     </div>
     <h1 class="pack-hero-title">${escapeHtml(pack.name)}</h1>
     <p class="pack-hero-subtitle">${escapeHtml(pack.description)}</p>
