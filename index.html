@@ -1137,9 +1137,6 @@
       .trust-strip { justify-content: center; }
       .hero-slide-title { font-size: clamp(1.625rem, 8vw, 2.5rem) !important; line-height: 1.12; }
       .slide-badge { font-size: 0.68rem; padding: 0.35rem 0.75rem; }
-      #hero-slide-2 .s-anim.d5 { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; }
-      /* Slide 3 stats — 2 colonnes sur très petit écran */
-      #hero-slide-2 [style*='grid-template-columns:repeat(4'] { grid-template-columns: repeat(2,1fr) !important; gap: 0.75rem !important; }
       .hero-slide-actions { flex-direction: column; align-items: center; }
       .hero-slide-actions .btn { width: 100%; max-width: 320px; justify-content: center; }
     }
@@ -1290,7 +1287,7 @@
       </div>
     </div>
 
-    <!-- ── SLIDE 2 : Développement d'applications ── accent orange, visuel à GAUCHE, texte à DROITE -->
+    <!-- ── SLIDE 2 : Développement d'applications ── accent orange, texte à gauche, visuel à droite -->
     <div class="hero-slide" id="hero-slide-1" data-slide="1">
       <!-- Orbe orange haut-droite -->
       <div aria-hidden="true" style="position:absolute;top:-60px;right:-60px;width:420px;height:420px;background:radial-gradient(circle,rgba(255,106,0,0.15),transparent 70%);pointer-events:none;z-index:1;"></div>
@@ -1298,9 +1295,8 @@
       <div aria-hidden="true" style="position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,106,0,0.5),transparent);pointer-events:none;z-index:1;"></div>
       <!-- Grille subtile droite -->
       <div aria-hidden="true" style="position:absolute;top:0;right:0;width:50%;height:100%;background-image:linear-gradient(rgba(255,106,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,106,0,0.04) 1px,transparent 1px);background-size:50px 50px;mask-image:linear-gradient(270deg,black,transparent);pointer-events:none;z-index:1;"></div>
-      <!-- Layout inversé : visuel à gauche (order:2), texte à droite (order:1) -->
       <div class="hero-content" style="--slide-accent:#FF8C42;">
-        <div class="hero-text" style="order:2;">
+        <div class="hero-text">
           <div class="slide-badge s-anim d1" style="background:rgba(255,106,0,0.12);border:1px solid rgba(255,106,0,0.3);color:#FF8C42;">
             <i class="fas fa-code"></i> Développement d'Applications
           </div>
@@ -1320,7 +1316,7 @@
             </a>
           </div>
         </div>
-        <div class="hero-visual s-anim d5" aria-hidden="true" style="order:1;">
+        <div class="hero-visual s-anim d5" aria-hidden="true">
           <div class="slide-visual-card" style="border-top:2px solid rgba(255,106,0,0.5);">
             <!-- Tab bar style éditeur -->
             <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.875rem;">
@@ -1365,7 +1361,7 @@
       </div>
     </div>
 
-    <!-- ── SLIDE 3 : Consulting & Coaching ── CENTRÉ + blanc lumineux, lignes croisées -->
+    <!-- ── SLIDE 3 : Consulting & Coaching ── texte à gauche, dashboard à droite -->
     <div class="hero-slide" id="hero-slide-2" data-slide="2">
       <!-- Double orbe blanc-rouge symétrique -->
       <div aria-hidden="true" style="position:absolute;top:-100px;left:-120px;width:500px;height:500px;background:radial-gradient(ellipse,rgba(255,255,255,0.04),transparent 65%);pointer-events:none;z-index:1;"></div>
@@ -1378,8 +1374,7 @@
       <!-- Coins lumineux -->
       <div aria-hidden="true" style="position:absolute;top:0;left:0;width:3px;height:60px;background:linear-gradient(180deg,rgba(255,255,255,0.4),transparent);pointer-events:none;z-index:1;"></div>
       <div aria-hidden="true" style="position:absolute;top:0;right:0;width:3px;height:60px;background:linear-gradient(180deg,rgba(255,46,46,0.5),transparent);pointer-events:none;z-index:1;"></div>
-      <!-- layout centré 1 colonne -->
-      <div class="hero-content" style="grid-template-columns:1fr;max-width:760px;text-align:center;">
+      <div class="hero-content" style="--slide-accent:#FF8C42;">
         <div class="hero-text">
           <div class="slide-badge s-anim d1" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.9);display:inline-flex;backdrop-filter:blur(8px);">
             <i class="fas fa-chart-line"></i> Consulting & Coaching Premium
@@ -1388,10 +1383,10 @@
             Stratégie, Audit &<br>
             <span style="background:linear-gradient(135deg,#fff 30%,#FF8C42 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Transformation Digitale</span>
           </h1>
-          <p class="hero-slide-subtitle s-anim d3" style="max-width:580px;margin:0 auto 1.75rem;">
+          <p class="hero-slide-subtitle s-anim d3">
             Audit complet de votre écosystème digital, stratégie IA sur mesure et coaching individuel. Nous vous guidons de <strong style="color:var(--white);">la vision à l'exécution</strong> avec des résultats mesurables dès le premier mois.
           </p>
-          <div class="hero-slide-actions s-anim d4" style="justify-content:center;">
+          <div class="hero-slide-actions s-anim d4">
             <a href="audit.html" class="btn btn-primary">
               <i class="fas fa-search"></i> Audit gratuit
             </a>
@@ -1400,24 +1395,60 @@
             </a>
           </div>
         </div>
-        <!-- Stats en ligne — palette blanc/rouge/orange distinctive -->
-        <div class="s-anim d5" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem;" aria-hidden="true">
-          <div class="hero-s3-stat">
-            <div class="hero-s3-val">50+</div>
-            <div style="font-size:0.7rem;color:var(--white-40);font-family:var(--font-accent);margin-top:0.25rem;line-height:1.3;">Audits réalisés</div>
+        <div class="hero-visual s-anim d5" aria-hidden="true">
+          <div class="slide-visual-card form-visual-card">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.07);">
+              <div style="width:38px;height:38px;background:linear-gradient(135deg,#FF2E2E,#FF8C42);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;flex-shrink:0;"><i class="fas fa-compass"></i></div>
+              <div>
+                <div style="font-family:var(--font-title);font-size:0.9rem;font-weight:700;">Roadmap IA — Hozana</div>
+                <div style="font-size:0.72rem;color:var(--white-40);font-family:var(--font-accent);">Pilotage stratégique</div>
+              </div>
+              <div style="margin-left:auto;font-size:0.68rem;color:#FF8C42;font-family:var(--font-accent);font-weight:800;padding:0.2rem 0.55rem;border-radius:999px;background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.22);">Premium</div>
+            </div>
+
+            <div class="form-course-item">
+              <div class="form-course-icon" style="background:rgba(255,46,46,0.12);color:var(--red);"><i class="fas fa-search"></i></div>
+              <div>
+                <div class="form-course-title">Audit 360</div>
+                <div class="form-course-sub">Process, outils, data, opportunités IA</div>
+              </div>
+              <div class="form-progress-pill" style="background:rgba(255,46,46,0.12);color:#ff7070;">Jour 1</div>
+            </div>
+            <div class="form-course-item">
+              <div class="form-course-icon" style="background:rgba(255,106,0,0.12);color:#FF8C42;"><i class="fas fa-route"></i></div>
+              <div>
+                <div class="form-course-title">Roadmap priorisée</div>
+                <div class="form-course-sub">Actions classées par impact, budget et délai</div>
+              </div>
+              <div class="form-progress-pill" style="background:rgba(255,106,0,0.12);color:#FF8C42;">30j</div>
+            </div>
+            <div class="form-course-item" style="margin-bottom:1rem;">
+              <div class="form-course-icon" style="background:rgba(255,255,255,0.08);color:var(--white-80);"><i class="fas fa-chart-line"></i></div>
+              <div>
+                <div class="form-course-title">Coaching dirigeant</div>
+                <div class="form-course-sub">Décisions, adoption équipe, suivi des KPI</div>
+              </div>
+              <div class="form-progress-pill" style="background:rgba(255,255,255,0.08);color:var(--white-70);">VIP</div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.06);">
+              <div style="text-align:center;padding:0.6rem;background:rgba(255,255,255,0.04);border-radius:9px;">
+                <div style="font-family:var(--font-title);font-size:1.2rem;font-weight:800;color:var(--white);">50+</div>
+                <div style="font-size:0.65rem;color:var(--white-40);font-family:var(--font-accent);">Audits</div>
+              </div>
+              <div style="text-align:center;padding:0.6rem;background:rgba(255,46,46,0.06);border-radius:9px;">
+                <div style="font-family:var(--font-title);font-size:1.2rem;font-weight:800;background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">x3.2</div>
+                <div style="font-size:0.65rem;color:var(--white-40);font-family:var(--font-accent);">ROI</div>
+              </div>
+              <div style="text-align:center;padding:0.6rem;background:rgba(255,106,0,0.06);border-radius:9px;">
+                <div style="font-family:var(--font-title);font-size:1.2rem;font-weight:800;color:#FF8C42;">98%</div>
+                <div style="font-size:0.65rem;color:var(--white-40);font-family:var(--font-accent);">Satisf.</div>
+              </div>
+            </div>
           </div>
-          <div style="text-align:center;padding:1.25rem 1rem;background:rgba(255,46,46,0.07);border:1px solid rgba(255,46,46,0.18);border-radius:16px;">
-            <div style="font-family:var(--font-title);font-size:1.9rem;font-weight:900;background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">×3.2</div>
-            <div style="font-size:0.7rem;color:var(--white-40);font-family:var(--font-accent);margin-top:0.25rem;line-height:1.3;">ROI moyen client</div>
-          </div>
-          <div style="text-align:center;padding:1.25rem 1rem;background:rgba(255,106,0,0.07);border:1px solid rgba(255,106,0,0.18);border-radius:16px;">
-            <div style="font-family:var(--font-title);font-size:1.9rem;font-weight:900;color:#FF8C42;">30j</div>
-            <div style="font-size:0.7rem;color:var(--white-40);font-family:var(--font-accent);margin-top:0.25rem;line-height:1.3;">Premiers résultats</div>
-          </div>
-          <div class="hero-s3-stat">
-            <div class="hero-s3-val">98%</div>
-            <div style="font-size:0.7rem;color:var(--white-40);font-family:var(--font-accent);margin-top:0.25rem;line-height:1.3;">Satisfaction</div>
-          </div>
+          <div class="float-badge fb-1" style="border-color:rgba(255,255,255,0.18);"><i class="fas fa-bullseye" style="color:var(--white-80);"></i> Plan clair</div>
+          <div class="float-badge fb-2" style="border-color:rgba(255,106,0,0.3);"><i class="fas fa-chart-simple" style="color:#FF8C42;"></i> KPI suivis</div>
+          <div class="float-badge fb-3" style="border-color:rgba(255,46,46,0.25);"><i class="fas fa-user-tie" style="color:var(--red);"></i> Coaching VIP</div>
         </div>
       </div>
     </div>
