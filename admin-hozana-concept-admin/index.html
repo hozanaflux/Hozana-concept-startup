@@ -330,15 +330,15 @@
       <div class="panel" id="panel-packs">
         <div class="card">
           <div class="card-head">
-            <div class="card-title"><i class="fas fa-box"></i> Packs Tarifs (<span id="packs-count">0</span>)</div>
+            <div class="card-title"><i class="fas fa-box"></i> Packs & Options Tarifs (<span id="packs-count">0</span>)</div>
             <div class="card-tools">
-              <button class="btn btn-primary btn-sm" onclick="openPackModal()"><i class="fas fa-plus"></i> Nouveau pack</button>
+              <button class="btn btn-primary btn-sm" onclick="openPackModal()"><i class="fas fa-plus"></i> Nouvelle offre</button>
             </div>
           </div>
           <div class="tbl-wrap">
             <table>
               <thead>
-                <tr><th>Pack</th><th>Prix</th><th>Période</th><th>Mis en avant</th><th>Ordre</th><th>Actions</th></tr>
+                <tr><th>Offre</th><th>Type</th><th>Prix</th><th>Période</th><th>Mis en avant</th><th>Ordre</th><th>Actions</th></tr>
               </thead>
               <tbody id="packs-body"></tbody>
             </table>
@@ -549,7 +549,14 @@
       <input type="hidden" id="pk-id">
       <div class="form-row">
         <div class="form-grp">
-          <label class="form-label">Nom du pack *</label>
+          <label class="form-label">Catégorie de publication</label>
+          <select class="form-ctrl" id="pk-item-type" onchange="togglePackFormMode()">
+            <option value="pack">Pack tarifaire</option>
+            <option value="option">Option complémentaire</option>
+          </select>
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Nom de l'offre *</label>
           <input class="form-ctrl" id="pk-name" placeholder="ex: Starter, Growth..." required>
         </div>
         <div class="form-grp">
@@ -559,6 +566,10 @@
         <div class="form-grp">
           <label class="form-label">Prix (HT)</label>
           <input class="form-ctrl" id="pk-price" placeholder="ex: 490€">
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Ancien prix barré</label>
+          <input class="form-ctrl" id="pk-old-price" placeholder="ex: 690€">
         </div>
         <div class="form-grp">
           <label class="form-label">Période</label>
@@ -576,14 +587,14 @@
           <label class="form-label">Fonctionnalités NON incluses (une par ligne)</label>
           <textarea class="form-ctrl" id="pk-features-excluded" rows="3" placeholder="Analytics avancés&#10;Support 24h..."></textarea>
         </div>
-        <div class="form-grp">
+        <div class="form-grp pack-only">
           <label class="form-label">Mis en avant ⭐</label>
           <select class="form-ctrl" id="pk-featured">
             <option value="false">Non</option>
             <option value="true">Oui</option>
           </select>
         </div>
-        <div class="form-grp">
+        <div class="form-grp pack-only">
           <label class="form-label">Action du bouton utilisateur</label>
           <select class="form-ctrl" id="pk-button-mode">
             <option value="detail">Page détail du pack</option>
@@ -597,6 +608,10 @@
         <div class="form-grp full">
           <label class="form-label">Lien (URL — ex: contact.html?pack=starter)</label>
           <input class="form-ctrl" id="pk-link" placeholder="contact.html?pack=...">
+        </div>
+        <div class="form-grp full pack-only">
+          <label class="form-label">Tableau comparatif (une ligne par fonctionnalité)</label>
+          <textarea class="form-ctrl" id="pk-comparison" rows="5" placeholder="Chatbot IA: 3 avancés&#10;Workflows automatisés: 10&#10;SLA support: 24h prioritaire"></textarea>
         </div>
       </div>
     </div>

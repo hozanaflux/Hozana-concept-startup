@@ -68,6 +68,11 @@ async function fetchPublishedPosts() {
 }
 
 async function fetchPacks() {
+  const catalog = await fetchCatalog();
+  return catalog.packs;
+}
+
+async function fetchCatalog() {
   const fallback = getDefaultPacks();
   const url = `${SUPABASE_URL}/rest/v1/packs?select=*&order=sort_order.asc.nullslast,name.asc`;
   const headers = {
@@ -80,12 +85,16 @@ async function fetchPacks() {
     const response = await fetch(url, { headers, cache: 'no-store' });
     if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
     const rows = await response.json();
-    const packs = normalizeFeaturedPack(Array.isArray(rows) && rows.length ? mergeWithDefaultPacks(rows.map(enrichPack)) : fallback);
-    console.log(`📦 Fetched ${packs.length} pricing pack(s) from Supabase`);
-    return packs;
+    const enriched = Array.isArray(rows) ? rows.map(enrichPack) : [];
+    const packRows = enriched.filter(item => item.itemType !== 'option');
+    const optionRows = enriched.filter(item => item.itemType === 'option');
+    const packs = normalizeFeaturedPack(packRows.length ? mergeWithDefaultPacks(packRows) : fallback);
+    const options = optionRows.length ? optionRows : getDefaultOptions();
+    console.log(`📦 Fetched ${packs.length} pricing pack(s) and ${options.length} option(s) from Supabase`);
+    return { packs, options };
   } catch (err) {
     console.warn(`⚠️  Could not fetch packs from Supabase (${err.message}). Using static fallback packs.`);
-    return fallback;
+    return { packs: fallback, options: getDefaultOptions() };
   }
 }
 
@@ -391,7 +400,7 @@ function generateStaticBlogIndex(generatedPosts) {
   console.log('📰 Static blog listing injected into blog.html');
 }
 
-function generatePricingPage(packs) {
+function generatePricingPage(packs, options = []) {
   if (!fs.existsSync(PRICING_PATH)) return;
   const dom = new JSDOM(fs.readFileSync(PRICING_PATH, 'utf8'));
   const document = dom.window.document;
@@ -399,6 +408,13 @@ function generatePricingPage(packs) {
   if (container) {
     container.style.gridTemplateColumns = `repeat(${Math.min(Math.max(packs.length, 1), 4)}, 1fr)`;
     container.innerHTML = packs.map(renderStaticPackCard).join('');
+  }
+  const compare = document.querySelector('.compare-table');
+  if (compare) compare.innerHTML = renderComparisonTable(packs);
+  const addons = document.getElementById('options-container') || document.querySelector('#pricing-options-grid') || document.querySelector('section:nth-of-type(4) .grid-3');
+  if (addons) {
+    addons.id = 'options-container';
+    addons.innerHTML = options.map(renderOptionCard).join('');
   }
 
   upsertMetaNode(document, 'name', 'description', 'Comparez les packs IA Hozana Concept : Starter, Growth, Elite et Enterprise. Tarifs HT, fonctionnalités incluses, support, automatisations, chatbots IA et accompagnement.');
@@ -410,7 +426,7 @@ function generatePricingPage(packs) {
   console.log('💶 Static pricing packs injected into pricing.html');
 }
 
-function generateStaticPackPages(packs) {
+function generateStaticPackPages(packs, options = []) {
   if (!fs.existsSync(PACK_TEMPLATE_PATH)) return [];
   const template = fs.readFileSync(PACK_TEMPLATE_PATH, 'utf8');
   const generated = [];
@@ -434,6 +450,7 @@ window.__STATIC_PACK_DATA__ = ${JSON.stringify({
       description: pack.description,
       priceMonthly: pack.priceMonthly,
       priceAnnual: pack.priceAnnual,
+      oldPriceMonthly: pack.oldPriceMonthly,
       badge: pack.badge,
       featured: pack.isFeatured,
       isFeatured: pack.isFeatured
@@ -459,6 +476,7 @@ window.__STATIC_PACK_DATA__ = ${JSON.stringify({
     `).join('');
     const side = document.getElementById('sidebar-features');
     if (side) side.innerHTML = pack.sidebarFeatures.map(f => `<li style="display:flex;align-items:center;gap:0.5rem;font-size:0.8125rem;color:var(--white-70);"><i class="fas fa-check" style="color:#22c55e;font-size:0.75rem;flex-shrink:0;"></i>${escapeHtml(f)}</li>`).join('');
+    injectPackOptions(document, options);
 
     const summaryName = document.getElementById('summary-pack-name');
     if (summaryName) summaryName.textContent = pack.name;
@@ -495,9 +513,9 @@ async function generateStaticBlog() {
     if (posts.length === 0) {
       console.log('⚠️  No published posts found.');
       // Still generate an empty sitemap with main pages
-      const packs = await fetchPacks();
-      generatePricingPage(packs);
-      const generatedPacks = generateStaticPackPages(packs);
+      const catalog = await fetchCatalog();
+      generatePricingPage(catalog.packs, catalog.options);
+      const generatedPacks = generateStaticPackPages(catalog.packs, catalog.options);
       generateStaticBlogIndex([]);
       generateSitemap([], generatedPacks);
       generateRobotsTxt();
@@ -513,10 +531,10 @@ async function generateStaticBlog() {
     }
 
     // 3. Generate crawlable static landing pages
-    const packs = await fetchPacks();
+    const catalog = await fetchCatalog();
     generateStaticBlogIndex(generatedPosts);
-    generatePricingPage(packs);
-    const generatedPacks = generateStaticPackPages(packs);
+    generatePricingPage(catalog.packs, catalog.options);
+    const generatedPacks = generateStaticPackPages(catalog.packs, catalog.options);
 
     // 4. Generate sitemap
     generateSitemap(generatedPosts, generatedPacks);
@@ -616,6 +634,41 @@ function mergeWithDefaultPacks(packs) {
   return [...byKey.values()].sort((a, b) => (a.sort_order || 99) - (b.sort_order || 99));
 }
 
+function getDefaultOptions() {
+  return [
+    enrichPack({
+      item_type: 'option',
+      name: 'Chatbot Supplémentaire',
+      description: 'Ajout d un chatbot IA avancé supplémentaire à votre solution existante.',
+      price: '150€',
+      period: 'par mois',
+      badge: 'IA',
+      features: ['Configuration du chatbot', 'Intégration site ou messagerie'],
+      sort_order: 101
+    }),
+    enrichPack({
+      item_type: 'option',
+      name: 'Workflow Complexe',
+      description: 'Développement d un workflow d automatisation avancé supplémentaire.',
+      price: '200€',
+      period: 'par mois',
+      badge: 'Automation',
+      features: ['Workflow multi-étapes', 'Tests et optimisation'],
+      sort_order: 102
+    }),
+    enrichPack({
+      item_type: 'option',
+      name: 'Pack Contenu +50',
+      description: '50 pièces de contenu IA supplémentaires par mois : articles, posts, emails.',
+      price: '250€',
+      period: 'par mois',
+      badge: 'Contenu',
+      features: ['50 contenus IA', 'Adaptation à votre ligne éditoriale'],
+      sort_order: 103
+    })
+  ];
+}
+
 function normalizeFeaturedPack(packs) {
   const featured = packs.find(pack => pack.key === 'growth' && pack.isFeatured) || packs.find(pack => pack.isFeatured);
   return packs.map(pack => {
@@ -638,12 +691,14 @@ function resolvePackButtonText(row, contactMode) {
 
 function enrichPack(row) {
   let name = row.name || row.title || 'Pack IA';
+  const itemType = String(row.item_type || row.type || row.category || '').toLowerCase() === 'option' ? 'option' : 'pack';
   const key = packKey(name);
   if (key === 'starter' && /stater/i.test(name)) name = 'Pack Starter';
   if (key === 'growth' && !/^pack\s+/i.test(name)) name = 'Pack Growth';
   if (key === 'elite' && !/^pack\s+/i.test(name)) name = 'Pack Elite';
   const defaults = getPackDefaults(key);
   const priceMonthly = parsePrice(row.price) || defaults.priceMonthly || 0;
+  const oldPriceMonthly = parsePrice(row.old_price || row.price_before || row.compare_at_price);
   const features = normalizeList(row.features).length ? normalizeList(row.features) : defaults.sidebarFeatures;
   const excluded = normalizeList(row.features_excluded);
   const description = row.description || defaults.description || '';
@@ -660,10 +715,13 @@ function enrichPack(row) {
     ...defaults,
     ...row,
     key,
+    itemType,
     slug,
     name,
     priceMonthly,
     priceAnnual: priceMonthly ? Math.round(priceMonthly * 0.8) : 0,
+    oldPriceMonthly,
+    oldPrice: row.old_price || row.price_before || row.compare_at_price || '',
     price: row.price || (priceMonthly ? `${priceMonthly.toLocaleString('fr-FR')}€` : 'Sur devis'),
     period: row.period || 'par mois, HT',
     description,
@@ -674,6 +732,7 @@ function enrichPack(row) {
     buttonHref,
     buttonText: resolvePackButtonText(row, contactMode),
     buttonClass: row.button_class || (isFeatured ? 'btn-primary' : 'btn-glass'),
+    comparison: parseComparison(row.comparison || row.compare || row.comparison_rows),
     sidebarFeatures: defaults.sidebarFeatures.length ? defaults.sidebarFeatures : features.slice(0, 7),
     featureGroups: defaults.featureGroups.length ? defaults.featureGroups : [{
       title: 'Inclus dans le pack',
@@ -795,11 +854,13 @@ function renderStaticPackCard(pack) {
   const features = pack.features.slice(0, 7).map(f => `<li>${escapeHtml(f)}</li>`).join('');
   const excluded = pack.excluded.map(f => `<li class="excluded">${escapeHtml(f)}</li>`).join('');
   const priceId = `${pack.key}-price`;
+  const oldPrice = pack.oldPriceMonthly ? `<div style="font-size:1rem;color:var(--white-30);text-decoration:line-through;margin-top:0.4rem;">${pack.oldPriceMonthly.toLocaleString('fr-FR')}€</div>` : '';
   return `
       <article class="glass pack-card-full ${pack.isFeatured ? 'featured' : ''} reveal" itemscope itemtype="https://schema.org/Product">
         ${pack.isFeatured ? `<div class="pack-badge">${escapeHtml(pack.badge || 'Mis en avant')}</div>` : ''}
         <div style="margin-top:0.5rem;">
           <div class="badge badge-glass" style="width:fit-content;opacity:0.75;font-size:0.7rem;" itemprop="name">${escapeHtml(pack.name)}</div>
+          ${oldPrice}
           <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="${pack.isFeatured ? 'gradient-text' : ''}" id="${priceId}" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
             <span itemprop="price">${pack.price}</span>
             <meta itemprop="priceCurrency" content="EUR">
@@ -813,6 +874,90 @@ function renderStaticPackCard(pack) {
           ${escapeHtml(pack.buttonText || (pack.isEnterprise ? 'Contactez-nous' : 'Voir le détail du pack'))}
         </a>
       </article>`;
+}
+
+function renderOptionCard(option) {
+  const icon = optionIcon(option);
+  const price = option.priceMonthly ? `+ ${option.priceMonthly.toLocaleString('fr-FR')}€` : escapeHtml(option.price || 'Sur devis');
+  const oldPrice = option.oldPriceMonthly ? `<div style="font-size:0.85rem;color:var(--white-30);text-decoration:line-through;margin-top:0.25rem;">${option.oldPriceMonthly.toLocaleString('fr-FR')}€</div>` : '';
+  return `
+      <div class="glass card reveal" data-option-card>
+        <div class="card-icon"><i class="${icon}" style="background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i></div>
+        <h3 class="card-title">${escapeHtml(option.name)}</h3>
+        <p class="card-text">${escapeHtml(option.description || '')}</p>
+        ${oldPrice}
+        <div style="margin-top:1rem;font-family:var(--font-title);font-size:1.25rem;font-weight:700;">${price}<span style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-body);font-weight:400;"> ${escapeHtml(option.period || 'par mois')}</span></div>
+        <button class="btn btn-glass w-full mt-lg" style="justify-content:center;" onclick="addPricingOptionToCart(${escapeHtml(JSON.stringify(optionPayload(option)))});">
+          Ajouter au panier
+        </button>
+      </div>`;
+}
+
+function renderComparisonTable(packs) {
+  const visiblePacks = packs;
+  const rows = comparisonRows(visiblePacks);
+  return `
+        <thead>
+          <tr>
+            <th style="width:30%;">Fonctionnalité</th>
+            ${visiblePacks.map(pack => `<th>${escapeHtml(pack.name.replace(/^Pack\s+/i, ''))}${pack.isFeatured ? ' ⭐' : ''}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(row => `
+          <tr>
+            <td>${escapeHtml(row.label)}</td>
+            ${visiblePacks.map(pack => renderComparisonCell(row.values[pack.slug] || row.values[pack.key] || '')).join('')}
+          </tr>`).join('')}
+        </tbody>`;
+}
+
+function comparisonRows(packs) {
+  const defaults = [
+    'Chatbot IA', 'Workflows automatisés', 'Analytics temps réel', 'Contenu IA/mois',
+    'Growth Ads IA', 'Analyse prédictive', 'Account manager dédié', 'SLA support',
+    'Formation équipe', 'Propriété IP'
+  ];
+  const labels = new Set(defaults);
+  for (const pack of packs) Object.keys(pack.comparison || {}).forEach(label => labels.add(label));
+  return [...labels].map(label => ({
+    label,
+    values: Object.fromEntries(packs.map(pack => [pack.slug, comparisonValue(pack, label)]))
+  })).filter(row => Object.values(row.values).some(Boolean));
+}
+
+function comparisonValue(pack, label) {
+  if (pack.comparison && pack.comparison[label]) return pack.comparison[label];
+  const included = pack.features.find(f => normalizeCompareLabel(f).includes(normalizeCompareLabel(label)) || normalizeCompareLabel(label).includes(normalizeCompareLabel(f)));
+  const excluded = pack.excluded.find(f => normalizeCompareLabel(f).includes(normalizeCompareLabel(label)) || normalizeCompareLabel(label).includes(normalizeCompareLabel(f)));
+  if (included) return included;
+  if (excluded) return '✗';
+  return '';
+}
+
+function renderComparisonCell(value) {
+  const normalized = String(value || '').trim();
+  const cls = /^✓|oui|inclus/i.test(normalized) ? ' class="yes"' : (/^✗|non|exclu/i.test(normalized) ? ' class="no"' : '');
+  return `<td${cls}>${escapeHtml(normalized || '—')}</td>`;
+}
+
+function optionPayload(option) {
+  return {
+    id: option.id || option.slug,
+    name: option.name,
+    price: option.priceMonthly || 0,
+    period: option.period || 'par mois',
+    description: option.description || ''
+  };
+}
+
+function optionIcon(option) {
+  const name = String(option.name || '').toLowerCase();
+  if (name.includes('workflow') || name.includes('automation')) return 'fas fa-cogs';
+  if (name.includes('contenu') || name.includes('content')) return 'fas fa-file-alt';
+  if (name.includes('audit')) return 'fas fa-chart-line';
+  if (name.includes('support')) return 'fas fa-headset';
+  return 'fas fa-robot';
 }
 
 function renderStaticFeaturedPost(post) {
@@ -878,6 +1023,7 @@ function renderStaticPopularPost(post, index) {
 }
 
 function renderStaticPackHero(pack) {
+  const oldPrice = pack.oldPriceMonthly ? `<span style="font-size:1.25rem;color:var(--white-30);text-decoration:line-through;margin-right:0.75rem;">${pack.oldPriceMonthly.toLocaleString('fr-FR')}€</span>` : '';
   return `
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
       <div class="badge ${pack.badgeClass}" style="font-size:0.875rem;">${pack.emoji} ${escapeHtml(pack.badge)}</div>
@@ -886,9 +1032,34 @@ function renderStaticPackHero(pack) {
     <h1 class="pack-hero-title">${escapeHtml(pack.name)}</h1>
     <p class="pack-hero-subtitle">${escapeHtml(pack.description)}</p>
     <div class="pack-hero-price">
+      ${oldPrice}
       <span class="pack-price-amount gradient-text" id="hero-price">${pack.priceMonthly ? `${pack.priceMonthly}€` : 'Sur devis'}</span>
       <span class="pack-price-period">/mois HT</span>
     </div>`;
+}
+
+function injectPackOptions(document, options = []) {
+  const summary = document.querySelector('.money-back');
+  if (!summary || !options.length) return;
+  const block = document.createElement('div');
+  block.id = 'checkout-options-block';
+  block.style.cssText = 'margin-top:1rem;padding-top:1rem;border-top:1px solid var(--glass-border);';
+  block.innerHTML = `
+    <p style="font-size:0.75rem;font-family:var(--font-accent);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--white-30);margin-bottom:0.875rem;">Options recommandées</p>
+    <div id="checkout-options-list" style="display:flex;flex-direction:column;gap:0.6rem;">
+      ${options.map(renderCheckoutOption).join('')}
+    </div>`;
+  summary.insertAdjacentElement('afterend', block);
+}
+
+function renderCheckoutOption(option) {
+  const payload = escapeHtml(JSON.stringify(optionPayload(option)));
+  const price = option.priceMonthly ? `+${option.priceMonthly.toLocaleString('fr-FR')}€` : 'Sur devis';
+  return `
+      <button type="button" data-checkout-option="${escapeHtml(option.id || option.slug)}" onclick="toggleCheckoutOption(${payload}, this)" style="width:100%;text-align:left;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:0.75rem;display:flex;justify-content:space-between;gap:0.75rem;color:var(--white);cursor:pointer;">
+        <span><strong style="display:block;font-size:0.82rem;">${escapeHtml(option.name)}</strong><small style="color:var(--white-50);line-height:1.3;">${escapeHtml(option.description || '')}</small></span>
+        <span style="font-family:var(--font-accent);font-weight:700;color:var(--red);white-space:nowrap;">${price}</span>
+      </button>`;
 }
 
 function renderStaticPackFeatureGroups(pack) {
@@ -951,6 +1122,36 @@ function packKey(name) {
 function parsePrice(value) {
   const n = parseInt(String(value || '').replace(/[^0-9]/g, ''), 10);
   return Number.isFinite(n) ? n : 0;
+}
+
+function parseComparison(value) {
+  if (!value) return {};
+  if (typeof value === 'object' && !Array.isArray(value)) return value;
+  if (Array.isArray(value)) {
+    return Object.fromEntries(value.map(item => {
+      if (typeof item === 'string') {
+        const parts = item.split(':');
+        return [parts.shift()?.trim(), parts.join(':').trim()];
+      }
+      return [item.label || item.name, item.value || item.text || ''];
+    }).filter(([label]) => label));
+  }
+  try {
+    return parseComparison(JSON.parse(String(value)));
+  } catch {
+    return Object.fromEntries(String(value).split(/\r?\n/).map(line => {
+      const parts = line.split(':');
+      return [parts.shift()?.trim(), parts.join(':').trim()];
+    }).filter(([label, val]) => label && val));
+  }
+}
+
+function normalizeCompareLabel(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
 }
 
 function normalizeList(value) {

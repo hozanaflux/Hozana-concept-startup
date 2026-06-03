@@ -83,21 +83,27 @@ CREATE TABLE IF NOT EXISTS orders (
   company    TEXT,
   status     TEXT DEFAULT 'pending',
   amount     INTEGER DEFAULT 0,
+  options    TEXT DEFAULT '',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
+
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS options TEXT DEFAULT '';
 
 -- ============================================================
 -- TABLE : packs
 -- ============================================================
 CREATE TABLE IF NOT EXISTS packs (
   id                UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  item_type         TEXT DEFAULT 'pack',
   name              TEXT NOT NULL,
   description       TEXT,
   price             TEXT,
+  old_price         TEXT,
   period            TEXT DEFAULT '/mois',
   features          TEXT[] DEFAULT '{}',
   features_excluded TEXT[] DEFAULT '{}',
+  comparison        JSONB DEFAULT '{}'::jsonb,
   is_featured       BOOLEAN DEFAULT false,
   badge             TEXT,
   color_class       TEXT DEFAULT 'badge-glass',
@@ -107,6 +113,10 @@ CREATE TABLE IF NOT EXISTS packs (
   sort_order        INTEGER DEFAULT 0,
   created_at        TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
+
+ALTER TABLE packs ADD COLUMN IF NOT EXISTS item_type TEXT DEFAULT 'pack';
+ALTER TABLE packs ADD COLUMN IF NOT EXISTS old_price TEXT;
+ALTER TABLE packs ADD COLUMN IF NOT EXISTS comparison JSONB DEFAULT '{}'::jsonb;
 
 -- ============================================================
 -- TABLE : services_list

@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="fr" data-theme="dark"><head><script>window.__STATIC_PACK_KEY__ = "elite";
-window.__STATIC_PACK_DATA__ = {"name":"Pack Elite","description":"Transformation IA complète pour entreprises ambitieuses : workflows illimités, BI, prédictif et support VIP.","priceMonthly":1990,"priceAnnual":1592,"badge":"Elite","featured":false,"isFeatured":false};</script>
+window.__STATIC_PACK_DATA__ = {"name":"Pack Elite","description":"Transformation IA complète pour entreprises ambitieuses : workflows illimités, BI, prédictif et support VIP.","priceMonthly":1990,"priceAnnual":1592,"oldPriceMonthly":0,"badge":"Elite","featured":false,"isFeatured":false};</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pack Elite | Pack IA et automatisation Hozana Concept</title>
@@ -348,6 +348,10 @@ window.__STATIC_PACK_DATA__ = {"name":"Pack Elite","description":"Transformation
     .order-line.total .price-tag {
       font-size: 1.25rem;
       color: var(--red);
+    }
+    .checkout-option-active {
+      border-color: rgba(255,46,46,0.55) !important;
+      background: rgba(255,46,46,0.08) !important;
     }
     .discount-badge {
       background: rgba(34,197,94,0.15);
@@ -900,6 +904,7 @@ window.__STATIC_PACK_DATA__ = {"name":"Pack Elite","description":"Transformation
     <h1 class="pack-hero-title">Pack Elite</h1>
     <p class="pack-hero-subtitle">Transformation IA complète pour entreprises ambitieuses : workflows illimités, BI, prédictif et support VIP.</p>
     <div class="pack-hero-price">
+
       <span class="pack-price-amount gradient-text" id="hero-price">1990€</span>
       <span class="pack-price-period">/mois HT</span>
     </div></div>
@@ -1342,6 +1347,7 @@ window.__STATIC_PACK_DATA__ = {"name":"Pack Elite","description":"Transformation
           <span id="summary-pack-name">Pack Elite</span>
           <span class="price-tag" id="summary-base-price">1990€</span>
         </div>
+        <div id="summary-options-rows"></div>
         <div class="order-line" id="summary-discount-row" style="display:none;">
           <span>Réduction annuelle (-20%)</span>
           <span class="price-tag" id="summary-discount" style="color:#22c55e;">-198€</span>
@@ -1372,7 +1378,23 @@ window.__STATIC_PACK_DATA__ = {"name":"Pack Elite","description":"Transformation
         <div class="money-back">
           <i class="fas fa-undo"></i>
           <div><strong>Garantie 30 jours</strong><br>Satisfait ou remboursé, sans condition, sans question.</div>
-        </div>
+        </div><div id="checkout-options-block" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+    <p style="font-size:0.75rem;font-family:var(--font-accent);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--white-30);margin-bottom:0.875rem;">Options recommandées</p>
+    <div id="checkout-options-list" style="display:flex;flex-direction:column;gap:0.6rem;">
+
+      <button type="button" data-checkout-option="chatbot-supplementaire" onclick="toggleCheckoutOption({&quot;id&quot;:&quot;chatbot-supplementaire&quot;,&quot;name&quot;:&quot;Chatbot Supplémentaire&quot;,&quot;price&quot;:150,&quot;period&quot;:&quot;par mois&quot;,&quot;description&quot;:&quot;Ajout d un chatbot IA avancé supplémentaire à votre solution existante.&quot;}, this)" style="width:100%;text-align:left;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:0.75rem;display:flex;justify-content:space-between;gap:0.75rem;color:var(--white);cursor:pointer;">
+        <span><strong style="display:block;font-size:0.82rem;">Chatbot Supplémentaire</strong><small style="color:var(--white-50);line-height:1.3;">Ajout d un chatbot IA avancé supplémentaire à votre solution existante.</small></span>
+        <span style="font-family:var(--font-accent);font-weight:700;color:var(--red);white-space:nowrap;">+150€</span>
+      </button>
+      <button type="button" data-checkout-option="workflow-complexe" onclick="toggleCheckoutOption({&quot;id&quot;:&quot;workflow-complexe&quot;,&quot;name&quot;:&quot;Workflow Complexe&quot;,&quot;price&quot;:200,&quot;period&quot;:&quot;par mois&quot;,&quot;description&quot;:&quot;Développement d un workflow d automatisation avancé supplémentaire.&quot;}, this)" style="width:100%;text-align:left;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:0.75rem;display:flex;justify-content:space-between;gap:0.75rem;color:var(--white);cursor:pointer;">
+        <span><strong style="display:block;font-size:0.82rem;">Workflow Complexe</strong><small style="color:var(--white-50);line-height:1.3;">Développement d un workflow d automatisation avancé supplémentaire.</small></span>
+        <span style="font-family:var(--font-accent);font-weight:700;color:var(--red);white-space:nowrap;">+200€</span>
+      </button>
+      <button type="button" data-checkout-option="contenu-50" onclick="toggleCheckoutOption({&quot;id&quot;:&quot;contenu-50&quot;,&quot;name&quot;:&quot;Pack Contenu +50&quot;,&quot;price&quot;:250,&quot;period&quot;:&quot;par mois&quot;,&quot;description&quot;:&quot;50 pièces de contenu IA supplémentaires par mois : articles, posts, emails.&quot;}, this)" style="width:100%;text-align:left;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:0.75rem;display:flex;justify-content:space-between;gap:0.75rem;color:var(--white);cursor:pointer;">
+        <span><strong style="display:block;font-size:0.82rem;">Pack Contenu +50</strong><small style="color:var(--white-50);line-height:1.3;">50 pièces de contenu IA supplémentaires par mois : articles, posts, emails.</small></span>
+        <span style="font-family:var(--font-accent);font-weight:700;color:var(--red);white-space:nowrap;">+250€</span>
+      </button>
+    </div></div>
 
         <!-- What's included mini -->
         <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--glass-border);">
@@ -1587,6 +1609,7 @@ let currentStep = 1;
 let currentPack = null;
 let billingType = 'monthly';
 let promoApplied = false;
+let selectedOptions = [];
 const PROMO_CODES = { 'HOZANA20': 20, 'HOZANA30': 30, 'LAUNCH50': 50 };
 
 /* ── Init ── */
@@ -1638,6 +1661,7 @@ async function initPage() {
   renderTestimonial();
   renderFAQ();
   renderSidebarFeatures();
+  loadCartOptions();
   updateSummary();
 
   document.title = `${currentPack.name} | Hozana Concept`;
@@ -1770,10 +1794,12 @@ function updateSummary() {
 
   const base = billingType === 'monthly' ? pack.priceMonthly : pack.priceAnnual;
   const discount = billingType === 'annual' ? pack.priceMonthly - pack.priceAnnual : 0;
-  let subtotal = base;
+  const optionsTotal = selectedOptions.reduce((sum, option) => sum + (parseInt(option.price, 10) || 0), 0);
+  let subtotal = base + optionsTotal;
 
   document.getElementById('summary-pack-name').textContent = pack.name;
   document.getElementById('summary-base-price').textContent = base + '€';
+  renderSummaryOptions();
 
   const discRow = document.getElementById('summary-discount-row');
   const discEl = document.getElementById('summary-discount');
@@ -1803,6 +1829,40 @@ function updateSummary() {
   // Update hero price
   const heroPrice = document.getElementById('hero-price');
   if (heroPrice) heroPrice.textContent = base + '€';
+}
+
+function loadCartOptions() {
+  try {
+    selectedOptions = JSON.parse(localStorage.getItem('hcCartOptions') || '[]');
+  } catch {
+    selectedOptions = [];
+  }
+  document.querySelectorAll('[data-checkout-option]').forEach(btn => {
+    if (selectedOptions.some(option => option.id === btn.dataset.checkoutOption)) btn.classList.add('checkout-option-active');
+  });
+}
+
+function persistCartOptions() {
+  localStorage.setItem('hcCartOptions', JSON.stringify(selectedOptions));
+}
+
+function toggleCheckoutOption(option, btn) {
+  const exists = selectedOptions.some(item => item.id === option.id);
+  selectedOptions = exists ? selectedOptions.filter(item => item.id !== option.id) : [...selectedOptions, option];
+  if (btn) btn.classList.toggle('checkout-option-active', !exists);
+  persistCartOptions();
+  updateSummary();
+}
+
+function renderSummaryOptions() {
+  const wrap = document.getElementById('summary-options-rows');
+  if (!wrap) return;
+  wrap.innerHTML = selectedOptions.map(option => `
+    <div class="order-line">
+      <span>${option.name}</span>
+      <span class="price-tag">+${(parseInt(option.price, 10) || 0).toLocaleString('fr-FR')}€</span>
+    </div>
+  `).join('');
 }
 
 /* ── Steps navigation ── */
@@ -1972,21 +2032,31 @@ async function processPayment() {
     const lastname = document.getElementById('f-lastname')?.value || '';
     const company = document.getElementById('f-company')?.value || '';
 
-    await fetch('tables/orders', {
+    const orderPayload = {
+      pack: currentPack.name,
+      billing: billingType,
+      promo: promoApplied ? Object.keys(PROMO_CODES).find(k => PROMO_CODES[k] === promoApplied) : '',
+      options: selectedOptions.map(option => option.name).join(', '),
+      email,
+      firstname,
+      lastname,
+      company,
+      status: 'paid',
+      amount: parseInt(document.getElementById('summary-total')?.textContent?.replace(/\s/g, '')) || 0
+    };
+    let orderRes = await fetch('tables/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        pack: currentPack.name,
-        billing: billingType,
-        promo: promoApplied ? Object.keys(PROMO_CODES).find(k => PROMO_CODES[k] === promoApplied) : '',
-        email,
-        firstname,
-        lastname,
-        company,
-        status: 'paid',
-        amount: parseInt(document.getElementById('summary-total')?.textContent?.replace(/\s/g, '')) || 0
-      })
+      body: JSON.stringify(orderPayload)
     });
+    if (!orderRes.ok) {
+      delete orderPayload.options;
+      orderRes = await fetch('tables/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderPayload)
+      });
+    }
 
     // Also save as lead
     if (email) {
@@ -2018,6 +2088,7 @@ async function processPayment() {
   }
 
   goToStep(4);
+  localStorage.removeItem('hcCartOptions');
 }
 
 /* ── Share ── */

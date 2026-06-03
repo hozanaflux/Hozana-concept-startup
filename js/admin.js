@@ -944,10 +944,11 @@ function renderPacks(data=PACKS) {
   set('packs-count', data.length);
   const el = document.getElementById('packs-body');
   if (!el) return;
-  if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="6">Aucun pack</td></tr>`; return; }
+  if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="7">Aucune offre</td></tr>`; return; }
   el.innerHTML = data.map(p=>`
     <tr>
       <td><div class="t-strong t-sm">${p.name}</div><div class="t-muted" style="font-size:.7rem;">${p.badge||''}</div></td>
+      <td><span class="badge ${packItemType(p)==='option'?'badge-yellow':'badge-gray'}">${packItemType(p)==='option'?'Option':'Pack'}</span></td>
       <td class="t-sm">${p.price||'—'}</td>
       <td class="t-muted t-sm">${p.period||'—'}</td>
       <td><span class="badge ${p.is_featured?'badge-green':'badge-gray'}">${p.is_featured?'Oui':'Non'}</span></td>
@@ -960,11 +961,13 @@ function renderPacks(data=PACKS) {
 }
 
 function openPackModal(p=null) {
-  document.getElementById('m-pack-title').textContent = p?'Modifier le pack':'Nouveau pack';
+  document.getElementById('m-pack-title').textContent = p?'Modifier l’offre':'Nouvelle offre';
   document.getElementById('pk-id').value = p?.id||'';
+  document.getElementById('pk-item-type').value = packItemType(p);
   document.getElementById('pk-name').value = p?.name||'';
   document.getElementById('pk-badge').value = p?.badge||'';
   document.getElementById('pk-price').value = p?.price||'';
+  document.getElementById('pk-old-price').value = p?.old_price||p?.price_before||p?.compare_at_price||'';
   document.getElementById('pk-period').value = p?.period||'par mois';
   document.getElementById('pk-desc').value = p?.description||'';
   document.getElementById('pk-features').value = Array.isArray(p?.features)?p.features.join('\n'):'';
@@ -973,9 +976,43 @@ function openPackModal(p=null) {
   document.getElementById('pk-button-mode').value = /contact/i.test(p?.link || '') || /contact/i.test(p?.button_text || '') ? 'contact' : 'detail';
   document.getElementById('pk-order').value = p?.sort_order||0;
   document.getElementById('pk-link').value = p?.link||'';
+  document.getElementById('pk-comparison').value = comparisonToText(p?.comparison || p?.compare || p?.comparison_rows);
+  togglePackFormMode();
   openModal('m-pack');
 }
 function editPack(id) { const p=PACKS.find(x=>x.id===id); if(p) openPackModal(p); }
+
+function packItemType(p) {
+  return String(p?.item_type || p?.type || p?.category || 'pack').toLowerCase() === 'option' ? 'option' : 'pack';
+}
+
+function togglePackFormMode() {
+  const isOption = document.getElementById('pk-item-type')?.value === 'option';
+  document.querySelectorAll('#m-pack .pack-only').forEach(el => {
+    el.style.display = isOption ? 'none' : '';
+  });
+  const title = document.getElementById('m-pack-title');
+  if (title && !document.getElementById('pk-id').value) title.textContent = isOption ? 'Nouvelle option' : 'Nouveau pack';
+}
+
+function comparisonToText(value) {
+  if (!value) return '';
+  let data = value;
+  if (typeof value === 'string') {
+    try { data = JSON.parse(value); } catch { return value; }
+  }
+  if (Array.isArray(data)) {
+    return data.map(item => typeof item === 'string' ? item : `${item.label || item.name || ''}: ${item.value || item.text || ''}`).filter(Boolean).join('\n');
+  }
+  return Object.entries(data).map(([label, val]) => `${label}: ${val}`).join('\n');
+}
+
+function comparisonFromText(value) {
+  return Object.fromEntries(String(value || '').split(/\r?\n/).map(line => {
+    const parts = line.split(':');
+    return [parts.shift()?.trim(), parts.join(':').trim()];
+  }).filter(([label, val]) => label && val));
+}
 
 async function savePack() {
   const id = document.getElementById('pk-id').value;
@@ -983,19 +1020,23 @@ async function savePack() {
   if (!name) return toast('Le nom est requis','err');
   const features = document.getElementById('pk-features').value.split('\n').filter(Boolean);
   const features_excluded = document.getElementById('pk-features-excluded').value.split('\n').filter(Boolean);
+  const itemType = document.getElementById('pk-item-type').value;
   const buttonMode = document.getElementById('pk-button-mode').value;
   const manualLink = document.getElementById('pk-link').value.trim();
   const data = {
     name, badge:document.getElementById('pk-badge').value,
+    item_type:itemType,
     price:document.getElementById('pk-price').value,
+    old_price:document.getElementById('pk-old-price').value,
     period:document.getElementById('pk-period').value,
     description:document.getElementById('pk-desc').value,
     features, features_excluded,
-    is_featured:document.getElementById('pk-featured').value==='true',
+    is_featured:itemType === 'pack' && document.getElementById('pk-featured').value==='true',
     sort_order:parseInt(document.getElementById('pk-order').value)||0,
-    link: buttonMode === 'contact' ? (manualLink || `contact.html?pack=${encodeURIComponent(name)}`) : manualLink,
-    button_text: buttonMode === 'contact' ? 'Contactez-nous' : 'Voir le détail du pack',
-    button_class: buttonMode === 'contact' ? 'btn-primary' : ''
+    link: itemType === 'option' ? '' : (buttonMode === 'contact' ? (manualLink || `contact.html?pack=${encodeURIComponent(name)}`) : manualLink),
+    button_text: itemType === 'option' ? 'Ajouter au panier' : (buttonMode === 'contact' ? 'Contactez-nous' : 'Voir le détail du pack'),
+    button_class: buttonMode === 'contact' ? 'btn-primary' : '',
+    comparison: itemType === 'pack' ? comparisonFromText(document.getElementById('pk-comparison').value) : {}
   };
   try {
     if (id) {
