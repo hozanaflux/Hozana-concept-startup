@@ -172,6 +172,31 @@ AFTER INSERT OR UPDATE OR DELETE ON public.packs
 FOR EACH ROW
 EXECUTE FUNCTION public.handle_packs_change();
 
+-- ============================================================
+-- 6. Créer la table pack_options si elle n'existe pas encore
+--    Nécessaire avant de créer le trigger des options.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS public.pack_options (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name        TEXT NOT NULL,
+  description TEXT,
+  price       TEXT,
+  old_price   TEXT,
+  period      TEXT DEFAULT 'par mois',
+  features    TEXT[] DEFAULT '{}',
+  badge       TEXT,
+  sort_order  INTEGER DEFAULT 0,
+  created_at  TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+ALTER TABLE public.pack_options ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "anon_all" ON public.pack_options;
+CREATE POLICY "anon_all" ON public.pack_options
+FOR ALL TO anon
+USING (true)
+WITH CHECK (true);
+
 CREATE OR REPLACE FUNCTION public.handle_pack_options_change()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -226,6 +251,14 @@ SELECT
   action_statement
 FROM information_schema.triggers
 WHERE event_object_table = 'packs';
+
+SELECT
+  trigger_name,
+  event_manipulation,
+  event_object_table,
+  action_statement
+FROM information_schema.triggers
+WHERE event_object_table = 'pack_options';
 
 -- ============================================================
 -- ❌ SUPPRESSION (si besoin de désactiver)
