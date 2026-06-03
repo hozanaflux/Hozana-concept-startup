@@ -1,0 +1,2019 @@
+<!DOCTYPE html><html lang="fr" data-theme="dark"><head><script>window.__STATIC_PACK_KEY__ = "personalise";
+window.__STATIC_PACK_DATA__ = {"name":"personalisé","description":"une offre qui s'adapte a vos besoins","priceMonthly":0,"priceAnnual":0,"badge":"personalisé","isFeatured":true};</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>personalisé | Pack IA et automatisation Hozana Concept</title>
+  <meta name="description" content="personalisé : une offre qui s'adapte a vos besoins Prix, fonctionnalités, planning et résultats attendus pour votre transformation IA.">
+  <link rel="icon" type="image/png" href="../images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Sora:wght@300;400;500;600;700;800&amp;family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/design-system.css">
+  <script src="../js/supabase-config.js"></script>
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* ── Page Layout ── */
+    .pack-detail-page {
+      padding-top: var(--nav-height);
+      min-height: 100vh;
+    }
+
+    /* ── Steps Wizard ── */
+    .checkout-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 2rem 1rem 0;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.375rem;
+      position: relative;
+      flex: 1;
+    }
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--glass-border);
+      background: var(--glass-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-accent);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--white-50);
+      transition: all var(--trans-base);
+      position: relative;
+      z-index: 2;
+    }
+    .step.active .step-number {
+      background: var(--grad-red);
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 0 20px rgba(255,46,46,0.4);
+    }
+    .step.done .step-number {
+      background: #22c55e;
+      border-color: transparent;
+      color: white;
+    }
+    .step-label {
+      font-size: 0.7rem;
+      font-family: var(--font-accent);
+      font-weight: 600;
+      color: var(--white-30);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .step.active .step-label { color: var(--red); }
+    .step.done .step-label { color: #22c55e; }
+    .step-line {
+      height: 2px;
+      flex: 1;
+      background: var(--glass-border);
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .step-line.done { background: #22c55e; }
+    .step-line.active { background: var(--grad-red); }
+
+    /* ── Main container ── */
+    .detail-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 2rem 6rem;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* ── Section screens ── */
+    .checkout-screen { display: none; }
+    .checkout-screen.active { display: block; }
+
+    /* ── Pack Hero Card ── */
+    .pack-hero-card {
+      background: linear-gradient(135deg, rgba(255,46,46,0.08), rgba(255,106,0,0.04));
+      border: 1px solid rgba(255,46,46,0.2);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .pack-hero-card::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255,46,46,0.15), transparent 60%);
+      pointer-events: none;
+    }
+    .pack-hero-title {
+      font-family: var(--font-title);
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .pack-hero-subtitle {
+      color: var(--white-50);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .pack-hero-price {
+      font-family: var(--font-title);
+      font-weight: 800;
+    }
+    .pack-price-amount {
+      font-size: 3.5rem;
+      line-height: 1;
+    }
+    .pack-price-period {
+      font-size: 0.875rem;
+      color: var(--white-40);
+      font-weight: 400;
+      margin-left: 0.25rem;
+    }
+
+    /* ── Features list ── */
+    .feature-group {
+      margin-bottom: 2rem;
+    }
+    .feature-group-title {
+      font-family: var(--font-accent);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .feature-group-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,46,46,0.2);
+    }
+    .feature-list-detailed {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .feature-list-detailed li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.875rem;
+      font-size: 0.9375rem;
+      color: var(--white-80);
+      line-height: 1.5;
+    }
+    .feature-list-detailed li .feat-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(34,197,94,0.15);
+      border: 1px solid rgba(34,197,94,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+      font-size: 0.625rem;
+      color: #22c55e;
+    }
+    .feature-list-detailed li .feat-icon.red {
+      background: rgba(255,46,46,0.1);
+      border-color: rgba(255,46,46,0.25);
+      color: var(--red);
+    }
+    .feature-list-detailed li strong {
+      color: var(--white);
+      display: block;
+      margin-bottom: 0.125rem;
+    }
+    .feature-list-detailed li span {
+      font-size: 0.8125rem;
+      color: var(--white-50);
+    }
+
+    /* ── Timeline ── */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--red) 0%, transparent 100%);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.6rem;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--grad-red);
+      box-shadow: 0 0 10px rgba(255,46,46,0.4);
+    }
+    .timeline-week {
+      font-size: 0.7rem;
+      font-family: var(--font-accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--red);
+      margin-bottom: 0.25rem;
+    }
+    .timeline-title {
+      font-family: var(--font-accent);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--white);
+      margin-bottom: 0.25rem;
+    }
+    .timeline-desc {
+      font-size: 0.8125rem;
+      color: var(--white-50);
+      line-height: 1.5;
+    }
+
+    /* ── Testimonial mini ── */
+    .mini-testimonial {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-left: 3px solid var(--red);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .mini-testimonial p {
+      font-size: 0.9rem;
+      color: var(--white-70);
+      line-height: 1.6;
+      font-style: italic;
+      margin-bottom: 0.75rem;
+    }
+    .mini-testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .mini-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--grad-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+    .mini-author-info strong {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--white);
+      font-family: var(--font-accent);
+    }
+    .mini-author-info span {
+      font-size: 0.75rem;
+      color: var(--white-50);
+    }
+    .stars { color: #FBBF24; font-size: 0.8rem; letter-spacing: 1px; }
+
+    /* ── Order Summary (sidebar) ── */
+    .order-summary {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      position: sticky;
+      top: 100px;
+      backdrop-filter: blur(20px);
+    }
+    .order-summary h3 {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .order-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.625rem 0;
+      font-size: 0.875rem;
+      color: var(--white-70);
+    }
+    .order-line.total {
+      border-top: 1px solid var(--glass-border);
+      margin-top: 0.5rem;
+      padding-top: 1rem;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--white);
+    }
+    .order-line .price-tag {
+      font-family: var(--font-accent);
+      font-weight: 700;
+      color: var(--white);
+    }
+    .order-line.total .price-tag {
+      font-size: 1.25rem;
+      color: var(--red);
+    }
+    .discount-badge {
+      background: rgba(34,197,94,0.15);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: #22c55e;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-family: var(--font-accent);
+    }
+    .cta-checkout-btn {
+      width: 100%;
+      justify-content: center;
+      margin-top: 1.25rem;
+      font-size: 1rem;
+      padding: 0.875rem;
+    }
+    .secure-badges {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      font-size: 0.72rem;
+      color: var(--white-40);
+      font-family: var(--font-accent);
+    }
+    .secure-badges i { color: var(--white-50); }
+    .money-back {
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.8125rem;
+      color: #4ade80;
+      line-height: 1.5;
+    }
+    .money-back i { margin-top: 0.1rem; flex-shrink: 0; }
+
+    /* ── Billing toggle ── */
+    .billing-selector {
+      display: flex;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      padding: 0.25rem;
+      gap: 0.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .billing-opt {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--white-50);
+      font-family: var(--font-accent);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--trans-base);
+      text-align: center;
+    }
+    .billing-opt.active {
+      background: var(--grad-red);
+      color: white;
+    }
+
+    /* ── Checkout Form (Step 2) ── */
+    .checkout-form-section {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .checkout-form-section h3 {
+      font-family: var(--font-accent);
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--white-50);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .checkout-form-section h3 i { color: var(--red); }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-label {
+      display: block;
+      font-family: var(--font-accent);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--white-70);
+      margin-bottom: 0.5rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      transition: all var(--trans-fast);
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: rgba(255,46,46,0.5);
+      background: rgba(255,46,46,0.04);
+      box-shadow: 0 0 0 3px rgba(255,46,46,0.1);
+    }
+    .form-control::placeholder { color: var(--white-30); }
+    select.form-control { cursor: pointer; }
+    select.form-control option { background: #1A1A1A; }
+
+    /* ── Stripe Payment Box ── */
+    .stripe-payment-box {
+      background: linear-gradient(135deg, rgba(99,91,255,0.08), rgba(99,91,255,0.02));
+      border: 1px solid rgba(99,91,255,0.25);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .stripe-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .stripe-logo {
+      background: #635BFF;
+      color: white;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-family: var(--font-accent);
+      font-size: 0.875rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .stripe-secure-label {
+      font-size: 0.8rem;
+      color: var(--white-50);
+      font-family: var(--font-accent);
+    }
+    .stripe-secure-label i { color: #22c55e; margin-right: 0.25rem; }
+    .card-preview {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-preview::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: rgba(99,91,255,0.15);
+    }
+    .card-number-display {
+      font-family: 'Courier New', monospace;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      color: var(--white-70);
+      margin-bottom: 0.75rem;
+    }
+    .card-details-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--white-40);
+      font-family: var(--font-accent);
+    }
+    .card-chip {
+      width: 32px; height: 24px;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+    .payment-method-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .pm-tab {
+      flex: 1;
+      padding: 0.625rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: var(--white-50);
+      font-family: var(--font-accent);
+      font-weight: 600;
+      transition: all var(--trans-base);
+    }
+    .pm-tab.active {
+      border-color: rgba(99,91,255,0.5);
+      background: rgba(99,91,255,0.08);
+      color: #8b85ff;
+    }
+    .pm-tab i { font-size: 1rem; }
+    .stripe-field {
+      margin-bottom: 1rem;
+    }
+    .stripe-field label {
+      display: block;
+      font-size: 0.8125rem;
+      font-family: var(--font-accent);
+      font-weight: 600;
+      color: var(--white-60);
+      margin-bottom: 0.4rem;
+    }
+    .stripe-input-wrapper {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all var(--trans-fast);
+    }
+    .stripe-input-wrapper:focus-within {
+      border-color: rgba(99,91,255,0.5);
+      box-shadow: 0 0 0 3px rgba(99,91,255,0.1);
+    }
+    .stripe-input-wrapper i { color: var(--white-30); font-size: 0.9rem; }
+    .stripe-input-wrapper input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--white);
+      font-size: 0.9375rem;
+      font-family: var(--font-body);
+    }
+    .stripe-input-wrapper input::placeholder { color: var(--white-25); }
+    .card-icons-row {
+      display: flex;
+      gap: 0.375rem;
+      margin-top: 0.5rem;
+    }
+    .card-icon {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      color: var(--white-50);
+      font-family: var(--font-accent);
+      font-weight: 700;
+    }
+
+    /* ── Success Screen (Step 3) ── */
+    .success-screen {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .success-icon {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: rgba(34,197,94,0.15);
+      border: 2px solid rgba(34,197,94,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      margin: 0 auto 2rem;
+      animation: successPop 0.6s var(--trans-bounce);
+    }
+    @keyframes successPop {
+      0% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .success-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 2.5rem auto;
+      max-width: 700px;
+    }
+    .success-step-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1rem;
+      text-align: center;
+    }
+    .success-step-card .step-emoji {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    .success-step-card h4 {
+      font-family: var(--font-accent);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+    }
+    .success-step-card p {
+      font-size: 0.8rem;
+      color: var(--white-50);
+      line-height: 1.5;
+    }
+
+    /* ── Promo code ── */
+    .promo-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .promo-row input {
+      flex: 1;
+      padding: 0.6rem 0.875rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--white);
+      font-size: 0.875rem;
+      outline: none;
+      transition: border var(--trans-fast);
+    }
+    .promo-row input:focus { border-color: rgba(255,46,46,0.4); }
+    .promo-row button {
+      padding: 0.6rem 1rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--white-70);
+      font-size: 0.8125rem;
+      font-family: var(--font-accent);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--trans-base);
+    }
+    .promo-row button:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+    .promo-success {
+      display: none;
+      color: #22c55e;
+      font-size: 0.8125rem;
+      font-family: var(--font-accent);
+      margin-top: 0.5rem;
+    }
+
+    /* ── Navigation buttons ── */
+    .checkout-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      gap: 1rem;
+    }
+    .btn-back {
+      background: none;
+      border: 1px solid var(--glass-border);
+      color: var(--white-50);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-full);
+      font-family: var(--font-accent);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--trans-base);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-back:hover { border-color: rgba(255,255,255,0.25); color: var(--white); }
+    .btn-next {
+      flex: 1;
+      max-width: 280px;
+    }
+
+    /* ── Tabs in features ── */
+    .feature-tabs {
+      display: flex;
+      gap: 0.375rem;
+      margin-bottom: 1.5rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      padding: 0.3rem;
+    }
+    .feature-tab {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--white-50);
+      font-family: var(--font-accent);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--trans-base);
+      text-align: center;
+    }
+    .feature-tab.active {
+      background: var(--grad-red);
+      color: white;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .detail-wrapper {
+        grid-template-columns: 1fr;
+        padding: 2rem 1rem 5rem;
+      }
+      .order-summary {
+        position: static;
+        order: -1;
+      }
+      .success-steps {
+        grid-template-columns: 1fr;
+        max-width: 360px;
+      }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .payment-method-tabs { flex-direction: column; }
+    }
+
+    /* ── Loading button state ── */
+    .btn-loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .btn-loading::after {
+      content: '';
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── FAQ ── */
+    .faq-mini-item {
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .faq-mini-q {
+      padding: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-family: var(--font-accent);
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--white-80);
+      transition: color var(--trans-fast);
+      gap: 1rem;
+    }
+    .faq-mini-q:hover { color: var(--red); }
+    .faq-mini-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+      font-size: 0.875rem;
+      color: var(--white-50);
+      line-height: 1.7;
+    }
+    .faq-mini-a.open { max-height: 200px; padding-bottom: 1rem; }
+    .faq-mini-icon { color: var(--red); font-size: 0.75rem; transition: transform var(--trans-base); flex-shrink: 0; }
+    .faq-mini-item.open .faq-mini-icon { transform: rotate(45deg); }
+  </style>
+<link rel="canonical" href="https://www.hozanaconcept.com/pack-details/personalise.html"><script id="static-pack-jsonld" type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"personalisé","description":"une offre qui s'adapte a vos besoins","serviceType":"Automatisation IA et growth digital","provider":{"@type":"Organization","name":"Hozana Concept","url":"https://www.hozanaconcept.com"},"areaServed":"FR","url":"https://www.hozanaconcept.com/pack-details/personalise.html"}</script></head>
+<body>
+
+<div id="loader" role="status" aria-label="Chargement">
+  <img src="../images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;">
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<div id="navbar-placeholder"></div>
+
+<main class="pack-detail-page">
+
+  <!-- Steps Wizard -->
+  <div class="checkout-steps" id="checkout-steps-bar">
+    <div class="step done" id="step-indicator-1">
+      <div class="step-number"><i class="fas fa-check" style="font-size:0.7rem;"></i></div>
+      <div class="step-label">Pack</div>
+    </div>
+    <div class="step-line" id="step-line-1"></div>
+    <div class="step active" id="step-indicator-2">
+      <div class="step-number">2</div>
+      <div class="step-label">Infos</div>
+    </div>
+    <div class="step-line" id="step-line-2"></div>
+    <div class="step" id="step-indicator-3">
+      <div class="step-number">3</div>
+      <div class="step-label">Paiement</div>
+    </div>
+    <div class="step-line" id="step-line-3"></div>
+    <div class="step" id="step-indicator-4">
+      <div class="step-number">4</div>
+      <div class="step-label">Confirmé</div>
+    </div>
+  </div>
+
+  <div class="detail-wrapper">
+
+    <!-- ========== LEFT COLUMN ========== -->
+    <div class="left-col">
+
+      <!-- ── SCREEN 1 : Détails du pack ── -->
+      <div class="checkout-screen active" id="screen-details">
+
+        <!-- Pack hero -->
+        <div class="pack-hero-card reveal" id="pack-hero-display">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+      <div class="badge badge-glass" style="font-size:0.875rem;">⚡ personalisé</div>
+      <div class="badge badge-glass" style="font-size:0.75rem;">Le plus populaire</div>
+    </div>
+    <h1 class="pack-hero-title">personalisé</h1>
+    <p class="pack-hero-subtitle">une offre qui s'adapte a vos besoins</p>
+    <div class="pack-hero-price">
+      <span class="pack-price-amount gradient-text" id="hero-price">Sur devis</span>
+      <span class="pack-price-period">/mois HT</span>
+    </div></div>
+
+        <!-- Feature tabs -->
+        <div class="feature-tabs reveal">
+          <button class="feature-tab active" onclick="switchTab(this,'tab-included')">✅ Inclus</button>
+          <button class="feature-tab" onclick="switchTab(this,'tab-timeline')">📅 Planning</button>
+          <button class="feature-tab" onclick="switchTab(this,'tab-results')">📈 Résultats</button>
+        </div>
+
+        <!-- Tab: Inclus -->
+        <div class="tab-panel active" id="tab-included">
+          <div id="feature-groups-display" class="reveal delay-1">
+    <div class="feature-group">
+      <div class="feature-group-title">Inclus dans le pack</div>
+      <ul class="feature-list-detailed">
+
+          <li>
+            <div class="feat-icon "><i class="fas fa-check"></i></div>
+            <div><strong>tout</strong><span>Inclus dans votre accompagnement Hozana Concept.</span></div>
+          </li>
+      </ul>
+    </div></div>
+        </div>
+
+        <!-- Tab: Timeline -->
+        <div class="tab-panel" id="tab-timeline">
+          <div class="timeline reveal" id="timeline-display">
+    <div class="timeline-item">
+      <div class="timeline-week">Semaine 1</div>
+      <div class="timeline-title">Audit et cadrage</div>
+      <div class="timeline-desc">Analyse des objectifs, priorisation des automatisations et accès aux outils.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-week">Semaines 2-3</div>
+      <div class="timeline-title">Déploiement</div>
+      <div class="timeline-desc">Configuration des workflows IA, tests fonctionnels et intégration dans votre stack.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-week">Semaine 4</div>
+      <div class="timeline-title">Optimisation</div>
+      <div class="timeline-desc">Mesure des premiers résultats, ajustements et transfert de compétences.</div>
+    </div></div>
+        </div>
+
+        <!-- Tab: Résultats attendus -->
+        <div class="tab-panel" id="tab-results">
+          <div id="results-display" class="reveal">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
+
+    </div>
+    <div style="background:rgba(255,46,46,0.06);border:1px solid rgba(255,46,46,0.15);border-radius:var(--radius-lg);padding:1.5rem;">
+      <p style="font-size:0.875rem;color:var(--white-70);line-height:1.7;margin:0;"><strong style="color:var(--white);">Note :</strong> Ces résultats sont des moyennes observées et peuvent varier selon votre secteur, votre marché et votre niveau d adoption.</p>
+    </div></div>
+        </div>
+
+        <!-- Testimonial -->
+        <div class="mini-testimonial reveal" id="testimonial-display"></div>
+
+        <!-- FAQ Mini -->
+        <h3 class="reveal" style="font-family:var(--font-title);font-size:1.375rem;font-weight:700;margin-bottom:1rem;">Questions fréquentes</h3>
+        <div id="faq-display" class="reveal delay-1">
+      <div class="faq-mini-item" id="faq-0">
+        <div class="faq-mini-q">Puis-je changer de pack plus tard ?<i class="fas fa-plus faq-mini-icon"></i></div>
+        <div class="faq-mini-a open" id="faq-a-0">Oui, vous pouvez faire évoluer votre pack selon vos besoins. Les ajustements sont cadrés avec notre équipe.</div>
+      </div>
+
+      <div class="faq-mini-item" id="faq-1">
+        <div class="faq-mini-q">Comment se passe l onboarding ?<i class="fas fa-plus faq-mini-icon"></i></div>
+        <div class="faq-mini-a open" id="faq-a-1">Après validation, notre équipe planifie un audit, configure les outils et vous accompagne dans la prise en main.</div>
+      </div>
+
+      <div class="faq-mini-item" id="faq-2">
+        <div class="faq-mini-q">Les prix sont-ils HT ?<i class="fas fa-plus faq-mini-icon"></i></div>
+        <div class="faq-mini-a open" id="faq-a-2">Oui, les prix affichés sont hors taxes. La TVA est calculée dans le récapitulatif.</div>
+      </div>
+
+      <div class="faq-mini-item" id="faq-3">
+        <div class="faq-mini-q">Quand verrai-je les premiers résultats ?<i class="fas fa-plus faq-mini-icon"></i></div>
+        <div class="faq-mini-a open" id="faq-a-3">Les premiers gains apparaissent généralement dans les premières semaines, selon le périmètre et les accès disponibles.</div>
+      </div>
+    </div>
+
+        <!-- Nav -->
+        <div class="checkout-nav">
+          <a href="../pricing.html" class="btn-back"><i class="fas fa-arrow-left"></i> Voir tous les packs</a>
+          <button class="btn btn-primary btn-next" onclick="goToStep(2)">
+            Continuer <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </div><!-- /screen-details -->
+
+      <!-- ── SCREEN 2 : Informations client ── -->
+      <div class="checkout-screen" id="screen-info">
+
+        <h2 class="reveal" style="font-family:var(--font-title);font-size:1.75rem;font-weight:800;margin-bottom:0.5rem;">
+          Vos informations
+        </h2>
+        <p class="reveal" style="color:var(--white-50);font-size:0.9rem;margin-bottom:2rem;">
+          Renseignez vos coordonnées pour finaliser votre commande.
+        </p>
+
+        <form id="info-form" onsubmit="validateInfoAndNext(event)">
+
+          <!-- Identité -->
+          <div class="checkout-form-section reveal">
+            <h3><i class="fas fa-user"></i> Identité</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Prénom *</label>
+                <input type="text" class="form-control" id="f-firstname" placeholder="Marie" required="">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nom *</label>
+                <input type="text" class="form-control" id="f-lastname" placeholder="Dupont" required="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email professionnel *</label>
+              <input type="email" class="form-control" id="f-email" placeholder="marie@entreprise.com" required="">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Téléphone</label>
+              <input type="tel" class="form-control" id="f-phone" placeholder="+33 6 00 00 00 00">
+            </div>
+          </div>
+
+          <!-- Entreprise -->
+          <div class="checkout-form-section reveal delay-1">
+            <h3><i class="fas fa-building"></i> Entreprise</h3>
+            <div class="form-group">
+              <label class="form-label">Nom de l'entreprise *</label>
+              <input type="text" class="form-control" id="f-company" placeholder="Ma Super Entreprise SAS" required="">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Secteur d'activité</label>
+                <select class="form-control" id="f-sector">
+                  <option value="">Sélectionner…</option>
+                  <option>E-commerce &amp; Retail</option>
+                  <option>Immobilier</option>
+                  <option>Services B2B</option>
+                  <option>Santé &amp; Bien-être</option>
+                  <option>Formation &amp; Coaching</option>
+                  <option>Restauration &amp; Hôtellerie</option>
+                  <option>Finance &amp; Assurance</option>
+                  <option>Technologie &amp; SaaS</option>
+                  <option>Autre</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Taille entreprise</label>
+                <select class="form-control" id="f-size">
+                  <option value="">Sélectionner…</option>
+                  <option>Solo / Freelance</option>
+                  <option>2-10 employés</option>
+                  <option>11-50 employés</option>
+                  <option>51-200 employés</option>
+                  <option>200+ employés</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Objectif principal avec ce pack</label>
+              <textarea class="form-control" id="f-goal" rows="3" placeholder="Ex: Automatiser mon service client, générer plus de leads..." style="resize:vertical;"></textarea>
+            </div>
+          </div>
+
+          <!-- Facturation -->
+          <div class="checkout-form-section reveal delay-2">
+            <h3><i class="fas fa-file-invoice"></i> Adresse de facturation</h3>
+            <div class="form-group">
+              <label class="form-label">Adresse *</label>
+              <input type="text" class="form-control" id="f-address" placeholder="15 rue de la Paix" required="">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Ville *</label>
+                <input type="text" class="form-control" id="f-city" placeholder="Paris" required="">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Code postal *</label>
+                <input type="text" class="form-control" id="f-zip" placeholder="75001" required="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pays *</label>
+              <select class="form-control" id="f-country" required="">
+                <option value="">Sélectionner…</option>
+                <option selected="">France</option>
+                <option>Belgique</option>
+                <option>Suisse</option>
+                <option>Luxembourg</option>
+                <option>Canada</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Numéro de TVA intracommunautaire (optionnel)</label>
+              <input type="text" class="form-control" id="f-vat" placeholder="FR 00 000 000 000">
+            </div>
+          </div>
+
+          <div class="checkout-nav">
+            <button type="button" class="btn-back" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Retour</button>
+            <button type="submit" class="btn btn-primary btn-next">
+              Passer au paiement <i class="fas fa-lock"></i>
+            </button>
+          </div>
+
+        </form>
+      </div><!-- /screen-info -->
+
+      <!-- ── SCREEN 3 : Paiement Stripe ── -->
+      <div class="checkout-screen" id="screen-payment">
+
+        <h2 class="reveal" style="font-family:var(--font-title);font-size:1.75rem;font-weight:800;margin-bottom:0.5rem;">
+          Paiement sécurisé
+        </h2>
+        <p class="reveal" style="color:var(--white-50);font-size:0.9rem;margin-bottom:2rem;">
+          Votre paiement est chiffré SSL 256 bits et traité par Stripe.
+        </p>
+
+        <!-- Stripe Payment Box -->
+        <div class="stripe-payment-box reveal">
+          <div class="stripe-header">
+            <div class="stripe-logo">stripe</div>
+            <div class="stripe-secure-label"><i class="fas fa-lock"></i> Paiement 100% sécurisé</div>
+          </div>
+
+          <!-- Méthode de paiement -->
+          <div class="payment-method-tabs">
+            <div class="pm-tab active" onclick="selectPayMethod(this,'card')">
+              <i class="fas fa-credit-card"></i> Carte bancaire
+            </div>
+            <div class="pm-tab" onclick="selectPayMethod(this,'sepa')">
+              <i class="fas fa-university"></i> SEPA / Virement
+            </div>
+            <div class="pm-tab" onclick="selectPayMethod(this,'paypal')">
+              <i class="fab fa-paypal"></i> PayPal
+            </div>
+          </div>
+
+          <!-- Card form -->
+          <div id="pm-card">
+            <!-- Card preview -->
+            <div class="card-preview" id="card-preview">
+              <div class="card-chip"></div>
+              <div class="card-number-display" id="preview-number">•••• •••• •••• ••••</div>
+              <div class="card-details-row">
+                <div>
+                  <div style="font-size:0.6rem;margin-bottom:0.1rem;">TITULAIRE</div>
+                  <div id="preview-name" style="font-size:0.8rem;color:var(--white-70);letter-spacing:0.05em;">VOTRE NOM</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:0.6rem;margin-bottom:0.1rem;">EXPIRATION</div>
+                  <div id="preview-expiry" style="font-size:0.8rem;color:var(--white-70);">MM / AA</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stripe-field">
+              <label>Numéro de carte</label>
+              <div class="stripe-input-wrapper">
+                <i class="fas fa-credit-card"></i>
+                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this)" autocomplete="cc-number">
+                <div class="card-icons-row" style="flex-shrink:0;">
+                  <span class="card-icon">VISA</span>
+                  <span class="card-icon">MC</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="stripe-field">
+                <label>Date d'expiration</label>
+                <div class="stripe-input-wrapper">
+                  <i class="fas fa-calendar"></i>
+                  <input type="text" id="card-expiry" placeholder="MM / AA" maxlength="7" oninput="formatExpiry(this)" autocomplete="cc-exp">
+                </div>
+              </div>
+              <div class="stripe-field">
+                <label>Code CVV</label>
+                <div class="stripe-input-wrapper">
+                  <i class="fas fa-lock"></i>
+                  <input type="text" id="card-cvv" placeholder="•••" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'')" autocomplete="cc-csc">
+                  <i class="fas fa-question-circle" title="3 chiffres au dos de votre carte" style="color:var(--white-30);cursor:help;"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="stripe-field">
+              <label>Nom du titulaire</label>
+              <div class="stripe-input-wrapper">
+                <i class="fas fa-user"></i>
+                <input type="text" id="card-name" placeholder="MARIE DUPONT" oninput="document.getElementById('preview-name').textContent = this.value.toUpperCase() || 'VOTRE NOM'" autocomplete="cc-name">
+              </div>
+            </div>
+          </div>
+
+          <!-- SEPA -->
+          <div id="pm-sepa" style="display:none;">
+            <div class="stripe-field">
+              <label>IBAN</label>
+              <div class="stripe-input-wrapper">
+                <i class="fas fa-university"></i>
+                <input type="text" placeholder="FR76 0000 0000 0000 0000 0000 000">
+              </div>
+            </div>
+            <p style="font-size:0.8rem;color:var(--white-40);margin-top:0.75rem;line-height:1.5;">
+              En fournissant votre IBAN, vous autorisez Hozana Concept à débiter votre compte conformément au mandat SEPA.
+            </p>
+          </div>
+
+          <!-- PayPal -->
+          <div id="pm-paypal" style="display:none;text-align:center;padding:2rem 0;">
+            <i class="fab fa-paypal" style="font-size:3rem;color:#009cde;margin-bottom:1rem;"></i>
+            <p style="color:var(--white-50);font-size:0.9rem;margin-bottom:1.5rem;">
+              Vous serez redirigé vers PayPal pour finaliser votre paiement en toute sécurité.
+            </p>
+            <button class="btn" onclick="processPayment()" style="background:#009cde;color:white;border:none;padding:0.875rem 2rem;border-radius:var(--radius-full);font-family:var(--font-accent);font-weight:700;cursor:pointer;">
+              <i class="fab fa-paypal"></i> Payer avec PayPal
+            </button>
+          </div>
+        </div><!-- /stripe-payment-box -->
+
+        <!-- Promo code -->
+        <div class="checkout-form-section reveal delay-1" style="padding:1.25rem 1.5rem;">
+          <h3 style="margin-bottom:0.75rem;"><i class="fas fa-tag"></i> Code promo</h3>
+          <div class="promo-row">
+            <input type="text" id="promo-input" placeholder="Ex: HOZANA20">
+            <button onclick="applyPromo()">Appliquer</button>
+          </div>
+          <div class="promo-success" id="promo-success">✅ Code <strong id="promo-code-display"></strong> appliqué — -20% de réduction !</div>
+        </div>
+
+        <div class="checkout-nav">
+          <button class="btn-back" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Retour</button>
+          <button class="btn btn-primary btn-next" id="pay-btn" onclick="processPayment()">
+            <i class="fas fa-lock"></i> Payer maintenant
+          </button>
+        </div>
+
+      </div><!-- /screen-payment -->
+
+      <!-- ── SCREEN 4 : Succès ── -->
+      <div class="checkout-screen" id="screen-success">
+        <div class="success-screen">
+          <div class="success-icon">✅</div>
+          <h2 style="font-family:var(--font-title);font-size:2rem;font-weight:800;margin-bottom:1rem;">
+            Félicitations ! 🎉
+          </h2>
+          <p style="color:var(--white-70);font-size:1rem;line-height:1.7;max-width:520px;margin:0 auto 1rem;">
+            Votre commande a bien été enregistrée. Un email de confirmation a été envoyé à <strong id="confirm-email" style="color:var(--white);"></strong>.
+          </p>
+          <p style="color:var(--white-50);font-size:0.9rem;max-width:480px;margin:0 auto 2rem;">
+            Notre équipe vous contactera dans les <strong style="color:var(--white);">24h</strong> pour planifier votre session d'onboarding.
+          </p>
+
+          <div class="success-steps">
+            <div class="success-step-card">
+              <div class="step-emoji">📧</div>
+              <h4>Email de bienvenue</h4>
+              <p>Vérifiez votre boîte — un email de confirmation arrive dans quelques minutes.</p>
+            </div>
+            <div class="success-step-card">
+              <div class="step-emoji">📅</div>
+              <h4>Appel d'onboarding</h4>
+              <p>Sous 24h notre équipe vous contacte pour planifier votre démarrage.</p>
+            </div>
+            <div class="success-step-card">
+              <div class="step-emoji">🚀</div>
+              <h4>Lancement</h4>
+              <p>Démarrage de votre projet IA sous 48-72h après l'appel de bienvenue.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+            <a href="../index" class="btn btn-glass">
+              <i class="fas fa-home"></i> Retour à l'accueil
+            </a>
+            <a href="../contact.html" class="btn btn-primary">
+              <i class="fas fa-calendar"></i> Planifier mon onboarding
+            </a>
+          </div>
+
+          <div style="margin-top:3rem;padding:1.5rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-xl);max-width:480px;margin-left:auto;margin-right:auto;">
+            <p style="font-size:0.875rem;color:var(--white-50);margin-bottom:0.75rem;">Partagez votre décision avec votre réseau :</p>
+            <div style="display:flex;gap:0.75rem;justify-content:center;">
+              <a href="#" onclick="shareOn('twitter')" class="btn btn-glass btn-sm"><i class="fab fa-twitter"></i> Twitter</a>
+              <a href="#" onclick="shareOn('linkedin')" class="btn btn-glass btn-sm"><i class="fab fa-linkedin"></i> LinkedIn</a>
+              <button onclick="copyLink()" class="btn btn-glass btn-sm"><i class="fas fa-link"></i> Copier</button>
+            </div>
+          </div>
+        </div>
+      </div><!-- /screen-success -->
+
+    </div><!-- /left-col -->
+
+    <!-- ========== RIGHT COLUMN : Order Summary ========== -->
+    <aside>
+      <div class="order-summary">
+        <h3>📦 Récapitulatif</h3>
+
+        <!-- Billing toggle -->
+        <div class="billing-selector">
+          <button class="billing-opt active" onclick="toggleSummaryBilling('monthly',this)">Mensuel</button>
+          <button class="billing-opt" onclick="toggleSummaryBilling('annual',this)">Annuel <span style="font-size:0.65rem;opacity:0.8;">-20%</span></button>
+        </div>
+
+        <div class="order-line">
+          <span id="summary-pack-name">personalisé</span>
+          <span class="price-tag" id="summary-base-price">Sur devis</span>
+        </div>
+        <div class="order-line" id="summary-discount-row" style="display:none;">
+          <span>Réduction annuelle (-20%)</span>
+          <span class="price-tag" id="summary-discount" style="color:#22c55e;">-198€</span>
+        </div>
+        <div class="order-line" id="summary-promo-row" style="display:none;">
+          <span>Code promo <span class="discount-badge" id="summary-promo-badge">HOZANA20</span></span>
+          <span class="price-tag" id="summary-promo-val" style="color:#22c55e;"></span>
+        </div>
+        <div class="order-line">
+          <span>TVA (20%)</span>
+          <span class="price-tag" id="summary-tva">Sur devis</span>
+        </div>
+        <div class="order-line total">
+          <span>Total TTC</span>
+          <span class="price-tag" id="summary-total">Sur devis</span>
+        </div>
+
+        <button class="btn btn-primary cta-checkout-btn" id="sidebar-cta" onclick="sidebarCTA()">
+          <i class="fas fa-rocket"></i> Commencer maintenant
+        </button>
+
+        <div class="secure-badges">
+          <span><i class="fas fa-lock"></i> SSL 256-bit</span>
+          <span><i class="fab fa-stripe"></i> Stripe</span>
+          <span><i class="fas fa-shield-alt"></i> RGPD</span>
+        </div>
+
+        <div class="money-back">
+          <i class="fas fa-undo"></i>
+          <div><strong>Garantie 30 jours</strong><br>Satisfait ou remboursé, sans condition, sans question.</div>
+        </div>
+
+        <!-- What's included mini -->
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--glass-border);">
+          <p style="font-size:0.75rem;font-family:var(--font-accent);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--white-30);margin-bottom:0.875rem;">Ce que vous obtenez</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:0.5rem;" id="sidebar-features"><li style="display:flex;align-items:center;gap:0.5rem;font-size:0.8125rem;color:var(--white-70);"><i class="fas fa-check" style="color:#22c55e;font-size:0.75rem;flex-shrink:0;"></i>tout</li></ul>
+        </div>
+
+        <!-- Support -->
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--glass-border);font-size:0.8rem;color:var(--white-50);display:flex;align-items:center;gap:0.5rem;">
+          <i class="fas fa-headset" style="color:var(--red);"></i>
+          Questions ? <a href="../contact.html" style="color:var(--red);">Contactez-nous</a>
+        </div>
+      </div>
+    </aside>
+
+  </div><!-- /detail-wrapper -->
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="../js/supabase-config.js"></script>
+<script src="../js/core.js"></script>
+<script src="../js/components.js"></script>
+<script>
+/* ============================================================
+   PACK DETAIL PAGE — Data & Logic
+   ============================================================ */
+
+const PACKS = {
+  starter: {
+    name: 'Pack Starter',
+    emoji: '🚀',
+    tagline: 'Idéal pour démarrer votre transformation IA',
+    description: 'Parfait pour les solopreneurs et TPE qui souhaitent automatiser leurs premières tâches et gagner du temps au quotidien.',
+    priceMonthly: 490,
+    priceAnnual: 392,
+    badge: 'Starter',
+    badgeClass: 'badge-glass',
+    color: 'rgba(255,255,255,0.08)',
+    borderColor: 'rgba(255,255,255,0.1)',
+    featureGroups: [
+      {
+        title: '🤖 Intelligence Artificielle',
+        features: [
+          { name: '1 Chatbot IA configurable', desc: 'Assistant virtuel personnalisé pour votre site ou app', type: 'check' },
+          { name: '3 workflows automatisés', desc: 'Automatisation de tâches répétitives', type: 'check' },
+          { name: 'Intégration 2 outils', desc: 'CRM, email marketing ou autre selon vos besoins', type: 'check' },
+        ]
+      },
+      {
+        title: '📊 Reporting & Suivi',
+        features: [
+          { name: 'Rapport mensuel PDF', desc: 'Synthèse complète de vos performances', type: 'check' },
+          { name: 'Tableau de bord basique', desc: 'Vue d\'ensemble de vos KPIs principaux', type: 'check' },
+          { name: 'Analytics temps réel', desc: 'Non inclus dans ce pack', type: 'x' },
+        ]
+      },
+      {
+        title: '🎧 Support & Accompagnement',
+        features: [
+          { name: 'Support email 48h', desc: 'Réponse garantie sous 48 heures ouvrées', type: 'check' },
+          { name: 'Session d\'onboarding 2h', desc: 'Prise en main et configuration initiale', type: 'check' },
+          { name: 'Account manager dédié', desc: 'Non inclus dans ce pack', type: 'x' },
+        ]
+      }
+    ],
+    timeline: [
+      { week: 'Semaine 1', title: 'Onboarding & Audit', desc: 'Analyse de vos processus actuels, définition des priorités et accès aux outils.' },
+      { week: 'Semaine 2', title: 'Configuration du Chatbot', desc: 'Paramétrage, entraînement et intégration du chatbot IA sur votre site.' },
+      { week: 'Semaines 3-4', title: 'Automatisation & Tests', desc: 'Mise en place des 3 workflows, tests et ajustements.' },
+      { week: 'Fin de mois 1', title: 'Go Live & Premier rapport', desc: 'Lancement officiel et réception du premier rapport mensuel.' },
+    ],
+    results: [
+      { metric: '-40%', label: 'Temps passé sur les tâches répétitives' },
+      { metric: '+30%', label: 'Productivité de l\'équipe' },
+      { metric: '24/7', label: 'Disponibilité de votre chatbot' },
+    ],
+    testimonial: {
+      text: 'Avec le pack Starter, j\'ai automatisé mes relances clients et économisé 10h par semaine dès le premier mois. ROI immédiat !',
+      name: 'Thomas B.',
+      role: 'Consultant freelance',
+      initials: 'TB'
+    },
+    sidebarFeatures: ['1 chatbot IA', '3 workflows auto', 'Rapport mensuel', 'Support email', 'Onboarding 2h']
+  },
+  growth: {
+    name: 'Pack Growth',
+    emoji: '⚡',
+    tagline: 'Le plus populaire — Pour les PME en croissance',
+    description: 'Accélérez sérieusement votre croissance avec une suite complète d\'IA, d\'automatisation et de stratégie digitale.',
+    priceMonthly: 990,
+    priceAnnual: 792,
+    badge: 'Growth ⭐',
+    badgeClass: 'badge-red',
+    color: 'rgba(255,46,46,0.08)',
+    borderColor: 'rgba(255,46,46,0.3)',
+    featured: true,
+    featureGroups: [
+      {
+        title: '🤖 Intelligence Artificielle',
+        features: [
+          { name: '3 Chatbots IA avancés', desc: 'Assistants multi-canaux (site, WhatsApp, Messenger)', type: 'check' },
+          { name: '10 workflows complexes', desc: 'Automatisations avancées multi-étapes', type: 'check' },
+          { name: 'Intégrations illimitées', desc: 'Connectez tous vos outils sans limite', type: 'check' },
+        ]
+      },
+      {
+        title: '📈 Growth & Marketing',
+        features: [
+          { name: 'Growth Ads IA', desc: '500€ de budget publicitaire inclus et géré par IA', type: 'check' },
+          { name: 'Contenu IA — 20 pièces/mois', desc: 'Articles, posts, emails générés et optimisés', type: 'check' },
+          { name: 'Analytics temps réel', desc: 'Dashboard live avec KPIs et alertes automatiques', type: 'check' },
+        ]
+      },
+      {
+        title: '🎧 Support Premium',
+        features: [
+          { name: 'Support prioritaire 24h', desc: 'Réponse garantie en moins de 24h, 7j/7', type: 'check' },
+          { name: 'Rapport hebdomadaire', desc: 'Suivi détaillé chaque semaine', type: 'check' },
+          { name: 'Formation équipe incluse', desc: 'Session de formation pour votre équipe', type: 'check' },
+        ]
+      }
+    ],
+    timeline: [
+      { week: 'Semaine 1', title: 'Audit & Stratégie', desc: 'Audit complet de votre écosystème digital et élaboration de la roadmap IA personnalisée.' },
+      { week: 'Semaine 2', title: 'Déploiement IA', desc: 'Configuration des 3 chatbots, connexion des outils et premiers workflows.' },
+      { week: 'Semaine 3', title: 'Growth & Contenu', desc: 'Lancement des campagnes Ads IA et production du premier lot de contenu.' },
+      { week: 'Semaine 4', title: 'Optimisation', desc: 'Analyse des premiers résultats, A/B tests et optimisations.' },
+      { week: 'Mois 2+', title: 'Scale & Croissance', desc: 'Itérations continues basées sur les données pour maximiser le ROI.' },
+    ],
+    results: [
+      { metric: '+150%', label: 'Trafic qualifié en 3 mois' },
+      { metric: '+60%', label: 'Taux de conversion leads' },
+      { metric: '-60%', label: 'Coût d\'acquisition client' },
+    ],
+    testimonial: {
+      text: 'Le pack Growth a transformé notre façon de travailler. En 2 mois, nos leads ont triplé et notre équipe a gagné 20h/semaine grâce aux automatisations.',
+      name: 'Sophie M.',
+      role: 'CEO, E-commerce mode',
+      initials: 'SM'
+    },
+    sidebarFeatures: ['3 chatbots IA avancés', '10 workflows complexes', 'Analytics temps réel', 'Growth Ads (500€ inclus)', 'Contenu IA 20 pièces/mois', 'Support 24h']
+  },
+  elite: {
+    name: 'Pack Elite',
+    emoji: '🏆',
+    tagline: 'Pour dominer votre marché avec l\'IA',
+    description: 'La solution complète pour les entreprises ambitieuses qui veulent une transformation IA totale et un avantage concurrentiel durable.',
+    priceMonthly: 1990,
+    priceAnnual: 1592,
+    badge: 'Elite',
+    badgeClass: 'badge-orange',
+    color: 'rgba(255,106,0,0.06)',
+    borderColor: 'rgba(255,106,0,0.25)',
+    featureGroups: [
+      {
+        title: '🤖 IA Sur Mesure',
+        features: [
+          { name: 'IA sur mesure complète', desc: 'Développement de modèles IA adaptés à votre métier', type: 'check' },
+          { name: 'Workflows illimités', desc: 'Automatisation totale de vos processus métier', type: 'check' },
+          { name: 'BI & Analyse prédictive', desc: 'Tableaux de bord avancés et prédiction des tendances', type: 'check' },
+        ]
+      },
+      {
+        title: '📈 Growth Avancé',
+        features: [
+          { name: 'Growth Ads avancé', desc: '2 000€/mois de budget publicitaire géré par IA', type: 'check' },
+          { name: 'Contenu IA illimité', desc: 'Production de contenu sans limite quantitative', type: 'check' },
+          { name: 'Account manager dédié', desc: 'Votre interlocuteur unique et expert', type: 'check' },
+        ]
+      },
+      {
+        title: '🎧 Support VIP',
+        features: [
+          { name: 'SLA réponse 4h', desc: 'Engagement contractuel de réponse en moins de 4h', type: 'check' },
+          { name: 'Audit mensuel stratégique', desc: 'Revue mensuelle avec le comité d\'experts', type: 'check' },
+          { name: 'Accès bêta nouvelles features', desc: 'Testez nos nouveautés en avant-première', type: 'check' },
+        ]
+      }
+    ],
+    timeline: [
+      { week: 'Semaines 1-2', title: 'Audit & Architecture', desc: 'Audit approfondi et conception de l\'architecture IA dédiée à votre entreprise.' },
+      { week: 'Semaines 3-4', title: 'Déploiement complet', desc: 'Mise en place de tous les systèmes IA, intégrations et automatisations.' },
+      { week: 'Mois 2', title: 'Optimisation intensive', desc: 'Calibrage des modèles IA, optimisation des campagnes et fine-tuning.' },
+      { week: 'Mois 3+', title: 'Domination marché', desc: 'Stratégie de scale agressive basée sur les données et l\'IA prédictive.' },
+    ],
+    results: [
+      { metric: '+300%', label: 'ROI moyen sur 6 mois' },
+      { metric: '-70%', label: 'Coûts opérationnels' },
+      { metric: 'x3', label: 'Vitesse d\'exécution des projets' },
+    ],
+    testimonial: {
+      text: 'Le pack Elite nous a donné une longueur d\'avance incroyable sur nos concurrents. L\'IA prédictive nous permet d\'anticiper les tendances du marché avec 3 mois d\'avance.',
+      name: 'Alexandre D.',
+      role: 'DG, Groupe immobilier',
+      initials: 'AD'
+    },
+    sidebarFeatures: ['IA sur mesure complète', 'Workflows illimités', 'BI & Prédictif', 'Growth Ads 2 000€/mois', 'Contenu IA illimité', 'Account manager dédié', 'SLA 4h']
+  }
+};
+
+// FAQs communs
+const FAQS = [
+  { q: 'Puis-je changer de pack plus tard ?', a: 'Oui, absolument ! Vous pouvez upgrader ou downgrader votre pack à tout moment, sans frais. Le changement prend effet au prochain cycle de facturation.' },
+  { q: 'Comment fonctionne la garantie 30 jours ?', a: 'Si vous n\'êtes pas satisfait dans les 30 premiers jours, nous vous remboursons intégralement, sans condition et sans question. Votre satisfaction est notre priorité.' },
+  { q: 'Y a-t-il un engagement de durée ?', a: 'Nos packs sont sans engagement longue durée. Vous payez mois par mois et pouvez résilier à tout moment. L\'abonnement annuel offre -20% mais reste résiliable avec remboursement au prorata.' },
+  { q: 'Comment se passe l\'onboarding ?', a: 'Après votre commande, notre équipe vous contacte dans les 24h pour planifier votre session d\'onboarding. Nous configurons tout ensemble pour que vous puissiez démarrer rapidement.' },
+];
+
+/* ── State ── */
+let currentStep = 1;
+let currentPack = null;
+let billingType = 'monthly';
+let promoApplied = false;
+const PROMO_CODES = { 'HOZANA20': 20, 'HOZANA30': 30, 'LAUNCH50': 50 };
+
+/* ── Init ── */
+async function initPage() {
+  const params = new URLSearchParams(window.location.search);
+  const staticPackData = window.__STATIC_PACK_DATA__ || null;
+  const packName = params.get('pack') || staticPackData?.name || window.__STATIC_PACK_KEY__ || 'Growth';
+
+  // Normalise le nom du pack depuis l'URL (ex: "Growth" → "growth")
+  // et sélectionne le pack correspondant depuis nos données locales riches
+  const key = packName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const staticKey = window.__STATIC_PACK_KEY__;
+  currentPack = PACKS[staticKey] || PACKS[key] || PACKS.growth;
+  if (staticPackData) {
+    currentPack = {
+      ...currentPack,
+      ...staticPackData,
+      featureGroups: currentPack.featureGroups,
+      timeline: currentPack.timeline,
+      results: currentPack.results,
+      testimonial: currentPack.testimonial,
+      sidebarFeatures: currentPack.sidebarFeatures
+    };
+  }
+
+  // Tentative de merge avec les données Supabase (prix mis à jour via admin)
+  try {
+    if (staticPackData) throw new Error('static-pack-data');
+    const res = await fetch(`tables/packs?name=eq.${encodeURIComponent(packName)}`);
+    if (res.ok) {
+      const json = await res.json();
+      const packData = json.data ? json.data[0] : null;
+      if (packData && packData.price) {
+        const priceNum = parseInt(packData.price.replace(/[^0-9]/g, ''));
+        if (!isNaN(priceNum) && priceNum > 0) {
+          currentPack.priceMonthly = priceNum;
+          currentPack.priceAnnual = Math.round(priceNum * 0.8);
+        }
+      }
+    }
+  } catch (e) {
+    // Les données locales sont toujours disponibles — aucun problème
+  }
+
+  renderPackHero();
+  renderFeatureGroups();
+  renderTimeline();
+  renderResults();
+  renderTestimonial();
+  renderFAQ();
+  renderSidebarFeatures();
+  updateSummary();
+
+  document.title = `${currentPack.name} | Hozana Concept`;
+}
+
+function renderPackHero() {
+  const el = document.getElementById('pack-hero-display');
+  if (!el) return;
+  el.style.background = `linear-gradient(135deg, ${currentPack.color}, transparent)`;
+  el.style.borderColor = currentPack.borderColor;
+
+  const monthly = currentPack.priceMonthly;
+  const annual = currentPack.priceAnnual;
+  const showPrice = billingType === 'monthly' ? monthly : annual;
+
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+      <div class="badge ${currentPack.badgeClass}" style="font-size:0.875rem;">${currentPack.emoji} ${currentPack.badge}</div>
+      ${currentPack.featured ? '<div class="badge badge-glass" style="font-size:0.75rem;">⭐ Le plus populaire</div>' : ''}
+    </div>
+    <h1 class="pack-hero-title">${currentPack.name}</h1>
+    <p class="pack-hero-subtitle">${currentPack.description}</p>
+    <div class="pack-hero-price">
+      <span class="pack-price-amount gradient-text" id="hero-price">${showPrice}€</span>
+      <span class="pack-price-period">/mois HT</span>
+      ${billingType === 'annual' ? '<div style="margin-top:0.5rem;"><span class="discount-badge">Facturé annuellement — Vous économisez ' + ((monthly - annual) * 12) + '€/an</span></div>' : ''}
+    </div>
+  `;
+}
+
+function renderFeatureGroups() {
+  const el = document.getElementById('feature-groups-display');
+  if (!el) return;
+  el.innerHTML = currentPack.featureGroups.map(group => `
+    <div class="feature-group">
+      <div class="feature-group-title">${group.title}</div>
+      <ul class="feature-list-detailed">
+        ${group.features.map(f => `
+          <li>
+            <div class="feat-icon ${f.type === 'x' ? 'red' : ''}">
+              <i class="fas fa-${f.type === 'x' ? 'times' : 'check'}"></i>
+            </div>
+            <div>
+              <strong ${f.type === 'x' ? 'style="color:var(--white-40);"' : ''}>${f.name}</strong>
+              <span>${f.desc}</span>
+            </div>
+          </li>
+        `).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+function renderTimeline() {
+  const el = document.getElementById('timeline-display');
+  if (!el) return;
+  el.innerHTML = currentPack.timeline.map(item => `
+    <div class="timeline-item">
+      <div class="timeline-week">${item.week}</div>
+      <div class="timeline-title">${item.title}</div>
+      <div class="timeline-desc">${item.desc}</div>
+    </div>
+  `).join('');
+}
+
+function renderResults() {
+  const el = document.getElementById('results-display');
+  if (!el) return;
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
+      ${currentPack.results.map(r => `
+        <div class="glass" style="padding:1.5rem;text-align:center;border-radius:var(--radius-lg);">
+          <div style="font-size:2.25rem;font-weight:800;font-family:var(--font-title);background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;">${r.metric}</div>
+          <div style="font-size:0.8125rem;color:var(--white-50);line-height:1.4;">${r.label}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="background:rgba(255,46,46,0.06);border:1px solid rgba(255,46,46,0.15);border-radius:var(--radius-lg);padding:1.5rem;">
+      <p style="font-size:0.875rem;color:var(--white-70);line-height:1.7;margin:0;">
+        <strong style="color:var(--white);">⚠️ Note :</strong> Ces résultats sont des moyennes observées sur l'ensemble de nos clients. Vos résultats peuvent varier selon votre secteur, votre marché et votre engagement dans le processus. Nous travaillons toujours à maximiser votre ROI spécifique.
+      </p>
+    </div>
+  `;
+}
+
+function renderTestimonial() {
+  const el = document.getElementById('testimonial-display');
+  const t = currentPack.testimonial;
+  if (!el || !t) return;
+  el.innerHTML = `
+    <p>"${t.text}"</p>
+    <div class="mini-testimonial-author">
+      <div class="mini-avatar">${t.initials}</div>
+      <div class="mini-author-info">
+        <strong>${t.name}</strong>
+        <span>${t.role}</span>
+      </div>
+      <div class="stars" style="margin-left:auto;">★★★★★</div>
+    </div>
+  `;
+}
+
+function renderFAQ() {
+  const el = document.getElementById('faq-display');
+  if (!el) return;
+  el.innerHTML = FAQS.map((f, i) => `
+    <div class="faq-mini-item" id="faq-${i}">
+      <div class="faq-mini-q" onclick="toggleFaqMini(${i})">
+        ${f.q}
+        <i class="fas fa-plus faq-mini-icon"></i>
+      </div>
+      <div class="faq-mini-a" id="faq-a-${i}">${f.a}</div>
+    </div>
+  `).join('');
+}
+
+function renderSidebarFeatures() {
+  const el = document.getElementById('sidebar-features');
+  if (!el) return;
+  el.innerHTML = currentPack.sidebarFeatures.map(f => `
+    <li style="display:flex;align-items:center;gap:0.5rem;font-size:0.8125rem;color:var(--white-70);">
+      <i class="fas fa-check" style="color:#22c55e;font-size:0.75rem;flex-shrink:0;"></i>${f}
+    </li>
+  `).join('');
+}
+
+function updateSummary() {
+  const pack = currentPack;
+  if (!pack) return;
+
+  const base = billingType === 'monthly' ? pack.priceMonthly : pack.priceAnnual;
+  const discount = billingType === 'annual' ? pack.priceMonthly - pack.priceAnnual : 0;
+  let subtotal = base;
+
+  document.getElementById('summary-pack-name').textContent = pack.name;
+  document.getElementById('summary-base-price').textContent = base + '€';
+
+  const discRow = document.getElementById('summary-discount-row');
+  const discEl = document.getElementById('summary-discount');
+  if (billingType === 'annual' && discount > 0) {
+    discRow.style.display = 'flex';
+    discEl.textContent = '-' + discount + '€';
+  } else {
+    discRow.style.display = 'none';
+  }
+
+  // Promo
+  let promoVal = 0;
+  if (promoApplied) {
+    promoVal = Math.round(subtotal * promoApplied / 100);
+    subtotal -= promoVal;
+    document.getElementById('summary-promo-row').style.display = 'flex';
+    document.getElementById('summary-promo-val').textContent = '-' + promoVal + '€';
+  } else {
+    document.getElementById('summary-promo-row').style.display = 'none';
+  }
+
+  const tva = Math.round(subtotal * 0.2);
+  const total = subtotal + tva;
+  document.getElementById('summary-tva').textContent = tva + '€';
+  document.getElementById('summary-total').textContent = total.toLocaleString('fr-FR') + '€';
+
+  // Update hero price
+  const heroPrice = document.getElementById('hero-price');
+  if (heroPrice) heroPrice.textContent = base + '€';
+}
+
+/* ── Steps navigation ── */
+function goToStep(step) {
+  // Validate step 1 (always pass)
+  // Validate step 2 (form validation is on form submit)
+
+  // Hide all screens
+  document.querySelectorAll('.checkout-screen').forEach(s => s.classList.remove('active'));
+
+  const screens = { 1: 'screen-details', 2: 'screen-info', 3: 'screen-payment', 4: 'screen-success' };
+  const screenEl = document.getElementById(screens[step]);
+  if (screenEl) screenEl.classList.add('active');
+
+  currentStep = step;
+  updateStepBar(step);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateStepBar(step) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('step-indicator-' + i);
+    if (!el) continue;
+    el.classList.remove('active', 'done');
+    const numEl = el.querySelector('.step-number');
+
+    if (i < step) {
+      el.classList.add('done');
+      numEl.innerHTML = '<i class="fas fa-check" style="font-size:0.7rem;"></i>';
+    } else if (i === step) {
+      el.classList.add('active');
+      numEl.textContent = i;
+    } else {
+      numEl.textContent = i;
+    }
+  }
+
+  for (let i = 1; i <= 3; i++) {
+    const line = document.getElementById('step-line-' + i);
+    if (!line) continue;
+    line.classList.remove('done', 'active');
+    if (i < step) line.classList.add('done');
+    else if (i === step) line.classList.add('active');
+  }
+}
+
+/* ── Sidebar CTA ── */
+function sidebarCTA() {
+  if (currentStep === 1) goToStep(2);
+  else if (currentStep === 2) document.getElementById('info-form')?.requestSubmit();
+  else if (currentStep === 3) processPayment();
+}
+
+/* ── Billing toggle ── */
+function toggleSummaryBilling(type, btn) {
+  billingType = type;
+  document.querySelectorAll('.billing-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPackHero();
+  updateSummary();
+}
+
+/* ── Feature tabs ── */
+function switchTab(btn, tabId) {
+  document.querySelectorAll('.feature-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(tabId)?.classList.add('active');
+}
+
+/* ── FAQ toggle ── */
+function toggleFaqMini(i) {
+  const item = document.getElementById('faq-' + i);
+  const ans = document.getElementById('faq-a-' + i);
+  const wasOpen = item.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-mini-item').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.faq-mini-a')?.classList.remove('open');
+  });
+  if (!wasOpen) {
+    item.classList.add('open');
+    ans.classList.add('open');
+  }
+}
+
+/* ── Form validation ── */
+function validateInfoAndNext(e) {
+  e.preventDefault();
+  goToStep(3);
+}
+
+/* ── Payment method tabs ── */
+function selectPayMethod(tab, method) {
+  document.querySelectorAll('.pm-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  document.getElementById('pm-card').style.display = method === 'card' ? 'block' : 'none';
+  document.getElementById('pm-sepa').style.display = method === 'sepa' ? 'block' : 'none';
+  document.getElementById('pm-paypal').style.display = method === 'paypal' ? 'block' : 'none';
+}
+
+/* ── Card formatting ── */
+function formatCardNumber(input) {
+  let v = input.value.replace(/\D/g, '').substring(0, 16);
+  v = v.replace(/(.{4})/g, '$1 ').trim();
+  input.value = v;
+  const preview = document.getElementById('preview-number');
+  if (preview) {
+    const filled = v.replace(/\s/g, '');
+    let display = '';
+    for (let i = 0; i < 16; i++) {
+      if (i > 0 && i % 4 === 0) display += ' ';
+      display += filled[i] || '•';
+    }
+    preview.textContent = display;
+  }
+}
+
+function formatExpiry(input) {
+  let v = input.value.replace(/\D/g, '').substring(0, 4);
+  if (v.length >= 2) v = v.slice(0, 2) + ' / ' + v.slice(2);
+  input.value = v;
+  const preview = document.getElementById('preview-expiry');
+  if (preview) preview.textContent = v || 'MM / AA';
+}
+
+/* ── Promo code ── */
+function applyPromo() {
+  const code = document.getElementById('promo-input')?.value.trim().toUpperCase();
+  const discount = PROMO_CODES[code];
+  if (discount) {
+    promoApplied = discount;
+    document.getElementById('promo-success').style.display = 'block';
+    document.getElementById('promo-code-display').textContent = code;
+    document.getElementById('summary-promo-badge').textContent = code;
+    updateSummary();
+    window.HC?.showToast('🎉 Code promo appliqué ! -' + discount + '%', 'success');
+  } else {
+    window.HC?.showToast('Code promo invalide ou expiré.', 'error');
+  }
+}
+
+/* ── Process Payment ── */
+async function processPayment() {
+  const btn = document.getElementById('pay-btn');
+  if (!btn) return;
+
+  // Basic validation
+  const cardNum = document.getElementById('card-number')?.value.replace(/\s/g, '');
+  const expiry = document.getElementById('card-expiry')?.value;
+  const cvv = document.getElementById('card-cvv')?.value;
+  const cardName = document.getElementById('card-name')?.value;
+
+  if (cardNum && cardNum.length < 16) {
+    window.HC?.showToast('Numéro de carte incomplet.', 'error');
+    return;
+  }
+
+  btn.classList.add('btn-loading');
+  btn.textContent = 'Traitement en cours';
+
+  try {
+    // Save order to DB
+    const email = document.getElementById('f-email')?.value || '';
+    const firstname = document.getElementById('f-firstname')?.value || '';
+    const lastname = document.getElementById('f-lastname')?.value || '';
+    const company = document.getElementById('f-company')?.value || '';
+
+    await fetch('tables/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pack: currentPack.name,
+        billing: billingType,
+        promo: promoApplied ? Object.keys(PROMO_CODES).find(k => PROMO_CODES[k] === promoApplied) : '',
+        email,
+        firstname,
+        lastname,
+        company,
+        status: 'paid',
+        amount: parseInt(document.getElementById('summary-total')?.textContent?.replace(/\s/g, '')) || 0
+      })
+    });
+
+    // Also save as lead
+    if (email) {
+      await fetch('tables/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          name: `${firstname} ${lastname}`.trim() || company,
+          source: 'checkout-' + currentPack.name.toLowerCase().replace(/\s/g,''),
+          status: 'client',
+          company
+        })
+      });
+    }
+  } catch(e) {
+    console.warn('DB save failed, continuing...', e);
+  }
+
+  // Simulate Stripe processing delay (2s)
+  await new Promise(r => setTimeout(r, 2000));
+
+  btn.classList.remove('btn-loading');
+
+  // Show success
+  const confirmEmail = document.getElementById('confirm-email');
+  if (confirmEmail) {
+    confirmEmail.textContent = document.getElementById('f-email')?.value || 'votre email';
+  }
+
+  goToStep(4);
+}
+
+/* ── Share ── */
+function shareOn(platform) {
+  const url = window.location.href;
+  const text = `Je viens de choisir le ${currentPack.name} de @HozanaConcept pour accélérer ma transformation IA ! 🚀`;
+  const urls = {
+    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`
+  };
+  window.open(urls[platform], '_blank', 'width=600,height=400');
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    window.HC?.showToast('Lien copié !', 'success');
+  });
+}
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded', initPage);
+</script>
+
+
+</body></html>
