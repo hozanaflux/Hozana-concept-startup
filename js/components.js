@@ -527,91 +527,224 @@ function renderCookiePopup() {
 }
 
 // ============================================================
-// CHATBOT IA
+// CHATBOT IA — Knowledge base + lead qualification
 // ============================================================
-const _chatResponses = {
-  services: {
-    patterns: ['service', 'offre', 'que faites', 'proposez', 'domaine', 'expertise'],
-    response: `Nous proposons cinq services principaux : l'IA sur mesure, l'automatisation, la growth digitale, le contenu IA et l'analytics BI. Quel domaine vous intéresse le plus ?`
-  },
-  packs: {
-    patterns: ['pack', 'tarif', 'prix', 'combien', 'forfait', 'abonnement', 'offre'],
-    response: `Nos packs commencent à 490€/mois pour le Starter, puis 990€/mois pour le Growth, 1 990€/mois pour l'Elite et sur devis pour l'Enterprise. Voulez-vous plus de détails sur un plan spécifique ?`
-  },
-  contact: {
-    patterns: ['contact', 'appel', 'rdv', 'rendez-vous', 'parler', 'joindre', 'équipe'],
-    response: `Vous pouvez nous contacter par email à info@hozanaconcept.com ou sur WhatsApp au +216 51 47 47 51. Souhaitez-vous réserver un audit gratuit ?`
-  },
-  audit: {
-    patterns: ['audit', 'gratuit', 'diagnostic', 'analyse', 'évaluation', 'free'],
-    response: `Notre audit gratuit de 30 minutes identifie vos opportunités IA, crée une roadmap personnalisée et estime le ROI. Vous voulez prendre rendez-vous ?`
-  },
-  ia: {
-    patterns: ['ia', 'intelligence artificielle', 'ai', 'machine learning', 'gpt', 'chatgpt', 'llm'],
-    response: `L'IA est au cœur de nos solutions : automatisation, analyse de données, génération de contenu et prédictions. Quel aspect vous intéresse ?`
-  },
-  roi: {
-    patterns: ['roi', 'résultat', 'retour', 'investissement', 'rentable', 'bénéfice', 'chiffre'],
-    response: `Nos clients voient en moyenne +67% de chiffre d'affaires, un ROI de 3,2 et une réduction de 40% des coûts grâce à nos solutions. Voulez-vous voir des études de cas spécifiques ?`
-  },
-  location: {
-    patterns: ['location', 'office', 'headquarters', 'global', 'remote', 'where', 'address'],
-    response: `Nous travaillons avec des clients partout dans le monde (Europe, USA, UAE, Afrique, Asie) et toutes nos missions sont 100% à distance. Où êtes-vous basé ?`
-  },
-  default: `Bonjour ! Je suis l'assistant IA de Hozana Concept. Comment puis-je vous aider aujourd'hui ?`
+const HC_COMPANY_KB = {
+  name: 'Hozana Concept',
+  positioning: 'Plateforme et agence IA qui conçoit des solutions digitales, automatisées et orientées croissance pour les entreprises ambitieuses.',
+  founder: 'Efro Mwanza, fondateur et CEO',
+  promise: 'Audit gratuit de 30 minutes, réponse sous 24h, accompagnement à distance pour des clients en France et à l\'international.',
+  email: 'info@hozanaconcept.com',
+  whatsapp: '+216 51 47 47 51',
+  whatsappUrl: 'https://wa.me/21651474751',
+  availability: 'WhatsApp disponible 7j/7 de 9h à 21h. Email avec réponse sous 24h.',
+  rendezvous: 'Le rendez-vous recommandé est un audit gratuit de 30 minutes pour comprendre le besoin, identifier les opportunités IA et proposer une roadmap.'
 };
 
+const HC_ACTIVITY_POLES = [
+  {
+    id: 'ia',
+    name: 'Intelligence Artificielle',
+    aliases: ['ia', 'intelligence artificielle', 'chatbot', 'agent ia', 'llm', 'gpt', 'mistral', 'automatisation ia'],
+    summary: 'Solutions IA sur mesure : chatbots site et WhatsApp, agents IA personnalisés, analyse prédictive, génération de contenu IA, scoring et qualification.',
+    examples: ['Chatbot IA 24/7', 'Agent IA métier', 'RAG sur documents internes', 'Qualification automatique de leads', 'Intégration GPT, Claude ou Mistral']
+  },
+  {
+    id: 'branding',
+    name: 'Branding & Création',
+    aliases: ['branding', 'logo', 'identité', 'design', 'ui', 'ux', 'création', 'visuel'],
+    summary: 'Construction d\'identité visuelle et d\'expériences de marque : logo, charte graphique, UI/UX, motion design et supports créatifs.',
+    examples: ['Logo et charte graphique', 'Direction artistique', 'UI/UX design', 'Visuels réseaux sociaux', 'Supports print']
+  },
+  {
+    id: 'marketing',
+    name: 'Marketing Digital',
+    aliases: ['marketing', 'ads', 'publicité', 'seo', 'social media', 'growth marketing', 'tiktok', 'google ads', 'facebook ads'],
+    summary: 'Acquisition et croissance digitale : campagnes ads, social media, SEO, stratégie éditoriale, reporting et optimisation continue.',
+    examples: ['Facebook/Google/TikTok Ads', 'SEO', 'Social media management', 'Stratégie de contenu', 'Optimisation CPA']
+  },
+  {
+    id: 'dev',
+    name: 'Développement Tech',
+    aliases: ['développement', 'site', 'application', 'app', 'web', 'mobile', 'saas', 'api', 'ecommerce'],
+    summary: 'Développement web, mobile et logiciel : sites vitrines, e-commerce, apps mobiles, SaaS, API, intégrations et maintenance.',
+    examples: ['Site vitrine', 'E-commerce', 'Application mobile', 'SaaS sur mesure', 'API et intégrations']
+  },
+  {
+    id: 'business',
+    name: 'Business & Monétisation',
+    aliases: ['business', 'monétisation', 'funnel', 'conversion', 'cro', 'email', 'sms', 'revenus', 'vente'],
+    summary: 'Systèmes de conversion et de revenus : funnels, CRO, email/SMS automation, upsell, cross-sell, landing pages et checkout.',
+    examples: ['Funnel de vente', 'Email automation', 'SMS automation', 'Optimisation checkout', 'Lead magnets']
+  },
+  {
+    id: 'consulting',
+    name: 'Consulting Premium',
+    aliases: ['consulting', 'audit', 'stratégie', 'coaching', 'formation', 'roadmap', 'transformation digitale'],
+    summary: 'Accompagnement stratégique : audit digital, stratégie IA, roadmap, transformation digitale, coaching et formation des équipes.',
+    examples: ['Audit digital 360', 'Roadmap IA', 'Coaching dirigeant', 'Formation outils IA', 'Pilotage projet']
+  }
+];
+
+const HC_PACKS = [
+  { name: 'Starter', price: 'à partir de 490€/mois HT', fit: 'premières automatisations, chatbot et accompagnement initial' },
+  { name: 'Growth', price: 'à partir de 990€/mois HT', fit: 'PME en croissance, workflows, analytics, contenu IA et acquisition' },
+  { name: 'Elite', price: 'à partir de 1 990€/mois HT', fit: 'transformation IA complète, BI, prédictif, support VIP' },
+  { name: 'Enterprise', price: 'sur devis', fit: 'architecture dédiée, SLA, sécurité, propriété IP et équipe dédiée' }
+];
+
+let _chatLeadDraft = { intent: null, name: '', email: '', phone: '', company: '', service: '', preferredSlot: '', message: '' };
+let _chatAwaiting = null;
+
+function _buildChatSystemPrompt() {
+  return `Tu es l'assistant IA officiel de Hozana Concept. Tu représentes l'image de l'entreprise : professionnel, clair, exigeant, utile.
+
+IDENTITÉ:
+- Hozana Concept est une plateforme/agence IA et digitale.
+- Fondateur et CEO : Efro Mwanza.
+- Contact : info@hozanaconcept.com, WhatsApp +216 51 47 47 51.
+- Audit gratuit : 30 minutes, réponse sous 24h.
+
+6 PÔLES D'ACTIVITÉ:
+${HC_ACTIVITY_POLES.map(p => `- ${p.name}: ${p.summary}`).join('\n')}
+
+PACKS:
+${HC_PACKS.map(p => `- ${p.name}: ${p.price}, adapté à ${p.fit}.`).join('\n')}
+
+RÈGLES:
+1. Réponds en français, de manière courte mais premium.
+2. Ne donne jamais d'informations inventées. Si tu ne sais pas, propose un audit gratuit.
+3. Pour un besoin projet, qualifie : objectif, service, entreprise, délai, email/téléphone.
+4. Quand l'utilisateur veut un rendez-vous, demande les informations manquantes et explique qu'un expert confirme le créneau sous 24h.
+5. Termine souvent par une question utile, jamais par un discours vague.`;
+}
+
 async function _getMistralResponse(msg) {
-  const SYSTEM_PROMPT = `Tu es l'assistant IA de Hozana Concept. Tu réponds en français de manière naturelle, chaleureuse et concise, comme un collègue sympathique qui connaît bien son travail.
-
-RÈGLES D'OR :
-1. RÉPONDS UNIQUEMENT À LA QUESTION POSÉE - rien de plus, rien de moins
-2. Si la question est simple (salutation, merci, etc.), donne une réponse simple et chaleureuse
-3. Si tu ne connais pas l'information exacte, dis-le clairement et ou vers nos ressources officielles (site, contact, audit gratuit)
-4. Utilise un ton conversationnel : évite le jargon commercial, parle comme un humain
-5. Garde tes réponses courtes : 1-2 phrases maximum pour les questions factuelles
-6. Ne fais pas de promotion non sollicitée - ne mentionne nos services/packs que si explicitement demandé
-
-EXEMPLES :
-- "Bonjour" → "Bonjour ! Comment puis-je vous aider ?"
-- "Quel est votre email ?" → "Notre email est info@hozanaconcept.com"
-- "Qui est votre CEO ?" → "Notre fondateur et CEO est Efro Mwanza"
-- "Quels services proposez-vous ?" → "Nous proposons de l'IA sur mesure, de l'automatisation, de la growth digitale, du contenu IA et de l'analytics BI. Quel domaine vous intéresse ?"
-- "Je veux un devis" → "Pour un devis personnalisé, commençons par notre audit gratuit de 30 minutes. Souhaitez-vous prendre rendez-vous ?"`;
-
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         message: msg,
-        systemPrompt: SYSTEM_PROMPT
+        systemPrompt: _buildChatSystemPrompt(),
+        model: 'mistral-small-latest'
       })
     });
 
     const data = await response.json();
-
-    if (!response.ok || data.fallback) {
-      throw new Error(data.error || `API error: ${response.status}`);
-    }
-
-    return data.reply;
+    if (!response.ok || data.fallback) throw new Error(data.error || `API error: ${response.status}`);
+    return _escapeHtml(data.reply);
   } catch (error) {
     console.error('[Chatbot] API proxy error:', error);
-    // Fallback to rule-based responses if API fails
     return _getBotResponse(msg);
   }
 }
 
 function _getBotResponse(msg) {
-  const m = msg.toLowerCase();
-  for (const [k, v] of Object.entries(_chatResponses)) {
-    if (k === 'default') continue;
-    if (v.patterns.some(p => m.includes(p))) return v.response;
+  const m = _normalizeChatText(msg);
+  if (_isGreeting(m)) return 'Bonjour. Je suis l\'assistant IA de Hozana Concept. Je peux vous orienter sur nos 6 pôles, nos packs, ou préparer un rendez-vous d\'audit gratuit.';
+  if (_containsAny(m, ['merci', 'thanks'])) return 'Avec plaisir. Souhaitez-vous que je vous aide à choisir le bon pôle ou à préparer un rendez-vous ?';
+  if (_containsAny(m, ['ceo', 'fondateur', 'dirigeant', 'patron', 'efro'])) return `Le fondateur et CEO de Hozana Concept est ${HC_COMPANY_KB.founder}.`;
+  if (_containsAny(m, ['email', 'mail', 'contact'])) return `Vous pouvez nous écrire à <strong>${HC_COMPANY_KB.email}</strong>. Pour une réponse plus rapide, WhatsApp : <strong>${HC_COMPANY_KB.whatsapp}</strong>.`;
+  if (_containsAny(m, ['whatsapp', 'telephone', 'téléphone', 'appel'])) return `Notre WhatsApp est <strong>${HC_COMPANY_KB.whatsapp}</strong>, disponible 7j/7 de 9h à 21h. Je peux aussi préparer votre demande ici.`;
+  if (_containsAny(m, ['rdv', 'rendez', 'rendez-vous', 'audit', 'reservation', 'réservation', 'devis', 'meeting'])) return _startAppointmentFlow(msg);
+  if (_containsAny(m, ['prix', 'tarif', 'pack', 'abonnement', 'combien'])) return _renderPackAnswer();
+  if (_containsAny(m, ['service', 'pôle', 'pole', 'activité', 'expertise', 'faites quoi', 'que faites'])) return _renderPolesAnswer();
+  if (_containsAny(m, ['roi', 'résultat', 'rentable', 'performance', 'retour'])) return 'Nous cadrons chaque mission avec des indicateurs mesurables : leads, taux de conversion, coût d\'acquisition, temps gagné, chiffre d\'affaires ou productivité. Le meilleur point de départ est un audit gratuit pour estimer le potentiel réel.';
+
+  const pole = _matchPole(m);
+  if (pole) return _renderPoleAnswer(pole);
+
+  return 'Je peux vous aider sur l IA, le branding, le marketing digital, le développement tech, la monétisation ou le consulting. Quel objectif voulez-vous atteindre en priorité ?';
+}
+
+function _renderPolesAnswer() {
+  return `
+    <strong>Nos 6 pôles d'activité :</strong>
+    <ul class="chat-list">
+      ${HC_ACTIVITY_POLES.map(p => `<li><strong>${p.name}</strong> — ${p.summary}</li>`).join('')}
+    </ul>
+    Dites-moi votre objectif, et je vous recommande le bon pôle.`;
+}
+
+function _renderPoleAnswer(pole) {
+  return `
+    <strong>${pole.name}</strong><br>
+    ${pole.summary}
+    <ul class="chat-list">${pole.examples.slice(0, 5).map(x => `<li>${x}</li>`).join('')}</ul>
+    Voulez-vous que je prépare un audit gratuit pour ce besoin ?`;
+}
+
+function _renderPackAnswer() {
+  return `
+    <strong>Nos packs principaux :</strong>
+    <ul class="chat-list">
+      ${HC_PACKS.map(p => `<li><strong>${p.name}</strong> — ${p.price}. Idéal pour ${p.fit}.</li>`).join('')}
+    </ul>
+    Pour un conseil fiable, dites-moi votre activité, votre objectif et votre budget approximatif.`;
+}
+
+function _startAppointmentFlow(message = '') {
+  _chatLeadDraft = { intent: 'appointment', name: '', email: '', phone: '', company: '', service: '', preferredSlot: '', message: '' };
+  _chatLeadDraft.message = message || _chatLeadDraft.message;
+  _chatAwaiting = 'name';
+  return `Très bien. Je vais préparer une demande d'audit gratuit de 30 minutes. Pour commencer, quel est votre <strong>prénom et nom</strong> ?`;
+}
+
+function _handleAppointmentStep(msg) {
+  const email = _extractEmail(msg);
+  const phone = _extractPhone(msg);
+  if (email) _chatLeadDraft.email = email;
+  if (phone) _chatLeadDraft.phone = phone;
+
+  if (_chatAwaiting === 'name') {
+    _chatLeadDraft.name = msg.trim();
+    _chatAwaiting = 'email';
+    return 'Merci. Quelle est votre <strong>adresse email professionnelle</strong> ?';
   }
-  return _chatResponses.default;
+  if (_chatAwaiting === 'email') {
+    if (!_chatLeadDraft.email) return 'Je n\'ai pas reconnu l\'email. Pouvez-vous me l\'envoyer au format nom@entreprise.com ?';
+    _chatAwaiting = 'phone';
+    return 'Parfait. Quel numéro WhatsApp ou téléphone pouvons-nous utiliser pour confirmer le rendez-vous ?';
+  }
+  if (_chatAwaiting === 'phone') {
+    if (!_chatLeadDraft.phone) return 'Pouvez-vous préciser votre numéro WhatsApp ou téléphone ?';
+    _chatAwaiting = 'company';
+    return 'Merci. Quel est le nom de votre entreprise ou projet ?';
+  }
+  if (_chatAwaiting === 'company') {
+    _chatLeadDraft.company = msg.trim();
+    _chatAwaiting = 'service';
+    return 'Quel pôle vous intéresse le plus : IA, Branding, Marketing, Développement, Business/Monétisation ou Consulting ?';
+  }
+  if (_chatAwaiting === 'service') {
+    const pole = _matchPole(_normalizeChatText(msg));
+    _chatLeadDraft.service = pole ? pole.name : msg.trim();
+    _chatAwaiting = 'slot';
+    return 'Quel créneau préférez-vous pour l audit ? Exemple : demain matin, vendredi 15h, ou cette semaine après-midi.';
+  }
+  if (_chatAwaiting === 'slot') {
+    _chatLeadDraft.preferredSlot = msg.trim();
+    _chatAwaiting = 'goal';
+    return 'Dernière question : quel est votre objectif principal ou le problème à résoudre ?';
+  }
+  if (_chatAwaiting === 'goal') {
+    _chatLeadDraft.message = [_chatLeadDraft.message, msg.trim()].filter(Boolean).join('\nObjectif: ');
+    _chatAwaiting = null;
+    _saveChatLead();
+    return `
+      Votre demande est prête. Un expert Hozana Concept confirmera le rendez-vous sous 24h.
+      <div class="chat-summary">
+        <div><strong>Nom :</strong> ${_escapeHtml(_chatLeadDraft.name)}</div>
+        <div><strong>Email :</strong> ${_escapeHtml(_chatLeadDraft.email)}</div>
+        <div><strong>Téléphone :</strong> ${_escapeHtml(_chatLeadDraft.phone)}</div>
+        <div><strong>Entreprise :</strong> ${_escapeHtml(_chatLeadDraft.company)}</div>
+        <div><strong>Pôle :</strong> ${_escapeHtml(_chatLeadDraft.service)}</div>
+        <div><strong>Créneau souhaité :</strong> ${_escapeHtml(_chatLeadDraft.preferredSlot)}</div>
+      </div>
+      Pour accélérer, vous pouvez aussi écrire directement sur WhatsApp : <a href="${HC_COMPANY_KB.whatsappUrl}" target="_blank" rel="noopener">${HC_COMPANY_KB.whatsapp}</a>.`;
+  }
+  return null;
 }
 
 function renderChatbot() {
@@ -627,21 +760,21 @@ function renderChatbot() {
       <div class="chatbot-header">
         <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
         <div>
-          <div class="chatbot-name">Hozana Concept</div>
-          <div class="chatbot-status"><span class="status-dot"></span> En ligne — Répond en quelques sec.</div>
+          <div class="chatbot-name">Assistant Hozana IA</div>
+          <div class="chatbot-status"><span class="status-dot"></span> Conseil, qualification & rendez-vous</div>
         </div>
         <button class="chatbot-close" id="chatbot-close" aria-label="Fermer le chat"><i class="fas fa-times"></i></button>
       </div>
       <div class="chatbot-messages" id="chatbot-messages">
         <div class="chat-message bot">
           <div class="chat-bubble">
-            👋 Bonjour ! Je suis l'assistant IA de <strong>Hozana Concept</strong>.<br><br>
-            Je suis ici pour vous aider à découvrir nos services IA et d'automatisation. Que puis-je faire pour vous ?
+            Bonjour. Je suis l'assistant IA de <strong>Hozana Concept</strong>.<br><br>
+            Je peux vous orienter sur nos 6 pôles, recommander un pack, qualifier votre besoin ou préparer un rendez-vous d'audit gratuit.
           </div>
           <div class="chat-suggestions">
-            <button class="chat-suggestion" data-msg="Quels sont vos services ?">Nos services</button>
-            <button class="chat-suggestion" data-msg="Voir vos packs et tarifs">Plans & Tarifs</button>
-            <button class="chat-suggestion" data-msg="Je veux un audit gratuit">Audit gratuit</button>
+            <button class="chat-suggestion" data-msg="Présentez-moi vos 6 pôles d'activité">6 pôles</button>
+            <button class="chat-suggestion" data-msg="Quel pack me recommandez-vous ?">Choisir un pack</button>
+            <button class="chat-suggestion" data-msg="Je veux prendre rendez-vous pour un audit gratuit">Prendre RDV</button>
           </div>
         </div>
       </div>
@@ -711,7 +844,8 @@ function _addChatMessage(text, type = 'bot') {
   if (!msgs) return;
   const el = document.createElement('div');
   el.className = `chat-message ${type}`;
-  el.innerHTML = `<div class="chat-bubble">${text}</div>`;
+  const safeText = type === 'user' ? _escapeHtml(text) : _formatBotReply(text);
+  el.innerHTML = `<div class="chat-bubble">${safeText}</div>`;
   msgs.appendChild(el);
   msgs.scrollTop = msgs.scrollHeight;
 }
@@ -731,174 +865,125 @@ function _removeTyping() {
   document.getElementById('chat-typing')?.remove();
 }
 
-// Map of question patterns to URLs and extraction functions
-const _pageExtractors = [
-  {
-    // CEO / founder questions
-    patterns: [/ceo|fondateur|dirigeant|efro|mwanza|who is the boss|patron/i],
-    url: 'company.html',
-    extract: (html) => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-
-      // Look for the CEO name in company
-      const ceoNameEl = doc.querySelector('.team-name');
-      if (ceoNameEl) {
-        const ceoName = ceoNameEl.textContent.trim();
-        const ceoRoleEl = doc.querySelector('.team-role');
-        const ceoRole = ceoRoleEl ? ceoRoleEl.textContent.trim() : '';
-        return `Le fondateur et CEO de Hozana Concept est ${ceoName} (${ceoRole}).`;
-      }
-
-      // Alternative extraction
-      const ceoText = Array.from(doc.querySelectorAll('*'))
-        .map(el => el.textContent.trim())
-        .find(text => text.includes('Efro Mwanza') && text.includes('CEO'));
-      if (ceoText) {
-        return `Selon nos informations, le fondateur et CEO de Hozana Concept est Efro Mwanza.`;
-      }
-
-      return null;
-    }
-  },
-  {
-    // Email questions
-    patterns: [/email|courriel|contacter|contact/i],
-    url: 'contact.html',
-    extract: (html) => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-
-      // Look for email in contact section
-      const emailLink = doc.querySelector('a[href^="mailto:info@hozanaconcept.com"]');
-      if (emailLink) {
-        return `Vous pouvez nous contacter par email à ${emailLink.textContent.trim()}.`;
-      }
-
-      // Alternative
-      const emailText = Array.from(doc.querySelectorAll('*'))
-        .map(el => el.textContent.trim())
-        .find(text => text.includes('@hozanaconcept.com'));
-      if (emailText) {
-        return `Notre adresse email est : ${emailText}.`;
-      }
-
-      return null;
-    }
-  },
-  {
-    // Phone / WhatsApp questions
-    patterns: [/téléphone|phone|whatsapp|whatsapp/i],
-    url: 'contact.html',
-    extract: (html) => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-
-      const phoneLink = doc.querySelector('a[href^="https://wa.me/21651474751"]');
-      if (phoneLink) {
-        return `Vous pouvez nous joindre sur WhatsApp au ${phoneLink.textContent.trim()}.`;
-      }
-
-      return null;
-    }
-  },
-  {
-    // Pricing questions
-    patterns: [/tarif|prix|pack|combien coûte|abonnement/i],
-    url: 'pricing.html',
-    extract: (html) => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-
-      // Look for starter pack price
-      const starterPrice = doc.querySelector('.stat-number, .price, .tarif');
-      if (starterPrice) {
-        const priceText = starterPrice.textContent.trim();
-        if (priceText.includes('490') || priceText.includes('Starter')) {
-          return `Nos packs commencent à partir de 490€/mois pour le pack Starter. Pour plus de détails sur nos tarifs, consultez notre page pricing.`;
-        }
-      }
-
-      return null;
-    }
-  }
-];
-
 async function _handleUserMsg(msg) {
   if (!msg) return;
   console.log('[Chatbot] User message:', msg);
   _addChatMessage(msg, 'user');
 
-  // Capture email if shared
-  const emailMatch = msg.match(/[\w.-]+@[\w.-]+\.\w+/);
-  if (emailMatch) {
-    fetch('tables/leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: emailMatch[0], source: 'chatbot', status: 'new', name: 'Chatbot Lead' })
-    }).catch(() => {});
-  }
+  _captureContactHints(msg);
 
   _addTyping();
 
-  // First, try to answer from specific pages
   try {
-    const pageAnswer = await _answerFromPage(msg);
-    if (pageAnswer) {
+    if (_chatAwaiting) {
+      const stepAnswer = _handleAppointmentStep(msg);
       _removeTyping();
-      _addChatMessage(pageAnswer, 'bot');
+      _addChatMessage(stepAnswer || 'Je vous écoute. Pouvez-vous préciser ?', 'bot');
       return;
     }
-  } catch (pageError) {
-    console.error('[Chatbot] Error in page extraction:', pageError);
-    // Continue to Mistral fallback
-  }
 
-  // Fall back to Mistral API
-  try {
-    console.log('[Chatbot] Calling Mistral API...');
-    const botResponse = await _getMistralResponse(msg);
-    console.log('[Chatbot] Received response from Mistral:', botResponse.substring(0, 100) + '...');
+    const localAnswer = _getBotResponse(msg);
+    const shouldUseAI = _shouldUseAiFallback(msg, localAnswer);
+    const botResponse = shouldUseAI ? await _getMistralResponse(msg) : localAnswer;
+
     _removeTyping();
     _addChatMessage(botResponse, 'bot');
   } catch (error) {
     _removeTyping();
     console.error('[Chatbot] Error in _handleUserMsg:', error);
-    _addChatMessage('Désolé, je rencontre un problème technique. Veuillez réessayer dans quelques moments.', 'bot');
+    _addChatMessage('Je rencontre une difficulté technique, mais je peux quand même transmettre votre demande. Envoyez votre email, téléphone et objectif, et un expert vous recontactera sous 24h.', 'bot');
   }
 }
 
-async function _answerFromPage(question) {
-  const lowerQuestion = question.toLowerCase();
+function _normalizeChatText(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
-  for (const extractor of _pageExtractors) {
-    // Check if any pattern matches
-    const matches = extractor.patterns.some(pattern => pattern.test(lowerQuestion));
-    if (!matches) continue;
+function _containsAny(text, terms) {
+  return terms.some(term => text.includes(_normalizeChatText(term)));
+}
 
-    try {
-      console.log(`[Chatbot] Trying to extract answer from ${extractor.url} for question: ${question}`);
-      const response = await fetch(extractor.url);
+function _isGreeting(text) {
+  return /^(bonjour|bonsoir|salut|hello|hi|coucou|bjr)\b/.test(text);
+}
 
-      if (!response.ok) {
-        console.error(`[Chatbot] Failed to fetch ${extractor.url}: ${response.status}`);
-        continue;
-      }
+function _matchPole(normalizedText) {
+  return HC_ACTIVITY_POLES.find(pole => pole.aliases.some(alias => normalizedText.includes(_normalizeChatText(alias))));
+}
 
-      const html = await response.text();
-      const answer = extractor.extract(html);
+function _shouldUseAiFallback(message, localAnswer) {
+  const m = _normalizeChatText(message);
+  if (_containsAny(m, ['rdv', 'rendez', 'audit', 'devis', 'prix', 'tarif', 'pack', 'service', 'pôle', 'pole', 'contact', 'whatsapp', 'email'])) return false;
+  if (_matchPole(m)) return false;
+  return localAnswer.length < 160 && message.length > 35;
+}
 
-      if (answer) {
-        console.log(`[Chatbot] Extracted answer from ${extractor.url}: ${answer}`);
-        return answer;
-      }
-    } catch (error) {
-      console.error(`[Chatbot] Error fetching/processing ${extractor.url}:`, error);
-      continue;
-    }
+function _extractEmail(value) {
+  return String(value || '').match(/[\w.-]+@[\w.-]+\.[A-Za-z]{2,}/)?.[0] || '';
+}
+
+function _extractPhone(value) {
+  const match = String(value || '').match(/(?:\+?\d[\d\s().-]{6,}\d)/);
+  return match ? match[0].replace(/\s+/g, ' ').trim() : '';
+}
+
+function _captureContactHints(message) {
+  const email = _extractEmail(message);
+  const phone = _extractPhone(message);
+  if (email) _chatLeadDraft.email = email;
+  if (phone) _chatLeadDraft.phone = phone;
+
+  if (email && !_chatAwaiting) {
+    _saveChatLead({
+      name: _chatLeadDraft.name || 'Lead Chatbot',
+      email,
+      phone: _chatLeadDraft.phone,
+      message: `Contact partagé dans le chatbot: ${message}`
+    });
   }
+}
 
-  return null; // No page could answer the question
+function _saveChatLead(extra = {}) {
+  const payload = {
+    name: extra.name || _chatLeadDraft.name || 'Lead Chatbot',
+    email: extra.email || _chatLeadDraft.email || '',
+    phone: extra.phone || _chatLeadDraft.phone || '',
+    company: extra.company || _chatLeadDraft.company || '',
+    service: extra.service || _chatLeadDraft.service || 'Audit gratuit chatbot',
+    message: extra.message || [
+      _chatLeadDraft.message,
+      _chatLeadDraft.preferredSlot ? `Créneau souhaité: ${_chatLeadDraft.preferredSlot}` : ''
+    ].filter(Boolean).join('\n'),
+    source: 'chatbot_rdv',
+    status: 'new'
+  };
+
+  if (!payload.email && !payload.phone) return;
+
+  fetch('tables/leads', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(err => console.warn('[Chatbot] Lead save failed:', err));
+}
+
+function _escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function _formatBotReply(value) {
+  const text = String(value || '');
+  if (/<(strong|ul|li|a|div|br)\b/i.test(text)) return text;
+  return text.replace(/\n{3,}/g, '\n\n').replace(/\n/g, '<br>');
 }
 
 // ============================================================
@@ -972,4 +1057,3 @@ if (document.readyState === 'loading') {
   console.log('[Hozana] DOM already loaded, initializing immediately');
   _initAllComponents();
 }
-

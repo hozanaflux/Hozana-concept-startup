@@ -662,6 +662,51 @@
   border-bottom-right-radius: 4px;
 }
 
+.chat-bubble .chat-list {
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.65rem 0 0;
+  padding: 0;
+}
+
+.chat-bubble .chat-list li {
+  position: relative;
+  padding-left: 0.9rem;
+  color: var(--white-70);
+}
+
+.chat-bubble .chat-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+.chat-summary {
+  margin-top: 0.75rem;
+  padding: 0.875rem;
+  border: 1px solid rgba(255,46,46,0.2);
+  border-radius: var(--radius-md);
+  background: rgba(255,46,46,0.06);
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.chat-bubble a {
+  color: var(--red-light);
+  text-decoration: none;
+}
+
+.chat-bubble a:hover {
+  text-decoration: underline;
+}
+
 .chat-suggestions {
   display: flex;
   flex-wrap: wrap;

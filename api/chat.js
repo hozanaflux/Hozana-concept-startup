@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: model || 'mistral-tiny',
+        model: model || 'mistral-small-latest',
         messages: [
           {
             role: 'system',
@@ -57,8 +57,8 @@ module.exports = async (req, res) => {
             content: message
           }
         ],
-        max_tokens: 150,
-        temperature: 0.9
+        max_tokens: 280,
+        temperature: 0.35
       })
     });
 
