@@ -691,7 +691,8 @@ function resolvePackButtonText(row, contactMode) {
 
 function enrichPack(row) {
   let name = row.name || row.title || 'Pack IA';
-  const itemType = String(row.item_type || row.type || row.category || '').toLowerCase() === 'option' ? 'option' : 'pack';
+  const explicitType = String(row.item_type || row.type || row.category || '').toLowerCase();
+  const itemType = explicitType === 'option' || /ajouter au panier/i.test(row.button_text || '') ? 'option' : 'pack';
   const key = packKey(name);
   if (key === 'starter' && /stater/i.test(name)) name = 'Pack Starter';
   if (key === 'growth' && !/^pack\s+/i.test(name)) name = 'Pack Growth';

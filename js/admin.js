@@ -941,11 +941,12 @@ async function regenerateBlog() {
 
 /* ─── PACKS ─── */
 function renderPacks(data=PACKS) {
-  set('packs-count', data.length);
+  const rows = data.filter(p => p && p.id && p.name);
+  set('packs-count', rows.length);
   const el = document.getElementById('packs-body');
   if (!el) return;
-  if (!data.length) { el.innerHTML=`<tr class="empty-row"><td colspan="7">Aucune offre</td></tr>`; return; }
-  el.innerHTML = data.map(p=>`
+  if (!rows.length) { el.innerHTML=`<tr class="empty-row"><td colspan="7">Aucune offre</td></tr>`; return; }
+  el.innerHTML = rows.map(p=>`
     <tr>
       <td><div class="t-strong t-sm">${p.name}</div><div class="t-muted" style="font-size:.7rem;">${p.badge||''}</div></td>
       <td><span class="badge ${packItemType(p)==='option'?'badge-yellow':'badge-gray'}">${packItemType(p)==='option'?'Option':'Pack'}</span></td>
@@ -980,10 +981,17 @@ function openPackModal(p=null) {
   togglePackFormMode();
   openModal('m-pack');
 }
-function editPack(id) { const p=PACKS.find(x=>x.id===id); if(p) openPackModal(p); }
+function editPack(id) {
+  if (!id || id === 'undefined') return toast('Offre invalide, actualisez la page','err');
+  const p=PACKS.find(x=>x.id===id);
+  if(p) openPackModal(p);
+  else toast('Offre introuvable','err');
+}
 
 function packItemType(p) {
-  return String(p?.item_type || p?.type || p?.category || 'pack').toLowerCase() === 'option' ? 'option' : 'pack';
+  const explicit = String(p?.item_type || p?.type || p?.category || '').toLowerCase();
+  const buttonText = String(p?.button_text || '').toLowerCase();
+  return explicit === 'option' || buttonText.includes('ajouter au panier') ? 'option' : 'pack';
 }
 
 function togglePackFormMode() {
@@ -1014,6 +1022,44 @@ function comparisonFromText(value) {
   }).filter(([label, val]) => label && val));
 }
 
+async function parseJsonSafe(response) {
+  try { return await response.json(); } catch { return null; }
+}
+
+function isMissingColumnError(payload) {
+  const msg = `${payload?.message || ''} ${payload?.details || ''} ${payload?.hint || ''}`;
+  return /column|schema cache|could not find|item_type|old_price|comparison/i.test(msg);
+}
+
+function legacyPackPayload(data) {
+  const legacy = { ...data };
+  delete legacy.item_type;
+  delete legacy.old_price;
+  delete legacy.comparison;
+  return legacy;
+}
+
+async function savePackToSupabase(id, data) {
+  const url = id ? `tables/packs/${id}` : 'tables/packs';
+  const method = id ? 'PATCH' : 'POST';
+  let response = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+  let payload = await parseJsonSafe(response);
+
+  if (!response.ok && isMissingColumnError(payload)) {
+    response = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(legacyPackPayload(data)) });
+    payload = await parseJsonSafe(response);
+  }
+
+  if (!response.ok) {
+    const message = payload?.message || payload?.error || 'Erreur Supabase';
+    throw new Error(message);
+  }
+  if (!payload || !payload.id || !payload.name) {
+    throw new Error('Réponse Supabase invalide');
+  }
+  return payload;
+}
+
 async function savePack() {
   const id = document.getElementById('pk-id').value;
   const name = document.getElementById('pk-name').value.trim();
@@ -1040,22 +1086,28 @@ async function savePack() {
   };
   try {
     if (id) {
-      const r = await fetch(`tables/packs/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-      const up = await r.json(); const i=PACKS.findIndex(x=>x.id===id); if(i>-1) PACKS[i]={...PACKS[i],...up};
-      toast('Pack mis à jour ✓','ok');
+      const up = await savePackToSupabase(id, data);
+      const i=PACKS.findIndex(x=>x.id===id);
+      if(i>-1) PACKS[i]={...PACKS[i],...up};
+      toast('Offre mise à jour ✓','ok');
     } else {
-      const r = await fetch('tables/packs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-      const cr = await r.json(); if(cr) PACKS.push(cr);
-      toast('Pack ajouté ✓','ok');
+      const cr = await savePackToSupabase('', data);
+      PACKS.push(cr);
+      toast('Offre ajoutée ✓','ok');
     }
     closeModal('m-pack'); renderPacks(); updateBadges();
     await triggerStaticBlogGeneration({ silent: true });
-  } catch { toast('Erreur sauvegarde','err'); }
+  } catch (e) {
+    console.error('[Admin] savePack failed:', e);
+    toast(e.message || 'Erreur sauvegarde','err');
+  }
 }
 async function delPack(id) {
-  await fetch(`tables/packs/${id}`,{method:'DELETE'});
+  if (!id || id === 'undefined') return toast('Offre invalide','err');
+  const res = await fetch(`tables/packs/${id}`,{method:'DELETE'});
+  if (!res.ok) return toast('Erreur suppression','err');
   PACKS=PACKS.filter(x=>x.id!==id);
-  renderPacks(); updateBadges(); toast('Pack supprimé','ok');
+  renderPacks(); updateBadges(); toast('Offre supprimée','ok');
   await triggerStaticBlogGeneration({ silent: true });
 }
 
