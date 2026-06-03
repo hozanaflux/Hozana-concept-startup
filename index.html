@@ -48,11 +48,10 @@
       position: absolute;
       inset: 0;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
       /* Décalage sous la navbar — évite le texte collé au nav */
-      padding-top: calc(var(--nav-height) + 4.5rem);
-      padding-bottom: 5rem;
+      padding: calc(var(--nav-height) + 4rem) 0 4rem;
       opacity: 0;
       pointer-events: none;
       overflow: visible;
@@ -163,28 +162,39 @@
     /* ── Titre hero — taille maîtrisée ── */
     .hero-slide-title {
       font-family: var(--font-title);
-      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      font-size: clamp(2.35rem, 5.4vw, 4.65rem);
       font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      margin-bottom: 1rem;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.1rem;
       color: var(--white);
     }
 
     /* ── Sous-titre hero ── */
     .hero-slide-subtitle {
-      font-size: clamp(0.875rem, 1.5vw, 0.975rem);
+      font-size: clamp(0.95rem, 1.35vw, 1.08rem);
       color: var(--white-60);
-      line-height: 1.75;
-      margin-bottom: 1.75rem;
-      max-width: 480px;
+      line-height: 1.72;
+      margin-bottom: 1.9rem;
+      max-width: 560px;
     }
 
     /* ── Actions CTA ── */
     .hero-slide-actions {
       display: flex;
-      gap: 0.875rem;
+      gap: 1rem;
       flex-wrap: wrap;
+      position: relative;
+      z-index: 20;
+      visibility: visible !important;
+    }
+    .hero-slide.active .hero-slide-actions {
+      opacity: 1 !important;
+      pointer-events: auto;
+    }
+    .hero-slide-actions .btn {
+      min-height: 48px;
+      white-space: nowrap;
     }
 
     /* Slide dots controls */
@@ -389,7 +399,7 @@
     #hero.hero {
       padding-top: 0;
       padding-bottom: 0;
-      min-height: 100svh;
+      min-height: min(780px, 100svh);
       overflow: hidden;
     }
 
@@ -409,8 +419,7 @@
         inset: auto;
         display: none;
         min-height: auto;
-        padding-top: calc(var(--nav-height) + 2.75rem);
-        padding-bottom: 5.75rem;
+        padding: calc(var(--nav-height) + 2.5rem) 0 4.5rem;
         transform: none;
       }
       .hero-slide.active {
@@ -457,23 +466,33 @@
       .hero-slider-controls { bottom: 1.25rem; }
     }
     @media (max-width: 640px) {
-      .hero-slide { padding-top: calc(var(--nav-height) + 1.6rem); padding-bottom: 5.5rem; }
+      .hero-slide { padding: calc(var(--nav-height) + 2.25rem) 0 4.25rem; }
       .hero-content {
         gap: 1.1rem;
-        padding: 0 1rem;
+        padding: 0 1.25rem;
       }
       .hero-slide-title {
-        font-size: clamp(1.95rem, 9.5vw, 2.75rem);
-        line-height: 1.06;
+        font-size: clamp(1.625rem, 8vw, 2.5rem);
+        line-height: 1.12;
         margin-bottom: 0.85rem;
       }
       .hero-slide-subtitle {
         font-size: 0.9rem;
         line-height: 1.6;
-        margin-bottom: 1.2rem;
+        margin-bottom: 1.35rem;
       }
-      .hero-slide-actions { flex-direction: column; align-items: center; }
-      .hero-slide-actions .btn { width: 100%; max-width: 320px; justify-content: center; }
+      .hero-slide-actions {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.15rem;
+      }
+      .hero-slide-actions .btn {
+        width: 100%;
+        max-width: 320px;
+        justify-content: center;
+        min-height: 46px;
+      }
       .hero-arrow { display: none; }
       .slide-badge {
         max-width: 100%;
@@ -1116,13 +1135,13 @@
     @media (max-width: 480px) {
       .radial-stats { grid-template-columns: repeat(2, 1fr); }
       .trust-strip { justify-content: center; }
-      .hero-slide-title { font-size: clamp(1.95rem, 9.5vw, 2.75rem) !important; line-height: 1.06; }
+      .hero-slide-title { font-size: clamp(1.625rem, 8vw, 2.5rem) !important; line-height: 1.12; }
       .slide-badge { font-size: 0.68rem; padding: 0.35rem 0.75rem; }
       #hero-slide-2 .s-anim.d5 { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; }
       /* Slide 3 stats — 2 colonnes sur très petit écran */
       #hero-slide-2 [style*='grid-template-columns:repeat(4'] { grid-template-columns: repeat(2,1fr) !important; gap: 0.75rem !important; }
       .hero-slide-actions { flex-direction: column; align-items: center; }
-      .hero-slide-actions .btn { width: 100%; max-width: 280px; justify-content: center; }
+      .hero-slide-actions .btn { width: 100%; max-width: 320px; justify-content: center; }
     }
 
     /* Stat boxes slide 3 — classes adaptables */
