@@ -32,6 +32,13 @@ const GA_ID = 'G-D0GFCE5S90'; // ex: G-XXXXXXXXXX
     if (tablesIdx === -1 || url.includes('/storage/v1/')) return _orig(input, init || {});
 
     const method = ((init && init.method) || 'GET').toUpperCase();
+    const isAdminPage = location.pathname === '/admin' ||
+      location.pathname.indexOf('/admin-hozana-concept-admin') !== -1;
+
+    if (isAdminPage) {
+      const adminUrl = '/api/' + url.slice(tablesIdx);
+      return _orig(adminUrl, init || {});
+    }
 
     // Décomposer "tables/tablename/optional-id?querystring"
     const withoutPrefix = url.slice(tablesIdx + 7);
