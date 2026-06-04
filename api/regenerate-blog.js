@@ -11,7 +11,7 @@ const isVercelRuntime = !!process.env.VERCEL;
 const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
 const GITHUB_REPO = process.env.GITHUB_REPO || 'hozanaflux/Hozana-concept-startup';
 const GITHUB_DISPATCH_EVENT = process.env.GITHUB_DISPATCH_EVENT || 'generate-blog';
-const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
+const { setCors, rejectBadOrigin, requireAdminWriteHeader, rateLimit } = require('./_security');
 const { isAdminRequest } = require('./admin-auth');
 
 module.exports = async (req, res) => {
@@ -30,6 +30,7 @@ module.exports = async (req, res) => {
   if (!isAdminRequest(req)) {
     return res.status(401).json({ error: 'Admin session required' });
   }
+  if (requireAdminWriteHeader(req, res)) return;
 
   console.log('[Regenerate Blog] Starting static blog generation...');
 

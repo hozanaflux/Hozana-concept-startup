@@ -35,7 +35,7 @@ function isAllowedOrigin(origin = '') {
   }
 }
 
-function setCors(req, res, methods = 'POST, OPTIONS', headers = 'Content-Type') {
+function setCors(req, res, methods = 'POST, OPTIONS', headers = 'Content-Type, X-Hozana-Admin') {
   const origin = req.headers.origin || '';
   if (isAllowedOrigin(origin) && origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
@@ -54,6 +54,14 @@ function rejectBadOrigin(req, res) {
     return true;
   }
   return false;
+}
+
+function requireAdminWriteHeader(req, res) {
+  const method = String(req.method || 'GET').toUpperCase();
+  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) return false;
+  if (String(req.headers['x-hozana-admin'] || '') === '1') return false;
+  res.status(403).json({ error: 'Admin write header required' });
+  return true;
 }
 
 function clientIp(req) {
@@ -81,4 +89,4 @@ function rateLimit(req, res, key, limit, windowMs) {
   return false;
 }
 
-module.exports = { setCors, rejectBadOrigin, rateLimit };
+module.exports = { setCors, rejectBadOrigin, requireAdminWriteHeader, rateLimit };

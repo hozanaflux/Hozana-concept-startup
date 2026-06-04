@@ -1,5 +1,5 @@
 const path = require('path');
-const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
+const { setCors, rejectBadOrigin, requireAdminWriteHeader, rateLimit } = require('./_security');
 const { isAdminRequest } = require('./admin-auth');
 const { SUPABASE_URL, supabaseServiceKey } = require('./_supabase');
 
@@ -39,13 +39,14 @@ function extensionFrom(fileName, contentType) {
 }
 
 module.exports = async (req, res) => {
-  setCors(req, res, 'POST, OPTIONS', 'Content-Type, X-File-Name');
+  setCors(req, res, 'POST, OPTIONS', 'Content-Type, X-File-Name, X-Hozana-Admin');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (rejectBadOrigin(req, res)) return;
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   if (rateLimit(req, res, 'storage-upload', 40, 60 * 60 * 1000)) return;
   if (!isAdminRequest(req)) return res.status(401).json({ error: 'Admin session required' });
+  if (requireAdminWriteHeader(req, res)) return;
   const serviceKey = supabaseServiceKey();
   if (!serviceKey) return res.status(500).json({ error: 'SUPABASE_SERVICE_ROLE_KEY missing' });
 

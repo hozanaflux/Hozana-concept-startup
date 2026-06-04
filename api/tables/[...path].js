@@ -1,4 +1,4 @@
-const { setCors, rejectBadOrigin, rateLimit } = require('../_security');
+const { setCors, rejectBadOrigin, requireAdminWriteHeader, rateLimit } = require('../_security');
 const { isAdminRequest } = require('../admin-auth');
 const { SUPABASE_URL, supabaseServiceKey } = require('../_supabase');
 
@@ -71,7 +71,7 @@ function normalizeResponse(method, recordId, raw) {
 }
 
 module.exports = async (req, res) => {
-  setCors(req, res, 'GET, POST, PATCH, DELETE, OPTIONS', 'Content-Type');
+  setCors(req, res, 'GET, POST, PATCH, DELETE, OPTIONS', 'Content-Type, X-Hozana-Admin');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (rejectBadOrigin(req, res)) return;
@@ -85,6 +85,7 @@ module.exports = async (req, res) => {
   if (!isAdminRequest(req)) {
     return res.status(401).json({ error: 'Admin session required' });
   }
+  if (requireAdminWriteHeader(req, res)) return;
 
   const target = buildSupabaseUrl(req);
   if (target.error) return res.status(400).json({ error: target.error });

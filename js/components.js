@@ -105,12 +105,12 @@ const I18N = {
       core: 'CORE'
     },
     services: {
-      ia: { name: 'Moteur IA Principal', tags: 'Réseaux de Neurones · Agents Autonomes · Traitement du Langage · IA Prédictive' },
-      branding: { name: 'Moteur d\'Automatisation', tags: 'Orchestration de Workflows · Intégration API · Logique Event-driven' },
-      marketing: { name: 'Intelligence Growth', tags: 'Marketing Prédictif · Optimisation LTV · Publicité Autonomes' },
-      dev: { name: 'SDK Plateforme', tags: 'Accès API · Documentation · Connecteurs Personnalisés · Sécurité' },
-      business: { name: 'Insights Entreprise', tags: 'Visualisation de Données · Automatisation BI · Analytics Temps Réel' },
-      consulting: { name: 'Stratégie Expert', tags: 'Architecture de Solution · Audit de Sécurité · Planification d\'Échelle' }
+      ia: { name: 'Intelligence Artificielle', tags: 'Automatisation IA · Chatbots · Agents IA · Analyse prédictive · Génération contenu' },
+      branding: { name: 'Branding & Création', tags: 'Brand Identity · UI/UX Design · Motion Design · Content Studio' },
+      marketing: { name: 'Marketing Digital', tags: 'Growth Marketing · Social Media · Ads Facebook/Google/TikTok · SEO' },
+      dev: { name: 'Développement Tech', tags: 'Sites web · Apps web & mobile · SaaS · API & intégrations' },
+      business: { name: 'Business & Monétisation', tags: 'Funnels · CRO · Email & SMS automation · Stratégies de revenus' },
+      consulting: { name: 'Consulting Premium', tags: 'Audit digital · Stratégie IA · Transformation digitale · Coaching' }
     },
     footer: {
       desc: 'Plateforme IA de nouvelle génération opérant dans le monde entier. Nous automatisons, accélérons et transformons les entreprises ambitieuses grâce à l\'intelligence artificielle.',
@@ -162,12 +162,12 @@ const I18N = {
       core: 'CORE'
     },
     services: {
-      ia: { name: 'Core AI Engine', tags: 'Neural Networks · Autonomous Agents · Language Processing · Predictive AI' },
-      branding: { name: 'Automation Engine', tags: 'Workflow Orchestration · API Integration · Event-driven Logic' },
-      marketing: { name: 'Growth Intelligence', tags: 'Predictive Marketing · LTV Optimization · Autonomous Ads' },
-      dev: { name: 'Platform SDK', tags: 'API Access · Documentation · Custom Connectors · Security' },
-      business: { name: 'Business Insights', tags: 'Data Visualization · BI Automation · Real-time Analytics' },
-      consulting: { name: 'Expert Strategy', tags: 'Solution Architecture · Security Audit · Scale Planning' }
+      ia: { name: 'Artificial Intelligence', tags: 'AI automation · Chatbots · AI agents · Predictive analytics · Content generation' },
+      branding: { name: 'Branding & Creation', tags: 'Brand identity · UI/UX design · Motion design · Content studio' },
+      marketing: { name: 'Digital Marketing', tags: 'Growth marketing · Social media · Facebook/Google/TikTok ads · SEO' },
+      dev: { name: 'Tech Development', tags: 'Websites · Web & mobile apps · SaaS · APIs & integrations' },
+      business: { name: 'Business & Monetization', tags: 'Funnels · CRO · Email & SMS automation · Revenue strategies' },
+      consulting: { name: 'Premium Consulting', tags: 'Digital audit · AI strategy · Digital transformation · Coaching' }
     },
     footer: {
       desc: 'A next-generation AI platform operating worldwide. We automate, accelerate and transform ambitious companies through artificial intelligence.',
@@ -203,11 +203,14 @@ const I18N = {
 
 const PAGE_TEXT_EN = {
   'IA & Marketing Digital': 'AI & Digital Marketing',
-  'L\'IA': 'AI',
-  'au service de votre': 'serving your',
-  'croissance.': 'growth.',
+  'Gagnez du temps et boostez vos revenus avec': 'Save time and increase your revenue with',
+  'l\'intelligence artificielle': 'artificial intelligence',
   'Audit gratuit 30 min': 'Free 30-min audit',
   'Nos solutions IA': 'Our AI solutions',
+  'Make et n8n': 'Make and n8n',
+  'ChatGPT, Claude, Mistral, Make et n8n': 'ChatGPT, Claude, Mistral, Make and n8n',
+  'Nous connectons vos ventes, votre marketing et votre support à des agents IA capables de qualifier, répondre, relancer et convertir.': 'We connect your sales, marketing and support workflows to AI agents able to qualify, answer, follow up and convert.',
+  'deviennent un système de croissance piloté par vos objectifs.': 'become a growth system driven by your business goals.',
   'Dashboard IA — Hozana': 'AI Dashboard — Hozana',
   'Analyse en temps réel': 'Real-time analysis',
   'Leads générés': 'Leads generated',
@@ -215,7 +218,7 @@ const PAGE_TEXT_EN = {
   'ROI moyen': 'Average ROI',
   'Économisées': 'Saved',
   'Clients': 'Clients',
-  'ROI garanti': 'Guaranteed ROI',
+  'ROI suivi': 'Tracked ROI',
   'Développement d\'Applications': 'Application Development',
   'Vos applications': 'Your applications',
   'Voir nos apps': 'View our apps',
@@ -224,7 +227,8 @@ const PAGE_TEXT_EN = {
   'Livré en 30j': 'Delivered in 30 days',
   'Code sécurisé': 'Secure code',
   'Consulting & Coaching Premium': 'Premium Consulting & Coaching',
-  'Stratégie, Audit &': 'Strategy, Audit &',
+  'Stratégie,': 'Strategy,',
+  'Audit &': 'Audit &',
   'Transformation Digitale': 'Digital Transformation',
   'Audit gratuit': 'Free audit',
   'Notre méthode': 'Our method',
@@ -232,8 +236,26 @@ const PAGE_TEXT_EN = {
   'Audit 360': '360 Audit',
   'Roadmap priorisée': 'Prioritized roadmap',
   'Ce que nous faisons pour vous': 'What we do for you',
+  'Six pôles pour': 'Six areas to',
+  'accélérer votre croissance': 'accelerate your growth',
+  'Nous réunissons stratégie, création, technologie et automatisation pour construire des solutions lisibles, mesurables et adaptées à votre marché.': 'We combine strategy, creation, technology and automation to build clear, measurable solutions adapted to your market.',
+  'Intelligence Artificielle': 'Artificial Intelligence',
+  'Branding & Création': 'Branding & Creation',
+  'Marketing Digital': 'Digital Marketing',
+  'Développement Tech': 'Tech Development',
+  'Agents IA, chatbots, analyse prédictive et automatisation métier.': 'AI agents, chatbots, predictive analytics and business automation.',
+  'Identité visuelle, UI/UX, contenus de marque et motion design.': 'Visual identity, UI/UX, brand content and motion design.',
+  'Acquisition, réseaux sociaux, campagnes ads, SEO et conversion.': 'Acquisition, social media, ad campaigns, SEO and conversion.',
+  'Sites, apps web/mobile, SaaS, API et intégrations métiers.': 'Websites, web/mobile apps, SaaS, APIs and business integrations.',
+  'Business & Monétisation': 'Business & Monetization',
+  'Funnels, CRO, email/SMS automation et revenus récurrents.': 'Funnels, CRO, email/SMS automation and recurring revenue.',
+  'Audit, stratégie IA, transformation digitale et coaching dirigeant.': 'Audit, AI strategy, digital transformation and executive coaching.',
   'Tous nos services': 'All our services',
   'Résultats mesurables': 'Measurable results',
+  'Nous suivons les indicateurs qui comptent vraiment : temps gagné, acquisition, satisfaction, coût opérationnel et retour sur investissement.': 'We track the indicators that truly matter: time saved, acquisition, satisfaction, operating cost and return on investment.',
+  'Suivi en continu': 'Continuously tracked',
+  'ROI moyen observé': 'Average observed ROI',
+  'Création de contenu': 'Content creation',
   'Portfolio & Realisations': 'Portfolio & Case Studies',
   'Voir tout le portfolio': 'View full portfolio',
   'Tout': 'All',
@@ -244,6 +266,9 @@ const PAGE_TEXT_EN = {
   'Notre méthode': 'Our method',
   'La différence concrète': 'The concrete difference',
   'Nos Offres': 'Our Plans',
+  'Des packs': 'Plans',
+  'clairs et évolutifs': 'clear and scalable',
+  'Choisissez une base adaptée à votre niveau de maturité, puis ajoutez les options nécessaires à votre croissance.': 'Choose a foundation adapted to your maturity level, then add the options required for your growth.',
   'Comparer tous les packs': 'Compare all plans',
   'Ils nous font confiance': 'They trust us',
   'Blog & Insights': 'Blog & Insights',
@@ -563,48 +588,48 @@ const SERVICE_CATS = [
   {
     id: 'ia',
     icon: '⚡',
-    name: 'Moteur IA Principal',
-    tags: 'Réseaux de Neurones · Agents Autonomes · Traitement du Langage · IA Prédictive',
+    name: 'Intelligence Artificielle',
+    tags: 'Automatisation IA · Chatbots · Agents IA · Analyse prédictive · Génération contenu',
     priority: true,
     href: '',
   },
   {
     id: 'branding',
     icon: '✦',
-    name: 'Moteur d\'Automatisation',
-    tags: 'Orchestration de Workflows · Intégration API · Logique Event-driven',
+    name: 'Branding & Création',
+    tags: 'Brand Identity · UI/UX Design · Motion Design · Content Studio',
     priority: false,
     href: '',
   },
   {
     id: 'marketing',
     icon: '◈',
-    name: 'Intelligence Growth',
-    tags: 'Marketing Prédictif · Optimisation LTV · Publicité Autonomes',
+    name: 'Marketing Digital',
+    tags: 'Growth Marketing · Social Media · Ads Facebook/Google/TikTok · SEO',
     priority: false,
     href: '',
   },
   {
     id: 'dev',
     icon: '▣',
-    name: 'SDK Plateforme',
-    tags: 'Accès API · Documentation · Connecteurs Personnalisés · Sécurité',
+    name: 'Développement Tech',
+    tags: 'Sites web · Apps web & mobile · SaaS · API & intégrations',
     priority: false,
     href: '',
   },
   {
     id: 'business',
     icon: '◉',
-    name: 'Insights Entreprise',
-    tags: 'Visualisation de Données · Automatisation BI · Analytics Temps Réel',
+    name: 'Business & Monétisation',
+    tags: 'Funnels · CRO · Email & SMS automation · Stratégies de revenus',
     priority: false,
     href: '',
   },
   {
     id: 'consulting',
     icon: '◆',
-    name: 'Stratégie Expert',
-    tags: 'Architecture de Solution · Audit de Sécurité · Planification d\'Échelle',
+    name: 'Consulting Premium',
+    tags: 'Audit digital · Stratégie IA · Transformation digitale · Coaching',
     priority: false,
     href: '',
   },
@@ -613,7 +638,8 @@ const SERVICE_CATS = [
 function renderNavbar() {
   applyLanguageAttributes();
   const currentPage = window.location.pathname.split('/').pop() || 'index';
-  const isServicesActive = currentPage === 'platform';
+  const servicePages = ['service-ia.html','service-branding.html','service-marketing.html','service-dev.html','service-business.html','service-consulting.html'];
+  const isServicesActive = currentPage === 'platform' || servicePages.includes(currentPage);
 
   const simpleLinks = [
     { href: pageRoot() + 'index.html',    label: t('nav.home') },
@@ -624,7 +650,6 @@ function renderNavbar() {
   ];
 
   // Dropdown Services item — liens vers les pages dédiées
-  const servicePages = ['service-ia.html','service-branding.html','service-marketing.html','service-dev.html','service-business.html','service-consulting.html'];
   const ddCats = SERVICE_CATS.map((c, i) => `
     <a class="dd-cat" href="${pageRoot()}${servicePages[i]}" onclick="closeMobileMenu()">
       <div class="dd-cat-icon">${c.icon}</div>
@@ -668,7 +693,7 @@ function renderNavbar() {
     `<li>
       <div class="mobile-dd-toggle" onclick="toggleMobileServicesDd(this)">
         <span class="${isServicesActive ? 'active' : ''}">${t('nav.services')}</span>
-        <i class="fas fa-chevron-down" style="font-size:0.7rem;opacity:0.5;transition:transform 0.25s;"></i>
+        <i class="fas fa-chevron-down mobile-dd-chevron"></i>
       </div>
       <div class="mobile-dd-list" id="mobile-services-list">${mobileDdItems}</div>
     </li>`,
@@ -684,7 +709,7 @@ function renderNavbar() {
 
       <!-- Logo -->
       <a href="${pageRoot()}index.html" class="navbar-logo" aria-label="Hozana Concept - ${t('nav.home')}">
-        <img src="${root()}images/logo-main.png" alt="Hozana Concept" class="navbar-logo-img" style="height:44px;width:auto;display:block;object-fit:contain;">
+        <img src="${root()}images/logo-main.png" alt="Hozana Concept" class="navbar-logo-img">
       </a>
 
       <!-- Nav links pill glass -->
@@ -716,7 +741,7 @@ function renderNavbar() {
   <!-- Mobile Menu Panel -->
   <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="${t('nav.mainMenu')}" aria-hidden="true">
     <div class="mobile-menu-header">
-      <img src="${root()}images/logo-main.png" alt="Hozana Concept" style="height:36px;width:auto;object-fit:contain;">
+      <img src="${root()}images/logo-main.png" alt="Hozana Concept" class="mobile-menu-logo">
       <button class="mobile-close" onclick="closeMobileMenu()" aria-label="${t('nav.closeMenu')}">
         <i class="fas fa-times"></i>
       </button>
@@ -726,7 +751,7 @@ function renderNavbar() {
     </ul>
     <div class="mobile-menu-footer">
       ${renderLanguageSwitch('mobile')}
-      <a href="${pageRoot()}contact.html" class="btn btn-primary w-full" style="justify-content:center;" onclick="closeMobileMenu()">
+      <a href="${pageRoot()}contact.html" class="btn btn-primary w-full mobile-menu-cta" onclick="closeMobileMenu()">
         <i class="fas fa-rocket"></i> ${t('nav.startProject')}
       </a>
       <div class="mobile-contact-info">
@@ -886,7 +911,7 @@ function renderFooter() {
           <!-- Brand Column -->
           <div class="footer-brand-col reveal">
             <a href="${pageRoot()}index.html" class="footer-logo-link" aria-label="Hozana Concept">
-              <img src="${root()}images/logo-footer.png" alt="Hozana Concept" style="height:52px;width:auto;object-fit:contain;filter:brightness(0) invert(1);">
+              <img src="${root()}images/logo-footer.png" alt="Hozana Concept" class="footer-logo-img">
             </a>
             <p class="footer-brand-desc">
               ${t('footer.desc')}
@@ -909,22 +934,23 @@ function renderFooter() {
           <!-- Services Column -->
           <div class="footer-links-col reveal delay-1">
             <h4 class="footer-col-title">
-              <i class="fas fa-bolt" style="color:var(--red);font-size:0.8rem;"></i>
+              <i class="fas fa-bolt footer-col-icon"></i>
               ${t('footer.platform')}
             </h4>
             <ul class="footer-link-list">
               <li><a href="${pageRoot()}platform.html#ia">${t('services.ia.name')}</a></li>
-              <li><a href="${pageRoot()}platform.html#automation">${t('services.branding.name')}</a></li>
-              <li><a href="${pageRoot()}platform.html#growth">${t('services.marketing.name')}</a></li>
-              <li><a href="${pageRoot()}platform.html#content">${t('services.dev.name')}</a></li>
-              <li><a href="${pageRoot()}platform.html#analytics">${t('services.business.name')}</a></li>
+              <li><a href="${pageRoot()}platform.html#branding">${t('services.branding.name')}</a></li>
+              <li><a href="${pageRoot()}platform.html#marketing">${t('services.marketing.name')}</a></li>
+              <li><a href="${pageRoot()}platform.html#dev">${t('services.dev.name')}</a></li>
+              <li><a href="${pageRoot()}platform.html#business">${t('services.business.name')}</a></li>
+              <li><a href="${pageRoot()}platform.html#consulting">${t('services.consulting.name')}</a></li>
             </ul>
           </div>
 
           <!-- Ressources Column -->
           <div class="footer-links-col reveal delay-2">
             <h4 class="footer-col-title">
-              <i class="fas fa-compass" style="color:var(--red);font-size:0.8rem;"></i>
+              <i class="fas fa-compass footer-col-icon"></i>
               ${t('footer.resources')}
             </h4>
             <ul class="footer-link-list">
@@ -939,7 +965,7 @@ function renderFooter() {
           <!-- Contact + Legal Column -->
           <div class="footer-links-col reveal delay-3">
             <h4 class="footer-col-title">
-              <i class="fas fa-headset" style="color:var(--red);font-size:0.8rem;"></i>
+              <i class="fas fa-headset footer-col-icon"></i>
               Contact
             </h4>
             <ul class="footer-contact-list">
@@ -961,8 +987,8 @@ function renderFooter() {
               </li>
             </ul>
 
-            <h4 class="footer-col-title" style="margin-top:1.75rem;">
-              <i class="fas fa-balance-scale" style="color:var(--red);font-size:0.8rem;"></i>
+            <h4 class="footer-col-title footer-col-title-spaced">
+              <i class="fas fa-balance-scale footer-col-icon"></i>
               ${t('footer.legal')}
             </h4>
             <ul class="footer-link-list">

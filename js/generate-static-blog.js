@@ -392,7 +392,7 @@ function generateStaticBlogIndex(generatedPosts) {
   const dom = new JSDOM(fs.readFileSync(BLOG_PAGE_PATH, 'utf8'));
   const document = dom.window.document;
   const featured = posts[0];
-  const gridPosts = featured ? posts.filter(p => p.id !== featured.id).slice(0, 6) : posts.slice(0, 6);
+  const gridPosts = featured ? posts.filter(p => p.id !== featured.id).slice(0, 9) : posts.slice(0, 9);
 
   upsertMetaNode(document, 'name', 'description', 'Articles experts Hozana Concept sur l intelligence artificielle, l automatisation, le growth digital et la transformation des entreprises.');
   upsertCanonical(document, `${SITE_URL}/blog`);

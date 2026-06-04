@@ -34,6 +34,19 @@
        HERO SLIDER — DESIGN PROPRE & RESPONSIVE
        ============================================================ */
     .hero-slider-wrap { position: relative; overflow: hidden; }
+    .hero-slider-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(255,46,46,0.16), transparent 34%),
+        radial-gradient(circle at 82% 18%, rgba(255,140,66,0.11), transparent 32%),
+        linear-gradient(180deg, rgba(5,5,8,0.2), rgba(5,5,8,0.92));
+      mask-image: linear-gradient(180deg, transparent, black 0%, black 72%, transparent);
+      -webkit-mask-image: linear-gradient(180deg, transparent, black 0%, black 72%, transparent);
+    }
 
     .hero-slides-container {
       position: absolute;
@@ -46,10 +59,10 @@
       position: absolute;
       inset: 0;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       /* Décalage sous la navbar — évite le texte collé au nav */
-      padding: calc(var(--nav-height) + 6.5rem) 0 7.5rem;
+      padding: calc(var(--nav-height) + 5rem) 0 4.5rem;
       opacity: 0;
       pointer-events: none;
       overflow: visible;
@@ -67,15 +80,19 @@
     /* Hero content layout */
     .hero-content {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: center;
+      grid-template-columns: minmax(0, 7fr) minmax(360px, 5fr);
+      gap: 3.25rem;
+      align-items: flex-start;
       width: 100%;
       padding: 0 2rem;
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
     }
-    .hero-text { max-width: 580px; }
+    .hero-text {
+      max-width: 720px;
+      padding-top: 0;
+      transform: translateY(-1.7rem);
+    }
 
     /* ============================================================
        STAGGERED ANIMATIONS EN BOUCLE — chaque slide a sa propre
@@ -150,31 +167,35 @@
       padding: 0.375rem 1rem;
       border-radius: 999px;
       font-family: var(--font-accent);
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      margin-bottom: 1.25rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(14px);
     }
 
     /* ── Titre hero — taille maîtrisée ── */
     .hero-slide-title {
       font-family: var(--font-title);
-      font-size: clamp(2.35rem, 5.4vw, 4.65rem);
-      font-weight: 800;
-      line-height: 1.08;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.1rem;
+      font-size: clamp(3.05rem, 6.2vw, 6.8rem);
+      font-weight: 500;
+      line-height: 0.92;
+      letter-spacing: -0.045em;
+      margin-bottom: 1.55rem;
       color: var(--white);
+      max-width: 780px;
+      mask-image: linear-gradient(180deg, black 0%, black 83%, transparent 100%);
+      -webkit-mask-image: linear-gradient(180deg, black 0%, black 83%, transparent 100%);
     }
 
     /* ── Sous-titre hero ── */
     .hero-slide-subtitle {
-      font-size: clamp(0.95rem, 1.35vw, 1.08rem);
+      font-size: clamp(1rem, 1.35vw, 1.16rem);
       color: var(--white-60);
       line-height: 1.72;
-      margin-bottom: 1.9rem;
-      max-width: 560px;
+      margin-bottom: 2rem;
+      max-width: 600px;
     }
 
     /* ── Actions CTA ── */
@@ -191,7 +212,10 @@
       pointer-events: auto;
     }
     .hero-slide-actions .btn {
-      min-height: 48px;
+      min-height: 54px;
+      border-radius: 999px;
+      padding-left: 1.6rem;
+      padding-right: 1.6rem;
       white-space: nowrap;
     }
 
@@ -251,12 +275,14 @@
       bottom: 0;
       left: 0; right: 0;
       height: 3px;
-      background: rgba(255,255,255,0.07);
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.07) 18%, rgba(255,255,255,0.07) 82%, transparent 100%);
       z-index: 10;
+      mask-image: linear-gradient(90deg, transparent 0%, black 16%, black 84%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 16%, black 84%, transparent 100%);
     }
     .hero-progress-fill {
       height: 100%;
-      background: var(--grad-red);
+      background: linear-gradient(90deg, transparent 0%, #FF2E2E 18%, #FF8C42 50%, #FF2E2E 82%, transparent 100%);
       width: 0%;
       transition: width linear;
     }
@@ -264,25 +290,235 @@
     /* ── SLIDE VISUALS ── */
     .hero-visual {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       position: relative;
+      width: 100%;
+      padding-top: 2.85rem;
     }
 
-    /* Visual card commun */
-    .slide-visual-card {
-      background: rgba(16,16,28,0.92);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 1.5rem;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    .hero-dashboard-stack {
       width: 100%;
-      max-width: 420px;
+      max-width: 470px;
+      display: grid;
+      gap: 1.4rem;
+    }
+    .slide-visual-card,
+    .hero-logo-marquee {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 28px 70px rgba(0,0,0,0.45);
+      width: 100%;
+      max-width: 470px;
+      backdrop-filter: blur(22px);
       animation: heroCardFloat 7s ease-in-out infinite;
+    }
+    .slide-visual-card::before {
+      content: '';
+      position: absolute;
+      top: -90px;
+      right: -90px;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      filter: blur(36px);
+      pointer-events: none;
     }
     @keyframes heroCardFloat {
       0%,100% { transform: translateY(0px); }
       50% { transform: translateY(-10px); }
+    }
+
+    .hero-card-head {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.9rem;
+    }
+    .hero-card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: var(--white);
+      font-size: 1.05rem;
+      flex-shrink: 0;
+    }
+    .hero-card-value {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      line-height: 1;
+    }
+    .hero-card-label {
+      color: var(--white-50);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+    .hero-progress-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--white-55);
+      font-size: 0.88rem;
+      margin-bottom: 0.75rem;
+    }
+    .hero-progress-row strong { color: var(--white); }
+    .hero-premium-track {
+      position: relative;
+      z-index: 1;
+      height: 8px;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      margin-bottom: 1.8rem;
+    }
+    .hero-premium-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--white), var(--slide-accent, var(--red)));
+    }
+    .hero-card-sep {
+      position: relative;
+      z-index: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin-bottom: 1.4rem;
+    }
+    .hero-mini-stats {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr 1px 1fr;
+      gap: 0.9rem;
+      align-items: stretch;
+      text-align: center;
+    }
+    .hero-mini-stat {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+      transition: transform 0.25s ease;
+    }
+    .hero-mini-stat:hover { transform: translateY(-3px); }
+    .hero-mini-value {
+      font-family: var(--font-title);
+      color: var(--white);
+      font-size: clamp(1.05rem, 2vw, 1.45rem);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .hero-mini-label {
+      margin-top: 0.25rem;
+      color: var(--white-40);
+      font-size: 0.64rem;
+      font-family: var(--font-accent);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .hero-mini-sep { width: 1px; background: rgba(255,255,255,0.1); }
+    .hero-card-pills {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 1.8rem;
+    }
+    .hero-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06);
+      color: var(--white-70);
+      border-radius: 999px;
+      padding: 0.32rem 0.72rem;
+      font-size: 0.64rem;
+      font-family: var(--font-accent);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .hero-live-dot {
+      position: relative;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+    .hero-live-dot::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: #22c55e;
+      animation: ping 1.4s ease-out infinite;
+    }
+    @keyframes ping {
+      0% { transform: scale(1); opacity: 0.75; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+    .hero-logo-marquee {
+      padding: 1.55rem 0;
+      animation-delay: 0.12s;
+    }
+    .hero-logo-title {
+      margin: 0 2rem 1.25rem;
+      color: var(--white-45);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .hero-marquee-window {
+      overflow: hidden;
+      mask-image: linear-gradient(to right, transparent, black 18%, black 82%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 18%, black 82%, transparent);
+    }
+    .hero-marquee-track {
+      display: flex;
+      width: max-content;
+      gap: 2.4rem;
+      padding: 0 1.2rem;
+      white-space: nowrap;
+      animation: heroMarquee 36s linear infinite;
+    }
+    @keyframes heroMarquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .hero-client-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--white);
+      opacity: 0.48;
+      font-family: var(--font-title);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .hero-client-mark:hover {
+      opacity: 1;
+      transform: scale(1.04);
     }
 
     /* Badge floating */
@@ -417,7 +653,7 @@
         inset: auto;
         display: none;
         min-height: auto;
-        padding: calc(var(--nav-height) + 4.75rem) 0 6.25rem;
+        padding: calc(var(--nav-height) + 4.5rem) 0 6rem;
         transform: none;
       }
       .hero-slide.active {
@@ -426,13 +662,15 @@
       }
       .hero-content {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 2rem;
         padding: 0 1.5rem;
         text-align: center;
         max-width: 760px;
       }
       .hero-text {
         max-width: 100%;
+        padding-top: 0;
+        transform: none;
         order: 1 !important;
       }
       .hero-slide-subtitle {
@@ -447,12 +685,16 @@
         order: 2 !important;
         width: 100%;
         max-width: 520px;
+        padding-top: 0;
         margin: 0 auto;
+      }
+      .hero-dashboard-stack {
+        max-width: 520px;
       }
       .slide-visual-card {
         max-width: 100%;
-        border-radius: 16px;
-        padding: 1.15rem;
+        border-radius: 22px;
+        padding: 1.5rem;
       }
       .float-badge {
         transform: scale(0.86);
@@ -464,20 +706,21 @@
       .hero-slider-controls { bottom: 2.25rem; }
     }
     @media (max-width: 640px) {
-      .hero-slide { padding: calc(var(--nav-height) + 3.75rem) 0 5.75rem; }
+      .hero-slide { padding: calc(var(--nav-height) + 3.5rem) 0 5.25rem; }
       .hero-content {
-        gap: 1.1rem;
+        gap: 1.45rem;
         padding: 0 1.25rem;
       }
       .hero-slide-title {
-        font-size: clamp(1.625rem, 8vw, 2.5rem);
-        line-height: 1.12;
-        margin-bottom: 0.85rem;
+        font-size: clamp(2.35rem, 12vw, 3.4rem);
+        line-height: 0.95;
+        letter-spacing: -0.045em;
+        margin-bottom: 1rem;
       }
       .hero-slide-subtitle {
-        font-size: 0.9rem;
-        line-height: 1.6;
-        margin-bottom: 1.35rem;
+        font-size: 0.96rem;
+        line-height: 1.62;
+        margin-bottom: 1.45rem;
       }
       .hero-slide-actions {
         flex-direction: column;
@@ -504,8 +747,46 @@
         max-width: 100%;
       }
       .slide-visual-card {
-        padding: 0.95rem;
+        padding: 1.15rem;
+        border-radius: 20px;
         box-shadow: 0 18px 45px rgba(0,0,0,0.42);
+      }
+      .hero-card-head {
+        gap: 0.75rem;
+        margin-bottom: 1.35rem;
+        text-align: left;
+      }
+      .hero-card-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 15px;
+      }
+      .hero-card-value {
+        font-size: 1.65rem;
+      }
+      .hero-card-label {
+        font-size: 0.82rem;
+      }
+      .hero-mini-stats {
+        grid-template-columns: 1fr 1px 1fr 1px 1fr;
+        gap: 0.55rem;
+      }
+      .hero-mini-label {
+        font-size: 0.55rem;
+      }
+      .hero-logo-marquee {
+        border-radius: 20px;
+        padding: 1.25rem 0;
+      }
+      .hero-logo-title {
+        margin: 0 1.15rem 1rem;
+        font-size: 0.78rem;
+      }
+      .hero-marquee-track {
+        gap: 1.8rem;
+      }
+      .hero-client-mark {
+        font-size: 0.9rem;
       }
       .ia-metric-row {
         display: grid;
@@ -531,6 +812,139 @@
     /* ============================================================
        GRAPHIQUES STATISTIQUES ANIMÉS
        ============================================================ */
+    .hero-trust-fade {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 56% 120% at 50% 50%, rgba(255,46,46,0.13), transparent 64%),
+        linear-gradient(90deg, var(--black) 0%, var(--black-2) 18%, rgba(18,18,26,0.98) 50%, var(--black-2) 82%, var(--black) 100%);
+    }
+    .hero-trust-fade::before,
+    .hero-trust-fade::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: min(22vw, 280px);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .hero-trust-fade::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--black) 0%, rgba(5,5,8,0.92) 35%, transparent 100%);
+    }
+    .hero-trust-fade::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--black) 0%, rgba(5,5,8,0.92) 35%, transparent 100%);
+    }
+    .hero-trust-fade .trust-edge-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      z-index: 1;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 18%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 82%, transparent 100%);
+      pointer-events: none;
+    }
+    .hero-trust-fade .trust-edge-line.top { top: 0; }
+    .hero-trust-fade .trust-edge-line.bottom { bottom: 0; }
+    .hero-trust-fade .container {
+      position: relative;
+      z-index: 1;
+    }
+    .hero-trust-fade .container::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(68vw, 760px);
+      height: 120%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(255,106,0,0.08), transparent 68%);
+      pointer-events: none;
+    }
+    .hero-trust-fade .trust-strip {
+      position: relative;
+      z-index: 1;
+      mask-image: linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%);
+    }
+    .hero-trust-number {
+      font-family: var(--font-title);
+      font-size: 1.75rem;
+      font-weight: 900;
+      line-height: 1;
+      background: var(--grad-red);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-trust-label {
+      font-size: 0.8rem;
+      color: var(--white-50);
+      font-family: var(--font-accent);
+    }
+    .home-poles-fade {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      padding: 0.25rem 0;
+      mask-image: linear-gradient(90deg, transparent 0%, black 7%, black 93%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 7%, black 93%, transparent 100%);
+    }
+    .home-poles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+    .home-pole-card {
+      min-height: 180px;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 1.35rem;
+      text-decoration: none;
+      color: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+    .home-pole-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,46,46,0.28);
+      background: linear-gradient(135deg, rgba(255,46,46,0.11), rgba(255,106,0,0.045));
+    }
+    .home-pole-icon {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 13px;
+      background: rgba(255,46,46,0.1);
+      border: 1px solid rgba(255,46,46,0.18);
+      color: var(--red);
+      font-size: 1rem;
+    }
+    .home-pole-title {
+      display: block;
+      font-family: var(--font-title);
+      font-size: 1.08rem;
+      font-weight: 800;
+      line-height: 1.22;
+      color: var(--white);
+      margin-bottom: 0.55rem;
+    }
+    .home-pole-sub {
+      display: block;
+      font-size: 0.84rem;
+      line-height: 1.65;
+      color: var(--white-50);
+    }
+
     .stats-charts-section {
       background: var(--black-2);
       position: relative;
@@ -968,7 +1382,6 @@
     /* ── RESPONSIVE index.html ── */
     @media (max-width: 1024px) {
       .charts-grid { grid-template-columns: 1fr 1fr; }
-      .services-4-grid { gap: 1rem; }
     }
     .comparison-grid {
       display: grid !important;
@@ -1119,8 +1532,8 @@
       .hero-stats > div[style] { border-left: none !important; padding-left: 0 !important; }
       .charts-grid { grid-template-columns: 1fr; }
       .chart-card[style*="span 2"] { grid-column: span 1 !important; }
-      .services-4-grid { grid-template-columns: 1fr !important; gap: 0.875rem; }
       .radial-stats { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .home-poles-grid { grid-template-columns: 1fr 1fr; }
       /* Packs preview → 1 colonne sur mobile */
       .packs-grid { grid-template-columns: 1fr !important; }
       /* Testimonials */
@@ -1133,7 +1546,11 @@
     @media (max-width: 480px) {
       .radial-stats { grid-template-columns: repeat(2, 1fr); }
       .trust-strip { justify-content: center; }
-      .hero-slide-title { font-size: clamp(1.625rem, 8vw, 2.5rem) !important; line-height: 1.12; }
+      .home-poles-grid {
+        grid-template-columns: 1fr;
+      }
+      .home-pole-card { min-height: 138px; padding: 1.05rem; }
+      .hero-slide-title { font-size: clamp(2.15rem, 11vw, 3.15rem) !important; line-height: 0.96; }
       .slide-badge { font-size: 0.68rem; padding: 0.35rem 0.75rem; }
       .hero-slide-actions { flex-direction: column; align-items: center; }
       .hero-slide-actions .btn { width: 100%; max-width: 320px; justify-content: center; }
@@ -1218,16 +1635,16 @@
             <i class="fas fa-robot"></i> AI &amp; Digital Marketing
           </div>
           <h1 class="hero-slide-title s-anim d2">
-            <span class="gradient-text">AI</span> serving your<br>growth.
+            Save time and increase your revenue with <span class="gradient-text">artificial intelligence</span>
           </h1>
           <p class="hero-slide-subtitle s-anim d3">
-            Nous connectons vos ventes, votre marketing et votre support à des agents IA capables de qualifier, répondre, relancer et convertir. <strong style="color:var(--white);">ChatGPT, Claude, Mistral, Make et n8n</strong> deviennent un système de growth piloté par vos objectifs.
+            We connect your sales, marketing and support workflows to AI agents able to qualify, answer, follow up and convert. <strong style="color:var(--white);">ChatGPT, Claude, Mistral, Make and n8n</strong> become a growth system driven by your business goals.
           </p>
           <div class="hero-slide-actions s-anim d4">
             <a href="./audit.html" class="btn btn-primary">
               <i class="fas fa-rocket"></i> Free 30-min audit
             </a>
-            <a href="./services.html" class="btn btn-glass">
+            <a href="./platform.html" class="btn btn-glass">
               Our AI solutions <i class="fas fa-arrow-right"></i>
             </a>
           </div>
@@ -1280,7 +1697,7 @@
           <!-- Float badges -->
           <div class="float-badge fb-1"><i class="fas fa-bolt" style="color:var(--red);"></i> ChatGPT-4o</div>
           <div class="float-badge fb-2" style="border-color:rgba(255,106,0,0.3);"><i class="fas fa-bolt" style="color:#FF8C42;"></i> n8n · Make</div>
-          <div class="float-badge fb-3" style="border-color:rgba(255,46,46,0.25);"><i class="fas fa-arrow-trend-up" style="color:var(--red);"></i> Guaranteed ROI</div>
+          <div class="float-badge fb-3" style="border-color:rgba(255,46,46,0.25);"><i class="fas fa-arrow-trend-up" style="color:var(--red);"></i> Tracked ROI</div>
         </div>
       </div>
     </div>
@@ -1329,7 +1746,7 @@
               <div><span style="color:#FF6A00;">import</span> <span style="color:rgba(255,255,255,0.85);">{ HozanaAI }</span> <span style="color:#FF6A00;">from</span> <span style="color:#FF8C42;">'@hozana/sdk'</span></div>
               <div style="margin-top:0.4rem;"><span style="color:#FF2E2E;">export default function</span> <span style="color:white;">App</span>() {</div>
               <div style="padding-left:1rem;"><span style="color:#FF6A00;">const</span> <span style="color:rgba(255,255,255,0.85);">ai</span> = <span style="color:#FF8C42;">useHozanaAI</span>()</div>
-              <div style="padding-left:1rem;color:var(--white-30);">// 🚀 Votre app est prête</div>
+              <div style="padding-left:1rem;color:var(--white-30);">// Votre app est prête</div>
               <div style="padding-left:1rem;"><span style="color:#FF6A00;">return</span> &lt;<span style="color:white;">Dashboard</span> <span style="color:#FF8C42;">ai</span>={ai} /&gt;</div>
               <div>}</div>
             </div>
@@ -1378,7 +1795,7 @@
             <i class="fas fa-chart-line"></i> Premium Consulting &amp; Coaching
           </div>
           <h1 class="hero-slide-title s-anim d2">
-            Strategy, Audit &amp;<br>
+            Strategy,<br>Audit &amp;<br>
             <span style="background:linear-gradient(135deg,#fff 30%,#FF8C42 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Digital Transformation</span>
           </h1>
           <p class="hero-slide-subtitle s-anim d3">
@@ -1481,28 +1898,30 @@
 <!-- ============================================================
      2. TRUST STRIP — chiffres clés après le hero
      ============================================================ -->
-<div style="background:var(--black-2);border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);">
+<div class="hero-trust-fade">
+  <span class="trust-edge-line top" aria-hidden="true"></span>
+  <span class="trust-edge-line bottom" aria-hidden="true"></span>
   <div class="container" style="padding-top:0;padding-bottom:0;">
     <div class="trust-strip">
       <div class="trust-item">
-        <div style="font-family:var(--font-title);font-size:1.75rem;font-weight:900;background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">50+</div>
-        <div style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-accent);">Clients satisfaits</div>
+        <div class="hero-trust-number">50+</div>
+        <div class="hero-trust-label">Clients satisfaits</div>
       </div>
       <div class="trust-item">
-        <div style="font-family:var(--font-title);font-size:1.75rem;font-weight:900;background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">300%</div>
-        <div style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-accent);">ROI moyen garanti</div>
+        <div class="hero-trust-number">300%</div>
+        <div class="hero-trust-label">Average observed ROI</div>
       </div>
       <div class="trust-item">
-        <div style="font-family:var(--font-title);font-size:1.75rem;font-weight:900;background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">30j</div>
-        <div style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-accent);">Délai de livraison</div>
+        <div class="hero-trust-number">30j</div>
+        <div class="hero-trust-label">Délai de livraison</div>
       </div>
       <div class="trust-item">
-        <div style="font-family:var(--font-title);font-size:1.75rem;font-weight:900;background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">24/7</div>
-        <div style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-accent);">Support &amp; monitoring</div>
+        <div class="hero-trust-number">24/7</div>
+        <div class="hero-trust-label">Support &amp; monitoring</div>
       </div>
       <div class="trust-item">
-        <div style="font-family:var(--font-title);font-size:1.75rem;font-weight:900;background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">98%</div>
-        <div style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-accent);">Satisfaction client</div>
+        <div class="hero-trust-number">98%</div>
+        <div class="hero-trust-label">Satisfaction client</div>
       </div>
     </div>
   </div>
@@ -1515,100 +1934,64 @@
   <div class="container">
     <div class="text-center mb-lg reveal">
       <div class="section-label">What we do for you</div>
-      <h2 class="text-h1">Tout ce qu'il faut pour <span class="gradient-text">réussir en ligne</span></h2>
+      <h2 class="text-h1">Six areas to <span class="gradient-text">accelerate your growth</span></h2>
       <p style="color:var(--white-60);max-width:580px;margin:1rem auto 0;font-size:1rem;line-height:1.75;">
-        Pas besoin de maîtriser la technique. On prend tout en charge — IA, apps, design, coaching — pour que votre business génère plus de revenus, automatiquement, pendant que vous faites ce que vous faites de mieux.
+        We combine strategy, creation, technology and automation to build clear, measurable solutions adapted to your market.
       </p>
     </div>
 
-    <!-- Services grid 2x2 -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem;" class="services-4-grid reveal">
-
-      <!-- Carte 1 : IA & Marketing -->
-      <a href="./service-ia.html" style="text-decoration:none;" class="service-card-link delay-1">
-        <div class="glass card" style="padding:2rem;border-radius:var(--radius-xl);border:1px solid rgba(255,46,46,0.12);transition:border-color 0.25s,transform 0.25s;height:100%;" onmouseover="this.style.borderColor='rgba(255,46,46,0.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(255,46,46,0.12)';this.style.transform='translateY(0)'">
-          <div style="width:46px;height:46px;background:rgba(255,46,46,0.1);border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;"><i class="fas fa-brain" style="font-size:1.1rem;color:var(--red);"></i></div>
-          <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,46,46,0.08);border:1px solid rgba(255,46,46,0.18);border-radius:999px;padding:0.2rem 0.7rem;margin-bottom:0.875rem;">
-            <span style="font-family:var(--font-accent);font-size:0.7rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.07em;">IA &amp; Automation</span>
-          </div>
-          <h3 style="font-family:var(--font-title);font-size:1.25rem;font-weight:800;line-height:1.3;margin-bottom:0.75rem;">Votre business tourne <span class="gradient-text">en automatique</span></h3>
-          <p style="font-size:0.875rem;color:var(--white-60);line-height:1.65;margin-bottom:1rem;">AI chatbot, automation des ventes, marketing intelligent… On connecte les meilleurs tools (ChatGPT, Make, n8n) pour que vous gagniez du temps et de l'argent.</p>
-          <div style="display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1.25rem;">
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:var(--red);font-size:0.7rem;"></i> Chatbots &amp; assistants 24h/24</div>
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:var(--red);font-size:0.7rem;"></i> Campagnes marketing automatisées</div>
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:var(--red);font-size:0.7rem;"></i> Analytics &amp; tableaux de bord IA</div>
-          </div>
-          <span style="color:var(--red);font-family:var(--font-accent);font-size:0.85rem;font-weight:700;">Découvrir →</span>
-        </div>
+    <div class="home-poles-fade reveal">
+      <div class="home-poles-grid">
+      <a class="home-pole-card" href="./service-ia.html">
+        <span class="home-pole-icon"><i class="fas fa-bolt"></i></span>
+        <span>
+          <span class="home-pole-title">Artificial Intelligence</span>
+          <span class="home-pole-sub">AI agents, chatbots, predictive analytics and business automation.</span>
+        </span>
       </a>
-
-      <!-- Carte 2 : Développement App -->
-      <a href="./service-dev.html" style="text-decoration:none;" class="service-card-link delay-2">
-        <div class="glass card" style="padding:2rem;border-radius:var(--radius-xl);border:1px solid rgba(255,106,0,0.12);transition:border-color 0.25s,transform 0.25s;height:100%;" onmouseover="this.style.borderColor='rgba(255,106,0,0.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(255,106,0,0.12)';this.style.transform='translateY(0)'">
-          <div style="width:46px;height:46px;background:rgba(255,106,0,0.1);border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;"><i class="fas fa-layer-group" style="font-size:1.1rem;color:#FF8C42;"></i></div>
-          <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,106,0,0.08);border:1px solid rgba(255,106,0,0.2);border-radius:999px;padding:0.2rem 0.7rem;margin-bottom:0.875rem;">
-            <span style="font-family:var(--font-accent);font-size:0.7rem;font-weight:700;color:#FF8C42;text-transform:uppercase;letter-spacing:0.07em;">Dev Apps &amp; Sites</span>
-          </div>
-          <h3 style="font-family:var(--font-title);font-size:1.25rem;font-weight:800;line-height:1.3;margin-bottom:0.75rem;">Apps <span style="background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">mobiles, web &amp; Windows</span></h3>
-          <p style="font-size:0.875rem;color:var(--white-60);line-height:1.65;margin-bottom:1rem;">Nous développons votre app mobile, site vitrine, boutique en ligne ou logiciel desktop. Interface moderne, rapide et livré en 30 days. Vous n'avez rien à faire côté technique.</p>
-          <div style="display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1.25rem;">
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:#FF8C42;font-size:0.7rem;"></i> Apps iOS &amp; Android clé en main</div>
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:#FF8C42;font-size:0.7rem;"></i> Sites vitrine &amp; e-commerce</div>
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:#FF8C42;font-size:0.7rem;"></i> Logiciels Windows sur mesure</div>
-          </div>
-          <span style="color:#FF8C42;font-family:var(--font-accent);font-size:0.85rem;font-weight:700;">Découvrir →</span>
-        </div>
+      <a class="home-pole-card" href="./service-branding.html">
+        <span class="home-pole-icon"><i class="fas fa-palette"></i></span>
+        <span>
+          <span class="home-pole-title">Branding &amp; Creation</span>
+          <span class="home-pole-sub">Visual identity, UI/UX, brand content and motion design.</span>
+        </span>
       </a>
-
-      <!-- Carte 3 : Design & Réseaux -->
-      <a href="./service-branding.html" style="text-decoration:none;" class="service-card-link delay-3">
-        <div class="glass card" style="padding:2rem;border-radius:var(--radius-xl);border:1px solid rgba(255,46,46,0.12);transition:border-color 0.25s,transform 0.25s;height:100%;" onmouseover="this.style.borderColor='rgba(255,46,46,0.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(255,46,46,0.12)';this.style.transform='translateY(0)'">
-          <div style="width:46px;height:46px;background:rgba(255,46,46,0.1);border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;"><i class="fas fa-pen-nib" style="font-size:1.1rem;color:var(--red);"></i></div>
-          <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,46,46,0.06);border:1px solid rgba(255,46,46,0.15);border-radius:999px;padding:0.2rem 0.7rem;margin-bottom:0.875rem;">
-            <span style="font-family:var(--font-accent);font-size:0.7rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.07em;">Design &amp; Réseaux</span>
-          </div>
-          <h3 style="font-family:var(--font-title);font-size:1.25rem;font-weight:800;line-height:1.3;margin-bottom:0.75rem;">Une image de marque qui <span style="background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">fait vendre</span></h3>
-          <p style="font-size:0.875rem;color:var(--white-60);line-height:1.65;margin-bottom:1rem;">Logo, charte graphique, posts Instagram/Facebook, stories, flyers… Tout le contenu visuel pour être professionnel et reconnaissable sur les réseaux sociaux dès audayd'hui.</p>
-          <div style="display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1.25rem;">
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:var(--red);font-size:0.7rem;"></i> Logo &amp; identité visuelle complète</div>
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:var(--red);font-size:0.7rem;"></i> Posts, stories &amp; reels pour vos réseaux</div>
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:var(--red);font-size:0.7rem;"></i> Flyers, affiches &amp; supports print</div>
-          </div>
-          <span style="color:var(--red);font-family:var(--font-accent);font-size:0.85rem;font-weight:700;">Découvrir →</span>
-        </div>
+      <a class="home-pole-card" href="./service-marketing.html">
+        <span class="home-pole-icon"><i class="fas fa-chart-line"></i></span>
+        <span>
+          <span class="home-pole-title">Digital Marketing</span>
+          <span class="home-pole-sub">Acquisition, social media, ad campaigns, SEO and conversion.</span>
+        </span>
       </a>
-
-      <!-- Carte 4 : Formation & Coaching -->
-      <a href="./service-consulting.html" style="text-decoration:none;" class="service-card-link delay-4">
-        <div class="glass card" style="padding:2rem;border-radius:var(--radius-xl);border:1px solid rgba(255,106,0,0.12);transition:border-color 0.25s,transform 0.25s;height:100%;" onmouseover="this.style.borderColor='rgba(255,106,0,0.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(255,106,0,0.12)';this.style.transform='translateY(0)'">
-          <div style="width:46px;height:46px;background:rgba(255,106,0,0.1);border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;"><i class="fas fa-chart-line" style="font-size:1.1rem;color:#FF8C42;"></i></div>
-          <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,106,0,0.08);border:1px solid rgba(255,106,0,0.2);border-radius:999px;padding:0.2rem 0.7rem;margin-bottom:0.875rem;">
-            <span style="font-family:var(--font-accent);font-size:0.7rem;font-weight:700;color:#FF8C42;text-transform:uppercase;letter-spacing:0.07em;">Formation &amp; Coaching</span>
-          </div>
-          <h3 style="font-family:var(--font-title);font-size:1.25rem;font-weight:800;line-height:1.3;margin-bottom:0.75rem;">Maîtrisez l'IA pour <span style="background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">transformer votre carrière</span></h3>
-          <p style="font-size:0.875rem;color:var(--white-60);line-height:1.65;margin-bottom:1rem;">Formations pratiques et coaching individuel pour entrepreneurs, équipes et porteurs de projet. On vous apprend à utiliser l'IA et le digital pour aller plus loin, plus vite.</p>
-          <div style="display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1.25rem;">
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:#FF8C42;font-size:0.7rem;"></i> Formations IA pour entrepreneurs &amp; équipes</div>
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:#FF8C42;font-size:0.7rem;"></i> Coaching individuel &amp; strategy digitale</div>
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--white-60);"><i class="fas fa-check-circle" style="color:#FF8C42;font-size:0.7rem;"></i> Ateliers en company (présentiel/distanciel)</div>
-          </div>
-          <span style="color:#FF8C42;font-family:var(--font-accent);font-size:0.85rem;font-weight:700;">Découvrir →</span>
-        </div>
+      <a class="home-pole-card" href="./service-dev.html">
+        <span class="home-pole-icon"><i class="fas fa-code"></i></span>
+        <span>
+          <span class="home-pole-title">Tech Development</span>
+          <span class="home-pole-sub">Websites, web/mobile apps, SaaS, APIs and business integrations.</span>
+        </span>
       </a>
+      <a class="home-pole-card" href="./service-business.html">
+        <span class="home-pole-icon"><i class="fas fa-funnel-dollar"></i></span>
+        <span>
+          <span class="home-pole-title">Business &amp; Monetization</span>
+          <span class="home-pole-sub">Funnels, CRO, email/SMS automation and recurring revenue.</span>
+        </span>
+      </a>
+      <a class="home-pole-card" href="./service-consulting.html">
+        <span class="home-pole-icon"><i class="fas fa-gem"></i></span>
+        <span>
+          <span class="home-pole-title">Consulting Premium</span>
+          <span class="home-pole-sub">Audit, AI strategy, digital transformation and executive coaching.</span>
+        </span>
+      </a>
+      </div>
     </div>
 
     <div class="text-center reveal">
-      <a href="./services.html" class="btn btn-outline btn-lg">All our services <i class="fas fa-arrow-right"></i></a>
+      <a href="./platform.html" class="btn btn-outline btn-lg">All our services <i class="fas fa-arrow-right"></i></a>
     </div>
   </div>
 </section>
-
-<!-- ─── RESPONSIVE services grid ─── -->
-<style>
-  @media (max-width: 768px) {
-    .services-4-grid { grid-template-columns: 1fr !important; }
-  }
-</style>
 
 <!-- ============================================================
      3b. STATS ANIMÉES — Graphiques de croissance
@@ -1619,7 +2002,7 @@
       <div class="section-label">Measurable results</div>
       <h2 class="text-h1">Des chiffres qui <span class="gradient-text">parlent d'eux-mêmes</span></h2>
       <p class="text-body-lg mt-sm" style="max-width:560px;margin:1rem auto 0;">
-        Ces chiffres sont réels — constatés sur nos 50+ clients. Pas de promesses floues : des résultats concrets, mesurables, et reproductibles quel que soit votre secteur d'activité.
+        We track the indicators that truly matter: time saved, acquisition, satisfaction, operating cost and return on investment.
       </p>
     </div>
 
@@ -1633,7 +2016,7 @@
       <div class="kpi-band-item">
         <div class="kpi-num" data-kpi="300" data-suffix="%">0%</div>
         <div class="kpi-label">Average ROI</div>
-        <div class="kpi-sub"><i class="fas fa-arrow-up"></i> Garanti en 30j</div>
+        <div class="kpi-sub"><i class="fas fa-arrow-up"></i> Continuously tracked</div>
       </div>
       <div class="kpi-band-item">
         <div class="kpi-num" data-kpi="40" data-suffix="%">0%</div>
@@ -1681,7 +2064,7 @@
             <div class="anim-bar-track"><div class="anim-bar-fill" data-width="40%" style="background:linear-gradient(90deg,#FF2E2E,#FF6A00);"></div></div>
           </div>
           <div class="anim-bar-item">
-            <div class="anim-bar-header"><span>Création de contenu</span><span>4h</span></div>
+            <div class="anim-bar-header"><span>Content creation</span><span>4h</span></div>
             <div class="anim-bar-track"><div class="anim-bar-fill" data-width="27%" style="background:linear-gradient(90deg,#FF8C42,#FF2E2E);"></div></div>
           </div>
         </div>
@@ -1769,7 +2152,7 @@
       <!-- Chart 5 : ROI bar chart -->
       <div class="chart-card reveal delay-3">
         <div class="chart-card-title"><i class="fas fa-chart-bar" style="color:var(--red);margin-right:0.4rem;"></i>Retour sur investissement moyen</div>
-        <div class="chart-card-value">300% ROI</div>
+        <div class="chart-card-value">Tracked ROI</div>
         <div class="sparkline-bars" id="roi-bars">
           <div class="spark-bar" style="height:35%;"></div>
           <div class="spark-bar" style="height:42%;"></div>
@@ -1962,9 +2345,9 @@
   <div class="container">
     <div class="text-center mb-lg reveal">
       <div class="section-label">Our Plans</div>
-      <h2 class="text-h1">Des packs <span class="gradient-text">qui rapportent plus qu'ils ne coûtent</span></h2>
+      <h2 class="text-h1">Plans <span class="gradient-text">clear and scalable</span></h2>
       <p class="text-body-lg mt-sm" style="max-width:580px;margin:1rem auto 0;">
-        Chaque pack est conçu pour que vous génériez plus de valeur que ce que vous investissez. Dès 490€/month, des clients constatent jusqu'à ×3 de retour sur investissement dès le 2ème month.
+        Choose a foundation adapted to your maturity level, then add the options required for your growth.
       </p>
     </div>
 
@@ -2427,7 +2810,7 @@ async function loadPacksPreview() {
     const res = await fetch('tables/packs?order=sort_order.asc');
     const data = await res.json();
 
-    let packs = data.data || [];
+    let packs = (data.data || []).filter(item => !isHomePricingOption(item));
 
     if (!packs.length) {
       console.warn('[Packs] Aucune donnée en base.');
@@ -2470,6 +2853,26 @@ async function loadPacksPreview() {
   } catch (err) {
     console.error('[Packs] Erreur de chargement:', err);
   }
+}
+
+function isHomePricingOption(item) {
+  const explicit = String(item?.item_type || item?.type || item?.category || '').trim().toLowerCase();
+  const buttonText = String(item?.button_text || '').trim().toLowerCase();
+  const link = String(item?.link || '').trim().toLowerCase();
+
+  return explicit === 'option'
+    || explicit === 'addon'
+    || explicit === 'add-on'
+    || explicit === 'module'
+    || explicit.includes('option')
+    || explicit.includes('complément')
+    || explicit.includes('complement')
+    || buttonText.includes('ajouter au panier')
+    || buttonText.includes('add to cart')
+    || link.includes('add-to-cart')
+    || link.includes('cart')
+    || Boolean(item?.parent_pack_id)
+    || Boolean(item?.pack_id);
 }
 
 /* ============================================================

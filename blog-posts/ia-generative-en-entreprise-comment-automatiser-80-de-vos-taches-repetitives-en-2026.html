@@ -778,7 +778,7 @@ window.__STATIC_BLOG_DATA__ = {
           <span style="width:32px;height:32px;border-radius:50%;background:var(--grad-red);display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:white;">MH</span>
           Marcus Hozana
         </span>
-        <span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>1 juin 2026</span>
+        <span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>2 juin 2026</span>
         <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>8 min de lecture</span>
         <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>31 vues</span>
       </div>
@@ -1005,7 +1005,7 @@ window.__STATIC_BLOG_DATA__ = {
 
       <!-- CTA -->
       <div class="sidebar-widget reveal delay-4" style="background:linear-gradient(135deg,rgba(255,46,46,0.08),rgba(255,106,0,0.04));border-color:rgba(255,46,46,0.15);text-align:center;">
-        <div style="font-size:2rem;margin-bottom:0.875rem;">🚀</div>
+        <div style="width:42px;height:42px;margin:0 auto 0.875rem;border-radius:14px;background:rgba(255,46,46,0.1);border:1px solid rgba(255,46,46,0.18);display:flex;align-items:center;justify-content:center;"><i class="fas fa-bullseye" style="color:var(--red);"></i></div>
         <h4 style="font-family:var(--font-title);font-size:0.95rem;font-weight:700;margin-bottom:0.625rem;">Prêt à passer à l'action ?</h4>
         <p style="font-size:0.8rem;color:var(--white-50);margin-bottom:1.25rem;line-height:1.6;">Audit gratuit de 30 min avec nos experts IA.</p>
         <a href="../contact.html" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;">Réserver →</a>
@@ -1482,7 +1482,7 @@ async function submitComment() {
     if (countEl) countEl.textContent = `(${allComments.length})`;
     if (statEl) statEl.textContent = allComments.length;
 
-    window.HC?.showToast('✅ Commentaire soumis ! Visible après modération.', 'success');
+    window.HC?.showToast('Commentaire soumis. Visible après modération.', 'success');
 
     // Reset form
     ['comment-name', 'comment-email', 'comment-text'].forEach(id => {
@@ -1556,7 +1556,7 @@ function shareOn(platform) {
 
 function copyLink() {
   navigator.clipboard.writeText(window.location.href).then(() => {
-    window.HC?.showToast('✅ Lien copié dans le presse-papiers !', 'success');
+    window.HC?.showToast('Lien copié dans le presse-papiers.', 'success');
   }).catch(() => {
     window.HC?.showToast('Impossible de copier. Copiez l\'URL manuellement.', 'info');
   });
@@ -1592,7 +1592,7 @@ function showError(title, message) {
   if (bodyEl) {
     bodyEl.innerHTML = `
       <div style="text-align:center;padding:3rem;color:var(--white-50);">
-        <div style="font-size:4rem;margin-bottom:1rem;">😔</div>
+        <div style="width:64px;height:64px;margin:0 auto 1rem;border-radius:20px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;"><i class="fas fa-triangle-exclamation" style="color:var(--red);font-size:1.35rem;"></i></div>
         <p style="margin-bottom:1.5rem;">${escapeHtml(message)}</p>
         <a href="../blog.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Retour au blog</a>
       </div>`;

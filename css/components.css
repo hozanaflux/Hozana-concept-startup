@@ -312,6 +312,13 @@
 [data-theme="light"] .dd-cat-tags { color: rgba(0,0,0,0.5); }
 [data-theme="light"] .dd-cat:hover .dd-cat-tags { color: rgba(0,0,0,0.8); }
 
+.navbar-logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
 /* Mobile dropdown dans mobile menu */
 .mobile-dd-toggle {
   display: flex;
@@ -333,6 +340,11 @@
   background: rgba(255, 46, 46, 0.06);
 }
 .mobile-dd-toggle span.active { color: var(--red-light); }
+.mobile-dd-chevron {
+  font-size: 0.7rem;
+  opacity: 0.5;
+  transition: transform 0.25s;
+}
 
 .mobile-dd-list {
   display: none;
@@ -512,6 +524,14 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+.mobile-menu-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+.mobile-menu-cta {
+  justify-content: center;
 }
 
 .mobile-contact-info {
@@ -1679,6 +1699,12 @@
   margin-bottom: 1.25rem;
   letter-spacing: -0.02em;
 }
+.footer-logo-img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
 
 .footer-brand-desc {
   font-size: 0.9rem;
@@ -1728,6 +1754,13 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+.footer-col-title-spaced {
+  margin-top: 1.75rem;
+}
+.footer-col-icon {
+  color: var(--red);
+  font-size: 0.8rem;
 }
 
 .footer-link-list {

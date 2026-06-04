@@ -50,6 +50,24 @@ if (typeof SUPABASE_URL === 'undefined') {
   window.SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlYWR2cXJoZXppeXZyd25iaWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzM0MTksImV4cCI6MjA5MzU0OTQxOX0.I-L13gdtuQnsJ4ErEb-SWWfdbMUhWOkTvSFOSkNxsD0';
 }
 
+(function installAdminWriteGuard() {
+  const originalFetch = window.fetch.bind(window);
+  window.fetch = function adminFetch(input, init = {}) {
+    const rawUrl = typeof input === 'string' ? input : (input && input.url) || '';
+    const method = String(init.method || (input && input.method) || 'GET').toUpperCase();
+    const isWrite = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
+    const isAdminTarget = rawUrl.includes('/api/') || rawUrl.includes('tables/');
+
+    if (!isWrite || !isAdminTarget || rawUrl.includes('/api/admin-login')) {
+      return originalFetch(input, init);
+    }
+
+    const headers = new Headers(init.headers || (input && input.headers) || {});
+    headers.set('X-Hozana-Admin', '1');
+    return originalFetch(input, { ...init, method, headers });
+  };
+})();
+
 /* ─── SHA-256 (Web Crypto avec fallback pur JS pour file://) ─── */
 async function sha256(s) {
   // Try native Web Crypto (HTTPS/localhost)
