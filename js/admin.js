@@ -624,6 +624,11 @@ function getVisitorRows() {
     prev.ip = v.ip_address || v.ip || prev.ip || '—';
     prev.country = v.country || prev.country || '';
     prev.city = v.city || prev.city || '';
+    prev.region = v.region || prev.region || '';
+    prev.timezone = v.timezone || prev.timezone || '';
+    prev.isp = v.isp || prev.isp || '';
+    prev.device_type = v.device_type || prev.device_type || '';
+    prev.browser_language = v.browser_language || prev.browser_language || '';
     prev.user_agent = v.user_agent || prev.user_agent || '';
     prev.last_seen = Math.max(asTime(prev.last_seen), asTime(v.created_at));
     map.set(key, prev);
@@ -639,11 +644,16 @@ function visitorDevice(ua='') {
   const browser = /Edg/i.test(s) ? 'Edge' : /Chrome|CriOS/i.test(s) ? 'Chrome' : /Firefox|FxiOS/i.test(s) ? 'Firefox' : /Safari/i.test(s) ? 'Safari' : 'Navigateur';
   return `${os} · ${browser}`;
 }
+function visitorDeviceDetails(v) {
+  const type = v.device_type ? `${v.device_type[0].toUpperCase()}${v.device_type.slice(1)}` : visitorDevice(v.user_agent);
+  const lang = v.browser_language ? ` · ${v.browser_language}` : '';
+  return `${type}${lang}`;
+}
 function renderVisitors() {
   const allRows = getVisitorRows();
   const rows = getVisitorRows().filter(v => {
     const q = _visitorsFilter;
-    return !q || [v.id,v.page,v.ip,v.country,v.city,v.referrer].join(' ').toLowerCase().includes(q);
+    return !q || [v.id,v.page,v.ip,v.country,v.city,v.region,v.isp,v.timezone,v.referrer,v.device_type,v.browser_language].join(' ').toLowerCase().includes(q);
   });
   set('vis-online', allRows.filter(isVisitorOnline).length);
   set('vis-views', VIEWS.length);
@@ -659,9 +669,9 @@ function renderVisitors() {
       <tr>
         <td><div class="t-strong t-sm ${online ? 'online-dot' : 'online-dot offline-dot'}">${escapeText(String(v.id).slice(0, 18))}</div><div class="t-muted">${online ? 'En ligne' : 'Hors ligne'} · ${v.views} vue(s)</div></td>
         <td class="t-muted t-sm">${escapeText([...v.pages].slice(0,3).join(', '))}</td>
-        <td class="t-muted t-sm">${escapeText(visitorLocation(v))}</td>
-        <td class="t-muted t-sm">${escapeText(v.ip)}</td>
-        <td class="t-muted t-sm text-clip" title="${escapeAttr(v.user_agent || '')}">${escapeText(visitorDevice(v.user_agent))}</td>
+        <td class="t-muted t-sm"><div>${escapeText(visitorLocation(v))}</div><div class="t-muted" style="font-size:.68rem;">${escapeText([v.region, v.timezone].filter(Boolean).join(' · ') || '—')}</div></td>
+        <td class="t-muted t-sm"><div>${escapeText(v.ip)}</div><div class="t-muted text-clip" style="font-size:.68rem;max-width:150px;" title="${escapeAttr(v.isp || '')}">${escapeText(v.isp || 'Réseau inconnu')}</div></td>
+        <td class="t-muted t-sm text-clip" title="${escapeAttr(v.user_agent || '')}">${escapeText(visitorDeviceDetails(v))}</td>
         <td class="t-muted t-sm">${v.last_seen ? fmt(new Date(v.last_seen).toISOString()) : '—'}</td>
         <td><div class="acts">
           <button class="act" onclick="openVisitorMessage('${escapeAttr(v.id)}')" title="Envoyer un message"><i class="fas fa-comment-dots"></i></button>

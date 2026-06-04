@@ -400,6 +400,11 @@ async function trackPageView(meta = {}) {
       ip_address: geo.ip || null,
       country: geo.country || null,
       city: geo.city || null,
+      region: geo.region || null,
+      timezone: geo.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || null,
+      isp: geo.isp || null,
+      device_type: getDeviceType(),
+      browser_language: navigator.language || null,
       event_type: meta.eventType || 'pageview'
     };
     const postView = (body) => fetch('tables/page_views', {
@@ -413,6 +418,11 @@ async function trackPageView(meta = {}) {
       ip_address: payload.ip_address,
       country: payload.country,
       city: payload.city,
+      region: payload.region,
+      timezone: payload.timezone,
+      isp: payload.isp,
+      device_type: payload.device_type,
+      browser_language: payload.browser_language,
       event_type: payload.event_type
     });
     if (!res.ok) res = await postView({
@@ -423,6 +433,13 @@ async function trackPageView(meta = {}) {
     if (!res.ok) res = await postView({ ...basePayload, event_type: payload.event_type });
     if (!res.ok) await postView(basePayload);
   } catch {}
+}
+
+function getDeviceType() {
+  const ua = navigator.userAgent || '';
+  if (/iPad|Tablet|PlayBook|Silk/i.test(ua)) return 'tablet';
+  if (/Mobi|Android|iPhone|iPod/i.test(ua)) return 'mobile';
+  return 'desktop';
 }
 
 function startVisitorHeartbeat() {
@@ -515,6 +532,19 @@ async function getVisitorGeo() {
   try {
     const cached = sessionStorage.getItem('hozana-geo');
     if (cached) return JSON.parse(cached);
+    try {
+      const ownCtrl = new AbortController();
+      const ownTimer = setTimeout(() => ownCtrl.abort(), 2500);
+      const ownRes = await fetch('/api/visitor-geo', { signal: ownCtrl.signal });
+      clearTimeout(ownTimer);
+      if (ownRes.ok) {
+        const ownGeo = await ownRes.json();
+        if (ownGeo && ownGeo.ip) {
+          sessionStorage.setItem('hozana-geo', JSON.stringify(ownGeo));
+          return ownGeo;
+        }
+      }
+    } catch {}
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 1800);
     const res = await fetch('https://ipapi.co/json/', { signal: ctrl.signal });
@@ -524,7 +554,10 @@ async function getVisitorGeo() {
     const geo = {
       ip: data.ip || '',
       country: data.country_name || data.country || '',
-      city: data.city || ''
+      city: data.city || '',
+      region: data.region || data.region_code || '',
+      timezone: data.timezone || '',
+      isp: data.org || data.asn || ''
     };
     sessionStorage.setItem('hozana-geo', JSON.stringify(geo));
     return geo;
