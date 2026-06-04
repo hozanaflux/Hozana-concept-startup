@@ -35,11 +35,6 @@ const GA_ID = 'G-D0GFCE5S90'; // ex: G-XXXXXXXXXX
     const isAdminPage = location.pathname === '/admin' ||
       location.pathname.indexOf('/admin-hozana-concept-admin') !== -1;
 
-    if (isAdminPage) {
-      const adminUrl = '/api/' + url.slice(tablesIdx);
-      return _orig(adminUrl, init || {});
-    }
-
     // Décomposer "tables/tablename/optional-id?querystring"
     const withoutPrefix = url.slice(tablesIdx + 7);
     const qIdx          = withoutPrefix.indexOf('?');
@@ -49,6 +44,14 @@ const GA_ID = 'G-D0GFCE5S90'; // ex: G-XXXXXXXXXX
     const segments  = pathPart.split('/').filter(Boolean);
     const tableName = segments[0];
     const recordId  = segments[1];
+
+    if (isAdminPage) {
+      const adminParams = new URLSearchParams(queryStr);
+      adminParams.set('table', tableName);
+      if (recordId) adminParams.set('recordId', recordId);
+      const adminUrl = '/api/tables?' + adminParams.toString();
+      return _orig(adminUrl, init || {});
+    }
 
     const params = new URLSearchParams(queryStr);
     if (recordId) {
