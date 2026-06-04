@@ -1,9 +1,7 @@
 const { setCors, rejectBadOrigin, rateLimit } = require('../_security');
 const { isAdminRequest } = require('../admin-auth');
+const { SUPABASE_URL, supabaseServiceKey } = require('../_supabase');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://leadvqrheziyvrwnbiio.supabase.co';
-const SUPABASE_ANON = process.env.SUPABASE_ANON || process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlYWR2cXJoZXppeXZyd25iaWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzM0MTksImV4cCI6MjA5MzU0OTQxOX0.I-L13gdtuQnsJ4ErEb-SWWfdbMUhWOkTvSFOSkNxsD0';
-const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 const ALLOWED_TABLES = new Set([
   'audits',
@@ -85,7 +83,11 @@ module.exports = async (req, res) => {
   const target = buildSupabaseUrl(req);
   if (target.error) return res.status(400).json({ error: target.error });
 
-  const apiKey = SUPABASE_SERVICE_ROLE || SUPABASE_ANON;
+  const apiKey = supabaseServiceKey();
+  if (!apiKey) {
+    return res.status(500).json({ error: 'SUPABASE_SERVICE_ROLE_KEY missing' });
+  }
+
   const headers = {
     apikey: apiKey,
     Authorization: `Bearer ${apiKey}`

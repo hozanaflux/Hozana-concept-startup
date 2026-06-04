@@ -1,9 +1,8 @@
 const path = require('path');
 const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
 const { isAdminRequest } = require('./admin-auth');
+const { SUPABASE_URL, supabaseServiceKey } = require('./_supabase');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://leadvqrheziyvrwnbiio.supabase.co';
-const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const MAX_BYTES = 5 * 1024 * 1024;
 const ALLOWED_BUCKETS = new Set(['blog-images']);
 const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
@@ -47,7 +46,8 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   if (rateLimit(req, res, 'storage-upload', 40, 60 * 60 * 1000)) return;
   if (!isAdminRequest(req)) return res.status(401).json({ error: 'Admin session required' });
-  if (!SUPABASE_SERVICE_ROLE) return res.status(500).json({ error: 'SUPABASE_SERVICE_ROLE_KEY missing' });
+  const serviceKey = supabaseServiceKey();
+  if (!serviceKey) return res.status(500).json({ error: 'SUPABASE_SERVICE_ROLE_KEY missing' });
 
   const parsed = new URL(req.url, 'http://localhost');
   const bucket = parsed.searchParams.get('bucket') || 'blog-images';
@@ -68,8 +68,8 @@ module.exports = async (req, res) => {
     const response = await fetch(uploadUrl, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE}`,
-        apikey: SUPABASE_SERVICE_ROLE,
+        Authorization: `Bearer ${serviceKey}`,
+        apikey: serviceKey,
         'Content-Type': contentType,
         'x-upsert': 'true'
       },
