@@ -19,13 +19,13 @@ const ALLOWED_TABLES = new Set([
 
 function buildSupabaseUrl(req) {
   const parsed = new URL(req.url, 'http://localhost');
-  const queryPath = req.query?.path || parsed.searchParams.get('path') || '';
+  const queryPath = req.query?.path || req.query?.['...path'] || req.query?.['[...path]'] || parsed.searchParams.get('path') || '';
   const routePath = Array.isArray(queryPath) ? queryPath.join('/') : String(queryPath);
   const prefix = '/api/tables/';
   const pathnamePath = parsed.pathname.startsWith(prefix)
     ? decodeURIComponent(parsed.pathname).slice(prefix.length)
     : '';
-  const apiPath = routePath || pathnamePath;
+  const apiPath = routePath || (/^\[?\.\.\.path\]?$/.test(pathnamePath) ? '' : pathnamePath);
   const segments = apiPath.split('/').filter(Boolean);
   const table = segments[0];
   const recordId = segments[1];
