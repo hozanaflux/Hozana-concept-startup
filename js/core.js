@@ -389,9 +389,12 @@ function getVisitorId() {
 async function trackPageView(meta = {}) {
   try {
     const geo = await getVisitorGeo();
-    const payload = {
+    const basePayload = {
       page: window.location.pathname.split('/').pop() || 'index',
-      visitor_id: getVisitorId(),
+      visitor_id: getVisitorId()
+    };
+    const payload = {
+      ...basePayload,
       referrer: document.referrer || 'direct',
       user_agent: navigator.userAgent.substring(0, 200),
       ip_address: geo.ip || null,
@@ -399,23 +402,14 @@ async function trackPageView(meta = {}) {
       city: geo.city || null,
       event_type: meta.eventType || 'pageview'
     };
-    const res = await fetch('tables/page_views', {
+    const postView = (body) => fetch('tables/page_views', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(body)
     });
-    if (!res.ok) {
-      await fetch('tables/page_views', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          page: payload.page,
-          visitor_id: payload.visitor_id,
-          referrer: payload.referrer,
-          user_agent: payload.user_agent
-        })
-      });
-    }
+    let res = await postView(payload);
+    if (!res.ok) res = await postView({ ...basePayload, event_type: payload.event_type });
+    if (!res.ok) await postView(basePayload);
   } catch {}
 }
 

@@ -194,6 +194,10 @@ ALTER TABLE public.pack_options ENABLE ROW LEVEL SECURITY;
 -- Visitor analytics enrichment for the admin visitor cockpit.
 -- Safe to run multiple times; it only adds missing columns.
 ALTER TABLE IF EXISTS public.page_views
+  ADD COLUMN IF NOT EXISTS page TEXT,
+  ADD COLUMN IF NOT EXISTS visitor_id TEXT,
+  ADD COLUMN IF NOT EXISTS referrer TEXT,
+  ADD COLUMN IF NOT EXISTS user_agent TEXT,
   ADD COLUMN IF NOT EXISTS ip_address TEXT,
   ADD COLUMN IF NOT EXISTS country TEXT,
   ADD COLUMN IF NOT EXISTS city TEXT,
