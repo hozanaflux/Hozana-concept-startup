@@ -11,6 +11,74 @@ const P_ = window.__PAGE_ROOT__ ?? R_;
 const root = () => R_;
 const pageRoot = () => P_;
 
+const HC_SITE_DEFAULTS = {
+  email: 'info@hozanaconcept.com',
+  phone: '+216 51 47 47 51',
+  address: 'Hozana Concept Global Headquarters',
+  linkedin_url: '#',
+  facebook_url: '#',
+  instagram_url: '#',
+  twitter_url: '#',
+  youtube_url: '#',
+  tiktok_url: '#'
+};
+let HC_SITE_SETTINGS = { ...HC_SITE_DEFAULTS };
+
+function siteSetting(key) {
+  return HC_SITE_SETTINGS[key] || HC_SITE_DEFAULTS[key] || '';
+}
+
+function whatsappUrl(phone = siteSetting('phone')) {
+  const digits = String(phone || '').replace(/[^\d]/g, '');
+  return digits ? `https://wa.me/${digits}` : '#';
+}
+
+function applySiteSettings() {
+  const socialMap = {
+    linkedin: 'linkedin_url',
+    facebook: 'facebook_url',
+    instagram: 'instagram_url',
+    twitter: 'twitter_url',
+    youtube: 'youtube_url',
+    tiktok: 'tiktok_url'
+  };
+
+  document.querySelectorAll('[data-site-field]').forEach(el => {
+    const key = el.getAttribute('data-site-field');
+    const value = siteSetting(key);
+    el.textContent = value;
+  });
+
+  document.querySelectorAll('[data-site-link]').forEach(el => {
+    const key = el.getAttribute('data-site-link');
+    if (key === 'email') el.href = `mailto:${siteSetting('email')}`;
+    if (key === 'phone') el.href = whatsappUrl(siteSetting('phone'));
+  });
+
+  document.querySelectorAll('[data-site-social]').forEach(el => {
+    const key = socialMap[el.getAttribute('data-site-social')];
+    const value = key ? siteSetting(key) : '#';
+    el.href = value || '#';
+    el.toggleAttribute('hidden', !value || value === '#');
+  });
+}
+
+async function loadSiteSettings() {
+  try {
+    const res = await fetch('tables/site_settings?order=key.asc&limit=100');
+    if (!res.ok) return;
+    const json = await res.json();
+    const rows = Array.isArray(json.data) ? json.data : [];
+    HC_SITE_SETTINGS = { ...HC_SITE_DEFAULTS, ...Object.fromEntries(rows.map(row => [row.key, row.value || ''])) };
+    if (typeof HC_COMPANY_KB !== 'undefined') {
+      HC_COMPANY_KB.email = siteSetting('email');
+      HC_COMPANY_KB.whatsapp = siteSetting('phone');
+      HC_COMPANY_KB.whatsappUrl = whatsappUrl();
+    }
+    applySiteSettings();
+  } catch {}
+}
+
 // ============================================================
 // INTERNATIONALISATION — FR / EN
 // ============================================================
@@ -662,14 +730,16 @@ function renderNavbar() {
         <i class="fas fa-rocket"></i> ${t('nav.startProject')}
       </a>
       <div class="mobile-contact-info">
-        <a href="mailto:info@hozanaconcept.com"><i class="fas fa-envelope"></i> info@hozanaconcept.com</a>
-        <a href="https://wa.me/21651474751"><i class="fab fa-whatsapp"></i> +216 51 47 47 51</a>
+        <a href="mailto:${siteSetting('email')}" data-site-link="email"><i class="fas fa-envelope"></i> <span data-site-field="email">${siteSetting('email')}</span></a>
+        <a href="${whatsappUrl()}" data-site-link="phone"><i class="fab fa-whatsapp"></i> <span data-site-field="phone">${siteSetting('phone')}</span></a>
       </div>
     </div>
   </div>`;
 
   const target = document.getElementById('navbar-placeholder');
   if (target) target.innerHTML = html;
+  applySiteSettings();
+  loadSiteSettings();
 
   // Init after render
   _initNavbar();
@@ -822,11 +892,12 @@ function renderFooter() {
               ${t('footer.desc')}
             </p>
             <div class="footer-social">
-              <a href="#" class="social-link" title="Réseau professionnel LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-              <a href="#" class="social-link" title="Réseau social Twitter/X" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-              <a href="#" class="social-link" title="Réseau social Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-              <a href="#" class="social-link" title="Plateforme vidéo YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-              <a href="#" class="social-link" title="Réseau social TikTok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+              <a href="${siteSetting('linkedin_url')}" class="social-link" title="Réseau professionnel LinkedIn" aria-label="LinkedIn" data-site-social="linkedin"><i class="fab fa-linkedin-in"></i></a>
+              <a href="${siteSetting('twitter_url')}" class="social-link" title="Réseau social Twitter/X" aria-label="Twitter" data-site-social="twitter"><i class="fab fa-twitter"></i></a>
+              <a href="${siteSetting('facebook_url')}" class="social-link" title="Réseau social Facebook" aria-label="Facebook" data-site-social="facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="${siteSetting('instagram_url')}" class="social-link" title="Réseau social Instagram" aria-label="Instagram" data-site-social="instagram"><i class="fab fa-instagram"></i></a>
+              <a href="${siteSetting('youtube_url')}" class="social-link" title="Plateforme vidéo YouTube" aria-label="YouTube" data-site-social="youtube"><i class="fab fa-youtube"></i></a>
+              <a href="${siteSetting('tiktok_url')}" class="social-link" title="Réseau social TikTok" aria-label="TikTok" data-site-social="tiktok"><i class="fab fa-tiktok"></i></a>
             </div>
             <!-- Badges trust -->
             <div class="footer-trust-badges">
@@ -873,20 +944,20 @@ function renderFooter() {
             </h4>
             <ul class="footer-contact-list">
               <li>
-                <a href="mailto:info@hozanaconcept.com">
+                <a href="mailto:${siteSetting('email')}" data-site-link="email">
                   <span class="contact-icon"><i class="fas fa-envelope"></i></span>
-                  <span>info@hozanaconcept.com</span>
+                  <span data-site-field="email">${siteSetting('email')}</span>
                 </a>
               </li>
               <li>
-                <a href="https://wa.me/21651474751" target="_blank" rel="noopener">
+                <a href="${whatsappUrl()}" target="_blank" rel="noopener" data-site-link="phone">
                   <span class="contact-icon"><i class="fab fa-whatsapp"></i></span>
-                  <span>+216 51 47 47 51</span>
+                  <span data-site-field="phone">${siteSetting('phone')}</span>
                 </a>
               </li>
               <li>
                 <span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span>
-                <span>Hozana Concept Global Headquarters</span>
+                <span data-site-field="address">${siteSetting('address')}</span>
               </li>
             </ul>
 
@@ -948,7 +1019,11 @@ function renderFooter() {
   </footer>`;
 
   const target = document.getElementById('footer-placeholder');
-  if (target) target.innerHTML = html;
+  if (target) {
+    target.innerHTML = html;
+    applySiteSettings();
+    loadSiteSettings();
+  }
 }
 
 async function footerSubscribe(e) {
@@ -1487,8 +1562,9 @@ function _formatBotReply(value) {
 // ============================================================
 function renderWhatsApp() {
   const a = document.createElement('a');
-  a.href = 'https://wa.me/21651474751?text=Bonjour%20Hozana%20Concept%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20vos%20services.';
+  a.href = `${whatsappUrl()}?text=Bonjour%20Hozana%20Concept%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20vos%20services.`;
   a.className = 'whatsapp-btn';
+  a.setAttribute('data-site-link', 'phone');
   a.target = '_blank';
   a.rel = 'noopener noreferrer';
   a.title = 'Contacter sur WhatsApp';

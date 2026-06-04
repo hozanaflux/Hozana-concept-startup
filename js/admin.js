@@ -1,6 +1,7 @@
 /* ─── STATE ─── */
 let P = [], COM = [], LEADS = [], VIEWS = [], ORDERS = [], PF = [], PACKS = [], OPTIONS = [], SERVICES = [];
 let AUDITS = [];
+let SITE_SETTINGS = {};
 let CH = {};
 let _delCb = null;
 let _postsFilter = { q: '', cat: '' };
@@ -15,6 +16,17 @@ let _activeLeadId = null;
 let _visitorRefreshTimer = null;
 const LBLS = { new:'Nouveau', contacted:'Contacté', qualified:'Qualifié', converted:'Converti', lost:'Perdu' };
 const PIPE_COLS = ['new','contacted','qualified','converted'];
+const SITE_SETTING_FIELDS = {
+  email: 'set-email',
+  phone: 'set-phone',
+  address: 'set-address',
+  linkedin_url: 'set-linkedin',
+  facebook_url: 'set-facebook',
+  instagram_url: 'set-instagram',
+  twitter_url: 'set-twitter',
+  youtube_url: 'set-youtube',
+  tiktok_url: 'set-tiktok'
+};
 
 function slugifyTitle(value) {
   return String(value || '')
@@ -191,7 +203,7 @@ async function loadAll() {
       return payload || {};
     };
 
-    const [pr,cr,lr,vr,or,pfr, pkr, opr, svr, ar] = await Promise.allSettled([
+    const [pr,cr,lr,vr,or,pfr, pkr, opr, svr, ar, sr] = await Promise.allSettled([
       adminJson('tables/blog_posts?order=created_at.desc&limit=200'),
       adminJson('tables/comments?order=created_at.desc&limit=300'),
       adminJson('tables/leads?order=created_at.desc&limit=300'),
@@ -202,6 +214,7 @@ async function loadAll() {
       adminJson('tables/pack_options?order=sort_order.asc&limit=100'),
       adminJson('tables/services_list?order=sort_order.asc&limit=50'),
       adminJson('tables/audits?order=created_at.desc&limit=100'),
+      adminJson('tables/site_settings?order=key.asc&limit=100'),
     ]);
 
     const failures = [pr,cr,lr,vr,or,pfr,pkr,opr,svr,ar].filter(r => r.status === 'rejected');
@@ -221,6 +234,10 @@ async function loadAll() {
     if (pkr.status==='fulfilled' && pkr.value) PACKS = (pkr.value.data || []).filter(p => packItemType(p) !== 'option');
     if (opr.status==='fulfilled' && opr.value) OPTIONS = opr.value.data || [];
     if (svr.status==='fulfilled' && svr.value) SERVICES = svr.value.data || [];
+    if (sr.status==='fulfilled' && sr.value) {
+      SITE_SETTINGS = Object.fromEntries((sr.value.data || []).map(row => [row.key, row.value || '']));
+      fillSiteSettingsForm();
+    }
 
     console.log('[Admin] Data loaded:', { posts: P.length, leads: LEADS.length, packs: PACKS.length, options: OPTIONS.length });
   } catch(e) { 
@@ -1886,6 +1903,47 @@ async function delComment(id) {
 function setTheme(t) {
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('hzn-theme',t);
+}
+
+function fillSiteSettingsForm() {
+  Object.entries(SITE_SETTING_FIELDS).forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = SITE_SETTINGS[key] || '';
+  });
+}
+
+async function saveSiteSettings() {
+  const status = document.getElementById('settings-status');
+  if (status) status.textContent = 'Enregistrement...';
+  try {
+    const existingRes = await fetch('tables/site_settings?order=key.asc&limit=100');
+    const existingJson = await existingRes.json();
+    const existing = Object.fromEntries((existingJson.data || []).map(row => [row.key, row]));
+
+    for (const [key, id] of Object.entries(SITE_SETTING_FIELDS)) {
+      const value = (document.getElementById(id)?.value || '').trim();
+      SITE_SETTINGS[key] = value;
+      const row = existing[key];
+      const body = JSON.stringify({ key, value, updated_at: new Date().toISOString() });
+      let response;
+      if (row?.id) {
+        response = await fetch(`tables/site_settings/${row.id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body });
+      } else {
+        response = await fetch('tables/site_settings', { method:'POST', headers:{'Content-Type':'application/json'}, body });
+      }
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => response.statusText);
+        throw new Error(`${key}: ${errorText || response.statusText}`);
+      }
+    }
+
+    if (status) status.textContent = 'Coordonnées enregistrées.';
+    toast('Coordonnées publiques enregistrées', 'ok');
+  } catch (error) {
+    console.error('[Settings] saveSiteSettings error:', error);
+    if (status) status.textContent = 'Erreur enregistrement.';
+    toast(`Erreur coordonnées: ${error.message || error}`, 'err');
+  }
 }
 
 /* ─── CONFIRM DELETE ─── */

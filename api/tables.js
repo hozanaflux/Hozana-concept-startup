@@ -13,6 +13,7 @@ const ALLOWED_TABLES = new Set([
   'page_views',
   'portfolio_projects',
   'services_list',
+  'site_settings',
   'visitor_messages'
 ]);
 

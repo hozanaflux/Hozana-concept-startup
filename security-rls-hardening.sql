@@ -85,6 +85,13 @@ CREATE TABLE IF NOT EXISTS public.visitor_messages (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS public.site_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  key TEXT UNIQUE NOT NULL,
+  value TEXT DEFAULT '',
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
 -- Activer RLS sur les tables utilisees par le site.
 ALTER TABLE public.blog_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
@@ -97,6 +104,7 @@ ALTER TABLE public.services_list ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.portfolio_projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audits ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.visitor_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 
 -- Supprimer les anciennes politiques trop larges.
 DROP POLICY IF EXISTS "anon_all" ON public.blog_posts;
@@ -110,6 +118,7 @@ DROP POLICY IF EXISTS "anon_all" ON public.services_list;
 DROP POLICY IF EXISTS "anon_all" ON public.portfolio_projects;
 DROP POLICY IF EXISTS "anon_all" ON public.audits;
 DROP POLICY IF EXISTS "anon_all" ON public.visitor_messages;
+DROP POLICY IF EXISTS "anon_all" ON public.site_settings;
 
 DROP POLICY IF EXISTS "public_read_published_posts" ON public.blog_posts;
 DROP POLICY IF EXISTS "public_read_approved_comments" ON public.comments;
@@ -124,6 +133,7 @@ DROP POLICY IF EXISTS "public_read_portfolio" ON public.portfolio_projects;
 DROP POLICY IF EXISTS "public_insert_audits" ON public.audits;
 DROP POLICY IF EXISTS "public_read_visitor_messages" ON public.visitor_messages;
 DROP POLICY IF EXISTS "public_mark_visitor_messages_read" ON public.visitor_messages;
+DROP POLICY IF EXISTS "public_read_site_settings" ON public.site_settings;
 
 -- Nettoyer les privileges directs du role public, puis ne rendre que le strict minimum.
 REVOKE ALL ON public.blog_posts FROM anon;
@@ -137,6 +147,7 @@ REVOKE ALL ON public.services_list FROM anon;
 REVOKE ALL ON public.portfolio_projects FROM anon;
 REVOKE ALL ON public.audits FROM anon;
 REVOKE ALL ON public.visitor_messages FROM anon;
+REVOKE ALL ON public.site_settings FROM anon;
 
 GRANT SELECT ON public.blog_posts TO anon;
 GRANT SELECT, INSERT ON public.comments TO anon;
@@ -149,6 +160,7 @@ GRANT SELECT ON public.services_list TO anon;
 GRANT SELECT ON public.portfolio_projects TO anon;
 GRANT INSERT ON public.audits TO anon;
 GRANT SELECT, UPDATE (read_at) ON public.visitor_messages TO anon;
+GRANT SELECT ON public.site_settings TO anon;
 
 -- Contenu public.
 CREATE POLICY "public_read_published_posts"
@@ -173,6 +185,11 @@ USING (true);
 
 CREATE POLICY "public_read_portfolio"
 ON public.portfolio_projects
+FOR SELECT TO anon
+USING (true);
+
+CREATE POLICY "public_read_site_settings"
+ON public.site_settings
 FOR SELECT TO anon
 USING (true);
 
