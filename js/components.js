@@ -10,6 +10,358 @@ const R_ = window.__ROOT_PATH__ || '';
 const root = () => R_;
 
 // ============================================================
+// INTERNATIONALISATION — FR / EN
+// ============================================================
+const SUPPORTED_LANGS = ['fr', 'en'];
+
+const I18N = {
+  fr: {
+    nav: {
+      home: 'Accueil',
+      services: 'Service',
+      pricing: 'Formules',
+      blog: 'Actualités',
+      company: 'À Propos',
+      contact: 'Contact',
+      start: 'Démarrer →',
+      startProject: 'Démarrer mon projet',
+      mainMenu: 'Menu principal',
+      mainNav: 'Navigation principale',
+      openMenu: 'Ouvrir le menu',
+      closeMenu: 'Fermer le menu',
+      theme: 'Changer le thème',
+      expertise: 'Nos 6 pôles d\'expertise',
+      all: 'Tout voir',
+      core: 'CORE'
+    },
+    services: {
+      ia: { name: 'Moteur IA Principal', tags: 'Réseaux de Neurones · Agents Autonomes · Traitement du Langage · IA Prédictive' },
+      branding: { name: 'Moteur d\'Automatisation', tags: 'Orchestration de Workflows · Intégration API · Logique Event-driven' },
+      marketing: { name: 'Intelligence Growth', tags: 'Marketing Prédictif · Optimisation LTV · Publicité Autonomes' },
+      dev: { name: 'SDK Plateforme', tags: 'Accès API · Documentation · Connecteurs Personnalisés · Sécurité' },
+      business: { name: 'Insights Entreprise', tags: 'Visualisation de Données · Automatisation BI · Analytics Temps Réel' },
+      consulting: { name: 'Stratégie Expert', tags: 'Architecture de Solution · Audit de Sécurité · Planification d\'Échelle' }
+    },
+    footer: {
+      desc: 'Plateforme IA de nouvelle génération opérant dans le monde entier. Nous automatisons, accélérons et transformons les entreprises ambitieuses grâce à l\'intelligence artificielle.',
+      gdpr: 'RGPD Conforme',
+      aiCertified: 'Certifié IA',
+      platform: 'Plateforme',
+      resources: 'Ressources',
+      legal: 'Légal',
+      blog: 'Blog et Perspectives',
+      plans: 'Plans Tarifaires',
+      vision: 'Vision de l\'Entreprise',
+      enterpriseDemo: 'Démo Entreprise',
+      privacy: 'Politique de Confidentialité',
+      legalNotice: 'Mentions Légales',
+      terms: 'Termes & Conditions',
+      refund: 'Politique de Remboursement',
+      newsletterTitle: 'Recevez nos perspectives IA chaque semaine',
+      newsletterText: 'Rejoignez +1 200 entrepreneurs abonnés à notre newsletter.',
+      subscribe: 'S\'abonner →',
+      email: 'votre@email.com',
+      rights: 'Tous droits réservés.',
+      privacyShort: 'Confidentialité',
+      operational: 'Tous les services opérationnels'
+    },
+    chatbot: {
+      toggle: 'Assistant IA Hozana',
+      name: 'Assistant Hozana IA',
+      greeting: 'Bonjour. Je suis l\'assistant IA de Hozana Concept.',
+      intro: 'Je peux vous orienter sur nos 6 pôles, nos packs, ou préparer un rendez-vous d\'audit gratuit.'
+    }
+  },
+  en: {
+    nav: {
+      home: 'Home',
+      services: 'Services',
+      pricing: 'Plans',
+      blog: 'Insights',
+      company: 'Company',
+      contact: 'Contact',
+      start: 'Start →',
+      startProject: 'Start my project',
+      mainMenu: 'Main menu',
+      mainNav: 'Main navigation',
+      openMenu: 'Open menu',
+      closeMenu: 'Close menu',
+      theme: 'Change theme',
+      expertise: 'Our 6 areas of expertise',
+      all: 'View all',
+      core: 'CORE'
+    },
+    services: {
+      ia: { name: 'Core AI Engine', tags: 'Neural Networks · Autonomous Agents · Language Processing · Predictive AI' },
+      branding: { name: 'Automation Engine', tags: 'Workflow Orchestration · API Integration · Event-driven Logic' },
+      marketing: { name: 'Growth Intelligence', tags: 'Predictive Marketing · LTV Optimization · Autonomous Ads' },
+      dev: { name: 'Platform SDK', tags: 'API Access · Documentation · Custom Connectors · Security' },
+      business: { name: 'Business Insights', tags: 'Data Visualization · BI Automation · Real-time Analytics' },
+      consulting: { name: 'Expert Strategy', tags: 'Solution Architecture · Security Audit · Scale Planning' }
+    },
+    footer: {
+      desc: 'A next-generation AI platform operating worldwide. We automate, accelerate and transform ambitious companies through artificial intelligence.',
+      gdpr: 'GDPR Compliant',
+      aiCertified: 'AI Certified',
+      platform: 'Platform',
+      resources: 'Resources',
+      legal: 'Legal',
+      blog: 'Blog and Insights',
+      plans: 'Pricing Plans',
+      vision: 'Company Vision',
+      enterpriseDemo: 'Enterprise Demo',
+      privacy: 'Privacy Policy',
+      legalNotice: 'Legal Notice',
+      terms: 'Terms & Conditions',
+      refund: 'Refund Policy',
+      newsletterTitle: 'Get our AI insights every week',
+      newsletterText: 'Join 1,200+ entrepreneurs subscribed to our newsletter.',
+      subscribe: 'Subscribe →',
+      email: 'your@email.com',
+      rights: 'All rights reserved.',
+      privacyShort: 'Privacy',
+      operational: 'All services operational'
+    },
+    chatbot: {
+      toggle: 'Hozana AI Assistant',
+      name: 'Hozana AI Assistant',
+      greeting: 'Hello. I am Hozana Concept\'s AI assistant.',
+      intro: 'I can guide you through our 6 areas, our plans, or prepare a free audit appointment.'
+    }
+  }
+};
+
+const PAGE_TEXT_EN = {
+  'IA & Marketing Digital': 'AI & Digital Marketing',
+  'L\'IA': 'AI',
+  'au service de votre': 'serving your',
+  'croissance.': 'growth.',
+  'Audit gratuit 30 min': 'Free 30-min audit',
+  'Nos solutions IA': 'Our AI solutions',
+  'Dashboard IA — Hozana': 'AI Dashboard — Hozana',
+  'Analyse en temps réel': 'Real-time analysis',
+  'Leads générés': 'Leads generated',
+  'Réduction coûts': 'Cost reduction',
+  'ROI moyen': 'Average ROI',
+  'Économisées': 'Saved',
+  'Clients': 'Clients',
+  'ROI garanti': 'Guaranteed ROI',
+  'Développement d\'Applications': 'Application Development',
+  'Vos applications': 'Your applications',
+  'Voir nos apps': 'View our apps',
+  'Créer mon app': 'Build my app',
+  'Progression du projet': 'Project progress',
+  'Livré en 30j': 'Delivered in 30 days',
+  'Code sécurisé': 'Secure code',
+  'Consulting & Coaching Premium': 'Premium Consulting & Coaching',
+  'Stratégie, Audit &': 'Strategy, Audit &',
+  'Transformation Digitale': 'Digital Transformation',
+  'Audit gratuit': 'Free audit',
+  'Notre méthode': 'Our method',
+  'Pilotage stratégique': 'Strategic management',
+  'Audit 360': '360 Audit',
+  'Roadmap priorisée': 'Prioritized roadmap',
+  'Ce que nous faisons pour vous': 'What we do for you',
+  'Tous nos services': 'All our services',
+  'Résultats mesurables': 'Measurable results',
+  'Portfolio & Realisations': 'Portfolio & Case Studies',
+  'Voir tout le portfolio': 'View full portfolio',
+  'Tout': 'All',
+  'Sites Web': 'Websites',
+  'Design & Branding': 'Design & Branding',
+  'Reseaux Sociaux': 'Social Media',
+  'Applications': 'Applications',
+  'Notre méthode': 'Our method',
+  'La différence concrète': 'The concrete difference',
+  'Nos Offres': 'Our Plans',
+  'Comparer tous les packs': 'Compare all plans',
+  'Ils nous font confiance': 'They trust us',
+  'Blog & Insights': 'Blog & Insights',
+  'Voir tous les articles →': 'View all articles →',
+  'Tous les articles': 'All articles',
+  'Passez à l\'action': 'Take action',
+  '6 Pôles d\'expertise': '6 Areas of Expertise',
+  'Démarrer un projet': 'Start a project',
+  'Voir les packs →': 'View plans →',
+  'Vue d\'ensemble': 'Overview',
+  'Voir les packs': 'View plans',
+  'Voir les prix': 'View pricing',
+  'Prendre RDV gratuit': 'Book a free meeting',
+  'Prêt à commencer ?': 'Ready to start?',
+  'Notre Histoire': 'Our Story',
+  'Notre Mission': 'Our Mission',
+  'Notre parcours': 'Our Journey',
+  'Notre Équipe': 'Our Team',
+  'Nos Valeurs': 'Our Values',
+  'Démarrer maintenant': 'Start now',
+  'Contact': 'Contact',
+  'Global Presence': 'Global Presence',
+  'Questions fréquentes': 'Frequently Asked Questions',
+  'Retour à l\'accueil': 'Back to home',
+  'Envoyer ma demande': 'Send my request',
+  'Packs & Tarifs': 'Plans & Pricing',
+  'Mensuel': 'Monthly',
+  'Annuel': 'Annual',
+  'Comparatif': 'Comparison',
+  'Options': 'Options',
+  'FAQ': 'FAQ',
+  'Première étape': 'First step',
+  'Choisir ce pack': 'Choose this plan',
+  'Contacter nous': 'Contact us',
+  'Ajouter au panier': 'Add to cart',
+  'Lire l\'article': 'Read article',
+  'Newsletter': 'Newsletter',
+  'S\'abonner →': 'Subscribe →',
+  'Tous': 'All',
+  'Court (< 5 min)': 'Short (< 5 min)',
+  'Moyen (5-10 min)': 'Medium (5-10 min)',
+  'Long (> 10 min)': 'Long (> 10 min)',
+  'Cette semaine': 'This week',
+  'Ce mois': 'This month',
+  'Ce trimestre': 'This quarter',
+  'Récents': 'Recent',
+  'Populaires': 'Popular',
+  'Lu le plus': 'Most read',
+  'Table des matières': 'Table of contents',
+  'Réduire': 'Collapse',
+  'Afficher': 'Show',
+  'Application stratégique': 'Strategic application',
+  'Réserver un audit': 'Book an audit',
+  'L\'auteur': 'Author',
+  'Statistiques': 'Statistics',
+  'Partager': 'Share',
+  'Dans cet article': 'In this article',
+  'Commentaires': 'Comments',
+  'Laisser un commentaire': 'Leave a comment',
+  'Publier le commentaire': 'Publish comment',
+  'J\'aime cet article': 'I like this article',
+  'Votre avis compte pour nous !': 'Your feedback matters to us!',
+  'Prêt à passer à l\'action ?': 'Ready to take action?',
+  'Audit gratuit de 30 min avec nos experts IA.': 'Free 30-min audit with our AI experts.',
+  'Réserver →': 'Book →'
+};
+
+const PLACEHOLDER_EN = {
+  'Votre nom': 'Your name',
+  'votre@email.com': 'your@email.com',
+  'Votre email': 'Your email',
+  'Partagez votre avis, posez une question...': 'Share your opinion, ask a question...',
+  'Rechercher un article, une technologie, un sujet...': 'Search an article, technology, or topic...'
+};
+
+function getSiteLanguage() {
+  const urlLang = new URLSearchParams(window.location.search).get('lang');
+  if (SUPPORTED_LANGS.includes(urlLang)) {
+    localStorage.setItem('hozana-lang', urlLang);
+    return urlLang;
+  }
+  const saved = localStorage.getItem('hozana-lang');
+  if (SUPPORTED_LANGS.includes(saved)) return saved;
+  const browser = (navigator.language || '').toLowerCase();
+  return browser.startsWith('en') ? 'en' : 'fr';
+}
+
+function t(key, fallback = '') {
+  const lang = getSiteLanguage();
+  return key.split('.').reduce((obj, part) => obj && obj[part], I18N[lang]) || fallback || key;
+}
+
+function renderLanguageSwitch(scope = 'desktop') {
+  const lang = getSiteLanguage();
+  return `
+    <div class="language-switch language-switch-${scope}" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn ${lang === 'fr' ? 'active' : ''}" onclick="setSiteLanguage('fr')" aria-pressed="${lang === 'fr'}">FR</button>
+      <button type="button" class="lang-btn ${lang === 'en' ? 'active' : ''}" onclick="setSiteLanguage('en')" aria-pressed="${lang === 'en'}">EN</button>
+    </div>`;
+}
+
+function applyLanguageAttributes() {
+  const lang = getSiteLanguage();
+  document.documentElement.setAttribute('lang', lang);
+  const ogLocale = document.querySelector('meta[property="og:locale"]');
+  if (ogLocale) ogLocale.setAttribute('content', lang === 'en' ? 'en_US' : 'fr_FR');
+}
+
+function _preserveWhitespace(original, replacement) {
+  const lead = original.match(/^\s*/)?.[0] || '';
+  const trail = original.match(/\s*$/)?.[0] || '';
+  return `${lead}${replacement}${trail}`;
+}
+
+function translateStaticPageText() {
+  const lang = getSiteLanguage();
+  applyLanguageAttributes();
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'), el.textContent);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder'), el.getAttribute('placeholder') || ''));
+  });
+
+  const textMap = lang === 'en' ? PAGE_TEXT_EN : null;
+  const placeholderMap = lang === 'en' ? PLACEHOLDER_EN : null;
+
+  document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(el => {
+    const original = el.getAttribute('data-i18n-original-placeholder') || el.getAttribute('placeholder') || '';
+    if (!el.hasAttribute('data-i18n-original-placeholder')) el.setAttribute('data-i18n-original-placeholder', original);
+    el.setAttribute('placeholder', placeholderMap?.[original] || original);
+  });
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent || ['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA'].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+      if (parent.closest('.language-switch')) return NodeFilter.FILTER_REJECT;
+      const value = node.nodeValue.trim();
+      if (!value || value.length > 220) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node => {
+    if (!node.__hozanaOriginalText) node.__hozanaOriginalText = node.nodeValue;
+    const original = node.__hozanaOriginalText.trim();
+    const translated = textMap?.[original] || original;
+    node.nodeValue = _preserveWhitespace(node.__hozanaOriginalText, translated);
+  });
+}
+
+let _i18nObserverStarted = false;
+let _i18nObserverTimer = null;
+
+function initI18nObserver() {
+  if (_i18nObserverStarted || !document.body) return;
+  _i18nObserverStarted = true;
+  const observer = new MutationObserver((mutations) => {
+    if (getSiteLanguage() !== 'en') return;
+    if (!mutations.some(m => m.addedNodes && m.addedNodes.length)) return;
+    clearTimeout(_i18nObserverTimer);
+    _i18nObserverTimer = setTimeout(translateStaticPageText, 120);
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+function setSiteLanguage(lang) {
+  if (!SUPPORTED_LANGS.includes(lang)) return;
+  localStorage.setItem('hozana-lang', lang);
+  const url = new URL(window.location.href);
+  url.searchParams.set('lang', lang);
+  window.history.replaceState({}, '', url.toString());
+  applyLanguageAttributes();
+  renderNavbar();
+  renderFooter();
+  document.getElementById('chatbot')?.remove();
+  renderChatbot();
+  translateStaticPageText();
+  window.dispatchEvent(new CustomEvent('hozana:languagechange', { detail: { lang } }));
+}
+
+window.setSiteLanguage = setSiteLanguage;
+
+// ============================================================
 // NAVBAR — effet glass uniquement sur le groupe de liens
 // ============================================================
 // Catégories du dropdown Services — chaque entrée a sa page dédiée
@@ -65,15 +417,16 @@ const SERVICE_CATS = [
 ];
 
 function renderNavbar() {
+  applyLanguageAttributes();
   const currentPage = window.location.pathname.split('/').pop() || 'index';
   const isServicesActive = currentPage === 'platform';
 
   const simpleLinks = [
-    { href: R_ + 'index.html',    label: 'Accueil' },
-    { href: R_ + 'pricing.html',  label: 'Formules' },
-    { href: R_ + 'blog.html',     label: 'Actualités' },
-    { href: R_ + 'company.html',  label: 'À Propos' },
-    { href: R_ + 'contact.html',  label: 'Contact' },
+    { href: R_ + 'index.html',    label: t('nav.home') },
+    { href: R_ + 'pricing.html',  label: t('nav.pricing') },
+    { href: R_ + 'blog.html',     label: t('nav.blog') },
+    { href: R_ + 'company.html',  label: t('nav.company') },
+    { href: R_ + 'contact.html',  label: t('nav.contact') },
   ];
 
   // Dropdown Services item — liens vers les pages dédiées
@@ -83,22 +436,22 @@ function renderNavbar() {
       <div class="dd-cat-icon">${c.icon}</div>
       <div class="dd-cat-body">
         <div class="dd-cat-name">
-          ${c.name}
-          ${c.priority ? '<span class="dd-priority">CORE</span>' : ''}
+          ${t(`services.${c.id}.name`, c.name)}
+          ${c.priority ? `<span class="dd-priority">${t('nav.core')}</span>` : ''}
         </div>
-        <div class="dd-cat-tags">${c.tags}</div>
+        <div class="dd-cat-tags">${t(`services.${c.id}.tags`, c.tags)}</div>
       </div>
     </a>`).join('');
 
   const servicesDropdown = `
     <li class="nav-dropdown-wrap" id="nav-services-wrap">
       <span class="nav-dropdown-trigger ${isServicesActive ? 'active' : ''}" id="nav-services-trigger" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
-        Service <i class="fas fa-chevron-down dd-chevron"></i>
+        ${t('nav.services')} <i class="fas fa-chevron-down dd-chevron"></i>
       </span>
       <div class="nav-dropdown-panel" id="nav-services-panel" role="menu">
         <div class="dd-header">
-          <span class="dd-header-title">Nos 6 pôles d'expertise</span>
-          <a class="dd-header-cta" href="${root()}platform.html">Tout voir <i class="fas fa-arrow-right"></i></a>
+          <span class="dd-header-title">${t('nav.expertise')}</span>
+          <a class="dd-header-cta" href="${root()}platform.html">${t('nav.all')} <i class="fas fa-arrow-right"></i></a>
         </div>
         <div class="dd-grid">${ddCats}</div>
       </div>
@@ -113,14 +466,14 @@ function renderNavbar() {
 
   // Mobile dropdown Services — liens vers les pages dédiées
   const mobileDdItems = SERVICE_CATS.map((c, i) =>
-    `<a href="${root()}${servicePages[i]}" onclick="closeMobileMenu()">${c.icon} ${c.name}</a>`
+    `<a href="${root()}${servicePages[i]}" onclick="closeMobileMenu()">${c.icon} ${t(`services.${c.id}.name`, c.name)}</a>`
   ).join('');
 
   const mobileItems = [
-    `<li><a href="${R_}index.html" ${currentPage==='index'||currentPage===''?'class="active"':''} onclick="closeMobileMenu()">Accueil</a></li>`,
+    `<li><a href="${R_}index.html" ${currentPage==='index'||currentPage===''?'class="active"':''} onclick="closeMobileMenu()">${t('nav.home')}</a></li>`,
     `<li>
       <div class="mobile-dd-toggle" onclick="toggleMobileServicesDd(this)">
-        <span class="${isServicesActive ? 'active' : ''}">Service</span>
+        <span class="${isServicesActive ? 'active' : ''}">${t('nav.services')}</span>
         <i class="fas fa-chevron-down" style="font-size:0.7rem;opacity:0.5;transition:transform 0.25s;"></i>
       </div>
       <div class="mobile-dd-list" id="mobile-services-list">${mobileDdItems}</div>
@@ -132,16 +485,16 @@ function renderNavbar() {
   ].join('');
 
   const html = `
-  <nav class="navbar" id="navbar" role="navigation" aria-label="Navigation principale">
+  <nav class="navbar" id="navbar" role="navigation" aria-label="${t('nav.mainNav')}">
     <div class="navbar-container">
 
       <!-- Logo -->
-      <a href="${root()}index.html" class="navbar-logo" aria-label="Hozana Concept - Accueil">
+      <a href="${root()}index.html" class="navbar-logo" aria-label="Hozana Concept - ${t('nav.home')}">
         <img src="${root()}images/logo-main.png" alt="Hozana Concept" class="navbar-logo-img" style="height:44px;width:auto;display:block;object-fit:contain;">
       </a>
 
       <!-- Nav links pill glass -->
-      <div class="navbar-links-glass" aria-label="Menu principal">
+      <div class="navbar-links-glass" aria-label="${t('nav.mainMenu')}">
         <ul class="navbar-nav" id="navbar-nav">
           ${navItems.join('')}
         </ul>
@@ -149,13 +502,14 @@ function renderNavbar() {
 
       <!-- Actions -->
       <div class="navbar-actions">
-        <button class="theme-toggle" id="theme-toggle" title="Basculer le thème" aria-label="Changer le thème">
+        ${renderLanguageSwitch('desktop')}
+        <button class="theme-toggle" id="theme-toggle" title="${t('nav.theme')}" aria-label="${t('nav.theme')}">
           <div class="theme-toggle-track">
             <div class="theme-toggle-thumb" id="theme-thumb">🌙</div>
           </div>
         </button>
-        <a href="${root()}contact.html" class="btn btn-primary btn-sm navbar-cta" aria-label="Démarrer un projet">Démarrer →</a>
-        <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu" aria-expanded="false">
+        <a href="${root()}contact.html" class="btn btn-primary btn-sm navbar-cta" aria-label="${t('nav.startProject')}">${t('nav.start')}</a>
+        <button class="hamburger" id="hamburger" aria-label="${t('nav.openMenu')}" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -166,10 +520,10 @@ function renderNavbar() {
   <div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()" aria-hidden="true"></div>
 
   <!-- Mobile Menu Panel -->
-  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile" aria-hidden="true">
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="${t('nav.mainMenu')}" aria-hidden="true">
     <div class="mobile-menu-header">
       <img src="${root()}images/logo-main.png" alt="Hozana Concept" style="height:36px;width:auto;object-fit:contain;">
-      <button class="mobile-close" onclick="closeMobileMenu()" aria-label="Fermer le menu">
+      <button class="mobile-close" onclick="closeMobileMenu()" aria-label="${t('nav.closeMenu')}">
         <i class="fas fa-times"></i>
       </button>
     </div>
@@ -177,8 +531,9 @@ function renderNavbar() {
       ${mobileItems}
     </ul>
     <div class="mobile-menu-footer">
+      ${renderLanguageSwitch('mobile')}
       <a href="${root()}contact.html" class="btn btn-primary w-full" style="justify-content:center;" onclick="closeMobileMenu()">
-        <i class="fas fa-rocket"></i> Démarrer mon projet
+        <i class="fas fa-rocket"></i> ${t('nav.startProject')}
       </a>
       <div class="mobile-contact-info">
         <a href="mailto:info@hozanaconcept.com"><i class="fas fa-envelope"></i> info@hozanaconcept.com</a>
@@ -322,6 +677,7 @@ function _applyTheme(theme, thumb) {
 // FOOTER PREMIUM
 // ============================================================
 function renderFooter() {
+  applyLanguageAttributes();
   const year = new Date().getFullYear();
   const html = `
   <footer class="footer-premium" id="site-footer">
@@ -337,7 +693,7 @@ function renderFooter() {
               <img src="${root()}images/logo-footer.png" alt="Hozana Concept" style="height:52px;width:auto;object-fit:contain;filter:brightness(0) invert(1);">
             </a>
             <p class="footer-brand-desc">
-              Plateforme IA de nouvelle génération opérant dans le monde entier. Nous automatisons, accélérons et transformons les entreprises ambitieuses grâce à l'intelligence artificielle.
+              ${t('footer.desc')}
             </p>
             <div class="footer-social">
               <a href="#" class="social-link" title="Réseau professionnel LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
@@ -348,8 +704,8 @@ function renderFooter() {
             </div>
             <!-- Badges trust -->
             <div class="footer-trust-badges">
-              <div class="trust-badge"><i class="fas fa-shield-alt"></i> RGPD Conforme</div>
-              <div class="trust-badge"><i class="fas fa-award"></i> Certifié IA</div>
+              <div class="trust-badge"><i class="fas fa-shield-alt"></i> ${t('footer.gdpr')}</div>
+              <div class="trust-badge"><i class="fas fa-award"></i> ${t('footer.aiCertified')}</div>
             </div>
           </div>
 
@@ -357,14 +713,14 @@ function renderFooter() {
           <div class="footer-links-col reveal delay-1">
             <h4 class="footer-col-title">
               <i class="fas fa-bolt" style="color:var(--red);font-size:0.8rem;"></i>
-              Plateforme
+              ${t('footer.platform')}
             </h4>
             <ul class="footer-link-list">
-              <li><a href="${root()}platform.html#ia">Moteur IA Principal</a></li>
-              <li><a href="${root()}platform.html#automation">Moteur d'Automatisation</a></li>
-              <li><a href="${root()}platform.html#growth">Intelligence de Croissance</a></li>
-              <li><a href="${root()}platform.html#content">SDK Plateforme</a></li>
-              <li><a href="${root()}platform.html#analytics">Perspectives Entreprise</a></li>
+              <li><a href="${root()}platform.html#ia">${t('services.ia.name')}</a></li>
+              <li><a href="${root()}platform.html#automation">${t('services.branding.name')}</a></li>
+              <li><a href="${root()}platform.html#growth">${t('services.marketing.name')}</a></li>
+              <li><a href="${root()}platform.html#content">${t('services.dev.name')}</a></li>
+              <li><a href="${root()}platform.html#analytics">${t('services.business.name')}</a></li>
             </ul>
           </div>
 
@@ -372,14 +728,14 @@ function renderFooter() {
           <div class="footer-links-col reveal delay-2">
             <h4 class="footer-col-title">
               <i class="fas fa-compass" style="color:var(--red);font-size:0.8rem;"></i>
-              Ressources
+              ${t('footer.resources')}
             </h4>
             <ul class="footer-link-list">
-              <li><a href="${root()}blog.html">Blog et Perspectives</a></li>
-              <li><a href="${root()}pricing.html">Plans Tarifaires</a></li>
-              <li><a href="${root()}company.html">Vision de l'Entreprise</a></li>
-              <li><a href="${root()}contact.html">Contact</a></li>
-              <li><a href="${root()}pricing.html#enterprise">Démo Entreprise</a></li>
+              <li><a href="${root()}blog.html">${t('footer.blog')}</a></li>
+              <li><a href="${root()}pricing.html">${t('footer.plans')}</a></li>
+              <li><a href="${root()}company.html">${t('footer.vision')}</a></li>
+              <li><a href="${root()}contact.html">${t('nav.contact')}</a></li>
+              <li><a href="${root()}pricing.html#enterprise">${t('footer.enterpriseDemo')}</a></li>
             </ul>
           </div>
 
@@ -410,13 +766,13 @@ function renderFooter() {
 
             <h4 class="footer-col-title" style="margin-top:1.75rem;">
               <i class="fas fa-balance-scale" style="color:var(--red);font-size:0.8rem;"></i>
-              Légal
+              ${t('footer.legal')}
             </h4>
             <ul class="footer-link-list">
-              <li><a href="${root()}privacy.html">Politique de Confidentialité</a></li>
-              <li><a href="${root()}legal.html">Mentions Légales</a></li>
-              <li><a href="${root()}terms.html">Termes & Conditions</a></li>
-              <li><a href="${root()}refund.html">Politique de Remboursement</a></li>
+              <li><a href="${root()}privacy.html">${t('footer.privacy')}</a></li>
+              <li><a href="${root()}legal.html">${t('footer.legalNotice')}</a></li>
+              <li><a href="${root()}terms.html">${t('footer.terms')}</a></li>
+              <li><a href="${root()}refund.html">${t('footer.refund')}</a></li>
             </ul>
           </div>
 
@@ -429,12 +785,12 @@ function renderFooter() {
       <div class="container">
         <div class="newsletter-strip-inner reveal">
           <div class="newsletter-strip-text">
-            <h3>Recevez nos perspectives IA chaque semaine</h3>
-            <p>Rejoignez +1 200 entrepreneurs abonnés à notre newsletter.</p>
+            <h3>${t('footer.newsletterTitle')}</h3>
+            <p>${t('footer.newsletterText')}</p>
           </div>
           <form class="newsletter-strip-form" onsubmit="footerSubscribe(event)">
-            <input type="email" placeholder="votre@email.com" required aria-label="Votre email">
-            <button type="submit" class="btn btn-primary btn-sm">S'abonner →</button>
+            <input type="email" placeholder="${t('footer.email')}" required aria-label="${t('footer.email')}">
+            <button type="submit" class="btn btn-primary btn-sm">${t('footer.subscribe')}</button>
           </form>
         </div>
       </div>
@@ -445,20 +801,20 @@ function renderFooter() {
       <div class="container">
         <div class="footer-bottom-inner">
           <p class="footer-copyright">
-            © ${year} <strong>Hozana Concept</strong>. Tous droits réservés.
+            © ${year} <strong>Hozana Concept</strong>. ${t('footer.rights')}
           </p>
           <div class="footer-bottom-links">
-            <a href="${root()}privacy.html">Confidentialité</a>
+            <a href="${root()}privacy.html">${t('footer.privacyShort')}</a>
             <span class="sep">·</span>
-            <a href="${root()}legal.html">Mentions Légales</a>
+            <a href="${root()}legal.html">${t('footer.legalNotice')}</a>
             <span class="sep">·</span>
-            <a href="${root()}terms.html">Termes & Conditions</a>
+            <a href="${root()}terms.html">${t('footer.terms')}</a>
             <span class="sep">·</span>
-            <a href="${root()}refund.html">Politique de Remboursement</a>
+            <a href="${root()}refund.html">${t('footer.refund')}</a>
           </div>
           <div class="footer-status">
             <span class="status-indicator online"></span>
-            <span>Tous les services opérationnels</span>
+            <span>${t('footer.operational')}</span>
           </div>
         </div>
       </div>
@@ -748,39 +1104,53 @@ function _handleAppointmentStep(msg) {
 }
 
 function renderChatbot() {
+  const isEn = getSiteLanguage() === 'en';
+  const status = isEn ? 'Advice, qualification & appointments' : 'Conseil, qualification & rendez-vous';
+  const intro = isEn
+    ? 'I can guide you through our 6 areas, recommend a plan, qualify your need or prepare a free audit appointment.'
+    : 'Je peux vous orienter sur nos 6 pôles, recommander un pack, qualifier votre besoin ou préparer un rendez-vous d\'audit gratuit.';
+  const suggestions = isEn
+    ? [
+        ['Tell me about your 6 business areas', '6 areas'],
+        ['Which plan do you recommend?', 'Choose a plan'],
+        ['I want to book a free audit appointment', 'Book a call']
+      ]
+    : [
+        ['Présentez-moi vos 6 pôles d\'activité', '6 pôles'],
+        ['Quel pack me recommandez-vous ?', 'Choisir un pack'],
+        ['Je veux prendre rendez-vous pour un audit gratuit', 'Prendre RDV']
+      ];
   const html = `
-  <div class="chatbot-container" id="chatbot" role="complementary" aria-label="Assistant IA">
-    <button class="chatbot-toggle" id="chatbot-toggle" title="Assistant IA Hozana" aria-expanded="false">
+  <div class="chatbot-container" id="chatbot" role="complementary" aria-label="${t('chatbot.toggle')}">
+    <button class="chatbot-toggle" id="chatbot-toggle" title="${t('chatbot.toggle')}" aria-expanded="false">
       <span class="chatbot-icon-open"><i class="fas fa-robot"></i></span>
       <span class="chatbot-icon-close" style="display:none;"><i class="fas fa-times"></i></span>
       <div class="chatbot-pulse"></div>
       <div class="chatbot-notification" id="chatbot-notif">1</div>
     </button>
-    <div class="chatbot-window glass-heavy" id="chatbot-window" role="dialog" aria-label="Chat avec l'assistant IA" aria-hidden="true">
+    <div class="chatbot-window glass-heavy" id="chatbot-window" role="dialog" aria-label="${t('chatbot.toggle')}" aria-hidden="true">
       <div class="chatbot-header">
         <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
         <div>
-          <div class="chatbot-name">Assistant Hozana IA</div>
-          <div class="chatbot-status"><span class="status-dot"></span> Conseil, qualification & rendez-vous</div>
+          <div class="chatbot-name">${t('chatbot.name')}</div>
+          <div class="chatbot-status"><span class="status-dot"></span> ${status}</div>
         </div>
-        <button class="chatbot-close" id="chatbot-close" aria-label="Fermer le chat"><i class="fas fa-times"></i></button>
+        <button class="chatbot-close" id="chatbot-close" aria-label="${isEn ? 'Close chat' : 'Fermer le chat'}"><i class="fas fa-times"></i></button>
       </div>
       <div class="chatbot-messages" id="chatbot-messages">
         <div class="chat-message bot">
           <div class="chat-bubble">
-            Bonjour. Je suis l'assistant IA de <strong>Hozana Concept</strong>.<br><br>
-            Je peux vous orienter sur nos 6 pôles, recommander un pack, qualifier votre besoin ou préparer un rendez-vous d'audit gratuit.
+            ${t('chatbot.greeting')}<br><br>
+            ${intro}
           </div>
           <div class="chat-suggestions">
-            <button class="chat-suggestion" data-msg="Présentez-moi vos 6 pôles d'activité">6 pôles</button>
-            <button class="chat-suggestion" data-msg="Quel pack me recommandez-vous ?">Choisir un pack</button>
-            <button class="chat-suggestion" data-msg="Je veux prendre rendez-vous pour un audit gratuit">Prendre RDV</button>
+            ${suggestions.map(([msg, label]) => `<button class="chat-suggestion" data-msg="${msg}">${label}</button>`).join('')}
           </div>
         </div>
       </div>
       <div class="chatbot-input-area">
-        <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Votre message..." aria-label="Message pour l'assistant IA" />
-        <button class="chatbot-send" id="chatbot-send" aria-label="Envoyer"><i class="fas fa-paper-plane"></i></button>
+        <input type="text" class="chatbot-input" id="chatbot-input" placeholder="${isEn ? 'Your message...' : 'Votre message...'}" aria-label="${isEn ? 'Message for the AI assistant' : 'Message pour l assistant IA'}" />
+        <button class="chatbot-send" id="chatbot-send" aria-label="${isEn ? 'Send' : 'Envoyer'}"><i class="fas fa-paper-plane"></i></button>
       </div>
     </div>
   </div>`;
@@ -1038,12 +1408,16 @@ function renderPageTransition() {
 // ============================================================
 function _initAllComponents() {
   console.log('[Hozana] Initializing components...');
+  applyLanguageAttributes();
   renderCursor();
   renderNavbar();
   renderFooter();
   renderCookiePopup();
   renderChatbot();
   renderWhatsApp();
+  translateStaticPageText();
+  initI18nObserver();
+  setTimeout(translateStaticPageText, 600);
   setTimeout(renderPageTransition, 150);
   console.log('[Hozana] Components initialized');
 }
