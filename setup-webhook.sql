@@ -196,7 +196,8 @@ ALTER TABLE public.pack_options ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS public.page_views
   ADD COLUMN IF NOT EXISTS ip_address TEXT,
   ADD COLUMN IF NOT EXISTS country TEXT,
-  ADD COLUMN IF NOT EXISTS city TEXT;
+  ADD COLUMN IF NOT EXISTS city TEXT,
+  ADD COLUMN IF NOT EXISTS event_type TEXT DEFAULT 'pageview';
 
 DROP POLICY IF EXISTS "anon_all" ON public.pack_options;
 CREATE POLICY "anon_all" ON public.pack_options

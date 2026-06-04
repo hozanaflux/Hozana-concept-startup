@@ -381,7 +381,7 @@ function getVisitorId() {
   return id;
 }
 
-async function trackPageView() {
+async function trackPageView(meta = {}) {
   try {
     const geo = await getVisitorGeo();
     const payload = {
@@ -391,7 +391,8 @@ async function trackPageView() {
       user_agent: navigator.userAgent.substring(0, 200),
       ip_address: geo.ip || null,
       country: geo.country || null,
-      city: geo.city || null
+      city: geo.city || null,
+      event_type: meta.eventType || 'pageview'
     };
     const res = await fetch('tables/page_views', {
       method: 'POST',
@@ -411,6 +412,15 @@ async function trackPageView() {
       });
     }
   } catch {}
+}
+
+function startVisitorHeartbeat() {
+  if (window.__hozanaVisitorHeartbeat) return;
+  window.__hozanaVisitorHeartbeat = setInterval(() => {
+    if (document.visibilityState === 'visible') {
+      trackPageView({ eventType:'heartbeat' });
+    }
+  }, 60000);
 }
 
 async function getVisitorGeo() {
@@ -482,6 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initRipple();
   initLazyImages();
   trackPageView();
+  startVisitorHeartbeat();
 
   // Cursor & glass effect — short delay for DOM settle
   setTimeout(() => {
@@ -497,5 +508,6 @@ window.HC = {
   animateCounter,
   getVisitorId,
   trackPageView,
+  startVisitorHeartbeat,
   initParticles
 };

@@ -17,6 +17,7 @@ let _notificationsFilter = '';
 let _contactsFilter = '';
 let _visitorsFilter = '';
 let _blockedVisitors = JSON.parse(localStorage.getItem('hzn-blocked-visitors') || '[]');
+let _activeLeadId = null;
 const LBLS = { new:'Nouveau', contacted:'Contacté', qualified:'Qualifié', converted:'Converti', lost:'Perdu' };
 const PIPE_COLS = ['new','contacted','qualified','converted'];
 
@@ -321,7 +322,9 @@ const CO = { responsive:true, maintainAspectRatio:false,
            y:{ ticks:{ color:'rgba(240,240,245,.35)', font:{size:10} }, grid:{ color:'rgba(255,255,255,.05)' } } }
 };
 function mkChart(id, type, labels, datasets, extraOpts={}) {
-  const ctx = document.getElementById(id);
+  const canvas = document.getElementById(id);
+  if (!canvas || typeof Chart === 'undefined') return;
+  const ctx = canvas.getContext('2d');
   if (!ctx) return;
   if (CH[id]) CH[id].destroy();
   CH[id] = new Chart(ctx, { type, data:{ labels, datasets }, options: Object.assign({},CO,extraOpts) });
@@ -344,9 +347,11 @@ function renderCharts() {
 
   // Leads donut
   const src={}; LEADS.forEach(l=>{ src[l.source||'direct']=(src[l.source||'direct']||0)+1; });
+  const srcLabels = Object.keys(src).length ? Object.keys(src) : ['Aucune donnée'];
+  const srcData = Object.values(src).length ? Object.values(src) : [1];
   mkChart('chart-leads-donut','doughnut',
-    Object.keys(src), [{ data:Object.values(src),
-      backgroundColor:['#FF2E2E','#FF6A00','#3b82f6','#22c55e','#8b5cf6','#f59e0b'],
+    srcLabels, [{ data:srcData,
+      backgroundColor:Object.keys(src).length ? ['#FF2E2E','#FF6A00','#3b82f6','#22c55e','#8b5cf6','#f59e0b'] : ['rgba(255,255,255,.12)'],
       borderWidth:0, hoverOffset:8 }],
     { scales:{}, plugins:{ legend:{ position:'bottom', labels:{ color:'rgba(240,240,245,.5)', boxWidth:12, font:{size:11} } } } });
 }
@@ -405,6 +410,10 @@ function getNotifications() {
   LEADS.filter(l => l.status === 'new').forEach(l => items.push({
     id:`lead:${l.id}`, type:'lead', level:'hot', date:l.created_at, title:`Nouveau lead: ${l.name || l.email || 'Contact'}`,
     text:`${l.service || 'Service non précisé'} · ${l.email || 'email absent'}`, action:`viewLead('${l.id}')`
+  }));
+  LEADS.filter(isLeadFollowupDue).forEach(l => items.push({
+    id:`followup:${l.id}`, type:'followup', level:'moderate', date:getLeadCRMState(l.id).followup || l.created_at, title:`Relance CRM: ${l.name || l.email || 'Contact'}`,
+    text:`Score ${leadScore(l)}/100 · ${l.service || 'service non précisé'}`, action:`viewLead('${l.id}')`
   }));
   AUDITS.filter(a => a.status === 'new').forEach(a => items.push({
     id:`audit:${a.id}`, type:'audit', level:'hot', date:a.created_at, title:`Audit IA à traiter: ${a.name || a.email || 'Prospect'}`,
@@ -604,23 +613,26 @@ function getVisitorRows() {
   return [...map.values()].sort((a,b)=>b.last_seen-a.last_seen);
 }
 function visitorLocation(v) { return [v.city, v.country].filter(Boolean).join(', ') || 'Localisation non disponible'; }
+function isVisitorOnline(v) { return v.last_seen && (Date.now() - v.last_seen) <= 5 * 60 * 1000; }
 function renderVisitors() {
+  const allRows = getVisitorRows();
   const rows = getVisitorRows().filter(v => {
     const q = _visitorsFilter;
     return !q || [v.id,v.page,v.ip,v.country,v.city,v.referrer].join(' ').toLowerCase().includes(q);
   });
-  set('vis-total', getVisitorRows().length);
+  set('vis-online', allRows.filter(isVisitorOnline).length);
   set('vis-views', VIEWS.length);
-  set('vis-locations', getVisitorRows().filter(v=>v.country||v.city).length);
+  set('vis-locations', allRows.filter(v=>v.country||v.city).length);
   set('vis-blocked', _blockedVisitors.length);
   const el = document.getElementById('visitors-body');
   if (!el) return;
   if (!rows.length) { el.innerHTML = `<tr class="empty-row"><td colspan="7">Aucune visite</td></tr>`; return; }
   el.innerHTML = rows.map(v => {
     const blocked = _blockedVisitors.includes(v.id) || _blockedVisitors.includes(v.ip);
+    const online = isVisitorOnline(v);
     return `
       <tr>
-        <td><div class="t-strong t-sm">${escapeText(String(v.id).slice(0, 18))}</div><div class="t-muted">${v.views} vue(s)</div></td>
+        <td><div class="t-strong t-sm ${online ? 'online-dot' : 'online-dot offline-dot'}">${escapeText(String(v.id).slice(0, 18))}</div><div class="t-muted">${online ? 'En ligne' : 'Hors ligne'} · ${v.views} vue(s)</div></td>
         <td class="t-muted t-sm">${escapeText([...v.pages].slice(0,3).join(', '))}</td>
         <td class="t-muted t-sm">${escapeText(visitorLocation(v))}</td>
         <td class="t-muted t-sm">${escapeText(v.ip)}</td>
@@ -959,9 +971,98 @@ async function delPortfolio(id) {
 }
 
 /* ─── LEADS ─── */
+function getLeadCRMStore() {
+  try { return JSON.parse(localStorage.getItem('hzn-lead-crm') || '{}'); }
+  catch { return {}; }
+}
+function saveLeadCRMStore(store) { localStorage.setItem('hzn-lead-crm', JSON.stringify(store)); }
+function getLeadCRMState(id) { return getLeadCRMStore()[id] || {}; }
+function saveLeadCRMState(id, patch) {
+  const store = getLeadCRMStore();
+  store[id] = { ...(store[id] || {}), ...patch, updated_at:new Date().toISOString() };
+  saveLeadCRMStore(store);
+  return store[id];
+}
+function defaultLeadPriority(score) {
+  if (score >= 85) return 'urgent';
+  if (score >= 70) return 'high';
+  if (score < 35) return 'low';
+  return 'normal';
+}
+function priorityLabel(priority) {
+  return { urgent:'Urgente', high:'Haute', normal:'Normale', low:'Basse' }[priority] || 'Normale';
+}
+function leadScore(lead) {
+  const crm = getLeadCRMState(lead.id);
+  let score = 20;
+  if (lead.email) score += 12;
+  if (lead.phone) score += 14;
+  if (lead.company) score += 10;
+  if (lead.service) score += 12;
+  if ((lead.message || '').length > 60) score += 10;
+  if (['qualified','converted'].includes(lead.status)) score += 18;
+  if (String(lead.source || '').match(/audit|chat|devis|site|website/i)) score += 8;
+  if (crm.priority === 'high') score += 8;
+  if (crm.priority === 'urgent') score += 14;
+  if (crm.followup) score += 4;
+  return Math.max(0, Math.min(100, score));
+}
+function crmScoreClass(score) {
+  if (score >= 70) return 'hot';
+  if (score >= 45) return 'warm';
+  return '';
+}
+function isLeadFollowupDue(lead) {
+  if (['converted','lost'].includes(lead.status)) return false;
+  const crm = getLeadCRMState(lead.id);
+  if (!crm.followup) return true;
+  const due = new Date(`${crm.followup}T23:59:59`).getTime();
+  return Number.isFinite(due) && due <= Date.now();
+}
+function followupLabel(lead) {
+  const crm = getLeadCRMState(lead.id);
+  if (!crm.followup) return '<span class="badge badge-yellow">À planifier</span>';
+  const due = isLeadFollowupDue(lead);
+  return `<span class="badge ${due ? 'badge-red' : 'badge-blue'}">${escapeText(crm.followup)}</span>`;
+}
+function saveLeadCRMField(field, value) {
+  if (!_activeLeadId) return;
+  saveLeadCRMState(_activeLeadId, { [field]: value });
+  renderLeads();
+  renderDashLeads();
+  renderNotifications();
+  renderCockpit();
+  toast('CRM mis à jour', 'ok', 1600);
+}
+function renderCRMStats() {
+  const hot = LEADS.filter(l => leadScore(l) >= 70).length;
+  const followups = LEADS.filter(isLeadFollowupDue).length;
+  const qualified = LEADS.filter(l => ['qualified','converted'].includes(l.status)).length;
+  set('crm-hot', hot);
+  set('crm-followups', followups);
+  set('crm-qualified-rate', LEADS.length ? `${Math.round((qualified / LEADS.length) * 100)}%` : '0%');
+}
+function renderCRMCharts() {
+  const pipe = {};
+  PIPE_COLS.forEach(s => pipe[LBLS[s]] = LEADS.filter(l => l.status === s).length);
+  mkChart('chart-crm-pipeline','bar',Object.keys(pipe),
+    [{ label:'Leads', data:Object.values(pipe), backgroundColor:['#60a5fa','#facc15','#c084fc','#4ade80'], borderRadius:6, borderWidth:0 }],
+    { plugins:{ legend:{display:false} } });
+
+  const src = {};
+  LEADS.forEach(l => { src[l.source || 'direct'] = (src[l.source || 'direct'] || 0) + 1; });
+  const labels = Object.keys(src).length ? Object.keys(src) : ['Aucune donnée'];
+  const data = Object.values(src).length ? Object.values(src) : [1];
+  mkChart('chart-crm-sources','doughnut',labels,
+    [{ data, backgroundColor:Object.keys(src).length ? ['#FF2E2E','#FF6A00','#3b82f6','#22c55e','#8b5cf6','#f59e0b'] : ['rgba(255,255,255,.12)'], borderWidth:0, hoverOffset:6 }],
+    { scales:{}, plugins:{ legend:{ position:'bottom', labels:{ color:'rgba(240,240,245,.5)', boxWidth:12, font:{size:11} } } } });
+}
+
 function renderLeads(data=LEADS) {
   set('leads-count', LEADS.length);
   renderPipeline();
+  renderCRMStats();
+  setTimeout(renderCRMCharts, 60);
   const el = document.getElementById('leads-body');
   if (!el) return;
   const filtered = data.filter(l=>{
@@ -969,16 +1070,22 @@ function renderLeads(data=LEADS) {
     const ms=!_leadsFilter.status||l.status===_leadsFilter.status;
     return mq&&ms;
   });
-  if (!filtered.length) { el.innerHTML=`<tr class="empty-row"><td colspan="7">Aucun lead</td></tr>`; return; }
-  el.innerHTML = filtered.map(l=>`
+  if (!filtered.length) { el.innerHTML=`<tr class="empty-row"><td colspan="9">Aucun lead</td></tr>`; return; }
+  el.innerHTML = filtered.map(l=>{
+    const score = leadScore(l);
+    const crm = getLeadCRMState(l.id);
+    const priority = crm.priority || defaultLeadPriority(score);
+    return `
     <tr>
       <td><div style="display:flex;align-items:center;gap:.625rem;">
         <div class="avatar">${(l.name||l.email||'?')[0].toUpperCase()}</div>
-        <div><div class="t-strong t-sm">${l.name||'—'}</div><div class="t-muted" style="font-size:.7rem;">${l.company||''}</div></div>
+        <div><div class="t-strong t-sm">${escapeText(l.name||'—')}</div><div class="t-muted" style="font-size:.7rem;">${escapeText(l.company||priorityLabel(priority))}</div></div>
       </div></td>
-      <td class="t-muted t-sm">${l.email||'—'}</td>
-      <td class="t-muted t-sm">${l.service||'—'}</td>
-      <td class="t-muted t-sm">${l.source||'—'}</td>
+      <td class="t-muted t-sm">${escapeText(l.email||'—')}</td>
+      <td class="t-muted t-sm">${escapeText(l.service||'—')}</td>
+      <td class="t-muted t-sm">${escapeText(l.source||'—')}</td>
+      <td><span class="crm-score-pill small ${crmScoreClass(score)}">${score}</span></td>
+      <td>${followupLabel(l)}</td>
       <td>
         <select class="status-sel" onchange="updateLeadStatus('${l.id}',this.value)">
           ${PIPE_COLS.map(s=>`<option value="${s}" ${l.status===s?'selected':''}>${LBLS[s]}</option>`).join('')}
@@ -989,7 +1096,8 @@ function renderLeads(data=LEADS) {
         <button class="act" onclick="viewLead('${l.id}')" title="Voir détails"><i class="fas fa-eye"></i></button>
         <button class="act del" onclick="confirmDel(()=>delLead('${l.id}'))"><i class="fas fa-trash"></i></button>
       </div></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 function filterLeads(q) { _leadsFilter.q=q.toLowerCase(); renderLeads(); }
 function filterLeadsStatus(s) { _leadsFilter.status=s; renderLeads(); }
@@ -1018,6 +1126,9 @@ function renderPipeline() {
 function viewLead(id) {
   const l = LEADS.find(x => x.id === id);
   if (!l) return;
+  _activeLeadId = id;
+  const crm = getLeadCRMState(id);
+  const score = leadScore(l);
   document.getElementById('v-lead-name').textContent = l.name || '—';
   document.getElementById('v-lead-email').textContent = l.email || '—';
   document.getElementById('v-lead-phone').textContent = l.phone || '—';
@@ -1025,6 +1136,17 @@ function viewLead(id) {
   document.getElementById('v-lead-service').textContent = l.service || '—';
   document.getElementById('v-lead-source').textContent = l.source || '—';
   document.getElementById('v-lead-message').textContent = l.message || 'Aucun message.';
+  const scoreEl = document.getElementById('v-lead-score');
+  if (scoreEl) {
+    scoreEl.className = `crm-score-pill ${crmScoreClass(score)}`;
+    scoreEl.textContent = `${score}/100`;
+  }
+  const priorityEl = document.getElementById('v-lead-priority');
+  if (priorityEl) priorityEl.value = crm.priority || defaultLeadPriority(score);
+  const followupEl = document.getElementById('v-lead-followup');
+  if (followupEl) followupEl.value = crm.followup || '';
+  const notesEl = document.getElementById('v-lead-notes');
+  if (notesEl) notesEl.value = crm.notes || '';
   
   const replyBtn = document.getElementById('v-lead-reply');
   if (l.email) {
@@ -1041,12 +1163,15 @@ function viewLead(id) {
 async function updateLeadStatus(id, status) {
   await fetch(`tables/leads/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
   const l=LEADS.find(x=>x.id===id); if(l) l.status=status;
-  renderPipeline(); updateBadges();
+  renderLeads(); renderDashLeads(); renderCharts(); renderNotifications(); renderCockpit(); updateBadges();
   toast('Statut mis à jour ✓','ok');
 }
 async function delLead(id) {
   await fetch(`tables/leads/${id}`,{method:'DELETE'});
   LEADS=LEADS.filter(l=>l.id!==id);
+  const store = getLeadCRMStore();
+  delete store[id];
+  saveLeadCRMStore(store);
   renderLeads(); renderDashLeads(); updateBadges(); renderKPIs();
   toast('Lead supprimé','ok');
 }

@@ -369,6 +369,33 @@
 
       <!-- ══════════ LEADS ══════════ -->
       <div class="panel" id="panel-leads">
+        <div class="crm-summary">
+          <div class="crm-card">
+            <span>Leads chauds</span>
+            <strong id="crm-hot">—</strong>
+            <small>Score CRM ≥ 70</small>
+          </div>
+          <div class="crm-card">
+            <span>À relancer</span>
+            <strong id="crm-followups">—</strong>
+            <small>Relance due ou absente</small>
+          </div>
+          <div class="crm-card">
+            <span>Taux qualification</span>
+            <strong id="crm-qualified-rate">—</strong>
+            <small>Qualifiés + convertis</small>
+          </div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-card">
+            <div class="chart-head"><div class="chart-title">Pipeline CRM</div></div>
+            <div class="chart-wrap"><canvas id="chart-crm-pipeline"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-head"><div class="chart-title">Sources des leads</div></div>
+            <div class="chart-wrap"><canvas id="chart-crm-sources"></canvas></div>
+          </div>
+        </div>
         <div class="pipeline" id="leads-pipeline"></div>
         <div class="card">
           <div class="card-head">
@@ -386,7 +413,7 @@
           </div>
           <div class="tbl-wrap">
             <table>
-              <thead><tr><th>Contact</th><th>Email</th><th>Service</th><th>Source</th><th>Statut</th><th>Date</th><th></th></tr></thead>
+              <thead><tr><th>Contact</th><th>Email</th><th>Service</th><th>Source</th><th>Score</th><th>Relance</th><th>Statut</th><th>Date</th><th></th></tr></thead>
               <tbody id="leads-body"></tbody>
             </table>
           </div>
@@ -553,7 +580,7 @@
       <!-- ══════════ VISITEURS ══════════ -->
       <div class="panel" id="panel-visitors">
         <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);">
-          <div class="kpi"><div class="kpi-label"><i class="fas fa-user-secret"></i> Visiteurs</div><div class="kpi-val" id="vis-total">—</div><div class="kpi-trend">IDs uniques</div></div>
+          <div class="kpi green"><div class="kpi-label"><i class="fas fa-signal"></i> En ligne</div><div class="kpi-val" id="vis-online">—</div><div class="kpi-trend">Vu dans les 5 min</div></div>
           <div class="kpi"><div class="kpi-label"><i class="fas fa-eye"></i> Pages vues</div><div class="kpi-val" id="vis-views">—</div><div class="kpi-trend">Tracking interne</div></div>
           <div class="kpi yellow"><div class="kpi-label"><i class="fas fa-map-marker-alt"></i> Localisations</div><div class="kpi-val" id="vis-locations">—</div><div class="kpi-trend">Si disponibles</div></div>
           <div class="kpi green"><div class="kpi-label"><i class="fas fa-ban"></i> Bloqués</div><div class="kpi-val" id="vis-blocked">—</div><div class="kpi-trend">Liste admin</div></div>
@@ -913,6 +940,27 @@
         <div class="form-grp full">
           <label class="form-label">Message</label>
           <div id="v-lead-message" style="background:var(--surface2); padding:1.25rem; border-radius:var(--radius-sm); border:1px solid var(--border); white-space:pre-wrap; line-height:1.6; color:var(--text); font-size: 0.9rem;"></div>
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Score CRM</label>
+          <div id="v-lead-score" class="crm-score-pill"></div>
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Priorité</label>
+          <select id="v-lead-priority" class="form-ctrl" onchange="saveLeadCRMField('priority', this.value)">
+            <option value="normal">Normale</option>
+            <option value="high">Haute</option>
+            <option value="urgent">Urgente</option>
+            <option value="low">Basse</option>
+          </select>
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Prochaine relance</label>
+          <input id="v-lead-followup" class="form-ctrl" type="date" onchange="saveLeadCRMField('followup', this.value)">
+        </div>
+        <div class="form-grp full">
+          <label class="form-label">Notes CRM internes</label>
+          <textarea id="v-lead-notes" class="form-ctrl" rows="4" placeholder="Compte-rendu d'appel, besoin exact, budget, prochaine action..." onblur="saveLeadCRMField('notes', this.value)"></textarea>
         </div>
       </div>
     </div>
