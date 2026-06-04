@@ -629,6 +629,10 @@ function getVisitorRows() {
     prev.isp = v.isp || prev.isp || '';
     prev.device_type = v.device_type || prev.device_type || '';
     prev.browser_language = v.browser_language || prev.browser_language || '';
+    prev.latitude = v.latitude || prev.latitude || '';
+    prev.longitude = v.longitude || prev.longitude || '';
+    prev.accuracy = v.accuracy || prev.accuracy || '';
+    prev.geo_source = v.geo_source || prev.geo_source || '';
     prev.user_agent = v.user_agent || prev.user_agent || '';
     prev.last_seen = Math.max(asTime(prev.last_seen), asTime(v.created_at));
     map.set(key, prev);
@@ -636,6 +640,15 @@ function getVisitorRows() {
   return [...map.values()].sort((a,b)=>b.last_seen-a.last_seen);
 }
 function visitorLocation(v) { return [v.city, v.country].filter(Boolean).join(', ') || 'Localisation non disponible'; }
+function visitorMapUrl(v) {
+  if (v.latitude && v.longitude) return `https://www.google.com/maps?q=${encodeURIComponent(v.latitude + ',' + v.longitude)}`;
+  const q = [v.city, v.region, v.country].filter(Boolean).join(', ');
+  return q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` : '';
+}
+function visitorAccuracyLabel(v) {
+  if (v.latitude && v.longitude) return `GPS ±${v.accuracy || '?'} m`;
+  return v.geo_source === 'gps' ? 'GPS' : 'IP approximative';
+}
 function isVisitorOnline(v) { return v.last_seen && (Date.now() - v.last_seen) <= 5 * 60 * 1000; }
 function visitorDevice(ua='') {
   const s = String(ua);
@@ -653,7 +666,7 @@ function renderVisitors() {
   const allRows = getVisitorRows();
   const rows = getVisitorRows().filter(v => {
     const q = _visitorsFilter;
-    return !q || [v.id,v.page,v.ip,v.country,v.city,v.region,v.isp,v.timezone,v.referrer,v.device_type,v.browser_language].join(' ').toLowerCase().includes(q);
+    return !q || [v.id,v.page,v.ip,v.country,v.city,v.region,v.isp,v.timezone,v.referrer,v.device_type,v.browser_language,v.latitude,v.longitude].join(' ').toLowerCase().includes(q);
   });
   set('vis-online', allRows.filter(isVisitorOnline).length);
   set('vis-views', VIEWS.length);
@@ -665,15 +678,21 @@ function renderVisitors() {
   el.innerHTML = rows.map(v => {
     const blocked = _blockedVisitors.includes(v.id) || _blockedVisitors.includes(v.ip);
     const online = isVisitorOnline(v);
+    const mapUrl = visitorMapUrl(v);
+    const locHtml = `
+      <div>${escapeText(visitorLocation(v))}</div>
+      <div class="t-muted" style="font-size:.68rem;">${escapeText([v.region, v.timezone].filter(Boolean).join(' · ') || '—')}</div>
+      <div class="t-muted" style="font-size:.68rem;">${escapeText(visitorAccuracyLabel(v))}</div>`;
     return `
       <tr>
         <td><div class="t-strong t-sm ${online ? 'online-dot' : 'online-dot offline-dot'}">${escapeText(String(v.id).slice(0, 18))}</div><div class="t-muted">${online ? 'En ligne' : 'Hors ligne'} · ${v.views} vue(s)</div></td>
         <td class="t-muted t-sm">${escapeText([...v.pages].slice(0,3).join(', '))}</td>
-        <td class="t-muted t-sm"><div>${escapeText(visitorLocation(v))}</div><div class="t-muted" style="font-size:.68rem;">${escapeText([v.region, v.timezone].filter(Boolean).join(' · ') || '—')}</div></td>
+        <td class="t-muted t-sm">${mapUrl ? `<a href="${escapeAttr(mapUrl)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">${locHtml}</a>` : locHtml}</td>
         <td class="t-muted t-sm"><div>${escapeText(v.ip)}</div><div class="t-muted text-clip" style="font-size:.68rem;max-width:150px;" title="${escapeAttr(v.isp || '')}">${escapeText(v.isp || 'Réseau inconnu')}</div></td>
         <td class="t-muted t-sm text-clip" title="${escapeAttr(v.user_agent || '')}">${escapeText(visitorDeviceDetails(v))}</td>
         <td class="t-muted t-sm">${v.last_seen ? fmt(new Date(v.last_seen).toISOString()) : '—'}</td>
         <td><div class="acts">
+          ${mapUrl ? `<a class="act" href="${escapeAttr(mapUrl)}" target="_blank" rel="noopener" title="Ouvrir Maps"><i class="fas fa-map-marked-alt"></i></a>` : ''}
           <button class="act" onclick="openVisitorMessage('${escapeAttr(v.id)}')" title="Envoyer un message"><i class="fas fa-comment-dots"></i></button>
           <button class="act ${blocked ? 'ok' : 'del'}" onclick="toggleVisitorBlock('${escapeAttr(v.id)}','${escapeAttr(v.ip)}')" title="${blocked ? 'Débloquer' : 'Bloquer'}"><i class="fas fa-${blocked ? 'unlock' : 'ban'}"></i></button>
         </div></td>

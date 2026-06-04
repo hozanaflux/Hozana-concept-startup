@@ -389,6 +389,7 @@ function getVisitorId() {
 async function trackPageView(meta = {}) {
   try {
     const geo = await getVisitorGeo();
+    const precise = await getPreciseVisitorLocation();
     const basePayload = {
       page: window.location.pathname.split('/').pop() || 'index',
       visitor_id: getVisitorId()
@@ -405,6 +406,10 @@ async function trackPageView(meta = {}) {
       isp: geo.isp || null,
       device_type: getDeviceType(),
       browser_language: navigator.language || null,
+      latitude: precise.latitude || null,
+      longitude: precise.longitude || null,
+      accuracy: precise.accuracy || null,
+      geo_source: precise.latitude && precise.longitude ? 'gps' : 'ip',
       event_type: meta.eventType || 'pageview'
     };
     const postView = (body) => fetch('tables/page_views', {
@@ -423,6 +428,10 @@ async function trackPageView(meta = {}) {
       isp: payload.isp,
       device_type: payload.device_type,
       browser_language: payload.browser_language,
+      latitude: payload.latitude,
+      longitude: payload.longitude,
+      accuracy: payload.accuracy,
+      geo_source: payload.geo_source,
       event_type: payload.event_type
     });
     if (!res.ok) res = await postView({
@@ -440,6 +449,29 @@ function getDeviceType() {
   if (/iPad|Tablet|PlayBook|Silk/i.test(ua)) return 'tablet';
   if (/Mobi|Android|iPhone|iPod/i.test(ua)) return 'mobile';
   return 'desktop';
+}
+
+function getPreciseVisitorLocation() {
+  try {
+    const cached = sessionStorage.getItem('hozana-precise-geo');
+    if (cached) return Promise.resolve(JSON.parse(cached));
+  } catch {}
+  if (!navigator.geolocation) return Promise.resolve({});
+  return new Promise(resolve => {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const geo = {
+          latitude: Number(pos.coords.latitude.toFixed(7)),
+          longitude: Number(pos.coords.longitude.toFixed(7)),
+          accuracy: Math.round(pos.coords.accuracy || 0)
+        };
+        try { sessionStorage.setItem('hozana-precise-geo', JSON.stringify(geo)); } catch {}
+        resolve(geo);
+      },
+      () => resolve({}),
+      { enableHighAccuracy:true, timeout:9000, maximumAge:600000 }
+    );
+  });
 }
 
 function startVisitorHeartbeat() {

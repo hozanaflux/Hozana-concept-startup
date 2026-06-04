@@ -206,6 +206,10 @@ ALTER TABLE IF EXISTS public.page_views
   ADD COLUMN IF NOT EXISTS isp TEXT,
   ADD COLUMN IF NOT EXISTS device_type TEXT,
   ADD COLUMN IF NOT EXISTS browser_language TEXT,
+  ADD COLUMN IF NOT EXISTS latitude DOUBLE PRECISION,
+  ADD COLUMN IF NOT EXISTS longitude DOUBLE PRECISION,
+  ADD COLUMN IF NOT EXISTS accuracy DOUBLE PRECISION,
+  ADD COLUMN IF NOT EXISTS geo_source TEXT DEFAULT 'ip',
   ADD COLUMN IF NOT EXISTS event_type TEXT DEFAULT 'pageview';
 
 -- Visitor push messages used by the admin visitor cockpit.

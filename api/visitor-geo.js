@@ -26,7 +26,14 @@ module.exports = async (req, res) => {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   const ip = getClientIp(req);
-  const fallback = { ip, country: '', city: '', region: '', timezone: '', isp: '' };
+  const fallback = {
+    ip,
+    country: req.headers['x-vercel-ip-country'] || '',
+    city: req.headers['x-vercel-ip-city'] ? decodeURIComponent(String(req.headers['x-vercel-ip-city'])) : '',
+    region: req.headers['x-vercel-ip-country-region'] || '',
+    timezone: '',
+    isp: ''
+  };
 
   if (!ip || ip === '::1' || ip.startsWith('127.') || ip.startsWith('10.') || ip.startsWith('192.168.')) {
     return res.status(200).json(fallback);
