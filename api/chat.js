@@ -5,28 +5,31 @@
    ============================================================ */
 
 const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions';
+const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
 
 module.exports = async (req, res) => {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  setCors(req, res);
 
   // Preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+  if (rejectBadOrigin(req, res)) return;
 
   // Only POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  if (rateLimit(req, res, 'chat', 30, 60 * 1000)) return;
 
   try {
     const { message, systemPrompt, model } = req.body || {};
 
     if (!message || typeof message !== 'string' || !message.trim()) {
       return res.status(400).json({ error: 'Le champ "message" est requis.' });
+    }
+    if (message.length > 2000) {
+      return res.status(413).json({ error: 'Message trop long.' });
     }
 
     const apiKey = process.env.MISTRAL_API_KEY;

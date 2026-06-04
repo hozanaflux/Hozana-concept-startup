@@ -14,20 +14,21 @@ const isVercelRuntime = !!process.env.VERCEL;
 const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
 const GITHUB_REPO = process.env.GITHUB_REPO || 'hozanaflux/Hozana-concept-startup';
 const GITHUB_DISPATCH_EVENT = process.env.GITHUB_DISPATCH_EVENT || 'generate-blog';
+const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
 
 module.exports = async (req, res) => {
   // ── CORS ──
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Webhook-Secret');
+  setCors(req, res, 'POST, OPTIONS', 'Content-Type, X-Webhook-Secret');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+  if (rejectBadOrigin(req, res)) return;
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  if (rateLimit(req, res, 'supabase-webhook', 20, 60 * 60 * 1000)) return;
 
   // ── Validate webhook secret (optional but recommended) ──
   const requestSecret = req.headers['x-webhook-secret'] || req.body?.secret;

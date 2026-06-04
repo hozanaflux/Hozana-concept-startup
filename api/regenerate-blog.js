@@ -11,20 +11,21 @@ const isVercelRuntime = !!process.env.VERCEL;
 const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
 const GITHUB_REPO = process.env.GITHUB_REPO || 'hozanaflux/Hozana-concept-startup';
 const GITHUB_DISPATCH_EVENT = process.env.GITHUB_DISPATCH_EVENT || 'generate-blog';
+const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
 
 module.exports = async (req, res) => {
   // ── CORS ──
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  setCors(req, res);
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+  if (rejectBadOrigin(req, res)) return;
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  if (rateLimit(req, res, 'regenerate-blog', 6, 60 * 60 * 1000)) return;
 
   console.log('[Regenerate Blog] Starting static blog generation...');
 
