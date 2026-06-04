@@ -6,6 +6,8 @@
 --
 -- 🔧 Exécuter dans : Supabase Dashboard → SQL Editor
 -- 📌 Prérequis : pg_net (pré-installé sur Supabase)
+-- 🔐 IMPORTANT : remplacer REMPLACE_PAR_WEBHOOK_SECRET par la même valeur
+--    que la variable Vercel WEBHOOK_SECRET avant exécution.
 -- ============================================================
 
 -- ============================================================
@@ -15,7 +17,7 @@ CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
 -- ============================================================
 -- 2. Créer la fonction trigger articles
---    Envoie une requête HTTP POST à l'API Vercel /api/regenerate-blog.
+--    Envoie une requête HTTP POST à l'API Vercel /api/supabase-webhook.
 --    Cette API déclenche GitHub Actions via repository_dispatch.
 --    SEULEMENT quand le contenu de l'article est modifié
 --    (ignore les màj de vues/likes pour éviter la surcharge)
@@ -64,9 +66,10 @@ BEGIN
   IF _should_trigger THEN
     PERFORM
       net.http_post(
-        url := 'https://www.hozanaconcept.com/api/regenerate-blog',
+        url := 'https://www.hozanaconcept.com/api/supabase-webhook',
         headers := jsonb_build_object(
-          'Content-Type', 'application/json'
+          'Content-Type', 'application/json',
+          'X-Webhook-Secret', 'REMPLACE_PAR_WEBHOOK_SECRET'
         ),
         body := jsonb_build_object(
           'type', TG_OP,
@@ -98,7 +101,7 @@ EXECUTE FUNCTION public.handle_blog_posts_change();
 -- ============================================================
 -- 4. Créer la fonction trigger packs
 --    Même approche que le blog : dès qu'un pack change, on lance
---    /api/regenerate-blog, qui régénère pricing.html, toutes les
+--    /api/supabase-webhook, qui régénère pricing.html, toutes les
 --    pages pack-details/*.html, le sitemap et robots.txt.
 -- ============================================================
 CREATE OR REPLACE FUNCTION public.handle_packs_change()
@@ -141,9 +144,10 @@ BEGIN
   IF _should_trigger THEN
     PERFORM
       net.http_post(
-        url := 'https://www.hozanaconcept.com/api/regenerate-blog',
+        url := 'https://www.hozanaconcept.com/api/supabase-webhook',
         headers := jsonb_build_object(
-          'Content-Type', 'application/json'
+          'Content-Type', 'application/json',
+          'X-Webhook-Secret', 'REMPLACE_PAR_WEBHOOK_SECRET'
         ),
         body := jsonb_build_object(
           'type', TG_OP,
@@ -246,9 +250,10 @@ AS $$
 BEGIN
   PERFORM
     net.http_post(
-      url := 'https://www.hozanaconcept.com/api/regenerate-blog',
+      url := 'https://www.hozanaconcept.com/api/supabase-webhook',
       headers := jsonb_build_object(
-        'Content-Type', 'application/json'
+        'Content-Type', 'application/json',
+        'X-Webhook-Secret', 'REMPLACE_PAR_WEBHOOK_SECRET'
       ),
       body := jsonb_build_object(
         'type', TG_OP,

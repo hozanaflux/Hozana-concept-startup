@@ -30,7 +30,11 @@ module.exports = async (req, res) => {
   }
   if (rateLimit(req, res, 'supabase-webhook', 20, 60 * 60 * 1000)) return;
 
-  // ── Validate webhook secret (optional but recommended) ──
+  // ── Validate webhook secret ──
+  if (isVercelRuntime && !WEBHOOK_SECRET) {
+    console.error('[Supabase Webhook] WEBHOOK_SECRET not configured');
+    return res.status(500).json({ error: 'Webhook secret not configured' });
+  }
   const requestSecret = req.headers['x-webhook-secret'] || req.body?.secret;
   if (WEBHOOK_SECRET && requestSecret !== WEBHOOK_SECRET) {
     console.warn('[Supabase Webhook] Invalid secret');

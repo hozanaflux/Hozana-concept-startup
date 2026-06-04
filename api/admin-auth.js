@@ -63,6 +63,10 @@ function readSession(req) {
   return match ? decodeURIComponent(match[1]) : '';
 }
 
+function isAdminRequest(req) {
+  return verifySession(readSession(req));
+}
+
 function validCredentials(email, password) {
   const emailHash = process.env.ADMIN_EMAIL_HASH || (!process.env.VERCEL ? DEFAULT_EMAIL_HASH : '');
   const passwordHash = process.env.ADMIN_PASSWORD_HASH || (!process.env.VERCEL ? DEFAULT_PASSWORD_HASH : '');
@@ -87,6 +91,7 @@ module.exports = {
   setSessionCookie,
   clearSessionCookie,
   readSession,
+  isAdminRequest,
   validCredentials,
   prepareApi
 };

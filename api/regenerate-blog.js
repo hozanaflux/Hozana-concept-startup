@@ -12,6 +12,7 @@ const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
 const GITHUB_REPO = process.env.GITHUB_REPO || 'hozanaflux/Hozana-concept-startup';
 const GITHUB_DISPATCH_EVENT = process.env.GITHUB_DISPATCH_EVENT || 'generate-blog';
 const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
+const { isAdminRequest } = require('./admin-auth');
 
 module.exports = async (req, res) => {
   // ── CORS ──
@@ -26,6 +27,9 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
   if (rateLimit(req, res, 'regenerate-blog', 6, 60 * 60 * 1000)) return;
+  if (!isAdminRequest(req)) {
+    return res.status(401).json({ error: 'Admin session required' });
+  }
 
   console.log('[Regenerate Blog] Starting static blog generation...');
 
