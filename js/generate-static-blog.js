@@ -377,6 +377,8 @@ function generateSitemap(posts, packs = []) {
 function generateRobotsTxt() {
   const robots = `User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin-hozana-concept-admin/
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;

@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin-hozana-concept-admin/
 
 Sitemap: https://www.hozanaconcept.com/sitemap.xml
