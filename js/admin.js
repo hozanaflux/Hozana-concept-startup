@@ -641,7 +641,13 @@ function getVisitorRows() {
 }
 function visitorLocation(v) { return [v.city, v.country].filter(Boolean).join(', ') || 'Localisation non disponible'; }
 function visitorMapUrl(v) {
-  if (v.latitude && v.longitude) return `https://www.google.com/maps?q=${encodeURIComponent(v.latitude + ',' + v.longitude)}`;
+  if (v.latitude && v.longitude) {
+    const lat = Number(v.latitude);
+    const lng = Number(v.longitude);
+    if (Number.isFinite(lat) && Number.isFinite(lng)) {
+      return `https://www.google.com/maps/place/${lat},${lng}/@${lat},${lng},18z`;
+    }
+  }
   const q = [v.city, v.region, v.country].filter(Boolean).join(', ');
   return q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` : '';
 }
@@ -679,7 +685,11 @@ function renderVisitors() {
     const blocked = _blockedVisitors.includes(v.id) || _blockedVisitors.includes(v.ip);
     const online = isVisitorOnline(v);
     const mapUrl = visitorMapUrl(v);
-    const locHtml = `
+    const hasGps = !!(v.latitude && v.longitude);
+    const locHtml = hasGps ? `
+      <div class="t-strong" style="color:#4ade80;">GPS précis</div>
+      <div class="t-muted" style="font-size:.68rem;">${escapeText(`${v.latitude}, ${v.longitude}`)}</div>
+      <div class="t-muted" style="font-size:.68rem;">${escapeText(visitorAccuracyLabel(v))} · IP: ${escapeText(visitorLocation(v))}</div>` : `
       <div>${escapeText(visitorLocation(v))}</div>
       <div class="t-muted" style="font-size:.68rem;">${escapeText([v.region, v.timezone].filter(Boolean).join(' · ') || '—')}</div>
       <div class="t-muted" style="font-size:.68rem;">${escapeText(visitorAccuracyLabel(v))}</div>`;
@@ -692,7 +702,7 @@ function renderVisitors() {
         <td class="t-muted t-sm text-clip" title="${escapeAttr(v.user_agent || '')}">${escapeText(visitorDeviceDetails(v))}</td>
         <td class="t-muted t-sm">${v.last_seen ? fmt(new Date(v.last_seen).toISOString()) : '—'}</td>
         <td><div class="acts">
-          ${mapUrl ? `<a class="act" href="${escapeAttr(mapUrl)}" target="_blank" rel="noopener" title="Ouvrir Maps"><i class="fas fa-map-marked-alt"></i></a>` : ''}
+          ${mapUrl ? `<a class="act ${hasGps ? 'ok' : ''}" href="${escapeAttr(mapUrl)}" target="_blank" rel="noopener" title="${hasGps ? 'Ouvrir le point GPS précis' : 'Ouvrir la zone IP dans Maps'}"><i class="fas fa-map-marked-alt"></i></a>` : ''}
           <button class="act" onclick="openVisitorMessage('${escapeAttr(v.id)}')" title="Envoyer un message"><i class="fas fa-comment-dots"></i></button>
           <button class="act ${blocked ? 'ok' : 'del'}" onclick="toggleVisitorBlock('${escapeAttr(v.id)}','${escapeAttr(v.ip)}')" title="${blocked ? 'Débloquer' : 'Bloquer'}"><i class="fas fa-${blocked ? 'unlock' : 'ban'}"></i></button>
         </div></td>
