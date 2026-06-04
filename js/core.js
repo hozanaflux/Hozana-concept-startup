@@ -383,17 +383,56 @@ function getVisitorId() {
 
 async function trackPageView() {
   try {
-    await fetch('tables/page_views', {
+    const geo = await getVisitorGeo();
+    const payload = {
+      page: window.location.pathname.split('/').pop() || 'index',
+      visitor_id: getVisitorId(),
+      referrer: document.referrer || 'direct',
+      user_agent: navigator.userAgent.substring(0, 200),
+      ip_address: geo.ip || null,
+      country: geo.country || null,
+      city: geo.city || null
+    };
+    const res = await fetch('tables/page_views', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        page: window.location.pathname.split('/').pop() || 'index',
-        visitor_id: getVisitorId(),
-        referrer: document.referrer || 'direct',
-        user_agent: navigator.userAgent.substring(0, 200)
-      })
+      body: JSON.stringify(payload)
     });
+    if (!res.ok) {
+      await fetch('tables/page_views', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          page: payload.page,
+          visitor_id: payload.visitor_id,
+          referrer: payload.referrer,
+          user_agent: payload.user_agent
+        })
+      });
+    }
   } catch {}
+}
+
+async function getVisitorGeo() {
+  try {
+    const cached = sessionStorage.getItem('hozana-geo');
+    if (cached) return JSON.parse(cached);
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 1800);
+    const res = await fetch('https://ipapi.co/json/', { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!res.ok) return {};
+    const data = await res.json();
+    const geo = {
+      ip: data.ip || '',
+      country: data.country_name || data.country || '',
+      city: data.city || ''
+    };
+    sessionStorage.setItem('hozana-geo', JSON.stringify(geo));
+    return geo;
+  } catch {
+    return {};
+  }
 }
 
 // ============================================================
@@ -460,4 +499,3 @@ window.HC = {
   trackPageView,
   initParticles
 };
-

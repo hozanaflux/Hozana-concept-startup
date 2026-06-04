@@ -191,6 +191,13 @@ CREATE TABLE IF NOT EXISTS public.pack_options (
 
 ALTER TABLE public.pack_options ENABLE ROW LEVEL SECURITY;
 
+-- Visitor analytics enrichment for the admin visitor cockpit.
+-- Safe to run multiple times; it only adds missing columns.
+ALTER TABLE IF EXISTS public.page_views
+  ADD COLUMN IF NOT EXISTS ip_address TEXT,
+  ADD COLUMN IF NOT EXISTS country TEXT,
+  ADD COLUMN IF NOT EXISTS city TEXT;
+
 DROP POLICY IF EXISTS "anon_all" ON public.pack_options;
 CREATE POLICY "anon_all" ON public.pack_options
 FOR ALL TO anon

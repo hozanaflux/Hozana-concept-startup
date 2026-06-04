@@ -13,6 +13,10 @@ let _postsFilter = { q: '', cat: '' };
 let _leadsFilter = { q: '', status: '' };
 let _auditsFilter = { q: '', status: '' };
 let _ordersFilter = { q: '', status: '' };
+let _notificationsFilter = '';
+let _contactsFilter = '';
+let _visitorsFilter = '';
+let _blockedVisitors = JSON.parse(localStorage.getItem('hzn-blocked-visitors') || '[]');
 const LBLS = { new:'Nouveau', contacted:'Contacté', qualified:'Qualifié', converted:'Converti', lost:'Perdu' };
 const PIPE_COLS = ['new','contacted','qualified','converted'];
 
@@ -134,7 +138,7 @@ function doLogout() {
 }
 
 /* ─── NAVIGATION ─── */
-const TITLES = { dashboard:'Dashboard', analytics:'Analytics', articles:'Articles', portfolio:'Portfolio', leads:'Leads CRM', audits:'Audits IA', packs:'Packs Tarifs', orders:'Commandes', services:'Services', comments:'Commentaires', settings:'Paramètres' };
+const TITLES = { dashboard:'Dashboard', analytics:'Analytics', notifications:'Notifications', articles:'Articles', portfolio:'Portfolio', leads:'Leads CRM', audits:'Audits IA', packs:'Packs Tarifs', publication:'Centre publication', orders:'Commandes', contacts:'Base contacts', visitors:'Visiteurs', services:'Services', comments:'Commentaires', settings:'Paramètres' };
 const CTA = { articles:{ label:'Nouvel article', fn:'openArticleModal()' }, portfolio:{ label:'Nouveau projet', fn:'openPfModal()' }, packs:{ label:'Nouveau pack', fn:'openPackModal()' }, services:{ label:'Nouveau service', fn:'openServiceModal()' } };
 function nav(btn, panel) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -154,11 +158,15 @@ function nav(btn, panel) {
   // Trigger renders when entering specific panels to ensure visibility
   if (panel === 'dashboard') { renderDashLeads(); renderDashPosts(); renderCharts(); }
   if (panel === 'analytics') renderAnalytics();
+  if (panel === 'notifications') renderNotifications();
   if (panel === 'articles')  applyPostsFilter();
   if (panel === 'portfolio') renderPortfolio();
   if (panel === 'leads')     renderLeads();
   if (panel === 'audits')    renderAudits();
   if (panel === 'packs')     { renderPacks(); renderOptions(); }
+  if (panel === 'publication') renderPublicationCenter();
+  if (panel === 'contacts') renderContacts();
+  if (panel === 'visitors') renderVisitors();
   if (panel === 'services')  renderServices();
   if (panel === 'orders')    renderOrders();
   if (panel === 'comments')  renderComments();
@@ -209,6 +217,11 @@ async function loadAll() {
   renderDashLeads();
   renderDashPosts();
   renderCharts();
+  renderCockpit();
+  renderNotifications();
+  renderPublicationCenter();
+  renderContacts();
+  renderVisitors();
   applyPostsFilter();
   renderPortfolio();
   renderLeads();
@@ -233,6 +246,7 @@ function updateBadges() {
   set('badge-audits', AUDITS.filter(a=>a.status==='new').length);
   set('badge-orders', ORDERS.filter(o=>o.status==='paid').length);
   set('badge-packs', PACKS.length);
+  set('badge-notifs', getNotifications().filter(n=>!isNotificationRead(n.id)).length);
 }
 function set(id,v) { const el=document.getElementById(id); if(el) el.textContent=v; }
 
@@ -376,6 +390,265 @@ function renderAnalytics() {
       { scales:{}, plugins:{ legend:{ position:'bottom', labels:{ color:'rgba(240,240,245,.5)', boxWidth:12, font:{size:11} } } } });
   }, 80);
 }
+
+/* ─── COCKPIT / NOTIFICATIONS / CONTACTS / VISITORS ─── */
+function nowMs() { return Date.now(); }
+function daysAgo(n) { const d = new Date(); d.setDate(d.getDate() - n); return d.getTime(); }
+function asTime(value) { const t = value ? new Date(value).getTime() : 0; return Number.isFinite(t) ? t : 0; }
+function recent(items, days = 7) { const min = daysAgo(days); return items.filter(x => asTime(x.created_at || x.updated_at) >= min); }
+function notificationReadIds() { return JSON.parse(localStorage.getItem('hzn-read-notifs') || '[]'); }
+function saveNotificationReadIds(ids) { localStorage.setItem('hzn-read-notifs', JSON.stringify([...new Set(ids)])); }
+function isNotificationRead(id) { return notificationReadIds().includes(id); }
+
+function getNotifications() {
+  const items = [];
+  LEADS.filter(l => l.status === 'new').forEach(l => items.push({
+    id:`lead:${l.id}`, type:'lead', level:'hot', date:l.created_at, title:`Nouveau lead: ${l.name || l.email || 'Contact'}`,
+    text:`${l.service || 'Service non précisé'} · ${l.email || 'email absent'}`, action:`viewLead('${l.id}')`
+  }));
+  AUDITS.filter(a => a.status === 'new').forEach(a => items.push({
+    id:`audit:${a.id}`, type:'audit', level:'hot', date:a.created_at, title:`Audit IA à traiter: ${a.name || a.email || 'Prospect'}`,
+    text:`Score ${a.maturity_score || '?'}/10 · ${a.company || 'Entreprise non précisée'}`, action:`viewAudit('${a.id}')`
+  }));
+  COM.filter(c => !c.approved).forEach(c => items.push({
+    id:`comment:${c.id}`, type:'comment', level:'moderate', date:c.created_at, title:`Commentaire en attente`,
+    text:`${c.author_name || 'Anonyme'} · ${(c.content || '').slice(0, 90)}`, action:`nav(document.querySelector('[data-panel=comments]'),'comments')`
+  }));
+  ORDERS.filter(o => o.status === 'pending').forEach(o => items.push({
+    id:`order:${o.id}`, type:'order', level:'money', date:o.created_at, title:`Commande en attente: ${o.pack || 'Pack'}`,
+    text:`${o.email || 'email absent'} · ${o.amount || 0}€`, action:`nav(document.querySelector('[data-panel=orders]'),'orders')`
+  }));
+  P.filter(p => p.published === false).forEach(p => items.push({
+    id:`draft:${p.id}`, type:'draft', level:'info', date:p.updated_at || p.created_at, title:`Article en brouillon`,
+    text:p.title || 'Sans titre', action:`editArticle('${p.id}')`
+  }));
+  return items.sort((a,b) => asTime(b.date) - asTime(a.date));
+}
+
+function renderCockpit() {
+  renderOpsPriorities();
+  renderOpsPublication();
+  renderOpsVisitors();
+}
+
+function renderOpsPriorities() {
+  const el = document.getElementById('ops-priorities');
+  if (!el) return;
+  const items = getNotifications().filter(n => !isNotificationRead(n.id)).slice(0, 6);
+  if (!items.length) { el.innerHTML = `<div class="ops-empty">Aucune priorité urgente.</div>`; return; }
+  el.innerHTML = items.map(n => `
+    <button class="ops-item ${n.level}" onclick="markNotificationRead('${n.id}');${n.action}">
+      <span class="ops-dot"></span>
+      <span><strong>${escapeText(n.title)}</strong><small>${escapeText(n.text)} · ${fmt(n.date)}</small></span>
+    </button>`).join('');
+}
+
+function renderOpsPublication() {
+  const el = document.getElementById('ops-publication');
+  if (!el) return;
+  const published = P.filter(p => p.published !== false).length;
+  const drafts = P.filter(p => p.published === false).length;
+  const packs = PACKS.length;
+  const options = OPTIONS.length;
+  el.innerHTML = `
+    <div class="ops-metric"><span>Articles publiés</span><strong>${published}</strong></div>
+    <div class="ops-metric"><span>Brouillons</span><strong>${drafts}</strong></div>
+    <div class="ops-metric"><span>Packs / options</span><strong>${packs} / ${options}</strong></div>
+    <div class="ops-metric"><span>Pages EN</span><strong>32</strong></div>`;
+}
+
+function renderOpsVisitors() {
+  const el = document.getElementById('ops-visitors');
+  if (!el) return;
+  const visitors = getVisitorRows().slice(0, 5);
+  if (!visitors.length) { el.innerHTML = `<div class="ops-empty">Aucun visiteur enregistré.</div>`; return; }
+  el.innerHTML = visitors.map(v => `
+    <div class="ops-item">
+      <span class="ops-dot"></span>
+      <span><strong>${escapeText(v.page || 'Page inconnue')}</strong><small>${escapeText(visitorLocation(v))} · ${fmt(v.last_seen)}</small></span>
+    </div>`).join('');
+}
+
+function renderNotifications() {
+  const list = document.getElementById('notifications-list');
+  const all = getNotifications();
+  set('notifs-count', all.length);
+  updateBadges();
+  if (!list) return;
+  const data = all.filter(n => _notificationsFilter === 'read' ? isNotificationRead(n.id) : _notificationsFilter === 'unread' ? !isNotificationRead(n.id) : true);
+  if (!data.length) { list.innerHTML = `<div class="empty-panel">Aucune notification dans ce filtre.</div>`; return; }
+  list.innerHTML = data.map(n => {
+    const read = isNotificationRead(n.id);
+    return `
+      <div class="notif-row ${read ? 'read' : 'unread'}">
+        <button class="notif-main" onclick="markNotificationRead('${n.id}');${n.action}">
+          <span class="notif-icon ${n.level}"><i class="fas fa-${n.type === 'order' ? 'shopping-cart' : n.type === 'comment' ? 'comments' : n.type === 'audit' ? 'clipboard-check' : n.type === 'draft' ? 'pen' : 'user-plus'}"></i></span>
+          <span><strong>${escapeText(n.title)}</strong><small>${escapeText(n.text)} · ${fmt(n.date)}</small></span>
+        </button>
+        <button class="act" onclick="toggleNotificationRead('${n.id}')" title="${read ? 'Marquer non lu' : 'Marquer lu'}"><i class="fas fa-${read ? 'envelope' : 'check'}"></i></button>
+      </div>`;
+  }).join('');
+}
+
+function filterNotifications(value) { _notificationsFilter = value; renderNotifications(); }
+function markNotificationRead(id) { saveNotificationReadIds([...notificationReadIds(), id]); updateBadges(); renderCockpit(); }
+function toggleNotificationRead(id) {
+  const ids = notificationReadIds();
+  saveNotificationReadIds(ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id]);
+  renderNotifications(); renderCockpit();
+}
+function markAllNotificationsRead() {
+  saveNotificationReadIds(getNotifications().map(n => n.id));
+  renderNotifications(); renderCockpit(); toast('Notifications marquées comme lues ✓', 'ok');
+}
+
+function renderPublicationCenter() {
+  set('pub-blog-status', `${P.filter(p=>p.published!==false).length} articles publiés · ${P.filter(p=>p.published===false).length} brouillons`);
+  set('pub-packs-status', `${PACKS.length} packs · ${OPTIONS.length} options complémentaires`);
+  const el = document.getElementById('publication-checklist');
+  if (!el) return;
+  const checks = [
+    ['Articles publiés', P.filter(p=>p.published!==false).length > 0, `${P.filter(p=>p.published!==false).length} actifs`],
+    ['Images de couverture blog', P.filter(p=>p.published!==false).every(p=>!!p.cover_image), 'Recommandé pour SEO/social'],
+    ['Packs visibles', PACKS.length > 0, `${PACKS.length} packs configurés`],
+    ['Options achat', OPTIONS.length > 0, `${OPTIONS.length} option(s)`],
+    ['Commentaires à modérer', COM.filter(c=>!c.approved).length === 0, `${COM.filter(c=>!c.approved).length} en attente`],
+    ['Version anglaise', true, '/en généré au build']
+  ];
+  el.innerHTML = checks.map(([label, ok, meta]) => `
+    <div class="check-item ${ok ? 'ok' : 'warn'}">
+      <i class="fas fa-${ok ? 'check-circle' : 'exclamation-circle'}"></i>
+      <span><strong>${label}</strong><small>${meta}</small></span>
+    </div>`).join('');
+}
+
+function getContacts() {
+  const map = new Map();
+  const add = (item, origin) => {
+    const email = (item.email || '').trim().toLowerCase();
+    const phone = (item.phone || item.telephone || '').trim();
+    const key = email || phone || `${origin}:${item.id}`;
+    if (!key) return;
+    const prev = map.get(key) || {};
+    map.set(key, {
+      name: prev.name || item.name || [item.firstname, item.lastname].filter(Boolean).join(' ') || '',
+      email: prev.email || email,
+      phone: prev.phone || phone,
+      company: prev.company || item.company || '',
+      origin: [...new Set([...(prev.origin ? prev.origin.split(', ') : []), origin])].join(', '),
+      last: Math.max(asTime(prev.last), asTime(item.created_at || item.updated_at))
+    });
+  };
+  LEADS.forEach(x => add(x, 'Lead'));
+  AUDITS.forEach(x => add(x, 'Audit'));
+  ORDERS.forEach(x => add(x, 'Commande'));
+  return [...map.values()].sort((a,b)=>b.last-a.last);
+}
+
+function renderContacts() {
+  const el = document.getElementById('contacts-body');
+  const contacts = getContacts().filter(c => {
+    const q = _contactsFilter;
+    return !q || [c.name,c.email,c.phone,c.company,c.origin].join(' ').toLowerCase().includes(q);
+  });
+  set('contacts-count', contacts.length);
+  if (!el) return;
+  if (!contacts.length) { el.innerHTML = `<tr class="empty-row"><td colspan="6">Aucun contact</td></tr>`; return; }
+  el.innerHTML = contacts.map(c => `
+    <tr>
+      <td class="t-strong t-sm">${escapeText(c.name || '—')}</td>
+      <td class="t-muted t-sm">${escapeText(c.email || '—')}</td>
+      <td class="t-muted t-sm">${escapeText(c.phone || '—')}</td>
+      <td class="t-muted t-sm">${escapeText(c.company || '—')}</td>
+      <td><span class="badge badge-blue">${escapeText(c.origin)}</span></td>
+      <td class="t-muted t-sm">${c.last ? fmt(new Date(c.last).toISOString()) : '—'}</td>
+    </tr>`).join('');
+}
+function filterContacts(q) { _contactsFilter = q.toLowerCase(); renderContacts(); }
+function exportContactsCSV() {
+  const rows = [['Nom','Email','Téléphone','Entreprise','Origine','Dernière activité'], ...getContacts().map(c => [c.name,c.email,c.phone,c.company,c.origin,c.last ? new Date(c.last).toISOString() : ''])];
+  downloadText('hozana-contacts.csv', rows.map(r => r.map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n'), 'text/csv');
+}
+function exportContactsPDF() {
+  const jsPDF = window.jspdf?.jsPDF;
+  if (!jsPDF) return toast('Librairie PDF indisponible', 'err');
+  const doc = new jsPDF({ unit:'pt', format:'a4' });
+  doc.setFontSize(16); doc.text('Hozana Concept - Base contacts', 40, 42);
+  doc.setFontSize(9);
+  let y = 70;
+  getContacts().slice(0, 80).forEach((c, i) => {
+    if (y > 780) { doc.addPage(); y = 42; }
+    doc.text(`${i+1}. ${c.name || '-'} | ${c.email || '-'} | ${c.phone || '-'} | ${c.origin}`, 40, y);
+    y += 16;
+  });
+  doc.save('hozana-contacts.pdf');
+}
+
+function getVisitorRows() {
+  const map = new Map();
+  VIEWS.forEach(v => {
+    const key = v.visitor_id || v.ip_address || v.ip || `${v.page}:${v.created_at}`;
+    const prev = map.get(key) || { views:0, pages:new Set() };
+    prev.id = key;
+    prev.views += 1;
+    prev.pages.add(v.page || 'index');
+    prev.page = v.page || prev.page;
+    prev.referrer = v.referrer || prev.referrer || 'direct';
+    prev.ip = v.ip_address || v.ip || prev.ip || '—';
+    prev.country = v.country || prev.country || '';
+    prev.city = v.city || prev.city || '';
+    prev.user_agent = v.user_agent || prev.user_agent || '';
+    prev.last_seen = Math.max(asTime(prev.last_seen), asTime(v.created_at));
+    map.set(key, prev);
+  });
+  return [...map.values()].sort((a,b)=>b.last_seen-a.last_seen);
+}
+function visitorLocation(v) { return [v.city, v.country].filter(Boolean).join(', ') || 'Localisation non disponible'; }
+function renderVisitors() {
+  const rows = getVisitorRows().filter(v => {
+    const q = _visitorsFilter;
+    return !q || [v.id,v.page,v.ip,v.country,v.city,v.referrer].join(' ').toLowerCase().includes(q);
+  });
+  set('vis-total', getVisitorRows().length);
+  set('vis-views', VIEWS.length);
+  set('vis-locations', getVisitorRows().filter(v=>v.country||v.city).length);
+  set('vis-blocked', _blockedVisitors.length);
+  const el = document.getElementById('visitors-body');
+  if (!el) return;
+  if (!rows.length) { el.innerHTML = `<tr class="empty-row"><td colspan="7">Aucune visite</td></tr>`; return; }
+  el.innerHTML = rows.map(v => {
+    const blocked = _blockedVisitors.includes(v.id) || _blockedVisitors.includes(v.ip);
+    return `
+      <tr>
+        <td><div class="t-strong t-sm">${escapeText(String(v.id).slice(0, 18))}</div><div class="t-muted">${v.views} vue(s)</div></td>
+        <td class="t-muted t-sm">${escapeText([...v.pages].slice(0,3).join(', '))}</td>
+        <td class="t-muted t-sm">${escapeText(visitorLocation(v))}</td>
+        <td class="t-muted t-sm">${escapeText(v.ip)}</td>
+        <td class="t-muted t-sm text-clip">${escapeText(v.referrer || 'direct')}</td>
+        <td class="t-muted t-sm">${v.last_seen ? fmt(new Date(v.last_seen).toISOString()) : '—'}</td>
+        <td><button class="act ${blocked ? 'ok' : 'del'}" onclick="toggleVisitorBlock('${escapeAttr(v.id)}','${escapeAttr(v.ip)}')" title="${blocked ? 'Débloquer' : 'Bloquer'}"><i class="fas fa-${blocked ? 'unlock' : 'ban'}"></i></button></td>
+      </tr>`;
+  }).join('');
+}
+function filterVisitors(q) { _visitorsFilter = q.toLowerCase(); renderVisitors(); }
+function toggleVisitorBlock(id, ip) {
+  const key = ip && ip !== '—' ? ip : id;
+  _blockedVisitors = _blockedVisitors.includes(key) ? _blockedVisitors.filter(x => x !== key) : [..._blockedVisitors, key];
+  localStorage.setItem('hzn-blocked-visitors', JSON.stringify(_blockedVisitors));
+  renderVisitors(); renderCockpit(); toast(_blockedVisitors.includes(key) ? 'Visiteur ajouté à la liste de blocage' : 'Visiteur débloqué', 'ok');
+}
+
+function downloadText(filename, content, type='text/plain') {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+  a.remove(); URL.revokeObjectURL(url);
+}
+function escapeText(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+function escapeAttr(value) { return escapeText(value).replace(/`/g, '&#096;'); }
 
 /* ─── ARTICLES ─── */
 let _postsData = [];
