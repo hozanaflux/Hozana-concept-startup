@@ -373,12 +373,17 @@ function showToast(message, type = 'info', duration = 4000) {
 // PAGE VIEW TRACKING
 // ============================================================
 function getVisitorId() {
-  let id = localStorage.getItem('hozana-vid');
-  if (!id) {
-    id = 'v_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
-    localStorage.setItem('hozana-vid', id);
+  try {
+    let id = localStorage.getItem('hozana-vid');
+    if (!id) {
+      id = 'v_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
+      localStorage.setItem('hozana-vid', id);
+    }
+    return id;
+  } catch {
+    window.__hozanaVid = window.__hozanaVid || ('v_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 8));
+    return window.__hozanaVid;
   }
-  return id;
 }
 
 async function trackPageView(meta = {}) {
@@ -416,6 +421,9 @@ async function trackPageView(meta = {}) {
 
 function startVisitorHeartbeat() {
   if (window.__hozanaVisitorHeartbeat) return;
+  setTimeout(() => {
+    if (document.visibilityState === 'visible') trackPageView({ eventType:'heartbeat' });
+  }, 10000);
   window.__hozanaVisitorHeartbeat = setInterval(() => {
     if (document.visibilityState === 'visible') {
       trackPageView({ eventType:'heartbeat' });

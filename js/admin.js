@@ -18,6 +18,7 @@ let _contactsFilter = '';
 let _visitorsFilter = '';
 let _blockedVisitors = JSON.parse(localStorage.getItem('hzn-blocked-visitors') || '[]');
 let _activeLeadId = null;
+let _visitorRefreshTimer = null;
 const LBLS = { new:'Nouveau', contacted:'Contacté', qualified:'Qualifié', converted:'Converti', lost:'Perdu' };
 const PIPE_COLS = ['new','contacted','qualified','converted'];
 
@@ -167,7 +168,7 @@ function nav(btn, panel) {
   if (panel === 'packs')     { renderPacks(); renderOptions(); }
   if (panel === 'publication') renderPublicationCenter();
   if (panel === 'contacts') renderContacts();
-  if (panel === 'visitors') renderVisitors();
+  if (panel === 'visitors') { renderVisitors(); refreshVisitorsOnly(); }
   if (panel === 'services')  renderServices();
   if (panel === 'orders')    renderOrders();
   if (panel === 'comments')  renderComments();
@@ -186,7 +187,7 @@ async function loadAll() {
       fetch('tables/blog_posts?order=created_at.desc&limit=200').then(r=>r.json()),
       fetch('tables/comments?order=created_at.desc&limit=300').then(r=>r.json()),
       fetch('tables/leads?order=created_at.desc&limit=300').then(r=>r.json()),
-      fetch('tables/page_views?limit=1000').then(r=>r.json()),
+      fetch('tables/page_views?order=created_at.desc&limit=1000').then(r=>r.json()),
       fetch('tables/orders?order=created_at.desc&limit=300').then(r=>r.json()),
       fetch('tables/portfolio_projects?order=sort_order.asc&limit=200').then(r=>r.json()),
       fetch('tables/packs?order=sort_order.asc&limit=50').then(r=>r.json()),
@@ -231,6 +232,23 @@ async function loadAll() {
   renderServices();
   renderOrders();
   renderAudits();
+  startAdminVisitorRefresh();
+}
+async function refreshVisitorsOnly() {
+  try {
+    const r = await fetch('tables/page_views?order=created_at.desc&limit=1000');
+    const j = await r.json();
+    VIEWS = j.data || [];
+    renderVisitors();
+  } catch {}
+}
+function startAdminVisitorRefresh() {
+  if (_visitorRefreshTimer) return;
+  _visitorRefreshTimer = setInterval(() => {
+    if (document.getElementById('panel-visitors')?.classList.contains('active')) {
+      refreshVisitorsOnly();
+    }
+  }, 15000);
 }
 async function refreshAll() {
   toast('Actualisation…','info');
