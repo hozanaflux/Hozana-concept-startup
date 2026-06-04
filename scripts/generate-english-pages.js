@@ -200,6 +200,57 @@ function applyStaticEnglishText(document) {
   });
 }
 
+function rewriteUrlForEnglish(value) {
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(`${SITE_URL}/blog-posts/`, `${SITE_URL}/en/blog-posts/`)
+    .replace(`${SITE_URL}/pack-details/`, `${SITE_URL}/en/pack-details/`)
+    .replace(`${SITE_URL}/blog`, `${SITE_URL}/en/blog.html`)
+    .replace(`${SITE_URL}/pricing`, `${SITE_URL}/en/pricing.html`)
+    .replace(`${SITE_URL}/contact`, `${SITE_URL}/en/contact.html`);
+}
+
+function localizeStructuredValue(value) {
+  if (Array.isArray(value)) return value.map(localizeStructuredValue);
+  if (value && typeof value === 'object') {
+    const next = {};
+    Object.entries(value).forEach(([key, item]) => {
+      if (key === 'inLanguage') next[key] = 'en-US';
+      else if (key === 'areaServed') next[key] = ['US', 'GB', 'EU', 'FR', 'TN'];
+      else if (['url', '@id'].includes(key) || (key === 'item' && typeof item === 'string')) next[key] = rewriteUrlForEnglish(item);
+      else if (key === 'name' && item === 'Packs et tarifs Hozana Concept') next[key] = 'Hozana Concept Plans and Pricing';
+      else if (key === 'description' && typeof item === 'string') next[key] = applyEnglishPhrases(item);
+      else if (key === 'serviceType') next[key] = 'AI automation and digital growth';
+      else if (key === 'headline' && typeof item === 'string') next[key] = applyEnglishPhrases(item);
+      else next[key] = localizeStructuredValue(item);
+    });
+    return next;
+  }
+  return typeof value === 'string' ? rewriteUrlForEnglish(applyEnglishPhrases(value)) : value;
+}
+
+function localizeStructuredData(document) {
+  document.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
+    try {
+      const data = JSON.parse(script.textContent || '{}');
+      const localized = localizeStructuredValue(data);
+      if (localized['@type'] === 'Blog') {
+        localized.name = 'Hozana Concept Blog';
+        localized.description = 'AI, automation and digital growth insights from Hozana Concept.';
+        localized.url = `${SITE_URL}/en/blog.html`;
+        localized.inLanguage = 'en-US';
+      }
+      if (localized['@type'] === 'ItemList' && /pricing|tarifs/i.test(localized.name || '')) {
+        localized.name = 'Hozana Concept Plans and Pricing';
+        localized.url = `${SITE_URL}/en/pricing.html`;
+      }
+      script.textContent = JSON.stringify(localized).replace(/</g, '\\u003c');
+    } catch {
+      // Keep invalid third-party JSON untouched rather than breaking the page.
+    }
+  });
+}
+
 function translateMetadata(document, rel) {
   const title = document.querySelector('title');
   const descriptions = {
@@ -267,6 +318,7 @@ function transformPage(rel) {
   injectEnglishRuntime(document, rel);
   translateMetadata(document, rel);
   applyStaticEnglishText(document);
+  localizeStructuredData(document);
   upsertLink(document, 'canonical', enUrl);
   upsertLink(document, 'alternate', frUrl, { hreflang: 'fr' });
   upsertLink(document, 'alternate', enUrl, { hreflang: 'en-us' });
@@ -298,7 +350,24 @@ function generateEnglishPages() {
   ];
 
   const generated = pages.map(transformPage).filter(Boolean);
+  cleanupEnglishMirror('blog-posts');
+  cleanupEnglishMirror('pack-details');
   console.log(`🌍 Generated ${generated.length} English static page(s) in /en`);
+}
+
+function cleanupEnglishMirror(dir) {
+  const sourceDir = path.join(ROOT, dir);
+  const targetDir = path.join(EN_ROOT, dir);
+  if (!fs.existsSync(targetDir)) return;
+  const sourceFiles = new Set(fs.existsSync(sourceDir)
+    ? fs.readdirSync(sourceDir).filter(file => file.endsWith('.html'))
+    : []);
+  fs.readdirSync(targetDir)
+    .filter(file => file.endsWith('.html') && !sourceFiles.has(file))
+    .forEach(file => {
+      fs.unlinkSync(path.join(targetDir, file));
+      console.log(`🧹 Removed orphaned English page: en/${dir}/${file}`);
+    });
 }
 
 if (require.main === module) generateEnglishPages();

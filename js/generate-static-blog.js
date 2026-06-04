@@ -14,6 +14,11 @@ const { generateSchemaMarkup, enhanceMetaTags, enhanceImageAltText } = require('
 const SUPABASE_URL  = 'https://leadvqrheziyvrwnbiio.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlYWR2cXJoZXppeXZyd25iaWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzM0MTksImV4cCI6MjA5MzU0OTQxOX0.I-L13gdtuQnsJ4ErEb-SWWfdbMUhWOkTvSFOSkNxsD0';
 const SITE_URL      = 'https://www.hozanaconcept.com';
+const EXCLUDED_STATIC_POST_SLUGS = new Set([
+  'montrueux-digital-tecnologie',
+  'to-meka-kaka-on-ne-sait-jamais',
+  'mboka-elengi'
+]);
 
 // ─── Paths ───
 const TEMPLATE_PATH    = path.join(__dirname, '..', 'article.html');
@@ -63,8 +68,20 @@ async function fetchPublishedPosts() {
   }
 
   const posts = await response.json();
-  console.log(`📄 Fetched ${posts.length} published posts from Supabase`);
-  return Array.isArray(posts) ? posts : [];
+  const publishedPosts = Array.isArray(posts) ? posts : [];
+  const cleanPosts = publishedPosts.filter(post => !isExcludedStaticPost(post));
+  const skipped = publishedPosts.length - cleanPosts.length;
+  console.log(`📄 Fetched ${publishedPosts.length} published posts from Supabase${skipped ? ` (${skipped} excluded from static SEO)` : ''}`);
+  return cleanPosts;
+}
+
+function isExcludedStaticPost(post = {}) {
+  const slug = String(post.slug || slugify(post.title || post.id) || '').toLowerCase();
+  const title = String(post.title || '').toLowerCase();
+  return EXCLUDED_STATIC_POST_SLUGS.has(slug)
+    || title.includes('montrueux')
+    || title.includes('to meka kaka')
+    || title.includes('mboka elengi');
 }
 
 async function fetchPacks() {
