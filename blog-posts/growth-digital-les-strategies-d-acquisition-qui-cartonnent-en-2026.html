@@ -28,7 +28,7 @@
     /* ---- ARTICLE HERO ---- */
     .article-hero {
       position: relative;
-      min-height: 70vh;
+      min-height: 68vh;
       display: flex;
       align-items: flex-end;
       overflow: hidden;
@@ -45,9 +45,9 @@
       inset: 0;
       background: linear-gradient(
         to bottom,
-        rgba(11,11,11,0.2) 0%,
-        rgba(11,11,11,0.5) 40%,
-        rgba(11,11,11,0.92) 75%,
+        rgba(11,11,11,0.18) 0%,
+        rgba(11,11,11,0.48) 34%,
+        rgba(11,11,11,0.9) 76%,
         rgba(11,11,11,1) 100%
       );
     }
@@ -55,9 +55,60 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 860px;
+      max-width: 1040px;
       margin: 0 auto;
-      padding: var(--nav-height) 2rem 4rem;
+      padding: calc(var(--nav-height) + 3.5rem) 2rem 4.5rem;
+    }
+    .article-hero-content::after {
+      content: "";
+      display: block;
+      width: 92px;
+      height: 2px;
+      margin-top: 2rem;
+      background: linear-gradient(90deg, var(--red), rgba(255,255,255,0.08));
+    }
+    .article-hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.7rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.72);
+      font-family: var(--font-accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      backdrop-filter: blur(14px);
+    }
+    .article-hero-excerpt {
+      max-width: 720px;
+      margin: 0 0 1.5rem;
+      color: rgba(255,255,255,0.74);
+      font-size: 1.08rem;
+      line-height: 1.75;
+      text-shadow: 0 2px 18px rgba(0,0,0,0.35);
+    }
+    .article-hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      color: rgba(255,255,255,0.68);
+      font-family: var(--font-accent);
+      font-size: 0.8rem;
+    }
+    .article-hero-meta > span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.055);
+      backdrop-filter: blur(12px);
     }
 
     /* ---- ARTICLE LAYOUT ---- */
@@ -74,12 +125,19 @@
     /* ---- ARTICLE BODY ---- */
     .article-content {
       min-width: 0;
+      max-width: 790px;
     }
     .article-body {
       font-family: var(--font-body);
       font-size: 1.0625rem;
       line-height: 1.85;
       color: var(--white-80);
+      letter-spacing: 0;
+    }
+    .article-body > p:first-child {
+      font-size: 1.14rem;
+      color: var(--white-85);
+      line-height: 1.9;
     }
     .article-body h1 {
       font-family: var(--font-title);
@@ -221,9 +279,10 @@
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-xl);
+      border-radius: var(--radius-lg);
       padding: 1.5rem;
       margin-bottom: 3rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.16);
     }
     .toc-title {
       font-family: var(--font-accent);
@@ -235,9 +294,23 @@
       margin-bottom: 1rem;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 0.5rem;
     }
     .toc-title i { color: var(--red); }
+    .toc-toggle {
+      border: 0;
+      background: rgba(255,255,255,0.06);
+      color: var(--white-55);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.65rem;
+      font-family: var(--font-accent);
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .toc-toggle:hover { color: var(--white); background: rgba(255,46,46,0.12); }
+    .toc-box.is-collapsed .toc-list { display: none; }
     .toc-list {
       list-style: none;
       display: flex;
@@ -290,9 +363,104 @@
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-xl);
+      border-radius: var(--radius-lg);
       padding: 1.5rem;
     }
+    .author-card-inner { text-align: left; }
+    .author-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      margin-bottom: 1rem;
+    }
+    .author-proof-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .author-proof {
+      padding: 0.65rem 0.45rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.035);
+      text-align: center;
+      font-family: var(--font-accent);
+      font-size: 0.68rem;
+      color: var(--white-50);
+      line-height: 1.35;
+    }
+    .author-proof strong {
+      display: block;
+      color: var(--white);
+      font-size: 0.78rem;
+      margin-bottom: 0.1rem;
+    }
+    .author-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      width: 100%;
+      padding: 0.72rem 0.9rem;
+      border-radius: var(--radius-md);
+      background: rgba(255,46,46,0.08);
+      border: 1px solid rgba(255,46,46,0.16);
+      color: var(--red-light);
+      font-family: var(--font-accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .author-link:hover { background: rgba(255,46,46,0.14); color: var(--white); }
+
+    /* ---- ARTICLE CTA ---- */
+    .article-insight-cta {
+      margin: 3rem 0 2.5rem;
+      padding: 2rem;
+      border: 1px solid rgba(255,46,46,0.18);
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(135deg, rgba(255,46,46,0.11), rgba(255,106,0,0.04)),
+        rgba(255,255,255,0.035);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.18);
+    }
+    .article-insight-cta .cta-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--red-light);
+      font-family: var(--font-accent);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.65rem;
+    }
+    .article-insight-cta h3 {
+      color: var(--white);
+      font-family: var(--font-title);
+      font-size: 1.35rem;
+      line-height: 1.25;
+      margin: 0 0 0.6rem;
+    }
+    .article-insight-cta p {
+      color: var(--white-60);
+      font-size: 0.94rem;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .article-cta-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      min-width: 190px;
+    }
+    .article-cta-actions .btn { justify-content: center; }
     .sidebar-widget-title {
       font-family: var(--font-accent);
       font-size: 0.72rem;
@@ -524,18 +692,30 @@
     /* RESPONSIVE */
     @media (max-width: 1024px) {
       .article-page-wrap { grid-template-columns: 1fr; gap: 2rem; }
+      .article-content { max-width: none; }
       .article-sidebar { position: static; }
       .comment-grid { grid-template-columns: 1fr; }
       .related-grid { grid-template-columns: 1fr 1fr; }
+      .article-insight-cta { grid-template-columns: 1fr; }
+      .article-cta-actions { flex-direction: row; min-width: 0; }
     }
     @media (max-width: 768px) {
-      .article-hero { min-height: 55vh; }
-      .article-hero-content { padding: var(--nav-height) 1.25rem 3rem; }
+      .article-hero { min-height: 62vh; }
+      .article-hero-content { padding: calc(var(--nav-height) + 2rem) 1.25rem 3.25rem; }
+      .article-hero-excerpt { font-size: 0.98rem; line-height: 1.65; }
+      .article-hero-meta { gap: 0.55rem; }
+      .article-hero-meta > span { padding: 0.45rem 0.62rem; font-size: 0.74rem; }
       .article-page-wrap { padding: 0 1.25rem 4rem; }
+      .article-body { font-size: 1rem; line-height: 1.78; }
+      .article-body h2 { font-size: 1.38rem; }
+      .toc-box { padding: 1.1rem; margin-bottom: 2rem; }
+      .article-insight-cta { padding: 1.35rem; }
+      .article-cta-actions { flex-direction: column; }
       .related-section { padding: 3rem 1.25rem; }
       .related-grid { grid-template-columns: 1fr; }
       .share-buttons { flex-direction: row; flex-wrap: wrap; }
       .share-btn { flex: 1; min-width: 120px; justify-content: center; }
+      .author-proof-row { grid-template-columns: 1fr; }
     }
   </style>
 <meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:title" content="Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026 | Hozana Concept Blog"><meta property="og:description" content="Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalis…"><meta property="og:type" content="article"><meta property="og:url" content="https://www.hozanaconcept.com/blog-posts/growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026.html"><meta property="og:image" content="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&amp;q=80"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:site_name" content="Hozana Concept"><meta property="article:published_time" content="2026-06-01T22:22:24.576Z"><meta property="article:modified_time" content="2026-06-03T16:07:00.355Z"><meta property="article:author" content="Marcus Hozana"><meta property="article:section" content="Croissance"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026 | Hozana Concept Blog"><meta name="twitter:description" content="Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalis…"><meta name="twitter:image" content="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&amp;q=80"><meta name="twitter:site" content="@HozanaConcept"><meta name="twitter:creator" content="@HozanaConcept"><link rel="canonical" href="https://www.hozanaconcept.com/blog-posts/growth-digital-les-strategies-d-acquisition-qui-cartonnent-en-2026.html">
@@ -579,6 +759,9 @@ window.__STATIC_BLOG_DATA__ = {
   <img id="article-cover" class="article-cover-img" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&amp;q=80" alt="Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026" loading="eager">
   <div class="article-hero-overlay"></div>
   <div class="article-hero-content">
+    <div class="article-hero-eyebrow" aria-label="Article Hozana Concept">
+      <i class="fas fa-wand-magic-sparkles"></i> Analyse terrain
+    </div>
     <div id="article-breadcrumb" class="section-label" style="margin-bottom:1.5rem;color:rgba(255,255,255,0.6);">
       <a href="../blog.html" style="color:inherit;text-decoration:none;">Blog</a>
       <span style="margin:0 0.5rem;">·</span>
@@ -589,12 +772,13 @@ window.__STATIC_BLOG_DATA__ = {
 
       </div>
     <h1 id="article-title" class="text-display" style="max-width:760px;margin-bottom:1.25rem;text-shadow:0 2px 20px rgba(0,0,0,0.4);">Growth Digital : Les Stratégies d'Acquisition qui Cartonnent en 2026</h1>
-    <div id="article-hero-meta" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;color:rgba(255,255,255,0.6);font-family:var(--font-accent);font-size:0.8rem;">
+    <p id="article-excerpt" class="article-hero-excerpt">Découvrez les stratégies de growth digital les plus efficaces en 2026 : acquisition automatisée, optimisation de la conversion, rétention client et personnalisation à l'ère de l'IA.</p>
+    <div id="article-hero-meta" class="article-hero-meta">
         <span style="display:flex;align-items:center;gap:0.5rem;">
           <span style="width:32px;height:32px;border-radius:50%;background:var(--grad-red);display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:white;">MH</span>
           Marcus Hozana
         </span>
-        <span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>1 juin 2026</span>
+        <span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>2 juin 2026</span>
         <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>9 min de lecture</span>
         <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>15 vues</span>
       </div>
@@ -610,7 +794,10 @@ window.__STATIC_BLOG_DATA__ = {
 
       <!-- TOC -->
       <div class="toc-box" id="toc-box" style="display:none;">
-        <div class="toc-title"><i class="fas fa-list"></i> Table des matières</div>
+        <div class="toc-title">
+          <span><i class="fas fa-list"></i> Table des matières</span>
+          <button class="toc-toggle" type="button" onclick="toggleInlineToc(this)">Réduire</button>
+        </div>
         <ol class="toc-list" id="toc-list"></ol>
       </div>
 
@@ -666,6 +853,18 @@ window.__STATIC_BLOG_DATA__ = {
 <h2>Conclusion</h2>
 <p>Le growth digital en 2026 est une discipline où la technologie et la stratégie se rencontrent pour créer une croissance durable et prévisible. Les entreprises qui investissent aujourd'hui dans l'automatisation du marketing et la personnalisation IA créeront un avantage concurrentiel difficile à rattraper.</p>
 <p>Chez <strong>Hozana Concept</strong>, nous avons accompagné plus de 50 entreprises dans leur transformation growth. Notre approche combine stratégie, technologie et data pour des résultats mesurables.</p></div>
+
+      <section class="article-insight-cta" id="article-cta">
+        <div>
+          <div class="cta-label"><i class="fas fa-bolt"></i> Application stratégique</div>
+          <h3 id="article-cta-title">Appliquez cette lecture à votre croissance</h3>
+          <p id="article-cta-text">Nos experts peuvent traduire ce sujet en plan opérationnel : audit, priorités, automatisations utiles et premières actions mesurables.</p>
+        </div>
+        <div class="article-cta-actions">
+          <a href="../contact.html" class="btn btn-primary btn-sm"><i class="fas fa-calendar-check"></i> Réserver un audit</a>
+          <a href="../pricing.html" class="btn btn-secondary btn-sm"><i class="fas fa-layer-group"></i> Voir les packs</a>
+        </div>
+      </section>
 
       <!-- Tags -->
       <div id="article-tags" style="margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
@@ -733,11 +932,21 @@ window.__STATIC_BLOG_DATA__ = {
       <!-- Author card -->
       <div class="sidebar-widget reveal" id="author-card">
         <div class="sidebar-widget-title"><i class="fas fa-user"></i> L'auteur</div>
-        <div style="text-align:center;">
-          <div id="author-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--grad-red);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:white;margin:0 auto 1rem;box-shadow:0 0 20px rgba(255,46,46,0.3);">MH</div>
-          <div id="author-name" style="font-family:var(--font-title);font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Marcus Hozana</div>
-          <div style="font-size:0.78rem;color:var(--white-40);font-family:var(--font-accent);margin-bottom:1rem;">Expert IA &amp; Automatisation</div>
-          <p style="font-size:0.825rem;color:var(--white-50);line-height:1.65;">Spécialiste en intelligence artificielle, automatisation avancée et croissance digitale.</p>
+        <div class="author-card-inner">
+          <div class="author-profile">
+            <div id="author-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--grad-red);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:white;box-shadow:0 0 20px rgba(255,46,46,0.3);flex-shrink:0;">MH</div>
+            <div>
+              <div id="author-name" style="font-family:var(--font-title);font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Marcus Hozana</div>
+              <div style="font-size:0.78rem;color:var(--white-40);font-family:var(--font-accent);">Expert IA &amp; Automatisation</div>
+            </div>
+          </div>
+          <p style="font-size:0.825rem;color:var(--white-55);line-height:1.65;margin:0;">Spécialiste en intelligence artificielle, automatisation avancée et croissance digitale pour les entreprises ambitieuses.</p>
+          <div class="author-proof-row">
+            <div class="author-proof"><strong>IA</strong>Agents</div>
+            <div class="author-proof"><strong>Ops</strong>Automations</div>
+            <div class="author-proof"><strong>Growth</strong>Acquisition</div>
+          </div>
+          <a class="author-link" href="../contact.html"><i class="fas fa-message"></i> Parler à un expert</a>
         </div>
       </div>
 
@@ -938,6 +1147,18 @@ function renderPost(post) {
   const titleEl = document.getElementById('article-title');
   if (titleEl) titleEl.textContent = post.title;
 
+  const excerptEl = document.getElementById('article-excerpt');
+  if (excerptEl) {
+    excerptEl.textContent = post.excerpt || 'Une analyse Hozana Concept pour transformer les idées en décisions concrètes, lisibles et actionnables.';
+  }
+
+  const ctaTitle = document.getElementById('article-cta-title');
+  const ctaText = document.getElementById('article-cta-text');
+  if (ctaTitle) ctaTitle.textContent = `Appliquez cette lecture à votre ${post.category ? post.category.toLowerCase() : 'croissance'}`;
+  if (ctaText) {
+    ctaText.textContent = 'Nos experts peuvent traduire ce sujet en plan opérationnel : audit, priorités, automatisations utiles et premières actions mesurables.';
+  }
+
   const metaEl = document.getElementById('article-hero-meta');
   if (metaEl) {
     const initials = (post.author || 'HC').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
@@ -1100,6 +1321,13 @@ function scrollToSection(id) {
     const offset = el.getBoundingClientRect().top + window.scrollY - 100;
     window.scrollTo({ top: offset, behavior: 'smooth' });
   }
+}
+
+function toggleInlineToc(btn) {
+  const tocBox = document.getElementById('toc-box');
+  if (!tocBox || !btn) return;
+  const collapsed = tocBox.classList.toggle('is-collapsed');
+  btn.textContent = collapsed ? 'Afficher' : 'Réduire';
 }
 
 /* ====================================================

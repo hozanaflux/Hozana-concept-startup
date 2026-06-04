@@ -141,6 +141,20 @@ async function generateStaticPost(post) {
     const titleEl = document.getElementById('article-title');
     if (titleEl) titleEl.textContent = post.title;
 
+    const excerptEl = document.getElementById('article-excerpt');
+    if (excerptEl) {
+      excerptEl.textContent = post.excerpt || 'Une analyse Hozana Concept pour transformer les idées en décisions concrètes, lisibles et actionnables.';
+    }
+
+    const ctaTitleEl = document.getElementById('article-cta-title');
+    if (ctaTitleEl) {
+      ctaTitleEl.textContent = `Appliquez cette lecture à votre ${post.category ? String(post.category).toLowerCase() : 'croissance'}`;
+    }
+    const ctaTextEl = document.getElementById('article-cta-text');
+    if (ctaTextEl) {
+      ctaTextEl.textContent = 'Nos experts peuvent traduire ce sujet en plan opérationnel : audit, priorités, automatisations utiles et premières actions mesurables.';
+    }
+
     const coverEl = document.getElementById('article-cover');
     if (coverEl) {
       const img = resolveImageURL(post.cover_image || post.image || post.img || post.thumbnail || post.cover);
