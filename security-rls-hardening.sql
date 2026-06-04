@@ -10,6 +10,81 @@
 -- - Les operations admin utilisent la service role key cote serveur.
 -- ============================================================
 
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- Tables annexes pouvant manquer selon l'ancien historique de la base.
+CREATE TABLE IF NOT EXISTS public.services_list (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  icon TEXT,
+  description TEXT,
+  features TEXT[] DEFAULT '{}',
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS public.portfolio_projects (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  category TEXT,
+  image TEXT,
+  link TEXT,
+  description TEXT,
+  tags TEXT[] DEFAULT '{}',
+  sort_order INTEGER DEFAULT 0,
+  featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS public.pack_options (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  price TEXT,
+  old_price TEXT,
+  period TEXT DEFAULT 'par mois',
+  features TEXT[] DEFAULT '{}',
+  badge TEXT,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS public.audits (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  company TEXT,
+  sector TEXT,
+  maturity TEXT,
+  tools TEXT,
+  reach TEXT,
+  top_challenge TEXT,
+  manual_processes TEXT,
+  ia_usage TEXT,
+  repetitive_hours TEXT,
+  main_goal TEXT,
+  competition TEXT,
+  budget TEXT,
+  message TEXT,
+  maturity_score INTEGER DEFAULT 0,
+  source TEXT DEFAULT 'audit_page',
+  status TEXT DEFAULT 'new',
+  audit_notes TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS public.visitor_messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  visitor_id TEXT NOT NULL,
+  title TEXT DEFAULT 'Message Hozana Concept',
+  message TEXT NOT NULL,
+  level TEXT DEFAULT 'info',
+  read_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
 -- Activer RLS sur les tables utilisees par le site.
 ALTER TABLE public.blog_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
