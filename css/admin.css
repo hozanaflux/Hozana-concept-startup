@@ -209,7 +209,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); over
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
 .chart-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
 .chart-title { font-weight: 700; font-size: .875rem; }
-.chart-wrap { height: 200px; }
+.chart-wrap { height: 220px; position: relative; min-height: 220px; }
+.chart-wrap canvas { display: block; width: 100% !important; height: 100% !important; }
 
 /* ════════════════════════════════════════
    MINI CRM

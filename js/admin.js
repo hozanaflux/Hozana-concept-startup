@@ -158,8 +158,8 @@ function nav(btn, panel) {
     ctaEl.style.display = 'none';
   }
   // Trigger renders when entering specific panels to ensure visibility
-  if (panel === 'dashboard') { renderDashLeads(); renderDashPosts(); renderCharts(); }
-  if (panel === 'analytics') renderAnalytics();
+  if (panel === 'dashboard') { renderDashLeads(); renderDashPosts(); setTimeout(renderCharts, 80); }
+  if (panel === 'analytics') setTimeout(renderAnalytics, 80);
   if (panel === 'notifications') renderNotifications();
   if (panel === 'articles')  applyPostsFilter();
   if (panel === 'portfolio') renderPortfolio();
@@ -339,13 +339,28 @@ const CO = { responsive:true, maintainAspectRatio:false,
   scales:{ x:{ ticks:{ color:'rgba(240,240,245,.35)', font:{size:10} }, grid:{ color:'rgba(255,255,255,.05)' } },
            y:{ ticks:{ color:'rgba(240,240,245,.35)', font:{size:10} }, grid:{ color:'rgba(255,255,255,.05)' } } }
 };
+function isChartVisible(canvas) {
+  const wrap = canvas.closest('.chart-wrap');
+  const box = (wrap || canvas).getBoundingClientRect();
+  return box.width > 20 && box.height > 20;
+}
+function ensureChartReady(cb, attempt = 0) {
+  if (typeof Chart !== 'undefined') return cb();
+  if (attempt < 20) return setTimeout(() => ensureChartReady(cb, attempt + 1), 150);
+}
 function mkChart(id, type, labels, datasets, extraOpts={}) {
   const canvas = document.getElementById(id);
-  if (!canvas || typeof Chart === 'undefined') return;
+  if (!canvas) return;
+  if (!isChartVisible(canvas)) return setTimeout(() => mkChart(id, type, labels, datasets, extraOpts), 120);
+  if (typeof Chart === 'undefined') return ensureChartReady(() => mkChart(id, type, labels, datasets, extraOpts));
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
-  if (CH[id]) CH[id].destroy();
-  CH[id] = new Chart(ctx, { type, data:{ labels, datasets }, options: Object.assign({},CO,extraOpts) });
+  try {
+    if (CH[id]) CH[id].destroy();
+    CH[id] = new Chart(ctx, { type, data:{ labels, datasets }, options: Object.assign({},CO,extraOpts) });
+  } catch (err) {
+    console.warn('[Admin] Chart render failed:', id, err);
+  }
 }
 
 function renderCharts() {
@@ -402,14 +417,18 @@ function renderAnalytics() {
   // Cat chart
   setTimeout(()=>{
     const cc={}; P.forEach(p=>{ cc[p.category||'IA']=(cc[p.category||'IA']||0)+1; });
-    mkChart('chart-cat','bar',Object.keys(cc),
-      [{ data:Object.values(cc), backgroundColor:['#FF2E2E','#FF6A00','#3b82f6','#22c55e','#8b5cf6'],
+    const catLabels = Object.keys(cc).length ? Object.keys(cc) : ['Aucune donnée'];
+    const catData = Object.values(cc).length ? Object.values(cc) : [0];
+    mkChart('chart-cat','bar',catLabels,
+      [{ data:catData, backgroundColor:['#FF2E2E','#FF6A00','#3b82f6','#22c55e','#8b5cf6'],
         borderRadius:4, borderWidth:0 }],
       { scales:CO.scales, plugins:{ legend:{display:false} } });
 
     const pc={}; ORDERS.filter(o=>o.status==='paid').forEach(o=>{ pc[o.pack]=(pc[o.pack]||0)+1; });
-    mkChart('chart-packs','doughnut',Object.keys(pc),
-      [{ data:Object.values(pc), backgroundColor:['#FF2E2E','#FF6A00','#3b82f6','#22c55e'], borderWidth:0, hoverOffset:6 }],
+    const packLabels = Object.keys(pc).length ? Object.keys(pc) : ['Aucune donnée'];
+    const packData = Object.values(pc).length ? Object.values(pc) : [1];
+    mkChart('chart-packs','doughnut',packLabels,
+      [{ data:packData, backgroundColor:Object.keys(pc).length ? ['#FF2E2E','#FF6A00','#3b82f6','#22c55e'] : ['rgba(255,255,255,.12)'], borderWidth:0, hoverOffset:6 }],
       { scales:{}, plugins:{ legend:{ position:'bottom', labels:{ color:'rgba(240,240,245,.5)', boxWidth:12, font:{size:11} } } } });
   }, 80);
 }
