@@ -1,18 +1,35 @@
-const allowedOrigins = new Set([
+const defaultAllowedOrigins = [
   'https://www.hozanaconcept.com',
   'https://hozanaconcept.com',
   'http://localhost:3000',
   'http://localhost:5173'
-]);
+];
+
+function normalizeOrigin(origin = '') {
+  const value = String(origin).trim().replace(/\/$/, '');
+  if (!value) return '';
+  if (value.startsWith('http://') || value.startsWith('https://')) return value;
+  return `https://${value}`;
+}
+
+function configuredOrigins() {
+  const values = [
+    ...defaultAllowedOrigins,
+    process.env.VERCEL_URL,
+    process.env.VERCEL_BRANCH_URL,
+    ...(process.env.ALLOWED_ORIGINS || '').split(',')
+  ];
+  return new Set(values.map(normalizeOrigin).filter(Boolean));
+}
 
 const buckets = global.__hznRateBuckets || (global.__hznRateBuckets = new Map());
 
 function isAllowedOrigin(origin = '') {
   if (!origin) return true;
-  if (allowedOrigins.has(origin)) return true;
+  if (configuredOrigins().has(normalizeOrigin(origin))) return true;
   try {
-    const host = new URL(origin).hostname;
-    return host.endsWith('.vercel.app');
+    new URL(origin);
+    return false;
   } catch {
     return false;
   }

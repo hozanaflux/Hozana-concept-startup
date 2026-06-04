@@ -10,6 +10,12 @@ function sha256(value) {
   return crypto.createHash('sha256').update(String(value)).digest('hex');
 }
 
+function safeEqual(a = '', b = '') {
+  const left = Buffer.from(String(a), 'utf8');
+  const right = Buffer.from(String(b), 'utf8');
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
+}
+
 function secret() {
   const value = process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD_HASH || (!process.env.VERCEL ? DEFAULT_PASSWORD_HASH : '');
   if (!value) throw new Error('Admin session secret is not configured');
@@ -29,7 +35,7 @@ function createSession() {
 
 function verifySession(token = '') {
   const [payload, sig] = String(token).split('.');
-  if (!payload || !sig || sign(payload) !== sig) return false;
+  if (!payload || !sig || !safeEqual(sign(payload), sig)) return false;
   try {
     const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
     return data.role === 'admin' && data.exp > Math.floor(Date.now() / 1000);
@@ -71,7 +77,8 @@ function validCredentials(email, password) {
   const emailHash = process.env.ADMIN_EMAIL_HASH || (!process.env.VERCEL ? DEFAULT_EMAIL_HASH : '');
   const passwordHash = process.env.ADMIN_PASSWORD_HASH || (!process.env.VERCEL ? DEFAULT_PASSWORD_HASH : '');
   if (!emailHash || !passwordHash) return false;
-  return sha256(String(email || '').trim().toLowerCase()) === emailHash && sha256(password || '') === passwordHash;
+  return safeEqual(sha256(String(email || '').trim().toLowerCase()), emailHash)
+    && safeEqual(sha256(password || ''), passwordHash);
 }
 
 function prepareApi(req, res, key, limit = 20) {
