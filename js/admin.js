@@ -632,6 +632,13 @@ function getVisitorRows() {
 }
 function visitorLocation(v) { return [v.city, v.country].filter(Boolean).join(', ') || 'Localisation non disponible'; }
 function isVisitorOnline(v) { return v.last_seen && (Date.now() - v.last_seen) <= 5 * 60 * 1000; }
+function visitorDevice(ua='') {
+  const s = String(ua);
+  if (!s) return 'Appareil non disponible';
+  const os = /Android/i.test(s) ? 'Android' : /iPhone|iPad|iPod/i.test(s) ? 'iOS' : /Windows/i.test(s) ? 'Windows' : /Mac OS/i.test(s) ? 'Mac' : /Linux/i.test(s) ? 'Linux' : 'Appareil';
+  const browser = /Edg/i.test(s) ? 'Edge' : /Chrome|CriOS/i.test(s) ? 'Chrome' : /Firefox|FxiOS/i.test(s) ? 'Firefox' : /Safari/i.test(s) ? 'Safari' : 'Navigateur';
+  return `${os} · ${browser}`;
+}
 function renderVisitors() {
   const allRows = getVisitorRows();
   const rows = getVisitorRows().filter(v => {
@@ -654,13 +661,43 @@ function renderVisitors() {
         <td class="t-muted t-sm">${escapeText([...v.pages].slice(0,3).join(', '))}</td>
         <td class="t-muted t-sm">${escapeText(visitorLocation(v))}</td>
         <td class="t-muted t-sm">${escapeText(v.ip)}</td>
-        <td class="t-muted t-sm text-clip">${escapeText(v.referrer || 'direct')}</td>
+        <td class="t-muted t-sm text-clip" title="${escapeAttr(v.user_agent || '')}">${escapeText(visitorDevice(v.user_agent))}</td>
         <td class="t-muted t-sm">${v.last_seen ? fmt(new Date(v.last_seen).toISOString()) : '—'}</td>
-        <td><button class="act ${blocked ? 'ok' : 'del'}" onclick="toggleVisitorBlock('${escapeAttr(v.id)}','${escapeAttr(v.ip)}')" title="${blocked ? 'Débloquer' : 'Bloquer'}"><i class="fas fa-${blocked ? 'unlock' : 'ban'}"></i></button></td>
+        <td><div class="acts">
+          <button class="act" onclick="openVisitorMessage('${escapeAttr(v.id)}')" title="Envoyer un message"><i class="fas fa-comment-dots"></i></button>
+          <button class="act ${blocked ? 'ok' : 'del'}" onclick="toggleVisitorBlock('${escapeAttr(v.id)}','${escapeAttr(v.ip)}')" title="${blocked ? 'Débloquer' : 'Bloquer'}"><i class="fas fa-${blocked ? 'unlock' : 'ban'}"></i></button>
+        </div></td>
       </tr>`;
   }).join('');
 }
 function filterVisitors(q) { _visitorsFilter = q.toLowerCase(); renderVisitors(); }
+function openVisitorMessage(visitorId) {
+  document.getElementById('vm-visitor-id').value = visitorId;
+  document.getElementById('vm-target').value = visitorId;
+  document.getElementById('vm-title').value = 'Message Hozana Concept';
+  document.getElementById('vm-message').value = '';
+  document.getElementById('vm-level').value = 'info';
+  openModal('m-visitor-message');
+}
+async function sendVisitorMessage() {
+  const visitor_id = document.getElementById('vm-visitor-id').value;
+  const title = document.getElementById('vm-title').value.trim() || 'Message Hozana Concept';
+  const message = document.getElementById('vm-message').value.trim();
+  const level = document.getElementById('vm-level').value || 'info';
+  if (!visitor_id || !message) return toast('Message vide ou visiteur manquant', 'err');
+  try {
+    const res = await fetch('tables/visitor_messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ visitor_id, title, message, level })
+    });
+    if (!res.ok) throw new Error('send failed');
+    closeModal('m-visitor-message');
+    toast('Message envoyé au visiteur', 'ok');
+  } catch {
+    toast('Erreur envoi message. Vérifie la table visitor_messages dans Supabase.', 'err');
+  }
+}
 function toggleVisitorBlock(id, ip) {
   const key = ip && ip !== '—' ? ip : id;
   _blockedVisitors = _blockedVisitors.includes(key) ? _blockedVisitors.filter(x => x !== key) : [..._blockedVisitors, key];

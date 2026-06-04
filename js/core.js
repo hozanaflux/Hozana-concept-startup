@@ -408,6 +408,18 @@ async function trackPageView(meta = {}) {
       body: JSON.stringify(body)
     });
     let res = await postView(payload);
+    if (!res.ok) res = await postView({
+      ...basePayload,
+      ip_address: payload.ip_address,
+      country: payload.country,
+      city: payload.city,
+      event_type: payload.event_type
+    });
+    if (!res.ok) res = await postView({
+      ...basePayload,
+      user_agent: payload.user_agent,
+      event_type: payload.event_type
+    });
     if (!res.ok) res = await postView({ ...basePayload, event_type: payload.event_type });
     if (!res.ok) await postView(basePayload);
   } catch {}
@@ -423,6 +435,80 @@ function startVisitorHeartbeat() {
       trackPageView({ eventType:'heartbeat' });
     }
   }, 60000);
+}
+
+function playVisitorMessageSound() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const gain = ctx.createGain();
+    const osc = ctx.createOscillator();
+    gain.gain.value = 0.06;
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.setValueAtTime(660, ctx.currentTime + 0.12);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.24);
+  } catch {}
+}
+
+function showVisitorMessage(message) {
+  const box = document.createElement('div');
+  const level = message.level === 'warning' ? '#f59e0b' : message.level === 'success' ? '#22c55e' : '#FF2E2E';
+  box.style.cssText = `
+    position:fixed;right:18px;bottom:18px;z-index:99999;max-width:min(360px,calc(100vw - 36px));
+    background:rgba(15,15,20,.96);border:1px solid rgba(255,255,255,.14);border-left:4px solid ${level};
+    color:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 24px 70px rgba(0,0,0,.45);
+    font-family:Inter,system-ui,sans-serif;transform:translateY(16px);opacity:0;transition:.22s ease;
+  `;
+  box.innerHTML = `
+    <div style="display:flex;gap:10px;align-items:flex-start;">
+      <div style="width:28px;height:28px;border-radius:50%;background:${level};display:flex;align-items:center;justify-content:center;flex:0 0 auto;">
+        <i class="fas fa-bell" style="font-size:12px;color:white;"></i>
+      </div>
+      <div style="min-width:0;">
+        <div style="font-weight:800;font-size:14px;margin-bottom:4px;">${escapeHTML(message.title || 'Message Hozana Concept')}</div>
+        <div style="font-size:13px;line-height:1.45;color:rgba(255,255,255,.78);">${escapeHTML(message.message || '')}</div>
+      </div>
+      <button aria-label="Fermer" style="background:transparent;border:0;color:rgba(255,255,255,.55);font-size:18px;cursor:pointer;padding:0;margin-left:4px;">×</button>
+    </div>
+  `;
+  box.querySelector('button').onclick = () => box.remove();
+  document.body.appendChild(box);
+  requestAnimationFrame(() => { box.style.opacity = '1'; box.style.transform = 'translateY(0)'; });
+  playVisitorMessageSound();
+  setTimeout(() => { box.style.opacity = '0'; box.style.transform = 'translateY(16px)'; setTimeout(() => box.remove(), 260); }, 12000);
+}
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+
+async function pollVisitorMessages() {
+  try {
+    const visitorId = encodeURIComponent(getVisitorId());
+    const res = await fetch(`tables/visitor_messages?visitor_id=eq.${visitorId}&read_at=is.null&order=created_at.desc&limit=3`);
+    if (!res.ok) return;
+    const json = await res.json();
+    const messages = Array.isArray(json.data) ? json.data.reverse() : [];
+    for (const msg of messages) {
+      showVisitorMessage(msg);
+      await fetch(`tables/visitor_messages/${msg.id}`, {
+        method:'PATCH',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ read_at:new Date().toISOString() })
+      });
+    }
+  } catch {}
+}
+
+function startVisitorMessagePolling() {
+  if (window.__hozanaVisitorMessagePolling) return;
+  setTimeout(pollVisitorMessages, 3000);
+  window.__hozanaVisitorMessagePolling = setInterval(pollVisitorMessages, 8000);
 }
 
 async function getVisitorGeo() {
@@ -495,6 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLazyImages();
   trackPageView();
   startVisitorHeartbeat();
+  startVisitorMessagePolling();
 
   // Cursor & glass effect — short delay for DOM settle
   setTimeout(() => {
@@ -511,5 +598,6 @@ window.HC = {
   getVisitorId,
   trackPageView,
   startVisitorHeartbeat,
+  startVisitorMessagePolling,
   initParticles
 };

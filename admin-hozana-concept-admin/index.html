@@ -594,7 +594,7 @@
           </div>
           <div class="tbl-wrap">
             <table>
-              <thead><tr><th>Visiteur</th><th>Page</th><th>Localisation</th><th>IP</th><th>Referrer</th><th>Date</th><th>Actions</th></tr></thead>
+              <thead><tr><th>Visiteur</th><th>Page</th><th>Localisation</th><th>IP</th><th>Appareil</th><th>Date</th><th>Actions</th></tr></thead>
               <tbody id="visitors-body"></tbody>
             </table>
           </div>
@@ -726,8 +726,47 @@
       </div>
 
     </div><!-- /content -->
-  </div><!-- /main -->
+</div><!-- /main -->
 </div><!-- /admin -->
+
+<!-- VISITOR MESSAGE MODAL -->
+<div class="overlay" id="m-visitor-message" onclick="closeIfBg(event,'m-visitor-message')">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-head">
+      <div class="modal-title">Message au visiteur</div>
+      <button class="modal-close" onclick="closeModal('m-visitor-message')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input id="vm-visitor-id" type="hidden">
+      <div class="form-row">
+        <div class="form-grp">
+          <label class="form-label">Visiteur</label>
+          <input id="vm-target" class="form-ctrl" readonly>
+        </div>
+        <div class="form-grp">
+          <label class="form-label">Type</label>
+          <select id="vm-level" class="form-ctrl">
+            <option value="info">Information</option>
+            <option value="warning">Avertissement</option>
+            <option value="success">Confirmation</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grp">
+        <label class="form-label">Titre</label>
+        <input id="vm-title" class="form-ctrl" value="Message Hozana Concept">
+      </div>
+      <div class="form-grp">
+        <label class="form-label">Message</label>
+        <textarea id="vm-message" class="form-ctrl" rows="5" placeholder="Écrivez le message à afficher comme notification côté utilisateur..."></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('m-visitor-message')">Annuler</button>
+      <button class="btn btn-primary" onclick="sendVisitorMessage()"><i class="fas fa-paper-plane"></i> Envoyer</button>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════
      MODAL — PACK

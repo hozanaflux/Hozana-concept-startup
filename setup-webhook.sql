@@ -203,6 +203,25 @@ ALTER TABLE IF EXISTS public.page_views
   ADD COLUMN IF NOT EXISTS city TEXT,
   ADD COLUMN IF NOT EXISTS event_type TEXT DEFAULT 'pageview';
 
+-- Visitor push messages used by the admin visitor cockpit.
+CREATE TABLE IF NOT EXISTS public.visitor_messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  visitor_id TEXT NOT NULL,
+  title TEXT DEFAULT 'Message Hozana Concept',
+  message TEXT NOT NULL,
+  level TEXT DEFAULT 'info',
+  read_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+ALTER TABLE public.visitor_messages ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "anon_all" ON public.visitor_messages;
+CREATE POLICY "anon_all" ON public.visitor_messages
+FOR ALL TO anon
+USING (true)
+WITH CHECK (true);
+
 DROP POLICY IF EXISTS "anon_all" ON public.pack_options;
 CREATE POLICY "anon_all" ON public.pack_options
 FOR ALL TO anon
