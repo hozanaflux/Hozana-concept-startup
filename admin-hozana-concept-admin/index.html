@@ -1014,14 +1014,14 @@
      MODAL — ARTICLE
 ══════════════════════════════════════ -->
 <div class="overlay" id="m-article" onclick="closeIfBg(event,'m-article')">
-  <div class="modal">
+  <div class="modal article-modal">
     <div class="modal-head">
       <div class="modal-title" id="m-article-title">Nouvel article</div>
       <button class="modal-close" onclick="closeModal('m-article')"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="a-id">
-      <div class="form-row">
+      <div class="form-row article-form-grid">
         <div class="form-grp full">
           <label class="form-label">Titre *</label>
           <input class="form-ctrl" id="a-title" placeholder="Titre de l'article" required>
@@ -1048,8 +1048,8 @@
         </div>
         <div class="form-grp">
           <label class="form-label">Image couverture</label>
-          <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.5rem;">
-            <input class="form-ctrl" id="a-img" placeholder="https://…" style="flex:1;">
+          <div class="article-image-input">
+            <input class="form-ctrl" id="a-img" placeholder="https://…">
             <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('a-file').click()"><i class="fas fa-upload"></i></button>
             <input type="file" id="a-file" style="display:none;" accept="image/*" onchange="handleFileUpload(this, 'a-img')">
           </div>
