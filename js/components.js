@@ -7,7 +7,9 @@
 
 // ── Root path helper for blog-posts subfolder support ──
 const R_ = window.__ROOT_PATH__ || '';
+const P_ = window.__PAGE_ROOT__ ?? R_;
 const root = () => R_;
+const pageRoot = () => P_;
 
 // ============================================================
 // INTERNATIONALISATION — FR / EN
@@ -249,7 +251,108 @@ const PLACEHOLDER_EN = {
   'Rechercher un article, une technologie, un sujet...': 'Search an article, technology, or topic...'
 };
 
+const PHRASE_TEXT_EN = {
+  'Audit gratuit · Sans engagement · Résultats garantis': 'Free audit · No commitment · Guaranteed results',
+  'Audit gratuit': 'Free audit',
+  'Sans engagement': 'No commitment',
+  'Résultats garantis': 'Guaranteed results',
+  'Nos 6 pôles d\'expertise': 'Our 6 areas of expertise',
+  '6 pôles d\'expertise': '6 areas of expertise',
+  'Nos 6 areas of expertise': 'Our 6 areas of expertise',
+  'Services IA & Digital': 'AI & Digital Services',
+  'Tableau comparatif complet': 'Complete comparison table',
+  'Tableau comparatif': 'Comparison table',
+  'comparatif': 'comparison',
+  'Fonctionnalité': 'Feature',
+  'Chatbot IA': 'AI chatbot',
+  'chatbot IA': 'AI chatbot',
+  'chatbots IA': 'AI chatbots',
+  'chatbot': 'chatbot',
+  '1 chatbot IA configurable': '1 configurable AI chatbot',
+  'workflows automatisés': 'automated workflows',
+  'Workflows automatisés': 'Automated workflows',
+  'workflow automatisé': 'automated workflow',
+  'Automatisation': 'Automation',
+  'automatisation': 'automation',
+  'Intégration': 'Integration',
+  'intégration': 'integration',
+  'Integration 2 tools': '2 tool integrations',
+  'outils': 'tools',
+  'Rapport mensuel PDF': 'Monthly PDF report',
+  'Support email sous 48h': 'Email support within 48h',
+  'Support prioritaire': 'Priority support',
+  'Onboarding': 'Onboarding',
+  'Analytics temps réel': 'Real-time analytics',
+  'temps réel': 'real-time',
+  'Contenu IA': 'AI content',
+  'Analyse prédictive': 'Predictive analytics',
+  'Account manager dédié': 'Dedicated account manager',
+  'Propriété IP': 'IP ownership',
+  'Voir le détail du pack': 'View plan details',
+  'Choisir ce pack': 'Choose this plan',
+  'Contactez-nous': 'Contact us',
+  'Contacter nous': 'Contact us',
+  'par mois': 'per month',
+  'par an': 'per year',
+  'meilleur pour le debut de votre entreprise': 'best for starting your business',
+  'une offre spéciale pour les moyennes entreprises': 'a special offer for medium-sized businesses',
+  'une offre qui s\'adapte a vos besoins': 'an offer tailored to your needs',
+  'Pour les PME et startups en croissance qui veulent accélérer sérieusement.': 'For growing SMEs and startups that want to accelerate seriously.',
+  'Transformation IA complète pour entreprises ambitieuses': 'Complete AI transformation for ambitious companies',
+  'Solution IA personnalisée': 'Custom AI solution',
+  'Ajout d un chatbot IA avancé supplémentaire à votre solution existante.': 'Add an advanced AI chatbot to your existing solution.',
+  'Développement': 'Development',
+  'développement': 'development',
+  'Croissance': 'Growth',
+  'croissance': 'growth',
+  'Stratégie': 'Strategy',
+  'stratégie': 'strategy',
+  'Entreprise': 'Company',
+  'entreprise': 'company',
+  'Votre entreprise': 'Your company',
+  'Votre message': 'Your message',
+  'Votre email': 'Your email',
+  'Votre nom': 'Your name',
+  'Nom': 'Name',
+  'Email': 'Email',
+  'Téléphone': 'Phone',
+  'Service souhaité': 'Desired service',
+  'Budget estimé': 'Estimated budget',
+  'Envoyer': 'Send',
+  'Envoi en cours...': 'Sending...',
+  'Demander un audit': 'Request an audit',
+  'Prendre rendez-vous': 'Book an appointment',
+  'Prendre RDV': 'Book a call',
+  'Questions fréquentes': 'Frequently Asked Questions',
+  'Notre Histoire': 'Our Story',
+  'Notre Mission': 'Our Mission',
+  'Notre Équipe': 'Our Team',
+  'Nos Valeurs': 'Our Values',
+  'Notre parcours': 'Our Journey',
+  'Voir les réalisations': 'View work',
+  'Créer mon identité': 'Create my identity',
+  'Booster ma croissance': 'Boost my growth',
+  'Créer mon app': 'Build my app',
+  'Optimiser mes revenus': 'Optimize my revenue',
+  'Créer': 'Create',
+  'Voir': 'View',
+  'Lire': 'Read',
+  'Plus populaire': 'Most popular',
+  'Recommandé': 'Recommended',
+  'Inclus': 'Included',
+  'Non inclus': 'Not included',
+  'à partir de': 'from',
+  'Sur mesure': 'Custom',
+  'Gratuit': 'Free',
+  'jour': 'day',
+  'jours': 'days',
+  'semaine': 'week',
+  'mois': 'month',
+  'année': 'year'
+};
+
 function getSiteLanguage() {
+  if (SUPPORTED_LANGS.includes(window.__FORCE_LANG__)) return window.__FORCE_LANG__;
   const urlLang = new URLSearchParams(window.location.search).get('lang');
   if (SUPPORTED_LANGS.includes(urlLang)) {
     localStorage.setItem('hozana-lang', urlLang);
@@ -324,7 +427,12 @@ function translateStaticPageText() {
   nodes.forEach(node => {
     if (!node.__hozanaOriginalText) node.__hozanaOriginalText = node.nodeValue;
     const original = node.__hozanaOriginalText.trim();
-    const translated = textMap?.[original] || original;
+    let translated = textMap?.[original] || original;
+    if (lang === 'en') {
+      Object.entries(PHRASE_TEXT_EN)
+        .sort((a, b) => b[0].length - a[0].length)
+        .forEach(([from, to]) => { translated = translated.replaceAll(from, to); });
+    }
     node.nodeValue = _preserveWhitespace(node.__hozanaOriginalText, translated);
   });
 }
@@ -347,6 +455,24 @@ function initI18nObserver() {
 function setSiteLanguage(lang) {
   if (!SUPPORTED_LANGS.includes(lang)) return;
   localStorage.setItem('hozana-lang', lang);
+  if (window.__FORCE_LANG__ && window.__FORCE_LANG__ !== lang) {
+    const targetPath = lang === 'en'
+      ? `/en${window.location.pathname.replace(/^\/en(?=\/|$)/, '')}`
+      : window.location.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+    const params = new URLSearchParams(window.location.search);
+    params.delete('lang');
+    const query = params.toString() ? `?${params.toString()}` : '';
+    window.location.href = `${targetPath}${query}${window.location.hash}`;
+    return;
+  }
+  if (!window.__FORCE_LANG__ && lang === 'en') {
+    const cleanPath = window.location.pathname.replace(/^\/en(?=\/|$)/, '');
+    const params = new URLSearchParams(window.location.search);
+    params.delete('lang');
+    const query = params.toString() ? `?${params.toString()}` : '';
+    window.location.href = `/en${cleanPath}${query}${window.location.hash}`;
+    return;
+  }
   const url = new URL(window.location.href);
   url.searchParams.set('lang', lang);
   window.history.replaceState({}, '', url.toString());
@@ -422,17 +548,17 @@ function renderNavbar() {
   const isServicesActive = currentPage === 'platform';
 
   const simpleLinks = [
-    { href: R_ + 'index.html',    label: t('nav.home') },
-    { href: R_ + 'pricing.html',  label: t('nav.pricing') },
-    { href: R_ + 'blog.html',     label: t('nav.blog') },
-    { href: R_ + 'company.html',  label: t('nav.company') },
-    { href: R_ + 'contact.html',  label: t('nav.contact') },
+    { href: pageRoot() + 'index.html',    label: t('nav.home') },
+    { href: pageRoot() + 'pricing.html',  label: t('nav.pricing') },
+    { href: pageRoot() + 'blog.html',     label: t('nav.blog') },
+    { href: pageRoot() + 'company.html',  label: t('nav.company') },
+    { href: pageRoot() + 'contact.html',  label: t('nav.contact') },
   ];
 
   // Dropdown Services item — liens vers les pages dédiées
   const servicePages = ['service-ia.html','service-branding.html','service-marketing.html','service-dev.html','service-business.html','service-consulting.html'];
   const ddCats = SERVICE_CATS.map((c, i) => `
-    <a class="dd-cat" href="${root()}${servicePages[i]}" onclick="closeMobileMenu()">
+    <a class="dd-cat" href="${pageRoot()}${servicePages[i]}" onclick="closeMobileMenu()">
       <div class="dd-cat-icon">${c.icon}</div>
       <div class="dd-cat-body">
         <div class="dd-cat-name">
@@ -451,7 +577,7 @@ function renderNavbar() {
       <div class="nav-dropdown-panel" id="nav-services-panel" role="menu">
         <div class="dd-header">
           <span class="dd-header-title">${t('nav.expertise')}</span>
-          <a class="dd-header-cta" href="${root()}platform.html">${t('nav.all')} <i class="fas fa-arrow-right"></i></a>
+          <a class="dd-header-cta" href="${pageRoot()}platform.html">${t('nav.all')} <i class="fas fa-arrow-right"></i></a>
         </div>
         <div class="dd-grid">${ddCats}</div>
       </div>
@@ -466,11 +592,11 @@ function renderNavbar() {
 
   // Mobile dropdown Services — liens vers les pages dédiées
   const mobileDdItems = SERVICE_CATS.map((c, i) =>
-    `<a href="${root()}${servicePages[i]}" onclick="closeMobileMenu()">${c.icon} ${t(`services.${c.id}.name`, c.name)}</a>`
+    `<a href="${pageRoot()}${servicePages[i]}" onclick="closeMobileMenu()">${c.icon} ${t(`services.${c.id}.name`, c.name)}</a>`
   ).join('');
 
   const mobileItems = [
-    `<li><a href="${R_}index.html" ${currentPage==='index'||currentPage===''?'class="active"':''} onclick="closeMobileMenu()">${t('nav.home')}</a></li>`,
+    `<li><a href="${pageRoot()}index.html" ${currentPage==='index'||currentPage===''?'class="active"':''} onclick="closeMobileMenu()">${t('nav.home')}</a></li>`,
     `<li>
       <div class="mobile-dd-toggle" onclick="toggleMobileServicesDd(this)">
         <span class="${isServicesActive ? 'active' : ''}">${t('nav.services')}</span>
@@ -489,7 +615,7 @@ function renderNavbar() {
     <div class="navbar-container">
 
       <!-- Logo -->
-      <a href="${root()}index.html" class="navbar-logo" aria-label="Hozana Concept - ${t('nav.home')}">
+      <a href="${pageRoot()}index.html" class="navbar-logo" aria-label="Hozana Concept - ${t('nav.home')}">
         <img src="${root()}images/logo-main.png" alt="Hozana Concept" class="navbar-logo-img" style="height:44px;width:auto;display:block;object-fit:contain;">
       </a>
 
@@ -508,7 +634,7 @@ function renderNavbar() {
             <div class="theme-toggle-thumb" id="theme-thumb">🌙</div>
           </div>
         </button>
-        <a href="${root()}contact.html" class="btn btn-primary btn-sm navbar-cta" aria-label="${t('nav.startProject')}">${t('nav.start')}</a>
+        <a href="${pageRoot()}contact.html" class="btn btn-primary btn-sm navbar-cta" aria-label="${t('nav.startProject')}">${t('nav.start')}</a>
         <button class="hamburger" id="hamburger" aria-label="${t('nav.openMenu')}" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -532,7 +658,7 @@ function renderNavbar() {
     </ul>
     <div class="mobile-menu-footer">
       ${renderLanguageSwitch('mobile')}
-      <a href="${root()}contact.html" class="btn btn-primary w-full" style="justify-content:center;" onclick="closeMobileMenu()">
+      <a href="${pageRoot()}contact.html" class="btn btn-primary w-full" style="justify-content:center;" onclick="closeMobileMenu()">
         <i class="fas fa-rocket"></i> ${t('nav.startProject')}
       </a>
       <div class="mobile-contact-info">
@@ -689,7 +815,7 @@ function renderFooter() {
 
           <!-- Brand Column -->
           <div class="footer-brand-col reveal">
-            <a href="${root()}index.html" class="footer-logo-link" aria-label="Hozana Concept">
+            <a href="${pageRoot()}index.html" class="footer-logo-link" aria-label="Hozana Concept">
               <img src="${root()}images/logo-footer.png" alt="Hozana Concept" style="height:52px;width:auto;object-fit:contain;filter:brightness(0) invert(1);">
             </a>
             <p class="footer-brand-desc">
@@ -716,11 +842,11 @@ function renderFooter() {
               ${t('footer.platform')}
             </h4>
             <ul class="footer-link-list">
-              <li><a href="${root()}platform.html#ia">${t('services.ia.name')}</a></li>
-              <li><a href="${root()}platform.html#automation">${t('services.branding.name')}</a></li>
-              <li><a href="${root()}platform.html#growth">${t('services.marketing.name')}</a></li>
-              <li><a href="${root()}platform.html#content">${t('services.dev.name')}</a></li>
-              <li><a href="${root()}platform.html#analytics">${t('services.business.name')}</a></li>
+              <li><a href="${pageRoot()}platform.html#ia">${t('services.ia.name')}</a></li>
+              <li><a href="${pageRoot()}platform.html#automation">${t('services.branding.name')}</a></li>
+              <li><a href="${pageRoot()}platform.html#growth">${t('services.marketing.name')}</a></li>
+              <li><a href="${pageRoot()}platform.html#content">${t('services.dev.name')}</a></li>
+              <li><a href="${pageRoot()}platform.html#analytics">${t('services.business.name')}</a></li>
             </ul>
           </div>
 
@@ -731,11 +857,11 @@ function renderFooter() {
               ${t('footer.resources')}
             </h4>
             <ul class="footer-link-list">
-              <li><a href="${root()}blog.html">${t('footer.blog')}</a></li>
-              <li><a href="${root()}pricing.html">${t('footer.plans')}</a></li>
-              <li><a href="${root()}company.html">${t('footer.vision')}</a></li>
-              <li><a href="${root()}contact.html">${t('nav.contact')}</a></li>
-              <li><a href="${root()}pricing.html#enterprise">${t('footer.enterpriseDemo')}</a></li>
+              <li><a href="${pageRoot()}blog.html">${t('footer.blog')}</a></li>
+              <li><a href="${pageRoot()}pricing.html">${t('footer.plans')}</a></li>
+              <li><a href="${pageRoot()}company.html">${t('footer.vision')}</a></li>
+              <li><a href="${pageRoot()}contact.html">${t('nav.contact')}</a></li>
+              <li><a href="${pageRoot()}pricing.html#enterprise">${t('footer.enterpriseDemo')}</a></li>
             </ul>
           </div>
 
@@ -769,10 +895,10 @@ function renderFooter() {
               ${t('footer.legal')}
             </h4>
             <ul class="footer-link-list">
-              <li><a href="${root()}privacy.html">${t('footer.privacy')}</a></li>
-              <li><a href="${root()}legal.html">${t('footer.legalNotice')}</a></li>
-              <li><a href="${root()}terms.html">${t('footer.terms')}</a></li>
-              <li><a href="${root()}refund.html">${t('footer.refund')}</a></li>
+              <li><a href="${pageRoot()}privacy.html">${t('footer.privacy')}</a></li>
+              <li><a href="${pageRoot()}legal.html">${t('footer.legalNotice')}</a></li>
+              <li><a href="${pageRoot()}terms.html">${t('footer.terms')}</a></li>
+              <li><a href="${pageRoot()}refund.html">${t('footer.refund')}</a></li>
             </ul>
           </div>
 
@@ -804,13 +930,13 @@ function renderFooter() {
             © ${year} <strong>Hozana Concept</strong>. ${t('footer.rights')}
           </p>
           <div class="footer-bottom-links">
-            <a href="${root()}privacy.html">${t('footer.privacyShort')}</a>
+            <a href="${pageRoot()}privacy.html">${t('footer.privacyShort')}</a>
             <span class="sep">·</span>
-            <a href="${root()}legal.html">${t('footer.legalNotice')}</a>
+            <a href="${pageRoot()}legal.html">${t('footer.legalNotice')}</a>
             <span class="sep">·</span>
-            <a href="${root()}terms.html">${t('footer.terms')}</a>
+            <a href="${pageRoot()}terms.html">${t('footer.terms')}</a>
             <span class="sep">·</span>
-            <a href="${root()}refund.html">${t('footer.refund')}</a>
+            <a href="${pageRoot()}refund.html">${t('footer.refund')}</a>
           </div>
           <div class="footer-status">
             <span class="status-indicator online"></span>

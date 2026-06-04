@@ -1,0 +1,677 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><script data-english-runtime="true">window.__ROOT_PATH__="../";window.__PAGE_ROOT__="./";window.__FORCE_LANG__='en';</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plans &amp; Pricing IA | Hozana Concept — from 490€/month</title>
+  <meta name="description" content="Compare Hozana Concept AI plans, automation packages and growth options for international companies.">
+  <link rel="icon" type="image/png" href="../images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Sora:wght@300;400;500;600;700;800&amp;family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/design-system.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .packs-hero {
+      padding: calc(var(--nav-height) + 4rem) 2rem 5rem;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,46,46,0.15) 0%, transparent 60%);
+      position: relative;
+      overflow: hidden;
+    }
+    .packs-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .pack-card-full {
+      padding: 2.5rem;
+      position: relative;
+      transition: all var(--trans-bounce);
+      display: flex;
+      flex-direction: column;
+      overflow: visible !important; /* badge dépasse au-dessus */
+    }
+    /* Garantir que le badge est toujours visible */
+    .glass.pack-card-full {
+      overflow: visible !important;
+    }
+    .glass.pack-card-full::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .pack-card-full:hover {
+      transform: translateY(-6px);
+    }
+    .pack-card-full.featured {
+      border-color: rgba(255,46,46,0.5) !important;
+      background: linear-gradient(135deg, rgba(255,46,46,0.08), rgba(255,106,0,0.04)) !important;
+      box-shadow: 0 0 60px rgba(255,46,46,0.15), var(--shadow-lg);
+    }
+    .billing-toggle {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      padding: 0.375rem;
+    }
+    .billing-btn {
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--radius-full);
+      font-family: var(--font-accent);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all var(--trans-base);
+      color: var(--white-50);
+      background: transparent;
+    }
+    .billing-btn.active {
+      background: var(--grad-red);
+      color: white;
+    }
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-family: var(--font-accent);
+    }
+    .compare-table th, .compare-table td {
+      padding: 0.875rem 1.25rem;
+      text-align: center;
+      border-bottom: 1px solid var(--glass-border);
+      font-size: 0.875rem;
+    }
+    .compare-table th {
+      font-weight: 700;
+      color: var(--white);
+      background: rgba(255,255,255,0.04);
+    }
+    .compare-table th:first-child,
+    .compare-table td:first-child {
+      text-align: left;
+      color: var(--white-70);
+    }
+    .compare-table td.yes { color: #22c55e; font-weight: 700; }
+    .compare-table td.no { color: var(--white-30); }
+    .compare-table thead th:nth-child(3) {
+      background: rgba(255,46,46,0.1);
+      color: var(--red);
+    }
+    .compare-table tbody tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .faq-question {
+      padding: 1.25rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-family: var(--font-accent);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      transition: color var(--trans-fast);
+    }
+    .faq-question:hover { color: var(--red); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+      font-size: 0.9rem;
+      color: var(--white-70);
+      line-height: 1.7;
+    }
+    .faq-answer.open {
+      max-height: 200px;
+      padding-bottom: 1.25rem;
+    }
+    .faq-icon {
+      transition: transform var(--trans-base);
+      color: var(--red);
+      font-size: 0.875rem;
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+    /* Responsive packs page */
+    @media(max-width:1024px) {
+      .packs-grid[style] { grid-template-columns: repeat(2,1fr) !important; }
+    }
+    @media(max-width:640px) {
+      .packs-grid[style] { grid-template-columns: 1fr !important; }
+      .compare-table { font-size:0.78rem; }
+      .compare-table th, .compare-table td { padding: 0.5rem 0.5rem; }
+      .billing-toggle { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+<link rel="canonical" href="https://www.hozanaconcept.com/en/pricing.html"><script id="static-pricing-jsonld" type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Packs et tarifs Hozana Concept","url":"https://www.hozanaconcept.com/pricing","itemListElement":[{"@type":"ListItem","position":1,"item":{"@context":"https://schema.org","@type":"Service","name":"Pack Starter","description":"meilleur pour le debut de votre entreprise","serviceType":"Automatisation IA et growth digital","provider":{"@type":"Organization","name":"Hozana Concept","url":"https://www.hozanaconcept.com"},"areaServed":"FR","url":"https://www.hozanaconcept.com/pack-details/starter.html","offers":{"@type":"Offer","price":160,"priceCurrency":"EUR","availability":"https://schema.org/InStock","url":"https://www.hozanaconcept.com/pack-details/starter.html"}}},{"@type":"ListItem","position":2,"item":{"@context":"https://schema.org","@type":"Service","name":"Pack Growth","description":"Pour les PME et startups en croissance qui veulent accélérer sérieusement.","serviceType":"Automatisation IA et growth digital","provider":{"@type":"Organization","name":"Hozana Concept","url":"https://www.hozanaconcept.com"},"areaServed":"FR","url":"https://www.hozanaconcept.com/pack-details/growth.html","offers":{"@type":"Offer","price":499,"priceCurrency":"EUR","availability":"https://schema.org/InStock","url":"https://www.hozanaconcept.com/pack-details/growth.html"}}},{"@type":"ListItem","position":3,"item":{"@context":"https://schema.org","@type":"Service","name":"Pack Elite","description":"Transformation IA complète pour entreprises ambitieuses : workflows illimités, BI, prédictif et support VIP.","serviceType":"Automatisation IA et growth digital","provider":{"@type":"Organization","name":"Hozana Concept","url":"https://www.hozanaconcept.com"},"areaServed":"FR","url":"https://www.hozanaconcept.com/pack-details/elite.html","offers":{"@type":"Offer","price":1990,"priceCurrency":"EUR","availability":"https://schema.org/InStock","url":"https://www.hozanaconcept.com/pack-details/elite.html"}}},{"@type":"ListItem","position":4,"item":{"@context":"https://schema.org","@type":"Service","name":"startup","description":"une offre spéciale pour les moyennes entreprises","serviceType":"Automatisation IA et growth digital","provider":{"@type":"Organization","name":"Hozana Concept","url":"https://www.hozanaconcept.com"},"areaServed":"FR","url":"https://www.hozanaconcept.com/pack-details/startup.html","offers":{"@type":"Offer","price":800,"priceCurrency":"EUR","availability":"https://schema.org/InStock","url":"https://www.hozanaconcept.com/pack-details/startup.html"}}},{"@type":"ListItem","position":5,"item":{"@context":"https://schema.org","@type":"Service","name":"Enterprise","description":"Solution IA personnalisée pour organisations avec besoins de sécurité, propriété IP et intégrations avancées.","serviceType":"Automatisation IA et growth digital","provider":{"@type":"Organization","name":"Hozana Concept","url":"https://www.hozanaconcept.com"},"areaServed":"FR","url":"https://www.hozanaconcept.com/contact"}},{"@type":"ListItem","position":6,"item":{"@context":"https://schema.org","@type":"Service","name":"personalisé","description":"une offre qui s'adapte a vos besoins","serviceType":"Automatisation IA et growth digital","provider":{"@type":"Organization","name":"Hozana Concept","url":"https://www.hozanaconcept.com"},"areaServed":"FR","url":"https://www.hozanaconcept.com/pack-details/personalise.html"}},{"@type":"ListItem","position":7,"item":{"@context":"https://schema.org","@type":"Service","name":"chatbot","description":"Ajout d un chatbot IA avancé supplémentaire à votre solution existante.","serviceType":"Automatisation IA et growth digital","provider":{"@type":"Organization","name":"Hozana Concept","url":"https://www.hozanaconcept.com"},"areaServed":"FR","url":"https://www.hozanaconcept.com/pack-details/chatbot.html","offers":{"@type":"Offer","price":100,"priceCurrency":"EUR","availability":"https://schema.org/InStock","url":"https://www.hozanaconcept.com/pack-details/chatbot.html"}}}]}</script><script id="static-pricing-faq-jsonld" type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment fonctionne l'engagement ?","acceptedAnswer":{"@type":"Answer","text":"L'engagement minimum est de 3 mois pour nous permettre d'obtenir des résultats mesurables. Après cette période, vous pouvez résilier à tout moment avec un préavis de 30 jours. Nous sommes confiants dans nos résultats."}},{"@type":"Question","name":"Quand verrai-je les premiers résultats ?","acceptedAnswer":{"@type":"Answer","text":"Les premiers résultats mesurables apparaissent généralement dans les 2 à 4 premières semaines après le déploiement. L'automatisation est opérationnelle dès le premier mois, et les indicateurs de performance s'améliorent progressivement."}},{"@type":"Question","name":"Puis-je changer de pack en cours de route ?","acceptedAnswer":{"@type":"Answer","text":"Absolument ! Vous pouvez upgrader votre pack à tout moment. Les frais sont ajustés au prorata. Le downgrade est possible uniquement en fin d'engagement."}},{"@type":"Question","name":"Faut-il avoir des connaissances techniques ?","acceptedAnswer":{"@type":"Answer","text":"Absolument pas ! Nous gérons toute la partie technique. Vous n'avez besoin que de comprendre votre business. Notre équipe s'occupe du déploiement, de la configuration et de la maintenance."}},{"@type":"Question","name":"Mes données sont-elles sécurisées ?","acceptedAnswer":{"@type":"Answer","text":"La sécurité est notre priorité absolue. Toutes vos données sont chiffrées, stockées sur des serveurs sécurisés en Europe et conformes au RGPD. Vous conservez la pleine propriété de vos données à tout moment."}}]}</script><meta property="og:description" content="Compare Hozana Concept AI plans, automation packages and growth options for international companies."><meta name="twitter:description" content="Compare Hozana Concept AI plans, automation packages and growth options for international companies."><meta property="og:title" content="Plans &amp; Pricing IA | Hozana Concept — from 490€/month"><meta name="twitter:title" content="Plans &amp; Pricing IA | Hozana Concept — from 490€/month"><meta property="og:locale" content="en_US"><link rel="alternate" hreflang="fr" href="https://www.hozanaconcept.com/pricing.html"><link rel="alternate" hreflang="en-us" href="https://www.hozanaconcept.com/en/pricing.html"><link rel="alternate" hreflang="en-gb" href="https://www.hozanaconcept.com/en/pricing.html"><link rel="alternate" hreflang="x-default" href="https://www.hozanaconcept.com/pricing.html"><meta name="robots" content="index, follow"></head>
+<body>
+<div id="loader">
+  <img src="../images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;">
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+<div id="navbar-placeholder"></div>
+
+<!-- HERO -->
+<section class="packs-hero">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="section-label reveal" style="justify-content:center;">Plans &amp; Pricing</div>
+    <h1 class="text-display reveal delay-1" style="max-width:700px;margin:0.75rem auto 1.5rem;">
+      Des prix <span class="gradient-text">transparents</span>,<br>des résultats concrets
+    </h1>
+    <p class="text-body-lg reveal delay-2" style="max-width:560px;margin:0 auto 2.5rem;">
+      Choisissez le pack adapté à votre stade de growth. Pas de frais cachés, pas de mauvaises surprises.
+    </p>
+
+    <!-- Billing Toggle -->
+    <div style="display:flex;justify-content:center;align-items:center;gap:1rem;margin-bottom:3rem;" class="reveal delay-3">
+      <div class="billing-toggle">
+        <button class="billing-btn active" id="monthly-btn" onclick="toggleBilling('monthly')">Monthly</button>
+        <button class="billing-btn" id="annual-btn" onclick="toggleBilling('annual')">Annual</button>
+      </div>
+      <div class="badge badge-red" id="annual-badge" style="display:none;">-20% 🎉</div>
+    </div>
+
+    <!-- Main Packs Grid -->
+    <div class="packs-grid" id="packs-container" style="grid-template-columns: repeat(4, 1fr); max-width: 1200px; margin: 0px auto; padding-top: 1.25rem;">
+      <article class="glass pack-card-full  reveal" itemscope="" itemtype="https://schema.org/Product">
+
+        <div style="margin-top:0.5rem;">
+          <div class="badge badge-glass" style="width:fit-content;opacity:0.75;font-size:0.7rem;" itemprop="name">Pack Starter</div>
+
+          <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="" id="starter-price" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
+            <span itemprop="price">160</span>
+            <meta itemprop="priceCurrency" content="EUR">
+            <link itemprop="availability" href="https://schema.org/InStock">
+          </div>
+          <div style="font-size:0.875rem;color:var(--white-50);">per month</div>
+        </div>
+        <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">best for starting your business</p>
+        <ul class="pack-features" style="flex:1;"><li>1 configurable AI chatbot</li><li>3 automated workflows</li><li>Integration 2 tools (CRM/email)</li><li>Monthly PDF report</li><li>Email support within 48h</li><li>Onboarding 2h</li><li class="excluded">Real-time analytics</li><li class="excluded">AI content</li><li class="excluded">Growth Ads</li></ul>
+        <a href="./pack-details/starter.html" class="btn btn-glass w-full mt-lg" style="justify-content:center;">
+          Démarrer
+        </a>
+      </article>
+      <article class="glass pack-card-full featured reveal" itemscope="" itemtype="https://schema.org/Product">
+        <div class="pack-badge">Le plus Populaire</div>
+        <div style="margin-top:0.5rem;">
+          <div class="badge badge-glass" style="width:fit-content;opacity:0.75;font-size:0.7rem;" itemprop="name">Pack Growth</div>
+
+          <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="gradient-text" id="growth-price" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
+            <span itemprop="price">499</span>
+            <meta itemprop="priceCurrency" content="EUR">
+            <link itemprop="availability" href="https://schema.org/InStock">
+          </div>
+          <div style="font-size:0.875rem;color:var(--white-50);">per month</div>
+        </div>
+        <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">For growing SMEs and startups that want to accelerate seriously.</p>
+        <ul class="pack-features" style="flex:1;"><li>3 AI chatbots avancés</li><li>10 workflows complexes</li><li>Integrations illimitées</li><li>Real-time analytics</li><li>Growth Ads IA (500€ budget inclus)</li><li>AI content - 20 pièces/month</li><li>Rapport hebdomadaire</li></ul>
+        <a href="./pack-details/growth.html" class="btn btn-primary w-full mt-lg" style="justify-content:center;">
+          Démarrer
+        </a>
+      </article>
+      <article class="glass pack-card-full  reveal" itemscope="" itemtype="https://schema.org/Product">
+
+        <div style="margin-top:0.5rem;">
+          <div class="badge badge-glass" style="width:fit-content;opacity:0.75;font-size:0.7rem;" itemprop="name">Pack Elite</div>
+
+          <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="" id="elite-price" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
+            <span itemprop="price">1 990€</span>
+            <meta itemprop="priceCurrency" content="EUR">
+            <link itemprop="availability" href="https://schema.org/InStock">
+          </div>
+          <div style="font-size:0.875rem;color:var(--white-50);">per month, HT</div>
+        </div>
+        <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">Complete AI transformation for ambitious companies : workflows illimités, BI, prédictif et support VIP.</p>
+        <ul class="pack-features" style="flex:1;"><li>IA sur mesure complète</li><li>Workflows illimités</li><li>BI et analyse prédictive</li><li>Growth Ads 2 000€/month</li><li>AI content illimité</li><li>Dedicated account manager</li><li>SLA 4h</li></ul>
+        <a href="./pack-details/elite.html" class="btn btn-glass w-full mt-lg" style="justify-content:center;">
+          View plan details
+        </a>
+      </article>
+      <article class="glass pack-card-full  reveal" itemscope="" itemtype="https://schema.org/Product">
+
+        <div style="margin-top:0.5rem;">
+          <div class="badge badge-glass" style="width:fit-content;opacity:0.75;font-size:0.7rem;" itemprop="name">startup</div>
+
+          <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="" id="startup-price" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
+            <span itemprop="price">800</span>
+            <meta itemprop="priceCurrency" content="EUR">
+            <link itemprop="availability" href="https://schema.org/InStock">
+          </div>
+          <div style="font-size:0.875rem;color:var(--white-50);">per month</div>
+        </div>
+        <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">a special offer for medium-sized businesses</p>
+        <ul class="pack-features" style="flex:1;"><li>chatbot</li><li>siteweb</li><li>5 affiche par weeks</li><li>moderation reseau</li><li class="excluded">style</li><li class="excluded">voice</li></ul>
+        <a href="./pack-details/startup.html" class="btn btn-glass w-full mt-lg" style="justify-content:center;">
+          Démarrer
+        </a>
+      </article>
+      <article class="glass pack-card-full  reveal" itemscope="" itemtype="https://schema.org/Product">
+
+        <div style="margin-top:0.5rem;">
+          <div class="badge badge-glass" style="width:fit-content;opacity:0.75;font-size:0.7rem;" itemprop="name">Enterprise</div>
+
+          <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="" id="enterprise-price" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
+            <span itemprop="price">Sur devis</span>
+            <meta itemprop="priceCurrency" content="EUR">
+            <link itemprop="availability" href="https://schema.org/InStock">
+          </div>
+          <div style="font-size:0.875rem;color:var(--white-50);">architecture et SLA personnalisés</div>
+        </div>
+        <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">Custom AI solution pour organisations avec besoins de sécurité, propriété IP et integrations avancées.</p>
+        <ul class="pack-features" style="flex:1;"><li>Architecture IA dédiée</li><li>SLA personnalisé</li><li>Équipe dédiée</li><li>IP ownership</li><li>Formation certifiante</li></ul>
+        <a href="contact.html?pack=Enterprise" class="btn btn-primary w-full mt-lg" style="justify-content:center;">
+          Contact us
+        </a>
+      </article>
+      <article class="glass pack-card-full  reveal" itemscope="" itemtype="https://schema.org/Product">
+
+        <div style="margin-top:0.5rem;">
+          <div class="badge badge-glass" style="width:fit-content;opacity:0.75;font-size:0.7rem;" itemprop="name">personalisé</div>
+
+          <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="" id="personalise-price" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
+            <span itemprop="price">---</span>
+            <meta itemprop="priceCurrency" content="EUR">
+            <link itemprop="availability" href="https://schema.org/InStock">
+          </div>
+          <div style="font-size:0.875rem;color:var(--white-50);">per month</div>
+        </div>
+        <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">an offer tailored to your needs</p>
+        <ul class="pack-features" style="flex:1;"><li>tout</li><li class="excluded">sauf rien</li></ul>
+        <a href="https://hozanaconcept.com/contact.html" class="btn btn-primary w-full mt-lg" style="justify-content:center;">
+          Contact us
+        </a>
+      </article>
+      <article class="glass pack-card-full  reveal" itemscope="" itemtype="https://schema.org/Product">
+
+        <div style="margin-top:0.5rem;">
+          <div class="badge badge-glass" style="width:fit-content;opacity:0.75;font-size:0.7rem;" itemprop="name">chatbot</div>
+
+          <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="" id="chatbot-price" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
+            <span itemprop="price">100</span>
+            <meta itemprop="priceCurrency" content="EUR">
+            <link itemprop="availability" href="https://schema.org/InStock">
+          </div>
+          <div style="font-size:0.875rem;color:var(--white-50);">per month</div>
+        </div>
+        <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">Add an advanced AI chatbot to your existing solution.</p>
+        <ul class="pack-features" style="flex:1;"><li>chattbot</li><li>email</li><li class="excluded">sms</li></ul>
+        <a href="./pack-details/chatbot.html" class="btn btn-glass w-full mt-lg" style="justify-content:center;">
+          View plan details
+        </a>
+      </article></div>
+
+    <p class="text-sm" style="margin-top:1.5rem;text-align:center;color:var(--white-40);">
+      * Tous les prix sont HT. Engagement minimum 3 month. Résiliation à tout moment après engagement.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     COMPARISON TABLE
+     ============================================================ -->
+<section class="section" style="background:var(--black-2);">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">Comparison</div>
+      <h2 class="text-h1">Tableau <span class="gradient-text">comparison</span> complet</h2>
+    </div>
+
+    <div class="glass" style="border-radius:var(--radius-xl);overflow:hidden;overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th style="width:30%;">Feature</th>
+            <th>Starter</th><th>Growth ⭐</th><th>Elite</th><th>startup</th><th>Enterprise</th><th>personalisé</th><th>chatbot</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>AI chatbot</td>
+            <td>1 configurable AI chatbot</td><td>—</td><td>—</td><td>chatbot</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>Automated workflows</td>
+            <td>3 automated workflows</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>Real-time analytics</td>
+            <td class="no">✗</td><td>Real-time analytics</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>AI content/month</td>
+            <td class="no">✗</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>Growth Ads IA</td>
+            <td class="no">✗</td><td class="yes">Growth Ads IA (500€ budget inclus)</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>Predictive analytics</td>
+            <td>—</td><td>—</td><td>BI et analyse prédictive</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>Dedicated account manager</td>
+            <td>—</td><td>—</td><td>Dedicated account manager</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>IP ownership</td>
+            <td>—</td><td>—</td><td>—</td><td>—</td><td>IP ownership</td><td>—</td><td>—</td>
+          </tr>
+        </tbody></table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ADD-ONS
+     ============================================================ -->
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">Options</div>
+      <h2 class="text-h1">Add-ons <span class="gradient-text">à la carte</span></h2>
+      <p class="text-body-lg mt-sm">Personnalisez n'importe quel pack avec nos modules complémentaires.</p>
+    </div>
+
+    <div class="grid-3" id="options-container">
+      <div class="glass card reveal" data-option-card="">
+        <div class="card-icon"><i class="fas fa-robot" style="background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i></div>
+        <h3 class="card-title">Chatbot Supplémentaire</h3>
+        <p class="card-text">Add an advanced AI chatbot to your existing solution.</p>
+
+        <div style="margin-top:1rem;font-family:var(--font-title);font-size:1.25rem;font-weight:700;">+ 100€<span style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-body);font-weight:400;"> per month</span></div>
+        <button class="btn btn-glass w-full mt-lg" style="justify-content:center;" onclick="addPricingOptionToCart({&quot;id&quot;:&quot;561f3c10-ac8d-41ae-8c6c-34ccdabab466&quot;,&quot;name&quot;:&quot;Chatbot Supplémentaire&quot;,&quot;price&quot;:100,&quot;period&quot;:&quot;par mois&quot;,&quot;description&quot;:&quot;Ajout d un chatbot IA avancé supplémentaire à votre solution existante.&quot;});">
+          Add to cart
+        </button>
+      </div></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ
+     ============================================================ -->
+<section class="section" style="background:var(--black-2);">
+  <div class="container" style="max-width:760px;">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">FAQ</div>
+      <h2 class="text-h1">Questions <span class="gradient-text">fréquentes</span></h2>
+    </div>
+
+    <div class="glass" style="padding:2rem;border-radius:var(--radius-xl);">
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Comment fonctionne l'engagement ?
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">L'engagement minimum est de 3 month pour nous permettre d'obtenir des résultats mesurables. Après cette période, vous pouvez résilier à tout moment avec un préavis de 30 days. Nous sommes confiants dans nos résultats.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Quand verrai-je les premiers résultats ?
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">Les premiers résultats mesurables apparaissent généralement dans les 2 à 4 premières semaines après le déploiement. L'automatisation est opérationnelle dès le premier mois, et les indicateurs de performance s'améliorent progressivement.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Puis-je changer de pack en cours de route ?
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">Absolument ! Vous pouvez upgrader votre pack à tout moment. Les frais sont ajustés au prorata. Le downgrade est possible uniquement en fin d'engagement.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Faut-il avoir des connaissances techniques ?
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">Absolument pas ! Nous gérons toute la partie technique. Vous n'avez besoin que de comprendre votre business. Notre équipe s'occupe du déploiement, de la configuration et de la maintenance.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Mes données sont-elles sécurisées ?
+          <span class="faq-icon"><i class="fas fa-plus"></i></span>
+        </div>
+        <div class="faq-answer">La sécurité est notre priorité absolue. Toutes vos données sont chiffrées, stockées sur des serveurs sécurisés en Europe et conformes au RGPD. Vous conservez la pleine propriété de vos données à tout moment.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Final -->
+<section class="section">
+  <div class="container">
+    <div class="cta-section reveal">
+      <!-- Decorative motifs -->
+      <div class="cta-glow"></div>
+      <div class="cta-ring-tl"></div>
+      <div class="cta-ring-br"></div>
+      <div class="cta-dots">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <!-- Content -->
+      <div style="position:relative;z-index:1;">
+        <div class="section-label" style="justify-content:center;">First step</div>
+        <h2 class="text-h1" style="margin:0.75rem 0 1.5rem;">
+          Commencez par un <span class="gradient-text">audit gratuit</span>
+        </h2>
+        <p class="text-body-lg" style="max-width:540px;margin:0 auto 2rem;">
+          30 minutes avec un expert pour identifier vos opportunités et choisir le pack le plus adapté.
+        </p>
+        <a href="./contact.html" class="btn btn-primary btn-lg">
+          <i class="fas fa-calendar"></i> Réserver mon audit gratuit
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/core.js"></script>
+<script src="../js/components.js"></script>
+<script>
+  function toggleBilling(type) {
+    const isAnnual = type === 'annual';
+    document.getElementById('monthly-btn').classList.toggle('active', !isAnnual);
+    document.getElementById('annual-btn').classList.toggle('active', isAnnual);
+    document.getElementById('annual-badge').style.display = isAnnual ? 'flex' : 'none';
+
+    const prices = {
+      starter: { monthly: '490€', annual: '392€' },
+      growth: { monthly: '990€', annual: '792€' },
+      elite: { monthly: '1 990€', annual: '1 592€' }
+    };
+
+    Object.entries(prices).forEach(([key, val]) => {
+      const el = document.getElementById(`${key}-price`);
+      if (el) el.textContent = isAnnual ? val.annual : val.monthly;
+    });
+  }
+
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const answer = item.querySelector('.faq-answer');
+    const wasOpen = item.classList.contains('open');
+
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-answer').classList.remove('open');
+    });
+
+    if (!wasOpen) {
+      item.classList.add('open');
+      answer.classList.add('open');
+    }
+  }
+
+  /* ─── DYNAMIC PACKS ─── */
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const [packsRes, optionsRes] = await Promise.all([
+        fetch('tables/packs?order=sort_order.asc'),
+        fetch('tables/pack_options?order=sort_order.asc')
+      ]);
+      const packsJson = await packsRes.json();
+      const optionsJson = optionsRes.ok ? await optionsRes.json() : { data: [] };
+      const packs = (packsJson.data || []).filter(p => !isPricingOption(p));
+      const options = optionsJson.data || [];
+      renderPacks(packs);
+      renderPricingOptions(options);
+    } catch (e) {
+      console.error('Erreur packs:', e);
+    }
+  });
+
+  function renderPacks(packs) {
+    const container = document.getElementById('packs-container');
+    if (!packs.length) {
+      container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--white-30);">Aucun pack disponible pour le moment.</div>';
+      return;
+    }
+
+    // Update container columns based on count
+    const count = packs.length;
+    container.style.gridTemplateColumns = `repeat(${count > 3 ? 4 : count}, 1fr)`;
+    const preferredFeaturedIndex = packs.findIndex(p =>
+      String(p.name || '').toLowerCase().includes('growth') &&
+      (p.is_featured === true || String(p.is_featured) === 'true')
+    );
+    const firstFeaturedIndex = packs.findIndex(p => p.is_featured === true || String(p.is_featured) === 'true');
+    const activeFeaturedIndex = preferredFeaturedIndex >= 0 ? preferredFeaturedIndex : firstFeaturedIndex;
+
+    container.innerHTML = packs.map((p, i) => {
+      const isFeatured = i === activeFeaturedIndex;
+      const features = Array.isArray(p.features) ? p.features : [];
+      const excluded = Array.isArray(p.features_excluded) ? p.features_excluded : [];
+
+      const href = p.link || (String(p.price || '').toLowerCase().includes('devis') ? '/contact?pack=' + encodeURIComponent(p.name) : 'pack-detail.html?pack=' + encodeURIComponent(p.name));
+      const isContact = /contact/i.test(href);
+      const savedButtonText = String(p.button_text || '').trim();
+      const isGenericButtonText = /^(démarrer|demarrer|choisir|choisir ce pack|voir le détail du pack|voir le detail du pack)/i.test(savedButtonText);
+      const buttonText = isContact && (!savedButtonText || isGenericButtonText) ? 'Contactez-nous' : (savedButtonText || (isContact ? 'Contactez-nous' : 'Choisir ce pack →'));
+      const buttonClass = p.button_class || (isContact ? 'btn-primary' : (isFeatured ? 'btn-primary' : 'btn-glass'));
+      const badgeHtml = isFeatured ? `<div class="pack-badge">${p.badge || 'Mis en avant'}</div>` : (p.badge ? `<div class="badge badge-glass" style="width:fit-content;margin-bottom:1rem;">${p.badge}</div>` : '');
+
+      return `
+      <div class="glass pack-card-full ${isFeatured ? 'featured' : ''} reveal" style="transition-delay: ${i * 100}ms">
+        ${badgeHtml}
+        <div style="margin-top:0.5rem;">
+          <div class="badge badge-glass" style="width:fit-content;opacity:0.6;font-size:0.7rem;">${p.name}</div>
+          <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="${isFeatured ? 'gradient-text' : ''}" id="${p.name.toLowerCase()}-price">${p.price || 'Sur Devis'}</div>
+          <div style="font-size:0.875rem;color:var(--white-50);">${p.period || 'par mois, HT'}</div>
+        </div>
+        <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;">${p.description || ''}</p>
+        <ul class="pack-features" style="flex:1;">
+          ${features.map(f => `<li>${f}</li>`).join('')}
+          ${excluded.map(f => `<li class="excluded">${f}</li>`).join('')}
+        </ul>
+        <a href="${href}" class="btn ${buttonClass} w-full mt-lg" style="justify-content:center;">
+          ${buttonText}
+        </a>
+      </div>`;
+    }).join('');
+
+    // Trigger reveals if core.js is loaded
+    if (window.initReveals) window.initReveals();
+  }
+
+  function isPricingOption(item) {
+    const explicit = String(item?.item_type || item?.type || item?.category || '').toLowerCase();
+    const buttonText = String(item?.button_text || '').toLowerCase();
+    return explicit === 'option' || buttonText.includes('ajouter au panier');
+  }
+
+  function renderPricingOptions(options) {
+    const container = document.getElementById('options-container');
+    if (!container || !options.length) return;
+    container.innerHTML = options.map((option, i) => {
+      const price = parsePricingPrice(option.price);
+      const oldPrice = parsePricingPrice(option.old_price);
+      const payload = encodeURIComponent(JSON.stringify({
+        id: option.id || option.name,
+        name: option.name,
+        price,
+        period: option.period || 'par mois',
+        description: option.description || ''
+      }));
+      return `
+      <div class="glass card reveal delay-${Math.min(i + 1, 3)}">
+        <div class="card-icon"><i class="${pricingOptionIcon(option.name)}" style="background:var(--grad-red);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i></div>
+        <h3 class="card-title">${option.name}</h3>
+        <p class="card-text">${option.description || ''}</p>
+        ${oldPrice ? `<div style="font-size:0.85rem;color:var(--white-30);text-decoration:line-through;margin-top:0.25rem;">${oldPrice.toLocaleString('fr-FR')}€</div>` : ''}
+        <div style="margin-top:1rem;font-family:var(--font-title);font-size:1.25rem;font-weight:700;">+ ${price.toLocaleString('fr-FR')}€<span style="font-size:0.8rem;color:var(--white-50);font-family:var(--font-body);font-weight:400;"> ${option.period || 'par mois'}</span></div>
+        <button class="btn btn-glass w-full mt-lg" style="justify-content:center;" onclick="addPricingOptionToCart(JSON.parse(decodeURIComponent('${payload}')))">Ajouter au panier</button>
+      </div>`;
+    }).join('');
+    if (window.initReveals) window.initReveals();
+  }
+
+  function addPricingOptionToCart(option) {
+    const key = 'hcCartOptions';
+    const current = JSON.parse(localStorage.getItem(key) || '[]');
+    if (!current.some(item => item.id === option.id)) current.push(option);
+    localStorage.setItem(key, JSON.stringify(current));
+    window.HC?.showToast?.('Option ajoutée au panier', 'success');
+  }
+
+  function parsePricingPrice(value) {
+    const n = parseInt(String(value || '').replace(/[^0-9]/g, ''), 10);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function pricingOptionIcon(name) {
+    const n = String(name || '').toLowerCase();
+    if (n.includes('workflow')) return 'fas fa-cogs';
+    if (n.includes('contenu') || n.includes('content')) return 'fas fa-file-alt';
+    if (n.includes('support')) return 'fas fa-headset';
+    return 'fas fa-robot';
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body></html>

@@ -1,0 +1,1003 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><script data-english-runtime="true">window.__ROOT_PATH__="../";window.__PAGE_ROOT__="./";window.__FORCE_LANG__='en';</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI &amp; Digital Services | Hozana Concept — 6 areas of expertise</title>
+  <meta name="description" content="Explore Hozana Concept services: AI engines, automation, growth intelligence, platform SDK, business insights and expert strategy.">
+  <link rel="icon" type="image/png" href="../images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Sora:wght@300;400;500;600;700;800&amp;family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/design-system.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* ── Hero ── */
+    .service-hero {
+      padding: calc(var(--nav-height) + 5rem) 2rem 5rem;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,46,46,0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 90% 50%, rgba(255,106,0,0.08) 0%, transparent 50%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ── Quick-nav pills ── */
+    .svc-quicknav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.625rem;
+      margin-top: 2.5rem;
+    }
+    .svc-qpill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      font-size: 0.8rem;
+      font-family: var(--font-accent);
+      font-weight: 600;
+      color: var(--white-70);
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+    }
+    .svc-qpill:hover {
+      border-color: rgba(255,46,46,0.4);
+      background: rgba(255,46,46,0.07);
+      color: var(--white);
+    }
+    .svc-qpill i { font-size: 0.7rem; color: var(--red); }
+
+    /* ── Section structure ── */
+    .svc-section {
+      scroll-margin-top: calc(var(--nav-height) + 1rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .svc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4.5rem;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .svc-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .svc-grid .svc-visual { display: none; }
+    }
+
+    /* ── Label & badge ── */
+    .svc-cat-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+    }
+    .svc-cat-label.red   { background: rgba(255,46,46,0.12);  color: #FF7070; border: 1px solid rgba(255,46,46,0.2); }
+    .svc-cat-label.orange{ background: rgba(255,106,0,0.12); color: #FF8C42; border: 1px solid rgba(255,106,0,0.2); }
+    .svc-cat-label.white { background: rgba(255,255,255,0.07);color: var(--white-80); border: 1px solid rgba(255,255,255,0.1); }
+
+    /* ── Feature list ── */
+    .svc-feat-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.625rem 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .svc-feat-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--white-70);
+    }
+    .svc-feat-list li::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      min-width: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      margin-top: 0.42em;
+    }
+    @media (max-width: 600px) {
+      .svc-feat-list { grid-template-columns: 1fr; }
+    }
+
+    /* ── Service number watermark ── */
+    .svc-num {
+      font-family: var(--font-title);
+      font-size: 6rem;
+      font-weight: 900;
+      color: rgba(255,46,46,0.06);
+      line-height: 1;
+      position: absolute;
+      top: -1rem;
+      right: 1.5rem;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* ── Visual cards ── */
+    .svc-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .svc-card-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      color: white;
+      margin-bottom: 1.25rem;
+    }
+    .svc-metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+    .svc-metric {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 0.5rem;
+      text-align: center;
+    }
+    .svc-metric-val {
+      font-family: var(--font-title);
+      font-size: 1.3rem;
+      font-weight: 800;
+      background: var(--grad-red);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .svc-metric-val.green { background: none; -webkit-text-fill-color: #22c55e; }
+    .svc-metric-lbl { font-size: 0.7rem; color: var(--white-40); margin-top: 0.2rem; }
+
+    /* Progress bars */
+    .svc-bar-wrap { display: flex; flex-direction: column; gap: 0.75rem; }
+    .svc-bar-row  { display: flex; flex-direction: column; gap: 0.3rem; }
+    .svc-bar-meta { display: flex; justify-content: space-between; font-size: 0.78rem; }
+    .svc-bar-track { height: 5px; background: rgba(255,255,255,0.07); border-radius: 3px; }
+    .svc-bar-fill  { height: 100%; background: var(--grad-red); border-radius: 3px; }
+
+    /* Step flow (automation) */
+    .svc-flow { display: flex; flex-direction: column; gap: 0.625rem; }
+    .svc-step {
+      display: flex; align-items: center; gap: 0.875rem;
+      padding: 0.875rem 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-md);
+    }
+    .svc-step-ico {
+      width: 34px; height: 34px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; flex-shrink: 0;
+    }
+    .svc-step-ico.red   { background: rgba(255,46,46,0.15);  border: 1px solid rgba(255,46,46,0.25);  color: var(--red); }
+    .svc-step-ico.white { background: rgba(255,255,255,0.06);border: 1px solid rgba(255,255,255,0.1); color: var(--white-70); }
+    .svc-step-arrow { display: flex; justify-content: center; color: rgba(255,46,46,0.5); font-size: 0.8rem; }
+
+    /* Tag pills */
+    .svc-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+    .svc-tag {
+      font-size: 0.72rem; font-family: var(--font-accent); font-weight: 600;
+      padding: 0.3rem 0.75rem; border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--white-60);
+    }
+
+    /* Quote result */
+    .svc-quote {
+      margin-top: 1.25rem;
+      padding: 0.875rem 1.125rem;
+      border-left: 3px solid var(--red);
+      background: rgba(255,46,46,0.05);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      font-size: 0.82rem;
+      color: var(--white-70);
+      line-height: 1.55;
+    }
+
+    /* ── 6-cat grid overview ── */
+    .svc-overview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+    @media (max-width: 900px) { .svc-overview-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .svc-overview-grid { grid-template-columns: 1fr; } }
+
+    .svc-ov-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1.375rem;
+      transition: border-color 0.22s, background 0.22s, transform 0.22s;
+      text-decoration: none;
+      display: block;
+    }
+    .svc-ov-card:hover {
+      border-color: rgba(255,46,46,0.3);
+      background: rgba(255,46,46,0.05);
+      transform: translateY(-4px);
+    }
+    .svc-ov-card-icon {
+      width: 44px; height: 44px;
+      background: var(--grad-red);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: white;
+      margin-bottom: 1rem;
+    }
+    .svc-ov-card-title {
+      font-family: var(--font-accent);
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--white-90);
+      margin-bottom: 0.4rem;
+    }
+    .svc-ov-card-sub {
+      font-size: 0.78rem;
+      color: var(--white-40);
+      line-height: 1.5;
+    }
+
+    /* ── CTA section with pattern ── */
+    .svc-cta {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(255,46,46,0.09) 0%, rgba(255,106,0,0.06) 100%);
+      border: 1px solid rgba(255,46,46,0.15);
+      border-radius: var(--radius-xl);
+      padding: 5rem 3rem;
+      text-align: center;
+    }
+    /* Grid pattern overlay */
+    .svc-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    /* Top glowing line */
+    .svc-cta::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 50%; height: 1px;
+      background: var(--grad-red);
+      opacity: 0.7;
+    }
+    /* Radial glow blob */
+    .svc-cta-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px; height: 300px;
+      background: radial-gradient(ellipse, rgba(255,46,46,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    /* Decorative dots */
+    .svc-cta-dots {
+      position: absolute;
+      bottom: 2rem; right: 2rem;
+      display: grid;
+      grid-template-columns: repeat(5, 6px);
+      gap: 5px;
+      pointer-events: none;
+      opacity: 0.25;
+    }
+    .svc-cta-dots span {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      display: block;
+    }
+    @media (max-width: 768px) { .svc-cta { padding: 3.5rem 1.5rem; } }
+
+    /* Background alternating */
+    .bg-alt { background: var(--black-2); }
+  </style>
+<meta property="og:description" content="Explore Hozana Concept services: AI engines, automation, growth intelligence, platform SDK, business insights and expert strategy."><meta name="twitter:description" content="Explore Hozana Concept services: AI engines, automation, growth intelligence, platform SDK, business insights and expert strategy."><meta property="og:title" content="AI &amp; Digital Services | Hozana Concept — 6 areas of expertise"><meta name="twitter:title" content="AI &amp; Digital Services | Hozana Concept — 6 areas of expertise"><meta property="og:locale" content="en_US"><link rel="canonical" href="https://www.hozanaconcept.com/en/platform.html"><link rel="alternate" hreflang="fr" href="https://www.hozanaconcept.com/platform.html"><link rel="alternate" hreflang="en-us" href="https://www.hozanaconcept.com/en/platform.html"><link rel="alternate" hreflang="en-gb" href="https://www.hozanaconcept.com/en/platform.html"><link rel="alternate" hreflang="x-default" href="https://www.hozanaconcept.com/platform.html"><meta name="robots" content="index, follow"></head>
+<body>
+<div id="loader">
+  <img src="../images/favicon-logo.png" alt="Hozana" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem;">
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+<div id="navbar-placeholder"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     HERO
+     ══════════════════════════════════════════════════════════ -->
+<section class="service-hero">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="section-label reveal" style="justify-content:center;">6 Areas of Expertise</div>
+    <h1 class="text-display reveal delay-1" style="max-width:740px;margin:0.875rem auto 1.25rem;">
+      Des solutions conçues pour <span class="gradient-text">chaque ambition</span>
+    </h1>
+    <p class="text-body-lg reveal delay-2" style="max-width:560px;margin:0 auto 2rem;color:var(--white-60);">
+      De l'identité de marque à l'IA avancée, du development tech au consulting stratégique — nous couvrons tout votre écosystème digital.
+    </p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;" class="reveal delay-3">
+      <a href="./contact.html" class="btn btn-primary btn-lg"><i class="fas fa-rocket"></i> Start a project</a>
+      <a href="./pricing.html" class="btn btn-glass btn-lg">View plans →</a>
+    </div>
+
+    <!-- Quick-nav pills -->
+    <nav class="svc-quicknav reveal delay-3" aria-label="Navigation rapide des services">
+      <a class="svc-qpill" href="#ia"><i class="fas fa-bolt"></i> Intelligence Artificielle</a>
+      <a class="svc-qpill" href="#branding"><i class="fas fa-palette"></i> Branding &amp; Création</a>
+      <a class="svc-qpill" href="#marketing"><i class="fas fa-chart-line"></i> Marketing Digital</a>
+      <a class="svc-qpill" href="#dev"><i class="fas fa-code"></i> Development Tech</a>
+      <a class="svc-qpill" href="#business"><i class="fas fa-funnel-dollar"></i> Business &amp; Monétisation</a>
+      <a class="svc-qpill" href="#consulting"><i class="fas fa-gem"></i> Consulting Premium</a>
+    </nav>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     APERÇU 6 CATÉGORIES
+     ══════════════════════════════════════════════════════════ -->
+<section class="section bg-alt">
+  <div class="container">
+    <div class="text-center mb-lg reveal">
+      <div class="section-label">Overview</div>
+      <h2 class="text-h1">Nos <span class="gradient-text">6 areas of expertise</span></h2>
+    </div>
+    <div class="svc-overview-grid">
+      <a class="svc-ov-card reveal" href="./service-ia.html">
+        <div class="svc-ov-card-icon"><i class="fas fa-bolt"></i></div>
+        <div class="svc-ov-card-title">Intelligence Artificielle <span style="font-size:0.62rem;background:var(--grad-red);color:#fff;padding:0.1rem 0.45rem;border-radius:999px;vertical-align:middle;font-weight:700;">STAR</span></div>
+        <div class="svc-ov-card-sub">Automation IA · Chatbots · Agents IA · Predictive analytics · Génération contenu</div>
+      </a>
+      <a class="svc-ov-card reveal delay-1" href="./service-branding.html">
+        <div class="svc-ov-card-icon"><i class="fas fa-palette"></i></div>
+        <div class="svc-ov-card-title">Branding &amp; Création</div>
+        <div class="svc-ov-card-sub">Brand Identity · UI/UX Design · Motion Design · Content Studio</div>
+      </a>
+      <a class="svc-ov-card reveal delay-2" href="./service-marketing.html">
+        <div class="svc-ov-card-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="svc-ov-card-title">Marketing Digital</div>
+        <div class="svc-ov-card-sub">Growth Marketing · Social Media · Ads Facebook/Google/TikTok · SEO</div>
+      </a>
+      <a class="svc-ov-card reveal delay-1" href="./service-dev.html">
+        <div class="svc-ov-card-icon"><i class="fas fa-code"></i></div>
+        <div class="svc-ov-card-title">Development Tech</div>
+        <div class="svc-ov-card-sub">Sites web · Apps web &amp; mobile · SaaS · API &amp; integrations</div>
+      </a>
+      <a class="svc-ov-card reveal delay-2" href="./service-business.html">
+        <div class="svc-ov-card-icon"><i class="fas fa-funnel-dollar"></i></div>
+        <div class="svc-ov-card-title">Business &amp; Monétisation</div>
+        <div class="svc-ov-card-sub">Funnels · CRO · Email &amp; SMS automation · Strategys de revenus</div>
+      </a>
+      <a class="svc-ov-card reveal delay-3" href="./service-consulting.html">
+        <div class="svc-ov-card-icon"><i class="fas fa-gem"></i></div>
+        <div class="svc-ov-card-title">Consulting Premium</div>
+        <div class="svc-ov-card-sub">Audit digital · Strategy IA · Transformation digitale · Coaching</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     01 — INTELLIGENCE ARTIFICIELLE (STAR)
+     ══════════════════════════════════════════════════════════ -->
+<section class="section svc-section" id="ia" style="background:radial-gradient(ellipse 70% 60% at 30% 50%, rgba(255,46,46,0.07) 0%, transparent 70%);">
+  <div class="container">
+    <div class="svc-grid">
+
+      <!-- Text -->
+      <div class="reveal-left">
+        <span class="svc-cat-label red"><i class="fas fa-bolt"></i> Service Star — Priorité #1</span>
+        <h2 class="text-h1" style="margin:0 0 1.25rem;">
+          <span class="gradient-text">Intelligence</span><br>Artificielle
+        </h2>
+        <p class="text-body-lg" style="margin-bottom:1.5rem;">
+          Nous développons des solutions IA sur mesure qui transforment vos processus business. Chatbots, agents autonomes, analyse prédictive — l'IA au service de vos résultats.
+        </p>
+        <ul class="svc-feat-list">
+          <li>Automation IA des process</li>
+          <li>Chatbots IA (WhatsApp + site web)</li>
+          <li>Agents IA personnalisés</li>
+          <li>Analyse &amp; prédictions données</li>
+          <li>Génération de contenu IA</li>
+          <li>Fine-tuning de modèles LLM</li>
+          <li>Scoring &amp; qualification IA</li>
+          <li>Integration GPT, Claude, Mistral</li>
+        </ul>
+        <div class="svc-tags">
+          <span class="svc-tag">GPT-4o</span>
+          <span class="svc-tag">n8n · Make</span>
+          <span class="svc-tag">LangChain</span>
+          <span class="svc-tag">WhatsApp API</span>
+          <span class="svc-tag">RAG</span>
+        </div>
+        <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+          <a href="./contact.html" class="btn btn-primary">Démarrer ce service →</a>
+          <a href="./pricing.html" class="btn btn-glass">View pricing</a>
+        </div>
+      </div>
+
+      <!-- Visual -->
+      <div class="svc-visual reveal-right">
+        <div class="svc-card">
+          <div class="svc-num">01</div>
+          <div class="svc-card-icon" style="background:var(--grad-red);">
+            <i class="fas fa-brain"></i>
+          </div>
+          <div style="font-family:var(--font-accent);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--white-40);margin-bottom:1.25rem;">Performance IA · Temps réel</div>
+
+          <div class="svc-metric-row">
+            <div class="svc-metric">
+              <div class="svc-metric-val green">98.7%</div>
+              <div class="svc-metric-lbl">Précision modèle</div>
+            </div>
+            <div class="svc-metric">
+              <div class="svc-metric-val">1.2ms</div>
+              <div class="svc-metric-lbl">Temps de réponse</div>
+            </div>
+            <div class="svc-metric">
+              <div class="svc-metric-val">24/7</div>
+              <div class="svc-metric-lbl">Disponibilité</div>
+            </div>
+          </div>
+
+          <div class="svc-bar-wrap">
+            <div class="svc-bar-row">
+              <div class="svc-bar-meta">
+                <span style="color:var(--white-60);font-size:0.78rem;">NLP &amp; Compréhension</span>
+                <span style="color:var(--red);font-size:0.78rem;font-weight:700;">96%</span>
+              </div>
+              <div class="svc-bar-track"><div class="svc-bar-fill" style="width:96%;"></div></div>
+            </div>
+            <div class="svc-bar-row">
+              <div class="svc-bar-meta">
+                <span style="color:var(--white-60);font-size:0.78rem;">Génération de contenu</span>
+                <span style="color:var(--red);font-size:0.78rem;font-weight:700;">93%</span>
+              </div>
+              <div class="svc-bar-track"><div class="svc-bar-fill" style="width:93%;background:linear-gradient(90deg,#FF6A00,#FF2E2E);"></div></div>
+            </div>
+            <div class="svc-bar-row">
+              <div class="svc-bar-meta">
+                <span style="color:var(--white-60);font-size:0.78rem;">Predictive analytics</span>
+                <span style="color:var(--red);font-size:0.78rem;font-weight:700;">89%</span>
+              </div>
+              <div class="svc-bar-track"><div class="svc-bar-fill" style="width:89%;background:linear-gradient(90deg,#FF2E2E,#CC0000);"></div></div>
+            </div>
+          </div>
+
+          <div class="svc-quote">
+            <i class="fas fa-quote-left" style="color:var(--red);margin-right:0.5rem;font-size:0.7rem;"></i>
+            <strong style="color:var(--white);">Résultat client :</strong> Notre IA de qualification a augmenté notre taux de conversion de 2 % à 18 % en 90 days.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-glow divider" style="margin:0;"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     02 — BRANDING & CRÉATION
+     ══════════════════════════════════════════════════════════ -->
+<section class="section svc-section bg-alt" id="branding">
+  <div class="container">
+    <div class="svc-grid" style="direction:rtl;">
+
+      <!-- Visual (gauche visuellement) -->
+      <div class="svc-visual reveal-left" style="direction:ltr;">
+        <div class="svc-card">
+          <div class="svc-num">02</div>
+          <div class="svc-card-icon" style="background:linear-gradient(135deg,#FF6A00,#FF2E2E);">
+            <i class="fas fa-palette"></i>
+          </div>
+          <div style="font-family:var(--font-accent);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--white-40);margin-bottom:1.25rem;">Création · Identité · Motion</div>
+
+          <!-- Mini brand preview -->
+          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <div class="svc-step">
+              <div class="svc-step-ico white"><i class="fas fa-fingerprint"></i></div>
+              <div>
+                <div style="font-size:0.8rem;font-weight:600;">Brand Identity</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Logo, charte, typographie, couleurs</div>
+              </div>
+            </div>
+            <div class="svc-step">
+              <div class="svc-step-ico white"><i class="fas fa-vector-square"></i></div>
+              <div>
+                <div style="font-size:0.8rem;font-weight:600;">UI/UX Design</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Maquettes, prototypes, design system</div>
+              </div>
+            </div>
+            <div class="svc-step">
+              <div class="svc-step-ico white"><i class="fas fa-film"></i></div>
+              <div>
+                <div style="font-size:0.8rem;font-weight:600;">Motion Design</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Animations, reels, intros vidéo</div>
+              </div>
+            </div>
+            <div class="svc-step">
+              <div class="svc-step-ico white"><i class="fas fa-photo-video"></i></div>
+              <div>
+                <div style="font-size:0.8rem;font-weight:600;">Content Studio</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Posts, stories, flyers, supports print</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="svc-quote">
+            <i class="fas fa-quote-left" style="color:var(--red);margin-right:0.5rem;font-size:0.7rem;"></i>
+            <strong style="color:var(--white);">+340 %</strong> d'engagement moyen après refonte de l'identité visuelle.
+          </div>
+        </div>
+      </div>
+
+      <!-- Text (droite) -->
+      <div class="reveal-right" style="direction:ltr;">
+        <span class="svc-cat-label orange"><i class="fas fa-palette"></i> Branding &amp; Création</span>
+        <h2 class="text-h1" style="margin:0 0 1.25rem;">
+          <span class="gradient-text">Identité</span> qui<br>marque les esprits
+        </h2>
+        <p class="text-body-lg" style="margin-bottom:1.5rem;">
+          Votre marque est votre première impression. Nous créons des identités visuelles fortes, cohérentes et mémorables qui convertissent avant même que vous parliez.
+        </p>
+        <ul class="svc-feat-list">
+          <li>Brand Identity complète</li>
+          <li>UI/UX Design &amp; prototypage</li>
+          <li>Motion Design &amp; animations</li>
+          <li>Content Studio (posts, flyers, reels)</li>
+          <li>Charte graphique &amp; design system</li>
+          <li>Packaging &amp; supports print</li>
+          <li>Shooting &amp; direction artistique</li>
+          <li>Templates réseaux sociaux</li>
+        </ul>
+        <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+          <a href="./contact.html" class="btn btn-primary">Create my identity →</a>
+          <a href="./portfolio.html" class="btn btn-glass">View work</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-glow divider" style="margin:0;"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     03 — MARKETING DIGITAL
+     ══════════════════════════════════════════════════════════ -->
+<section class="section svc-section" id="marketing" style="background:radial-gradient(ellipse 70% 60% at 70% 50%, rgba(255,106,0,0.06) 0%, transparent 70%);">
+  <div class="container">
+    <div class="svc-grid">
+
+      <!-- Text -->
+      <div class="reveal-left">
+        <span class="svc-cat-label red"><i class="fas fa-chart-line"></i> Marketing Digital</span>
+        <h2 class="text-h1" style="margin:0 0 1.25rem;">
+          <span class="gradient-text">Growth</span><br>à grande échelle
+        </h2>
+        <p class="text-body-lg" style="margin-bottom:1.5rem;">
+          Strategys data-driven propulsées par l'IA. Growth marketing, social media, publicités ciblées et SEO — nous activons tous vos leviers de growth.
+        </p>
+        <ul class="svc-feat-list">
+          <li>Growth Marketing</li>
+          <li>Social Media Management</li>
+          <li>Ads Facebook &amp; Instagram</li>
+          <li>Google Ads &amp; YouTube</li>
+          <li>TikTok Ads</li>
+          <li>SEO on-page &amp; technique</li>
+          <li>A/B testing &amp; optimisation</li>
+          <li>Attribution multi-touch</li>
+        </ul>
+        <div class="svc-tags">
+          <span class="svc-tag">Meta Ads</span>
+          <span class="svc-tag">Google Ads</span>
+          <span class="svc-tag">TikTok Ads</span>
+          <span class="svc-tag">SEMrush</span>
+          <span class="svc-tag">Analytics</span>
+        </div>
+        <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+          <a href="./contact.html" class="btn btn-primary">Boost my growth →</a>
+          <a href="./pricing.html" class="btn btn-glass">View plans</a>
+        </div>
+      </div>
+
+      <!-- Visual -->
+      <div class="svc-visual reveal-right">
+        <div class="svc-card">
+          <div class="svc-num">03</div>
+          <div class="svc-card-icon" style="background:var(--grad-red);">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div style="font-family:var(--font-accent);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--white-40);margin-bottom:1.25rem;">KPIs · Performance · ROI</div>
+
+          <div class="svc-metric-row">
+            <div class="svc-metric">
+              <div class="svc-metric-val green">+247%</div>
+              <div class="svc-metric-lbl">Trafic organique</div>
+            </div>
+            <div class="svc-metric">
+              <div class="svc-metric-val">×4.2</div>
+              <div class="svc-metric-lbl">ROI Ads</div>
+            </div>
+            <div class="svc-metric">
+              <div class="svc-metric-val">−67%</div>
+              <div class="svc-metric-lbl">Coût / acq.</div>
+            </div>
+          </div>
+
+          <!-- Mini bar chart -->
+          <div style="display:flex;align-items:flex-end;gap:4px;height:80px;margin-bottom:0.75rem;">
+            <div style="flex:1;background:rgba(255,46,46,0.25);border-radius:3px 3px 0 0;height:28%;"></div>
+            <div style="flex:1;background:rgba(255,46,46,0.35);border-radius:3px 3px 0 0;height:40%;"></div>
+            <div style="flex:1;background:rgba(255,46,46,0.45);border-radius:3px 3px 0 0;height:54%;"></div>
+            <div style="flex:1;background:rgba(255,46,46,0.55);border-radius:3px 3px 0 0;height:65%;"></div>
+            <div style="flex:1;background:rgba(255,46,46,0.7);border-radius:3px 3px 0 0;height:79%;"></div>
+            <div style="flex:1;background:var(--grad-red);border-radius:3px 3px 0 0;height:91%;box-shadow:0 0 12px rgba(255,46,46,0.4);"></div>
+            <div style="flex:1;background:var(--grad-red);border-radius:3px 3px 0 0;height:100%;box-shadow:0 0 18px rgba(255,46,46,0.5);"></div>
+          </div>
+          <div style="font-size:0.72rem;color:var(--white-30);text-align:center;margin-bottom:1rem;">Évolution revenus sur 7 month</div>
+
+          <div class="svc-quote">
+            <i class="fas fa-quote-left" style="color:var(--red);margin-right:0.5rem;font-size:0.7rem;"></i>
+            <strong style="color:var(--white);">Résultat :</strong> De 0 à 12 000 abonnés Instagram en 4 month, avec un CPA réduit de 67 %.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-glow divider" style="margin:0;"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     04 — DÉVELOPPEMENT TECH
+     ══════════════════════════════════════════════════════════ -->
+<section class="section svc-section bg-alt" id="dev">
+  <div class="container">
+    <div class="svc-grid" style="direction:rtl;">
+
+      <!-- Visual (gauche) -->
+      <div class="svc-visual reveal-left" style="direction:ltr;">
+        <div class="svc-card" style="font-family:var(--font-mono, 'Roboto Mono', monospace);">
+          <div class="svc-num">04</div>
+          <div class="svc-card-icon" style="background:linear-gradient(135deg,#FF2E2E,#FF6A00);">
+            <i class="fas fa-code"></i>
+          </div>
+          <div style="font-family:var(--font-accent);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--white-40);margin-bottom:1.25rem;">Stack · Livraison · Performance</div>
+
+          <!-- Code snippet -->
+          <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius-md);padding:1.25rem;font-family:'Roboto Mono',monospace;font-size:0.75rem;line-height:1.6;margin-bottom:1.25rem;">
+            <div style="color:var(--white-30);margin-bottom:0.5rem;">// HozanaApp.tsx</div>
+            <div><span style="color:#FF6A00;">import</span> <span style="color:var(--white-80);">React</span> <span style="color:#FF6A00;">from</span> <span style="color:var(--red);">'react-native'</span>;</div>
+            <div><span style="color:#FF6A00;">const</span> <span style="color:var(--white);">App</span> = () =&gt; {</div>
+            <div style="padding-left:1em;"><span style="color:#FF6A00;">return</span> <span style="color:var(--white-60);">&lt;</span><span style="color:#FF2E2E;">HozanaAI</span> <span style="color:var(--white-60);">/&gt;</span>;</div>
+            <div>};</div>
+            <div style="margin-top:0.5rem;color:#FF8C42;font-weight:600;">✓ Build successful — 30 days</div>
+          </div>
+
+          <!-- Platform pills -->
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+            <span style="font-size:0.72rem;padding:0.25rem 0.625rem;border-radius:999px;background:rgba(255,46,46,0.1);border:1px solid rgba(255,46,46,0.2);color:var(--red);font-weight:600;">
+              <i class="fab fa-android"></i> Android
+            </span>
+            <span style="font-size:0.72rem;padding:0.25rem 0.625rem;border-radius:999px;background:rgba(255,106,0,0.1);border:1px solid rgba(255,106,0,0.2);color:#FF8C42;font-weight:600;">
+              <i class="fab fa-apple"></i> iOS
+            </span>
+            <span style="font-size:0.72rem;padding:0.25rem 0.625rem;border-radius:999px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--white-70);font-weight:600;">
+              <i class="fas fa-globe"></i> Web
+            </span>
+            <span style="font-size:0.72rem;padding:0.25rem 0.625rem;border-radius:999px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--white-70);font-weight:600;">
+              <i class="fab fa-windows"></i> Windows
+            </span>
+          </div>
+
+          <div class="svc-bar-wrap">
+            <div class="svc-bar-row">
+              <div class="svc-bar-meta">
+                <span style="color:var(--white-60);font-size:0.78rem;">Livraison en 30 days</span>
+                <span style="color:var(--red);font-size:0.78rem;font-weight:700;">100%</span>
+              </div>
+              <div class="svc-bar-track"><div class="svc-bar-fill" style="width:100%;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="reveal-right" style="direction:ltr;">
+        <span class="svc-cat-label white"><i class="fas fa-code"></i> Development Tech</span>
+        <h2 class="text-h1" style="margin:0 0 1.25rem;">
+          Vos apps <span class="gradient-text">Mobile · Web</span><br>· Windows
+        </h2>
+        <p class="text-body-lg" style="margin-bottom:1.5rem;">
+          Du simple site vitrine au SaaS complet, en passant par les apps mobiles cross-platform — nous livrons du code propre, performant et maintenable.
+        </p>
+        <ul class="svc-feat-list">
+          <li>Sites web vitrine &amp; e-commerce</li>
+          <li>Applications mobiles (iOS &amp; Android)</li>
+          <li>Applications web progressives</li>
+          <li>SaaS &amp; plateformes sur mesure</li>
+          <li>API REST &amp; integrations</li>
+          <li>Applications Windows / Desktop</li>
+          <li>Référencement technique (SEO)</li>
+          <li>Maintenance &amp; évolutions</li>
+        </ul>
+        <div class="svc-tags">
+          <span class="svc-tag">React Native</span>
+          <span class="svc-tag">Next.js</span>
+          <span class="svc-tag">Node.js</span>
+          <span class="svc-tag">Supabase</span>
+          <span class="svc-tag">Flutter</span>
+        </div>
+        <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+          <a href="./contact.html" class="btn btn-primary">Build my app →</a>
+          <a href="./portfolio.html" class="btn btn-glass">View les projets</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-glow divider" style="margin:0;"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     05 — BUSINESS & MONÉTISATION
+     ══════════════════════════════════════════════════════════ -->
+<section class="section svc-section" id="business" style="background:radial-gradient(ellipse 70% 60% at 30% 50%, rgba(255,46,46,0.06) 0%, transparent 70%);">
+  <div class="container">
+    <div class="svc-grid">
+
+      <!-- Text -->
+      <div class="reveal-left">
+        <span class="svc-cat-label red"><i class="fas fa-funnel-dollar"></i> Business &amp; Monétisation</span>
+        <h2 class="text-h1" style="margin:0 0 1.25rem;">
+          Transformez vos<br>visiteurs en <span class="gradient-text">revenus</span>
+        </h2>
+        <p class="text-body-lg" style="margin-bottom:1.5rem;">
+          Funnels optimisés, email &amp; SMS automation, strategys CRO — nous construisons des machines à vendre qui tournent 24/7 sans intervention humaine.
+        </p>
+        <ul class="svc-feat-list">
+          <li>Funnels de vente haute conversion</li>
+          <li>CRO (Conversion Rate Optimization)</li>
+          <li>Email marketing automation</li>
+          <li>SMS automation &amp; séquences</li>
+          <li>Strategys de revenus récurrents</li>
+          <li>Upsell &amp; cross-sell intelligent</li>
+          <li>Lead magnets &amp; landing pages</li>
+          <li>Optimisation panier / checkout</li>
+        </ul>
+        <div class="svc-tags">
+          <span class="svc-tag">Klaviyo</span>
+          <span class="svc-tag">Brevo</span>
+          <span class="svc-tag">ActiveCampaign</span>
+          <span class="svc-tag">ClickFunnels</span>
+        </div>
+        <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+          <a href="./contact.html" class="btn btn-primary">Optimize my revenue →</a>
+          <a href="./pricing.html" class="btn btn-glass">View plans</a>
+        </div>
+      </div>
+
+      <!-- Visual -->
+      <div class="svc-visual reveal-right">
+        <div class="svc-card">
+          <div class="svc-num">05</div>
+          <div class="svc-card-icon" style="background:var(--grad-red);">
+            <i class="fas fa-funnel-dollar"></i>
+          </div>
+          <div style="font-family:var(--font-accent);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--white-40);margin-bottom:1.25rem;">Funnel · CRO · Automation</div>
+
+          <!-- Funnel steps -->
+          <div class="svc-flow">
+            <div class="svc-step">
+              <div class="svc-step-ico white"><i class="fas fa-mouse-pointer"></i></div>
+              <div style="flex:1;">
+                <div style="font-size:0.8rem;font-weight:600;">Trafic qualifié</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Ads, SEO, Social</div>
+              </div>
+              <div style="font-size:0.75rem;color:var(--red);font-weight:700;">100%</div>
+            </div>
+            <div class="svc-step-arrow"><i class="fas fa-angle-down"></i></div>
+            <div class="svc-step">
+              <div class="svc-step-ico white"><i class="fas fa-file-alt"></i></div>
+              <div style="flex:1;">
+                <div style="font-size:0.8rem;font-weight:600;">Landing page CRO</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">A/B testé, optimisé</div>
+              </div>
+              <div style="font-size:0.75rem;color:var(--red);font-weight:700;">42%</div>
+            </div>
+            <div class="svc-step-arrow"><i class="fas fa-angle-down"></i></div>
+            <div class="svc-step">
+              <div class="svc-step-ico red"><i class="fas fa-envelope-open-text"></i></div>
+              <div style="flex:1;">
+                <div style="font-size:0.8rem;font-weight:600;">Nurturing automatisé</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Email + SMS séquences</div>
+              </div>
+              <div style="font-size:0.75rem;color:var(--red);font-weight:700;">28%</div>
+            </div>
+            <div class="svc-step-arrow"><i class="fas fa-angle-down"></i></div>
+            <div class="svc-step" style="border-color:rgba(255,46,46,0.3);">
+              <div class="svc-step-ico red"><i class="fas fa-trophy"></i></div>
+              <div style="flex:1;">
+                <div style="font-size:0.8rem;font-weight:600;">Conversion client</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Vente &amp; upsell</div>
+              </div>
+              <div style="font-size:0.75rem;color:var(--red);font-weight:700;">18%</div>
+            </div>
+          </div>
+
+          <div class="svc-quote" style="margin-top:1.25rem;">
+            <i class="fas fa-quote-left" style="color:var(--red);margin-right:0.5rem;font-size:0.7rem;"></i>
+            <strong style="color:var(--white);">×3.6 ROI</strong> moyen sur les funnels optimisés par notre équipe.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-glow divider" style="margin:0;"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     06 — CONSULTING PREMIUM
+     ══════════════════════════════════════════════════════════ -->
+<section class="section svc-section bg-alt" id="consulting">
+  <div class="container">
+    <div class="svc-grid" style="direction:rtl;">
+
+      <!-- Visual (gauche) -->
+      <div class="svc-visual reveal-left" style="direction:ltr;">
+        <div class="svc-card">
+          <div class="svc-num">06</div>
+          <div class="svc-card-icon" style="background:linear-gradient(135deg,#FF6A00,#FF2E2E);">
+            <i class="fas fa-gem"></i>
+          </div>
+          <div style="font-family:var(--font-accent);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--white-40);margin-bottom:1.25rem;">Audit · Strategy · Coaching</div>
+
+          <!-- Process steps -->
+          <div class="svc-flow">
+            <div class="svc-step">
+              <div class="svc-step-ico white"><i class="fas fa-search"></i></div>
+              <div>
+                <div style="font-size:0.8rem;font-weight:600;">Audit digital complet</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Analyse 360° de votre présence</div>
+              </div>
+            </div>
+            <div class="svc-step-arrow"><i class="fas fa-angle-down"></i></div>
+            <div class="svc-step">
+              <div class="svc-step-ico red"><i class="fas fa-map-marked-alt"></i></div>
+              <div>
+                <div style="font-size:0.8rem;font-weight:600;">Strategy IA personnalisée</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Feuille de route sur mesure</div>
+              </div>
+            </div>
+            <div class="svc-step-arrow"><i class="fas fa-angle-down"></i></div>
+            <div class="svc-step">
+              <div class="svc-step-ico white"><i class="fas fa-rocket"></i></div>
+              <div>
+                <div style="font-size:0.8rem;font-weight:600;">Transformation digitale</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Déploiement &amp; accompagnement</div>
+              </div>
+            </div>
+            <div class="svc-step-arrow"><i class="fas fa-angle-down"></i></div>
+            <div class="svc-step" style="border-color:rgba(255,46,46,0.3);">
+              <div class="svc-step-ico red"><i class="fas fa-user-graduate"></i></div>
+              <div>
+                <div style="font-size:0.8rem;font-weight:600;">Coaching &amp; formation équipe</div>
+                <div style="font-size:0.7rem;color:var(--white-40);">Autonomisation de vos équipes</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="svc-quote" style="margin-top:1.25rem;">
+            <i class="fas fa-quote-left" style="color:var(--red);margin-right:0.5rem;font-size:0.7rem;"></i>
+            <strong style="color:var(--white);">50+ companys</strong> accompagnées avec un taux de satisfaction de 98 %.
+          </div>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="reveal-right" style="direction:ltr;">
+        <span class="svc-cat-label orange"><i class="fas fa-gem"></i> Consulting Premium</span>
+        <h2 class="text-h1" style="margin:0 0 1.25rem;">
+          L'expertise au<br>service de votre <span class="gradient-text">transformation</span>
+        </h2>
+        <p class="text-body-lg" style="margin-bottom:1.5rem;">
+          Un regard expert, une strategy claire et un accompagnement humain pour piloter votre transformation digitale et IA de A à Z.
+        </p>
+        <ul class="svc-feat-list">
+          <li>Audit digital complet</li>
+          <li>Strategy IA sur mesure</li>
+          <li>Transformation digitale</li>
+          <li>Coaching individuel &amp; équipe</li>
+          <li>Plan de déploiement IA</li>
+          <li>Suivi &amp; pilotage de projet</li>
+          <li>Formation aux tools IA</li>
+          <li>Conseil en organisation</li>
+        </ul>
+        <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+          <a href="./contact.html" class="btn btn-primary"><i class="fas fa-calendar"></i> Book a free meeting</a>
+          <a href="./pricing.html" class="btn btn-glass">View plans</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     CTA FINAL
+     ══════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="svc-cta reveal">
+      <!-- Decorative elements -->
+      <div class="svc-cta-glow"></div>
+      <div class="svc-cta-dots">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <!-- Decorative corner circles -->
+      <div style="position:absolute;top:-60px;left:-60px;width:200px;height:200px;border-radius:50%;border:1px solid rgba(255,46,46,0.08);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-80px;right:-80px;width:280px;height:280px;border-radius:50%;border:1px solid rgba(255,46,46,0.06);pointer-events:none;"></div>
+
+      <!-- Content -->
+      <div style="position:relative;z-index:1;">
+        <div class="section-label" style="justify-content:center;">Ready to start?</div>
+        <h2 class="text-h1" style="margin:0.75rem 0 1.5rem;">Un service <span class="gradient-text">vous intéresse ?</span></h2>
+        <p class="text-body-lg" style="max-width:500px;margin:0 auto 2rem;">
+          Discutons de votre projet. Notre premier audit est 100 % gratuit et sans engagement.
+        </p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+          <a href="./contact.html" class="btn btn-primary btn-lg"><i class="fas fa-calendar"></i> Book a free meeting</a>
+          <a href="./pricing.html" class="btn btn-glass btn-lg">View plans →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/core.js"></script>
+<script src="../js/components.js"></script>
+
+
+
+</body></html>

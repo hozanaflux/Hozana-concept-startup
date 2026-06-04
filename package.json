@@ -1,7 +1,8 @@
 {
   "scripts": {
-    "build": "node js/generate-static-blog.js",
-    "generate:blog": "node js/generate-static-blog.js"
+    "build": "node js/generate-static-blog.js && node scripts/generate-english-pages.js",
+    "generate:blog": "node js/generate-static-blog.js",
+    "generate:en": "node scripts/generate-english-pages.js"
   },
   "dependencies": {
     "jsdom": "^29.1.1"

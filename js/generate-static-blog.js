@@ -313,8 +313,17 @@ function generateSitemap(posts, packs = []) {
     { loc: `${SITE_URL}/pricing`, priority: '0.8', changefreq: 'monthly' },
     { loc: `${SITE_URL}/contact`, priority: '0.7', changefreq: 'monthly' },
   ];
+  const englishPages = [
+    { loc: `${SITE_URL}/en/`, priority: '1.0', changefreq: 'weekly' },
+    { loc: `${SITE_URL}/en/blog.html`, priority: '0.9', changefreq: 'daily' },
+    { loc: `${SITE_URL}/en/platform.html`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/en/portfolio.html`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/en/pricing.html`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/en/contact.html`, priority: '0.7', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/en/company.html`, priority: '0.7', changefreq: 'monthly' },
+  ];
 
-  for (const page of mainPages) {
+  for (const page of [...mainPages, ...englishPages]) {
     sitemap += `  <url>
     <loc>${page.loc}</loc>
     <lastmod>${now}</lastmod>
@@ -334,6 +343,12 @@ function generateSitemap(posts, packs = []) {
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>\n`;
+      sitemap += `  <url>
+    <loc>${SITE_URL}/en/blog-posts/${slug}.html</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>\n`;
     }
   });
 
@@ -341,6 +356,12 @@ function generateSitemap(posts, packs = []) {
     if (!item || !item.filename) return;
     sitemap += `  <url>
     <loc>${SITE_URL}/pack-details/${item.filename}</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>\n`;
+    sitemap += `  <url>
+    <loc>${SITE_URL}/en/pack-details/${item.filename}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

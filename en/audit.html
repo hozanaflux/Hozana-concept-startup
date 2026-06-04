@@ -1,0 +1,1125 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><script data-english-runtime="true">window.__ROOT_PATH__="../";window.__PAGE_ROOT__="./";window.__FORCE_LANG__='en';</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Free 30 min | Hozana Concept</title>
+  <meta name="description" content="Audit IA et transformation digitale offert par Hozana Concept. Répondez à 15 questions expertes et recevez un plan d'action personnalisé sous 48h.">
+  <link rel="icon" type="image/png" href="../images/favicon-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Sora:wght@300;400;500;600;700;800&amp;family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/design-system.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* ============================================================
+       AUDIT PAGE — Design Premium
+       ============================================================ */
+    .audit-hero {
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--nav-height) + 3rem) 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+    }
+    .audit-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,46,46,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 50%, rgba(255,106,0,0.1) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 60% at 15% 80%, rgba(255,46,46,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .audit-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .audit-hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* ============================================================
+       WELCOME CARD (avant de commencer l'audit)
+       ============================================================ */
+    .audit-welcome {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--radius-xl);
+      padding: 3rem 2.5rem;
+      backdrop-filter: blur(20px);
+      text-align: center;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .audit-welcome.hidden {
+      display: none;
+    }
+    .audit-welcome-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--grad-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
+      color: white;
+      box-shadow: 0 0 40px rgba(255,46,46,0.3);
+      animation: float 3s ease-in-out infinite;
+    }
+    .audit-welcome h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .audit-welcome p {
+      font-size: 1.05rem;
+      color: var(--white-60);
+      line-height: 1.7;
+      max-width: 580px;
+      margin: 0 auto 2rem;
+    }
+    .audit-benefits {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+      text-align: left;
+    }
+    .audit-benefit {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      transition: all var(--trans-base);
+    }
+    .audit-benefit:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,46,46,0.15);
+    }
+    .audit-benefit-icon {
+      color: var(--red);
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .audit-benefit h3 {
+      font-family: var(--font-accent);
+      font-size: 0.875rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .audit-benefit p {
+      font-size: 0.78rem;
+      color: var(--white-50);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ============================================================
+       AUDIT FORM
+       ============================================================ */
+    .audit-form-wrap {
+      display: none;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      backdrop-filter: blur(20px);
+      text-align: left;
+    }
+    .audit-form-wrap.visible {
+      display: block;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    /* Progress bar */
+    .audit-progress {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 2rem;
+    }
+    .audit-progress-step {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+    .audit-progress-step .fill {
+      height: 100%;
+      background: var(--grad-red);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+    .audit-progress-step.done .fill { width: 100%; }
+    .audit-progress-step.active .fill { width: 50%; }
+
+    .audit-progress-label {
+      font-family: var(--font-accent);
+      font-size: 0.72rem;
+      color: var(--white-40);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* Question container */
+    .audit-question-wrap {
+      position: relative;
+      min-height: 320px;
+    }
+    .audit-question {
+      display: none;
+      animation: auditSlideIn 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    .audit-question.active {
+      display: block;
+    }
+
+    @keyframes auditSlideIn {
+      0%   { opacity: 0; transform: translateX(30px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes auditSlideOut {
+      0%   { opacity: 1; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(-30px); }
+    }
+
+    .audit-q-number {
+      font-family: var(--font-accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    .audit-q-label {
+      font-family: var(--font-title);
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+    }
+    .audit-q-hint {
+      font-size: 0.875rem;
+      color: var(--white-50);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    /* Audit inputs */
+    .audit-input {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-md);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      outline: none;
+      transition: all var(--trans-base);
+    }
+    .audit-input:focus {
+      border-color: rgba(255,46,46,0.5);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 0 0 3px rgba(255,46,46,0.1);
+    }
+    .audit-input::placeholder { color: var(--white-30); }
+    textarea.audit-input { resize: vertical; min-height: 100px; }
+
+    /* Options (radio cards) */
+    .audit-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .audit-option {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--trans-base);
+      font-family: var(--font-accent);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--white-80);
+    }
+    .audit-option:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,46,46,0.2);
+    }
+    .audit-option.selected {
+      background: rgba(255,46,46,0.1);
+      border-color: var(--red);
+      box-shadow: 0 0 0 1px var(--red);
+      color: var(--white);
+    }
+    .audit-option .radio-dot {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all var(--trans-base);
+    }
+    .audit-option.selected .radio-dot {
+      border-color: var(--red);
+      background: var(--red);
+    }
+    .audit-option.selected .radio-dot::after {
+      content: '✓';
+      font-size: 0.6rem;
+      color: white;
+      font-weight: 700;
+    }
+
+    /* Navigation */
+    .audit-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .audit-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-full);
+      font-family: var(--font-accent);
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all var(--trans-bounce);
+      text-decoration: none;
+    }
+    .audit-nav-btn.prev {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--white-60);
+    }
+    .audit-nav-btn.prev:hover {
+      border-color: rgba(255,255,255,0.3);
+      color: var(--white);
+    }
+    .audit-nav-btn.next, .audit-nav-btn.submit {
+      background: var(--grad-red);
+      color: white;
+      box-shadow: 0 4px 20px rgba(255,46,46,0.3);
+    }
+    .audit-nav-btn.next:hover, .audit-nav-btn.submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255,46,46,0.5);
+    }
+    .audit-nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    .audit-nav-step-indicator {
+      font-family: var(--font-accent);
+      font-size: 0.78rem;
+      color: var(--white-40);
+    }
+
+    /* ============================================================
+       SUCCESS PAGE
+       ============================================================ */
+    .audit-success {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    .audit-success.visible {
+      display: block;
+    }
+    .audit-success-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
+      color: white;
+      box-shadow: 0 0 40px rgba(34,197,94,0.3);
+    }
+    .audit-success h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+    .audit-success p {
+      font-size: 1rem;
+      color: var(--white-60);
+      line-height: 1.7;
+      max-width: 480px;
+      margin: 0 auto 2rem;
+    }
+
+    /* ============================================================
+       EXPERTISE BADGE (dans le hero)
+       ============================================================ */
+    .expert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 1rem;
+      background: rgba(255,46,46,0.12);
+      border: 1px solid rgba(255,46,46,0.25);
+      border-radius: var(--radius-full);
+      font-family: var(--font-accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--red-light);
+      margin-bottom: 1.5rem;
+    }
+    .expert-badge i { font-size: 0.7rem; }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 768px) {
+      .audit-hero { padding: calc(var(--nav-height) + 2rem) 1.25rem 3rem; }
+      .audit-welcome { padding: 2rem 1.5rem; }
+      .audit-welcome h1 { font-size: clamp(1.5rem, 5vw, 2rem); }
+      .audit-benefits { grid-template-columns: 1fr; gap: 0.875rem; }
+      .audit-form-wrap { padding: 1.5rem; }
+      .audit-q-label { font-size: 1.1rem; }
+      .audit-options { grid-template-columns: 1fr; }
+      .audit-nav { flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+      .audit-nav-btn { flex: 1; justify-content: center; min-width: 0; }
+      .audit-nav-step-indicator { order: -1; width: 100%; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .audit-hero { padding: calc(var(--nav-height) + 1.5rem) 1rem 2rem; }
+      .audit-welcome { padding: 1.5rem 1rem; }
+      .audit-form-wrap { padding: 1.25rem; }
+      .audit-q-label { font-size: 1rem; }
+      .audit-input { font-size: 0.9rem; padding: 0.875rem 1rem; }
+      .audit-option { font-size: 0.825rem; padding: 0.875rem 1rem; }
+      .audit-success { padding: 2rem 1rem; }
+      .audit-benefits { margin-bottom: 1.5rem; }
+    }
+
+    /* ── Light mode ── */
+    [data-theme="light"] .audit-hero { background: #F4F6FC; }
+    [data-theme="light"] .audit-welcome,
+    [data-theme="light"] .audit-form-wrap {
+      background: rgba(255,255,255,0.90);
+      border-color: rgba(12,16,34,0.08);
+      box-shadow: 0 4px 24px rgba(12,16,34,0.06);
+    }
+    [data-theme="light"] .audit-benefit {
+      background: rgba(12,16,34,0.03);
+      border-color: rgba(12,16,34,0.07);
+    }
+    [data-theme="light"] .audit-option {
+      background: rgba(12,16,34,0.03);
+      border-color: rgba(12,16,34,0.09);
+      color: rgba(12,16,34,0.75);
+    }
+    [data-theme="light"] .audit-option:hover {
+      background: rgba(255,46,46,0.04);
+      border-color: rgba(255,46,46,0.2);
+    }
+    [data-theme="light"] .audit-option.selected {
+      background: rgba(255,46,46,0.08);
+    }
+    [data-theme="light"] .audit-input {
+      background: rgba(12,16,34,0.04);
+      border-color: rgba(12,16,34,0.10);
+      color: rgba(12,16,34,0.85);
+    }
+    [data-theme="light"] .audit-input:focus {
+      background: white;
+      border-color: rgba(255,46,46,0.4);
+    }
+    [data-theme="light"] .audit-nav-btn.prev {
+      border-color: rgba(12,16,34,0.12);
+      color: rgba(12,16,34,0.55);
+    }
+    [data-theme="light"] .audit-nav-btn.prev:hover {
+      border-color: rgba(12,16,34,0.25);
+      color: rgba(12,16,34,0.8);
+    }
+    [data-theme="light"] .audit-progress-step { background: rgba(12,16,34,0.08); }
+    [data-theme="light"] .audit-nav { border-top-color: rgba(12,16,34,0.08); }
+    [data-theme="light"] .audit-q-hint { color: rgba(12,16,34,0.5); }
+    [data-theme="light"] .audit-benefit h3 { color: rgba(12,16,34,0.85); }
+  </style>
+<meta property="og:title" content="Audit Free 30 min | Hozana Concept"><meta name="twitter:title" content="Audit Free 30 min | Hozana Concept"><meta property="og:locale" content="en_US"><link rel="canonical" href="https://www.hozanaconcept.com/en/audit.html"><link rel="alternate" hreflang="fr" href="https://www.hozanaconcept.com/audit.html"><link rel="alternate" hreflang="en-us" href="https://www.hozanaconcept.com/en/audit.html"><link rel="alternate" hreflang="en-gb" href="https://www.hozanaconcept.com/en/audit.html"><link rel="alternate" hreflang="x-default" href="https://www.hozanaconcept.com/audit.html"><meta name="robots" content="index, follow"></head>
+<body>
+
+<!-- LOADER -->
+<div id="loader" role="status" aria-label="Chargement">
+  <img src="../images/favicon-logo.png" alt="Hozana Concept" style="width:70px;height:70px;object-fit:contain;margin-bottom:0.75rem;">
+  <div style="font-family:var(--font-title);font-size:1.1rem;font-weight:600;color:var(--white-40);letter-spacing:-0.01em;margin-top:-0.25rem;">Hozana Concept</div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+  <div class="loader-text">Préparation de votre audit expert…</div>
+</div>
+
+<!-- NAVBAR -->
+<div id="navbar-placeholder"></div>
+
+<!-- ============================================================
+     AUDIT HERO
+     ============================================================ -->
+<section class="audit-hero" id="audit-hero">
+  <div class="audit-hero-inner">
+
+    <!-- WELCOME CARD -->
+    <div class="audit-welcome" id="audit-welcome">
+      <div class="audit-welcome-icon">
+        <i class="fas fa-clipboard-check"></i>
+      </div>
+      <div class="expert-badge">
+        <i class="fas fa-certificate"></i> Audit expert — 20 ans d'expérience
+      </div>
+      <h1>Diagnostic <span class="gradient-text">IA &amp; Digital</span></h1>
+      <p>
+        15 questions précises pour évaluer votre maturité digitale, identifier vos leviers de growth
+        et recevoir un <strong style="color:var(--white);">plan d'action personnalisé</strong> sous 48h.
+        Free, sans engagement.
+      </p>
+
+      <div class="audit-benefits">
+        <div class="audit-benefit">
+          <div class="audit-benefit-icon"><i class="fas fa-bullseye"></i></div>
+          <h3>Analyse 360°</h3>
+          <p>Nous évaluons votre business, votre marché et votre stack technologique.</p>
+        </div>
+        <div class="audit-benefit">
+          <div class="audit-benefit-icon"><i class="fas fa-chart-line"></i></div>
+          <h3>ROI Chiffré</h3>
+          <p>Chaque recommandation est accompagnée d'une estimation d'impact concret.</p>
+        </div>
+        <div class="audit-benefit">
+          <div class="audit-benefit-icon"><i class="fas fa-rocket"></i></div>
+          <h3>Roadmap 30 Jours</h3>
+          <p>Un plan d'action clair, par ordre de priorité, prêt à être exécuté.</p>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-lg" onclick="startAudit()" style="font-size:1.05rem;">
+        <i class="fas fa-play-circle"></i> Commencer l'audit
+      </button>
+      <p style="margin-top:1rem;font-size:0.8rem;color:var(--white-40);">
+        <i class="fas fa-clock"></i> Comptez 5 à 8 minutes
+      </p>
+    </div>
+
+    <!-- AUDIT FORM -->
+    <div class="audit-form-wrap" id="audit-form">
+
+      <!-- Progress -->
+      <div class="audit-progress" id="audit-progress">
+        <div class="audit-progress-step active" data-step="1"><div class="fill"></div></div>
+        <div class="audit-progress-step" data-step="2"><div class="fill"></div></div>
+        <div class="audit-progress-step" data-step="3"><div class="fill"></div></div>
+        <div class="audit-progress-step" data-step="4"><div class="fill"></div></div>
+        <div class="audit-progress-step" data-step="5"><div class="fill"></div></div>
+      </div>
+      <div class="audit-progress-label" id="audit-progress-label">Étape 1 sur 5 · Informations générales</div>
+
+      <div class="audit-question-wrap" id="audit-questions">
+        <!-- === ÉTAPE 1 : INFORMATIONS GÉNÉRALES (Q1-Q3) === -->
+        <!-- Q1 -->
+        <div class="audit-question active" data-q="1" data-step="1">
+          <div class="audit-q-number">Question 1 / 15</div>
+          <div class="audit-q-label">Quel est votre nom et votre rôle dans l'company ?</div>
+          <div class="audit-q-hint">Indiquez votre prénom, nom et votre fonction (ex : "Marie Diallo, Directrice Marketing")</div>
+          <input class="audit-input" id="aq1" placeholder="ex : Marie Diallo, Directrice Marketing" autocomplete="name">
+        </div>
+        <!-- Q2 -->
+        <div class="audit-question" data-q="2" data-step="1">
+          <div class="audit-q-number">Question 2 / 15</div>
+          <div class="audit-q-label">Quel est le nom de votre company et votre email professionnel ?</div>
+          <div class="audit-q-hint">Nous enverrons votre plan d'action personnalisé à cette adresse</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <input class="audit-input" id="aq2a" placeholder="Nom de l'entreprise">
+            <input class="audit-input" id="aq2b" type="email" placeholder="Email professionnel" autocomplete="email">
+          </div>
+        </div>
+        <!-- Q3 -->
+        <div class="audit-question" data-q="3" data-step="1">
+          <div class="audit-q-number">Question 3 / 15</div>
+          <div class="audit-q-label">Dans quel secteur d'activité évoluez-vous ?</div>
+          <div class="audit-q-hint">Sélectionnez la catégorie qui correspond le mieux à votre activité</div>
+          <div class="audit-options" id="aq3">
+            <div class="audit-option" data-value="E-commerce / Retail"><span class="radio-dot"></span> E-commerce / Retail</div>
+            <div class="audit-option" data-value="Services B2B"><span class="radio-dot"></span> Services B2B</div>
+            <div class="audit-option" data-value="Santé / Pharma"><span class="radio-dot"></span> Santé / Pharma</div>
+            <div class="audit-option" data-value="Finance / Assurance"><span class="radio-dot"></span> Finance / Assurance</div>
+            <div class="audit-option" data-value="Éducation / Formation"><span class="radio-dot"></span> Éducation / Formation</div>
+            <div class="audit-option" data-value="Industrie / Production"><span class="radio-dot"></span> Industrie / Production</div>
+            <div class="audit-option" data-value="Immobilier / Construction"><span class="radio-dot"></span> Immobilier / Construction</div>
+            <div class="audit-option" data-value="Autre"><span class="radio-dot"></span> Autre secteur</div>
+          </div>
+        </div>
+
+        <!-- === ÉTAPE 2 : DIGITAL & MARKETING (Q4-Q7) === -->
+        <!-- Q4 -->
+        <div class="audit-question" data-q="4" data-step="2">
+          <div class="audit-q-number">Question 4 / 15</div>
+          <div class="audit-q-label">Quel est votre niveau de maturité digitale actuel ?</div>
+          <div class="audit-q-hint">Soyez honnête — c'est ce qui nous permettra de vous donner les recommandations les plus pertinentes</div>
+          <div class="audit-options" id="aq4">
+            <div class="audit-option" data-value="Débutant"><span class="radio-dot"></span> Débutant — Pas de site web ou site très basique</div>
+            <div class="audit-option" data-value="Intermédiaire"><span class="radio-dot"></span> Intermédiaire — Site vitrine, présence sur les réseaux</div>
+            <div class="audit-option" data-value="Avancé"><span class="radio-dot"></span> Avancé — Site e-commerce ou app, trafic régulier</div>
+            <div class="audit-option" data-value="Expert"><span class="radio-dot"></span> Expert — Multi-canaux, automation, data-driven</div>
+          </div>
+        </div>
+        <!-- Q5 -->
+        <div class="audit-question" data-q="5" data-step="2">
+          <div class="audit-q-number">Question 5 / 15</div>
+          <div class="audit-q-label">Quels tools utilisez-vous actuellement pour votre marketing digital ?</div>
+          <div class="audit-q-hint">Sélectionnez tout ce qui s'applique (plusieurs choix possibles)</div>
+          <div class="audit-options" id="aq5" data-multi="true">
+            <div class="audit-option" data-value="Aucun outil"><span class="radio-dot"></span> Aucun outil pour l'instant</div>
+            <div class="audit-option" data-value="Google Ads / Meta Ads"><span class="radio-dot"></span> Google Ads / Meta Ads</div>
+            <div class="audit-option" data-value="Email marketing"><span class="radio-dot"></span> Email marketing (Mailchimp, Brevo, etc.)</div>
+            <div class="audit-option" data-value="Réseaux sociaux"><span class="radio-dot"></span> Réseaux sociaux (Instagram, LinkedIn, Facebook)</div>
+            <div class="audit-option" data-value="CRM"><span class="radio-dot"></span> CRM (HubSpot, Salesforce, Pipedrive, etc.)</div>
+            <div class="audit-option" data-value="SEO / Analytics"><span class="radio-dot"></span> SEO / Analytics (Google Analytics, Search Console)</div>
+            <div class="audit-option" data-value="Chatbot / IA"><span class="radio-dot"></span> Chatbot / IA (ChatGPT, chatbot, etc.)</div>
+            <div class="audit-option" data-value="Autre outil"><span class="radio-dot"></span> Autre outil ou logiciel</div>
+          </div>
+        </div>
+        <!-- Q6 -->
+        <div class="audit-question" data-q="6" data-step="2">
+          <div class="audit-q-number">Question 6 / 15</div>
+          <div class="audit-q-label">Combien de clients ou prospects touchez-vous per month audayd'hui ?</div>
+          <div class="audit-q-hint">Une estimation approximative suffit — c'est pour calibrer nos recommandations</div>
+          <div class="audit-options" id="aq6">
+            <div class="audit-option" data-value="Moins de 50"><span class="radio-dot"></span> Moins de 50</div>
+            <div class="audit-option" data-value="Entre 50 et 500"><span class="radio-dot"></span> Entre 50 et 500</div>
+            <div class="audit-option" data-value="Entre 500 et 5000"><span class="radio-dot"></span> Entre 500 et 5 000</div>
+            <div class="audit-option" data-value="Plus de 5000"><span class="radio-dot"></span> Plus de 5 000</div>
+          </div>
+        </div>
+        <!-- Q7 -->
+        <div class="audit-question" data-q="7" data-step="2">
+          <div class="audit-q-number">Question 7 / 15</div>
+          <div class="audit-q-label">Quels sont vos plus grands défis en marketing et acquisition audayd'hui ?</div>
+          <div class="audit-q-hint">Choisissez le défi le plus critique — c'est notre priorité d'audit</div>
+          <div class="audit-options" id="aq7">
+            <div class="audit-option" data-value="Générer plus de leads"><span class="radio-dot"></span> Générer plus de leads / prospects</div>
+            <div class="audit-option" data-value="Convertir les leads en clients"><span class="radio-dot"></span> Convertir les leads en clients</div>
+            <div class="audit-option" data-value="Fidéliser les clients"><span class="radio-dot"></span> Fidéliser les clients existants</div>
+            <div class="audit-option" data-value="Automatiser les processus"><span class="radio-dot"></span> Automatiser les processus manuels</div>
+            <div class="audit-option" data-value="Visibilité / notoriété"><span class="radio-dot"></span> Améliorer la visibilité et la notoriété</div>
+            <div class="audit-option" data-value="Réduire les coûts"><span class="radio-dot"></span> Réduire les coûts d'acquisition</div>
+          </div>
+        </div>
+
+        <!-- === ÉTAPE 3 : PROCESSUS & AUTOMATION (Q8-Q10) === -->
+        <!-- Q8 -->
+        <div class="audit-question" data-q="8" data-step="3">
+          <div class="audit-q-number">Question 8 / 15</div>
+          <div class="audit-q-label">Quels processus de votre company sont encore gérés manuellement ?</div>
+          <div class="audit-q-hint">On parle de tâches répétitives qui pourraient être automatisées — service client, facturation, relances, reporting, etc.</div>
+          <div class="audit-options" id="aq8" data-multi="true">
+            <div class="audit-option" data-value="Service client"><span class="radio-dot"></span> Service client &amp; support</div>
+            <div class="audit-option" data-value="Relances commerciales"><span class="radio-dot"></span> Relances commerciales &amp; devis</div>
+            <div class="audit-option" data-value="Facturation / Compta"><span class="radio-dot"></span> Facturation &amp; comptabilité</div>
+            <div class="audit-option" data-value="Gestion des réseaux"><span class="radio-dot"></span> Gestion des réseaux sociaux</div>
+            <div class="audit-option" data-value="Reporting"><span class="radio-dot"></span> Reporting &amp; tableaux de bord</div>
+            <div class="audit-option" data-value="Gestion des stocks"><span class="radio-dot"></span> Gestion des stocks / commandes</div>
+            <div class="audit-option" data-value="RH / Paie"><span class="radio-dot"></span> RH &amp; paie</div>
+            <div class="audit-option" data-value="Tout est automatisé"><span class="radio-dot"></span> Tout est déjà automatisé</div>
+          </div>
+        </div>
+        <!-- Q9 -->
+        <div class="audit-question" data-q="9" data-step="3">
+          <div class="audit-q-number">Question 9 / 15</div>
+          <div class="audit-q-label">Avez-vous déjà utilisé l'intelligence artificielle dans votre company ?</div>
+          <div class="audit-q-hint">Cela inclut ChatGPT, assistants IA, génération de contenu, analyse de données, etc.</div>
+          <div class="audit-options" id="aq9">
+            <div class="audit-option" data-value="Jamais"><span class="radio-dot"></span> Jamais — Je ne sais pas par où commencer</div>
+            <div class="audit-option" data-value="ChatGPT seulement"><span class="radio-dot"></span> ChatGPT pour la rédaction uniquement</div>
+            <div class="audit-option" data-value="Quelques outils IA"><span class="radio-dot"></span> Quelques tools IA ponctuellement</div>
+            <div class="audit-option" data-value="IA intégrée"><span class="radio-dot"></span> L'IA est intégrée dans nos processus</div>
+          </div>
+        </div>
+        <!-- Q10 -->
+        <div class="audit-question" data-q="10" data-step="3">
+          <div class="audit-q-number">Question 10 / 15</div>
+          <div class="audit-q-label">Combien de temps par week votre équipe passe-t-elle sur des tâches répétitives ?</div>
+          <div class="audit-q-hint">Estimation du temps perdu sur des tâches qu'une automation pourrait gérer</div>
+          <div class="audit-options" id="aq10">
+            <div class="audit-option" data-value="Moins de 5 heures"><span class="radio-dot"></span> Moins de 5 heures</div>
+            <div class="audit-option" data-value="5 à 15 heures"><span class="radio-dot"></span> 5 à 15 heures</div>
+            <div class="audit-option" data-value="15 à 30 heures"><span class="radio-dot"></span> 15 à 30 heures</div>
+            <div class="audit-option" data-value="Plus de 30 heures"><span class="radio-dot"></span> Plus de 30 heures</div>
+          </div>
+        </div>
+
+        <!-- === ÉTAPE 4 : OBJECTIFS MÉTIER (Q11-Q13) === -->
+        <!-- Q11 -->
+        <div class="audit-question" data-q="11" data-step="4">
+          <div class="audit-q-number">Question 11 / 15</div>
+          <div class="audit-q-label">Quel est votre objectif principal pour les 6 prochains month ?</div>
+          <div class="audit-q-hint">Votre priorité absolue — celle qui aura le plus d'impact sur votre growth</div>
+          <div class="audit-options" id="aq11">
+            <div class="audit-option" data-value="Augmenter les ventes"><span class="radio-dot"></span> Augmenter le chiffre d'affaires</div>
+            <div class="audit-option" data-value="Gagner en productivité"><span class="radio-dot"></span> Gagner en productivité / réduire les coûts</div>
+            <div class="audit-option" data-value="Lancer un nouveau produit"><span class="radio-dot"></span> Lancer un nouveau produit ou service</div>
+            <div class="audit-option" data-value="Digitaliser l'entreprise"><span class="radio-dot"></span> Digitaliser / moderniser l'company</div>
+            <div class="audit-option" data-value="Améliorer l'expérience client"><span class="radio-dot"></span> Améliorer l'expérience client</div>
+            <div class="audit-option" data-value="Se développer à l'international"><span class="radio-dot"></span> Se développer à l'international</div>
+          </div>
+        </div>
+        <!-- Q12 -->
+        <div class="audit-question" data-q="12" data-step="4">
+          <div class="audit-q-number">Question 12 / 15</div>
+          <div class="audit-q-label">Existe-t-il une pression concurrentielle forte dans votre secteur ?</div>
+          <div class="audit-q-hint">Cela nous aide à prioriser la rapidité d'exécution de votre roadmap</div>
+          <div class="audit-options" id="aq12">
+            <div class="audit-option" data-value="Très forte"><span class="radio-dot"></span> Très forte — nos concurrents innovent vite</div>
+            <div class="audit-option" data-value="Modérée"><span class="radio-dot"></span> Modérée — quelques concurrents directs</div>
+            <div class="audit-option" data-value="Faible"><span class="radio-dot"></span> Faible — peu de concurrence</div>
+            <div class="audit-option" data-value="Aucune idée"><span class="radio-dot"></span> Je ne sais pas / pas étudié</div>
+          </div>
+        </div>
+        <!-- Q13 -->
+        <div class="audit-question" data-q="13" data-step="4">
+          <div class="audit-q-number">Question 13 / 15</div>
+          <div class="audit-q-label">Avez-vous un budget dédié à la transformation digitale ou à l'IA ?</div>
+          <div class="audit-q-hint">Pas de mauvaises réponses — cela nous permet d'adapter nos recommandations à votre réalité</div>
+          <div class="audit-options" id="aq13">
+            <div class="audit-option" data-value="Aucun budget"><span class="radio-dot"></span> Pas de budget pour l'instant</div>
+            <div class="audit-option" data-value="Moins de 500€/mois"><span class="radio-dot"></span> Moins de 500 € / month</div>
+            <div class="audit-option" data-value="500€ à 2000€/mois"><span class="radio-dot"></span> 500 € à 2 000 € / month</div>
+            <div class="audit-option" data-value="Plus de 2000€/mois"><span class="radio-dot"></span> Plus de 2 000 € / month</div>
+          </div>
+        </div>
+
+        <!-- === ÉTAPE 5 : CONTACT & CONCLUSION (Q14-Q15) === -->
+        <!-- Q14 -->
+        <div class="audit-question" data-q="14" data-step="5">
+          <div class="audit-q-number">Question 14 / 15</div>
+          <div class="audit-q-label">Quel est votre numéro de téléphone ? (optionnel mais recommandé)</div>
+          <div class="audit-q-hint">Nous pourrons vous contacter plus rapidement pour discuter de votre audit si vous le souhaitez</div>
+          <input class="audit-input" id="aq14" type="tel" placeholder="ex : +216 51 47 47 51" autocomplete="tel">
+        </div>
+        <!-- Q15 -->
+        <div class="audit-question" data-q="15" data-step="5">
+          <div class="audit-q-number">Question 15 / 15</div>
+          <div class="audit-q-label">Y a-t-il quelque chose que vous souhaitez ajouter ou nous dire ?</div>
+          <div class="audit-q-hint">Un détail spécifique sur votre activité, une question précise, ou tout ce qui vous semble important qu'un expert sache avant votre audit</div>
+          <textarea class="audit-input" id="aq15" rows="4" placeholder="Partagez ici tout ce qui vous semble pertinent…"></textarea>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="audit-nav">
+        <button class="audit-nav-btn prev" id="audit-prev" onclick="prevQuestion()">
+          <i class="fas fa-arrow-left"></i> Précédent
+        </button>
+        <span class="audit-nav-step-indicator" id="audit-step-indicator">1 / 15</span>
+        <button class="audit-nav-btn next" id="audit-next" onclick="nextQuestion()">
+          Suivant <i class="fas fa-arrow-right"></i>
+        </button>
+        <button class="audit-nav-btn submit" id="audit-submit" onclick="submitAudit()" style="display:none;">
+          <i class="fas fa-paper-plane"></i> Send mon audit
+        </button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="audit-success" id="audit-success">
+      <div class="audit-success-icon"><i class="fas fa-check"></i></div>
+      <h2>Audit reçu <span class="gradient-text">✓</span></h2>
+      <p>
+        Merci ! Un expert Hozana Concept analyse vos réponses et vous prépare un
+        <strong>plan d'action personnalisé</strong>. Vous recevrez un email sous 48h.
+      </p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="./index.html" class="btn btn-glass"><i class="fas fa-home"></i> Back to home</a>
+        <a href="./contact.html" class="btn btn-primary"><i class="fas fa-calendar"></i> Réserver un appel</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div id="footer-placeholder"></div>
+
+<!-- SCRIPTS -->
+<script src="../js/supabase-config.js"></script>
+<script src="../js/core.js"></script>
+<script src="../js/components.js"></script>
+<script>
+/* ============================================================
+   AUDIT FORM — Step by Step Expert Engine
+   ============================================================ */
+let _currentQ = 1;
+let _totalQ = 15;
+let _totalSteps = 5;
+let _answers = {};
+let _isSubmitting = false;
+
+/* ─── START ─── */
+function startAudit() {
+  document.getElementById('audit-welcome').classList.add('hidden');
+  const form = document.getElementById('audit-form');
+  form.classList.add('visible');
+  form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ─── NAVIGATION ─── */
+function nextQuestion() {
+  // Vérifier que la question actuelle est répondue
+  if (!validateCurrent()) return;
+
+  if (_currentQ < _totalQ) {
+    saveCurrentAnswer();
+    const current = document.querySelector(`.audit-question[data-q="${_currentQ}"]`);
+    current.style.animation = 'auditSlideOut 0.35s cubic-bezier(0.4,0,0.2,1) forwards';
+
+    setTimeout(() => {
+      current.classList.remove('active');
+      current.style.animation = '';
+      _currentQ++;
+      const next = document.querySelector(`.audit-question[data-q="${_currentQ}"]`);
+      if (next) {
+        next.classList.add('active');
+        next.style.animation = 'auditSlideIn 0.5s cubic-bezier(0.4,0,0.2,1) forwards';
+        setTimeout(() => { next.style.animation = ''; }, 500);
+      }
+      updateUI();
+      // Focus sur le premier input
+      const input = next?.querySelector('.audit-input, .audit-option');
+      if (input) input.focus?.();
+    }, 300);
+  }
+}
+
+function prevQuestion() {
+  if (_currentQ > 1) {
+    saveCurrentAnswer();
+    const current = document.querySelector(`.audit-question[data-q="${_currentQ}"]`);
+    current.style.animation = 'auditSlideOut 0.35s cubic-bezier(0.4,0,0.2,1) forwards';
+
+    setTimeout(() => {
+      current.classList.remove('active');
+      current.style.animation = '';
+      _currentQ--;
+      const prev = document.querySelector(`.audit-question[data-q="${_currentQ}"]`);
+      if (prev) {
+        prev.classList.add('active');
+        prev.style.animation = 'auditSlideIn 0.5s cubic-bezier(0.4,0,0.2,1) forwards';
+        setTimeout(() => { prev.style.animation = ''; }, 500);
+      }
+      updateUI();
+    }, 300);
+  }
+}
+
+/* ─── VALIDATION ─── */
+function validateCurrent() {
+  const q = document.querySelector(`.audit-question[data-q="${_currentQ}"]`);
+  if (!q) return true;
+
+  const inputs = q.querySelectorAll('.audit-input');
+  const radios = q.querySelectorAll('.audit-option.selected');
+
+  // Si c'est une question text (input) et que le champ est requis, vérifier
+  if (inputs.length > 0 && !q.querySelector('.audit-options')) {
+    // Questions 1 et 2 sont requises
+    if (_currentQ === 1) {
+      const val = document.getElementById('aq1').value.trim();
+      if (!val) { shakeInput('aq1'); return false; }
+    }
+    if (_currentQ === 2) {
+      const company = document.getElementById('aq2a').value.trim();
+      const email = document.getElementById('aq2b').value.trim();
+      if (!company) { shakeInput('aq2a'); return false; }
+      if (!email || !email.includes('@')) { shakeInput('aq2b'); return false; }
+    }
+  }
+
+  // Questions à choix (radio) — vérifier qu'au moins un est sélectionné
+  if (radios.length === 0 && q.querySelector('.audit-options')) {
+    const options = q.querySelector('.audit-options');
+    if (options && !options.querySelector('[data-multi]')) {
+      options.style.animation = 'shake 0.4s ease';
+      setTimeout(() => { options.style.animation = ''; }, 500);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function shakeInput(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.style.borderColor = 'var(--red)';
+    el.style.animation = 'shake 0.4s ease';
+    setTimeout(() => {
+      el.style.borderColor = '';
+      el.style.animation = '';
+    }, 1000);
+  }
+}
+
+/* ─── SAVE ─── */
+function saveCurrentAnswer() {
+  const q = document.querySelector(`.audit-question[data-q="${_currentQ}"]`);
+  if (!q) return;
+
+  // Text inputs
+  const inputs = q.querySelectorAll('.audit-input');
+  if (inputs.length > 0 && !q.querySelector('.audit-options')) {
+    if (_currentQ === 2) {
+      _answers.q2 = {
+        company: document.getElementById('aq2a').value.trim(),
+        email: document.getElementById('aq2b').value.trim()
+      };
+    } else if (_currentQ === 14) {
+      _answers.q14 = document.getElementById('aq14').value.trim();
+    } else if (_currentQ === 15) {
+      _answers.q15 = document.getElementById('aq15').value.trim();
+    } else {
+      _answers['q' + _currentQ] = document.getElementById('aq' + _currentQ).value.trim();
+    }
+    return;
+  }
+
+  // Radio / multi options
+  const selected = q.querySelectorAll('.audit-option.selected');
+  if (selected.length > 0) {
+    const isMulti = q.querySelector('[data-multi]');
+    if (isMulti) {
+      _answers['q' + _currentQ] = Array.from(selected).map(el => el.getAttribute('data-value'));
+    } else {
+      _answers['q' + _currentQ] = selected[0].getAttribute('data-value');
+    }
+  }
+}
+
+/* ─── UPDATE UI ─── */
+function updateUI() {
+  // Progress bar
+  const step = Math.ceil(_currentQ / 3);
+  document.querySelectorAll('.audit-progress-step').forEach((el, i) => {
+    el.classList.remove('done', 'active');
+    if (i + 1 < step) el.classList.add('done');
+    else if (i + 1 === step) el.classList.add('active');
+  });
+
+  // Step label
+  const labels = ['', 'Informations générales', 'Digital & Marketing', 'Processus & Automation', 'Objectifs métier', 'Contact & Conclusion'];
+  document.getElementById('audit-progress-label').textContent = `Étape ${step} sur ${_totalSteps} · ${labels[step] || ''}`;
+
+  // Step indicator
+  document.getElementById('audit-step-indicator').textContent = `${_currentQ} / ${_totalQ}`;
+
+  // Prev button
+  document.getElementById('audit-prev').style.display = _currentQ > 1 ? '' : 'none';
+
+  // Next / Submit buttons
+  const isLast = _currentQ === _totalQ;
+  document.getElementById('audit-next').style.display = isLast ? 'none' : '';
+  document.getElementById('audit-submit').style.display = isLast ? '' : 'none';
+}
+
+/* ─── OPTION CLICK HANDLER ─── */
+document.addEventListener('click', function(e) {
+  const option = e.target.closest('.audit-option');
+  if (!option) return;
+
+  const optionsWrap = option.closest('.audit-options');
+  if (!optionsWrap) return;
+
+  const isMulti = optionsWrap.getAttribute('data-multi') === 'true';
+
+  if (isMulti) {
+    option.classList.toggle('selected');
+  } else {
+    optionsWrap.querySelectorAll('.audit-option').forEach(o => o.classList.remove('selected'));
+    option.classList.add('selected');
+  }
+});
+
+/* ─── ENTER KEY ─── */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    const activeQ = document.querySelector('.audit-question.active');
+    if (!activeQ) return;
+    // Si la question active a des inputs text, ne pas submit sur Enter (pour éviter submit involontaire)
+    // Sauf si c'est la dernière question
+    if (_currentQ === _totalQ) {
+      submitAudit();
+    } else {
+      const hasTextInput = activeQ.querySelector('.audit-input') && !activeQ.querySelector('.audit-options');
+      if (!hasTextInput) {
+        nextQuestion();
+      }
+    }
+  }
+});
+
+/* ─── SUBMIT ─── */
+async function submitAudit() {
+  if (_isSubmitting) return;
+  if (!validateCurrent()) return;
+  saveCurrentAnswer();
+
+  _isSubmitting = true;
+  const btn = document.getElementById('audit-submit');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours…';
+
+  // Construire les données
+  const name = _answers.q1 || '';
+  const company = _answers.q2?.company || '';
+  const email = _answers.q2?.email || '';
+  const phone = _answers.q14 || '';
+  const message = _answers.q15 || '';
+
+  // Score de maturité digitale (calcul expert)
+  const maturityScore = calculateMaturityScore(_answers);
+
+  const data = {
+    name,
+    email,
+    phone,
+    company,
+    sector: _answers.q3 || '',
+    maturity: _answers.q4 || '',
+    tools: Array.isArray(_answers.q5) ? _answers.q5.join(', ') : (_answers.q5 || ''),
+    reach: _answers.q6 || '',
+    top_challenge: _answers.q7 || '',
+    manual_processes: Array.isArray(_answers.q8) ? _answers.q8.join(', ') : (_answers.q8 || ''),
+    ia_usage: _answers.q9 || '',
+    repetitive_hours: _answers.q10 || '',
+    main_goal: _answers.q11 || '',
+    competition: _answers.q12 || '',
+    budget: _answers.q13 || '',
+    message,
+    maturity_score: maturityScore,
+    source: 'audit_page',
+    status: 'new',
+    created_at: new Date().toISOString()
+  };
+
+  console.log('[Audit] Submitting:', data);
+
+  try {
+    const res = await fetch('tables/audits', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`Erreur ${res.status}: ${errText || res.statusText}`);
+    }
+
+    const result = await res.json();
+    console.log('[Audit] Saved:', result);
+
+    // Afficher le succès
+    document.getElementById('audit-form').style.display = 'none';
+    document.getElementById('audit-success').classList.add('visible');
+    document.getElementById('audit-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  } catch (e) {
+    console.error('[Audit] Submit error:', e);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer mon audit';
+    alert('Une erreur est survenue. Veuillez réessayer ou nous contacter directement.');
+  } finally {
+    _isSubmitting = false;
+  }
+}
+
+/* ─── MATURITY SCORE ─── */
+function calculateMaturityScore(answers) {
+  let score = 0;
+  // Digital maturity (Q4)
+  const maturityMap = { 'Débutant': 1, 'Intermédiaire': 3, 'Avancé': 6, 'Expert': 10 };
+  score += maturityMap[answers.q4] || 0;
+  // Tools (Q5)
+  const toolCount = Array.isArray(answers.q5) ? answers.q5.filter(t => t !== 'Aucun outil').length : 0;
+  score += Math.min(toolCount * 2, 10);
+  // IA usage (Q9)
+  const iaMap = { 'Jamais': 0, 'ChatGPT seulement': 2, 'Quelques outils IA': 5, 'IA intégrée': 10 };
+  score += iaMap[answers.q9] || 0;
+  // Automation (Q8) — plus il y a de processus manuels, moins le score
+  const manualCount = Array.isArray(answers.q8) ? answers.q8.filter(p => p !== 'Tout est automatisé').length : 0;
+  score += Math.max(0, 10 - manualCount * 1.5);
+  // Budget (Q13)
+  const budgetMap = { 'Aucun budget': 1, 'Moins de 500€/mois': 3, '500€ à 2000€/mois': 6, 'Plus de 2000€/mois': 10 };
+  score += budgetMap[answers.q13] || 0;
+  return Math.round(Math.min(Math.max(score / 5, 1), 10));
+}
+
+/* ─── INIT ─── */
+document.addEventListener('DOMContentLoaded', function() {
+  updateUI();
+  // Loader
+  const loader = document.getElementById('loader');
+  if (loader) {
+    loader.classList.add('hidden');
+    setTimeout(() => { loader.style.display = 'none'; }, 600);
+  }
+});
+</script>
+
+<!-- Shake animation -->
+<style>
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+.audit-input[style*="border-color: var(--red)"]::placeholder {
+  color: var(--red) !important;
+  opacity: 0.5;
+}
+</style>
+
+
+
+</body></html>
