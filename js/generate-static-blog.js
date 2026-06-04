@@ -983,7 +983,7 @@ function renderComparisonTable(packs) {
   return `
         <thead>
           <tr>
-            <th style="width:30%;">Fonctionnalité</th>
+            <th style="width:30%;">Élément comparatif</th>
             ${visiblePacks.map(pack => `<th>${escapeHtml(pack.name.replace(/^Pack\s+/i, ''))}${pack.isFeatured ? ' ⭐' : ''}</th>`).join('')}
           </tr>
         </thead>
@@ -998,16 +998,33 @@ function renderComparisonTable(packs) {
 
 function comparisonRows(packs) {
   const defaults = [
-    'Chatbot IA', 'Workflows automatisés', 'Analytics temps réel', 'Contenu IA/mois',
-    'Growth Ads IA', 'Analyse prédictive', 'Account manager dédié', 'SLA support',
-    'Formation équipe', 'Propriété IP'
+    'Audit initial',
+    'Stratégie business',
+    'Identité visuelle / branding',
+    'Site web / landing page',
+    'Optimisation UX / conversion',
+    'SEO',
+    'Réseaux sociaux',
+    'Marketing digital',
+    'Tunnel de contact / RDV',
+    'Automatisation email',
+    'Chatbot / assistant IA',
+    'Automatisation des tâches',
+    'CRM / suivi client',
+    'Dashboard de suivi',
+    'Formation',
+    'Support',
+    'Durée estimée',
+    'Idéal pour',
+    'Objectif principal',
+    'Bouton recommandé'
   ];
   const labels = new Set(defaults);
   for (const pack of packs) Object.keys(pack.comparison || {}).forEach(label => labels.add(label));
   return [...labels].map(label => ({
     label,
     values: Object.fromEntries(packs.map(pack => [pack.slug, comparisonValue(pack, label)]))
-  })).filter(row => Object.values(row.values).some(Boolean));
+  }));
 }
 
 function comparisonValue(pack, label) {
