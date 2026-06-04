@@ -369,14 +369,18 @@ function renderCharts() {
   for (let i=29;i>=0;i--) {
     const d=new Date(); d.setDate(d.getDate()-i);
     const ds=d.toISOString().split('T')[0];
-    days.push(i===0?'Auj.':i===1?'Hier':d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}));
+    days.push(i===0?'Auj.':d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}));
     dayCounts.push(LEADS.filter(l=>l.created_at&&l.created_at.startsWith&&l.created_at.startsWith(ds)).length);
   }
-  mkChart('chart-leads-line','line',
-    days.filter((_,i)=>i%3===0||i===29), dayCounts.filter((_,i)=>i%3===0||i===29),
-    [{ label:'Leads', data:dayCounts.filter((_,i)=>i%3===0||i===29),
-      borderColor:'#FF2E2E', backgroundColor:'rgba(255,46,46,.08)',
-      fill:true, tension:.4, pointRadius:3, pointBackgroundColor:'#FF2E2E', borderWidth:2 }]);
+  const lineLabels = days.filter((_,i)=>i%3===0||i===29);
+  const lineData = dayCounts.filter((_,i)=>i%3===0||i===29);
+  mkChart('chart-leads-line','bar',
+    lineLabels,
+    [{ label:'Leads', data:lineData,
+      backgroundColor:lineData.map(v => v > 0 ? 'rgba(255,46,46,.72)' : 'rgba(255,255,255,.10)'),
+      borderColor:'#FF2E2E', borderWidth:1, borderRadius:6, maxBarThickness:26 }],
+    { plugins:{ legend:{display:false} },
+      scales:{ x:CO.scales.x, y:{ ...CO.scales.y, beginAtZero:true, ticks:{ ...CO.scales.y.ticks, precision:0, stepSize:1 } } } });
 
   // Leads donut
   const src={}; LEADS.forEach(l=>{ src[l.source||'direct']=(src[l.source||'direct']||0)+1; });
