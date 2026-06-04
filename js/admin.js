@@ -1900,31 +1900,23 @@ function toast(msg, type='info') {
 
 /* ─── FILE UPLOAD (Supabase Storage) ─── */
 async function uploadToSupabase(file, bucket = 'blog-images') {
-  const ext = file.name.split('.').pop();
-  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${ext}`;
-  const filePath = fileName;
-
-  const url = `${SUPABASE_URL}/storage/v1/object/${bucket}/${filePath}`;
-  
   try {
-    const resp = await fetch(url, {
+    const resp = await fetch(`/api/storage-upload?bucket=${encodeURIComponent(bucket)}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${SUPABASE_ANON}`,
-        'apikey': SUPABASE_ANON,
         'Content-Type': file.type,
-        'x-upsert': 'true'
+        'X-File-Name': file.name || 'image'
       },
       body: file
     });
 
     if (!resp.ok) {
       const errorData = await resp.json().catch(() => ({ message: resp.statusText }));
-      throw new Error(errorData.message || 'Upload failed');
+      throw new Error(errorData.message || errorData.error || 'Upload failed');
     }
-    
-    // Construct public URL
-    return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${filePath}`;
+
+    const payload = await resp.json();
+    return payload.publicUrl;
   } catch (err) {
     console.error('[Storage] Upload error details:', err);
     throw err;
