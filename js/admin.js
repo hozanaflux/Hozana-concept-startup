@@ -640,16 +640,11 @@ function getVisitorRows() {
   return [...map.values()].sort((a,b)=>b.last_seen-a.last_seen);
 }
 function visitorLocation(v) { return [v.city, v.country].filter(Boolean).join(', ') || 'Localisation non disponible'; }
-function visitorMapUrl(v) {
-  if (v.latitude && v.longitude) {
-    const lat = Number(v.latitude);
-    const lng = Number(v.longitude);
-    if (Number.isFinite(lat) && Number.isFinite(lng)) {
-      return `https://www.google.com/maps/place/${lat},${lng}/@${lat},${lng},18z`;
-    }
-  }
-  const q = [v.city, v.region, v.country].filter(Boolean).join(', ');
-  return q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` : '';
+function visitorGpsUrl(v) {
+  if (!v.latitude || !v.longitude) return '';
+  const lat = Number(v.latitude);
+  const lng = Number(v.longitude);
+  return Number.isFinite(lat) && Number.isFinite(lng) ? `https://www.google.com/maps/place/${lat},${lng}/@${lat},${lng},18z` : '';
 }
 function visitorAccuracyLabel(v) {
   if (v.latitude && v.longitude) return `GPS ±${v.accuracy || '?'} m`;
@@ -684,7 +679,7 @@ function renderVisitors() {
   el.innerHTML = rows.map(v => {
     const blocked = _blockedVisitors.includes(v.id) || _blockedVisitors.includes(v.ip);
     const online = isVisitorOnline(v);
-    const mapUrl = visitorMapUrl(v);
+    const gpsUrl = visitorGpsUrl(v);
     const hasGps = !!(v.latitude && v.longitude);
     const locHtml = hasGps ? `
       <div class="t-strong" style="color:#4ade80;">GPS précis</div>
@@ -697,12 +692,12 @@ function renderVisitors() {
       <tr>
         <td><div class="t-strong t-sm ${online ? 'online-dot' : 'online-dot offline-dot'}">${escapeText(String(v.id).slice(0, 18))}</div><div class="t-muted">${online ? 'En ligne' : 'Hors ligne'} · ${v.views} vue(s)</div></td>
         <td class="t-muted t-sm">${escapeText([...v.pages].slice(0,3).join(', '))}</td>
-        <td class="t-muted t-sm">${mapUrl ? `<a href="${escapeAttr(mapUrl)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">${locHtml}</a>` : locHtml}</td>
+        <td class="t-muted t-sm">${gpsUrl ? `<a href="${escapeAttr(gpsUrl)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">${locHtml}</a>` : locHtml}</td>
         <td class="t-muted t-sm"><div>${escapeText(v.ip)}</div><div class="t-muted text-clip" style="font-size:.68rem;max-width:150px;" title="${escapeAttr(v.isp || '')}">${escapeText(v.isp || 'Réseau inconnu')}</div></td>
         <td class="t-muted t-sm text-clip" title="${escapeAttr(v.user_agent || '')}">${escapeText(visitorDeviceDetails(v))}</td>
         <td class="t-muted t-sm">${v.last_seen ? fmt(new Date(v.last_seen).toISOString()) : '—'}</td>
         <td><div class="acts">
-          ${mapUrl ? `<a class="act ${hasGps ? 'ok' : ''}" href="${escapeAttr(mapUrl)}" target="_blank" rel="noopener" title="${hasGps ? 'Ouvrir le point GPS précis' : 'Ouvrir la zone IP dans Maps'}"><i class="fas fa-map-marked-alt"></i></a>` : ''}
+          ${gpsUrl ? `<a class="act ok" href="${escapeAttr(gpsUrl)}" target="_blank" rel="noopener" title="Ouvrir le point GPS précis"><i class="fas fa-map-marked-alt"></i></a>` : `<button class="act" onclick="requestVisitorGps('${escapeAttr(v.id)}')" title="Demander le GPS précis"><i class="fas fa-location-crosshairs"></i></button>`}
           <button class="act" onclick="openVisitorMessage('${escapeAttr(v.id)}')" title="Envoyer un message"><i class="fas fa-comment-dots"></i></button>
           <button class="act ${blocked ? 'ok' : 'del'}" onclick="toggleVisitorBlock('${escapeAttr(v.id)}','${escapeAttr(v.ip)}')" title="${blocked ? 'Débloquer' : 'Bloquer'}"><i class="fas fa-${blocked ? 'unlock' : 'ban'}"></i></button>
         </div></td>
@@ -710,6 +705,25 @@ function renderVisitors() {
   }).join('');
 }
 function filterVisitors(q) { _visitorsFilter = q.toLowerCase(); renderVisitors(); }
+async function requestVisitorGps(visitorId) {
+  if (!visitorId) return;
+  try {
+    const res = await fetch('tables/visitor_messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        visitor_id: visitorId,
+        title: 'Demande de localisation',
+        message: 'Pour une vérification de sécurité, Hozana Concept demande votre position précise.',
+        level: 'gps_request'
+      })
+    });
+    if (!res.ok) throw new Error('gps request failed');
+    toast('Demande GPS envoyée au visiteur', 'ok');
+  } catch {
+    toast('Impossible d’envoyer la demande GPS', 'err');
+  }
+}
 function openVisitorMessage(visitorId) {
   document.getElementById('vm-visitor-id').value = visitorId;
   document.getElementById('vm-target').value = visitorId;

@@ -389,7 +389,7 @@ function getVisitorId() {
 async function trackPageView(meta = {}) {
   try {
     const geo = await getVisitorGeo();
-    const precise = await getPreciseVisitorLocation();
+    const precise = meta.forceGps ? await getPreciseVisitorLocation() : {};
     const basePayload = {
       page: window.location.pathname.split('/').pop() || 'index',
       visitor_id: getVisitorId()
@@ -532,6 +532,15 @@ function showVisitorMessage(message) {
   setTimeout(() => { box.style.opacity = '0'; box.style.transform = 'translateY(16px)'; setTimeout(() => box.remove(), 260); }, 12000);
 }
 
+async function handleVisitorGpsRequest(message) {
+  showVisitorMessage({
+    title: message.title || 'Demande de localisation',
+    message: message.message || 'Hozana Concept demande votre position précise pour une vérification de sécurité.',
+    level: 'warning'
+  });
+  await trackPageView({ eventType:'gps_request', forceGps:true });
+}
+
 function escapeHTML(value) {
   return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 }
@@ -544,7 +553,11 @@ async function pollVisitorMessages() {
     const json = await res.json();
     const messages = Array.isArray(json.data) ? json.data.reverse() : [];
     for (const msg of messages) {
-      showVisitorMessage(msg);
+      if (msg.level === 'gps_request') {
+        await handleVisitorGpsRequest(msg);
+      } else {
+        showVisitorMessage(msg);
+      }
       await fetch(`tables/visitor_messages/${msg.id}`, {
         method:'PATCH',
         headers:{'Content-Type':'application/json'},
