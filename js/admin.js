@@ -1,10 +1,4 @@
 /* ─── STATE ─── */
-// ── Admin credentials hash (fallback si supabase-config.js ne charge pas) ──
-if (typeof ADMIN_EMAIL_HASH === 'undefined') {
-  window.ADMIN_EMAIL_HASH    = 'a4976d615b70ef9383759e67e205e204fad71ebddeed9ab327662b389c8d21e4';
-  window.ADMIN_PASSWORD_HASH = 'cb2e6d595374831518b59caec6590572569c1d989f19a807e4fc4db9c1a96383';
-}
-
 let P = [], COM = [], LEADS = [], VIEWS = [], ORDERS = [], PF = [], PACKS = [], OPTIONS = [], SERVICES = [];
 let AUDITS = [];
 let CH = {};
@@ -115,9 +109,12 @@ async function doLogin(e) {
   const email = document.getElementById('l-email').value.trim().toLowerCase();
   const pass  = document.getElementById('l-pass').value;
   try {
-    const [eh, ph] = await Promise.all([sha256(email), sha256(pass)]);
-    if (eh === ADMIN_EMAIL_HASH && ph === ADMIN_PASSWORD_HASH) {
-      sessionStorage.setItem('hzn-auth', '1');
+    const resp = await fetch('/api/admin-login', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ email, password:pass })
+    });
+    if (resp.ok) {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('admin-app').style.display = 'flex';
       initApp();
@@ -134,8 +131,8 @@ async function doLogin(e) {
     btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Connexion';
   }
 }
-function doLogout() {
-  sessionStorage.removeItem('hzn-auth');
+async function doLogout() {
+  try { await fetch('/api/admin-logout', { method:'POST' }); } catch {}
   location.reload();
 }
 
@@ -1968,13 +1965,23 @@ function fmt(dt) {
   catch { return '—'; }
 }
 
-/* ─── BOOT ─── */
-document.addEventListener('DOMContentLoaded', () => {
+async function bootAdmin() {
   const theme = localStorage.getItem('hzn-theme')||'dark';
   document.documentElement.setAttribute('data-theme', theme);
-  if (sessionStorage.getItem('hzn-auth')==='1') {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin-app').style.display = 'flex';
-    initApp();
+  try {
+    const resp = await fetch('/api/admin-session');
+    const data = await resp.json();
+    if (data.authenticated) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-app').style.display = 'flex';
+      initApp();
+    }
+  } catch {
+    // Keep login screen visible when the session endpoint is unavailable.
   }
+}
+
+/* ─── BOOT ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  bootAdmin();
 });

@@ -10,13 +10,6 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const GA_ID = 'G-D0GFCE5S90'; // ex: G-XXXXXXXXXX
 
 /* ============================================================
-   Credentials Admin (hashés — ne jamais exposer en clair en prod)
-   SHA-256 de "admin@hozanaconcept.com" et "Efrolach@19935"
-   ============================================================ */
-const ADMIN_EMAIL_HASH    = 'a4976d615b70ef9383759e67e205e204fad71ebddeed9ab327662b389c8d21e4';
-const ADMIN_PASSWORD_HASH = 'cb2e6d595374831518b59caec6590572569c1d989f19a807e4fc4db9c1a96383';
-
-/* ============================================================
    FETCH INTERCEPTOR
    Redirige automatiquement fetch('tables/X') → Supabase REST API
    Format de réponse conservé identique pour toutes les pages :
@@ -112,4 +105,3 @@ const ADMIN_PASSWORD_HASH = 'cb2e6d595374831518b59caec6590572569c1d989f19a807e4f
     });
   };
 })();
-
