@@ -180,18 +180,35 @@ async function initApp() {
 async function loadAll() {
   console.log('[Admin] Loading data...');
   try {
+    const adminJson = async (url) => {
+      const response = await fetch(url);
+      const text = await response.text();
+      let payload = null;
+      try { payload = text ? JSON.parse(text) : null; } catch {}
+      if (!response.ok) {
+        throw new Error(`${url} -> ${response.status}: ${payload?.error || payload?.message || text || response.statusText}`);
+      }
+      return payload || {};
+    };
+
     const [pr,cr,lr,vr,or,pfr, pkr, opr, svr, ar] = await Promise.allSettled([
-      fetch('tables/blog_posts?order=created_at.desc&limit=200').then(r=>r.json()),
-      fetch('tables/comments?order=created_at.desc&limit=300').then(r=>r.json()),
-      fetch('tables/leads?order=created_at.desc&limit=300').then(r=>r.json()),
-      fetch('tables/page_views?order=created_at.desc&limit=1000').then(r=>r.json()),
-      fetch('tables/orders?order=created_at.desc&limit=300').then(r=>r.json()),
-      fetch('tables/portfolio_projects?order=sort_order.asc&limit=200').then(r=>r.json()),
-      fetch('tables/packs?order=sort_order.asc&limit=50').then(r=>r.json()),
-      fetch('tables/pack_options?order=sort_order.asc&limit=100').then(r=>r.json()),
-      fetch('tables/services_list?order=sort_order.asc&limit=50').then(r=>r.json()),
-      fetch('tables/audits?order=created_at.desc&limit=100').then(r=>r.json()),
+      adminJson('tables/blog_posts?order=created_at.desc&limit=200'),
+      adminJson('tables/comments?order=created_at.desc&limit=300'),
+      adminJson('tables/leads?order=created_at.desc&limit=300'),
+      adminJson('tables/page_views?order=created_at.desc&limit=1000'),
+      adminJson('tables/orders?order=created_at.desc&limit=300'),
+      adminJson('tables/portfolio_projects?order=sort_order.asc&limit=200'),
+      adminJson('tables/packs?order=sort_order.asc&limit=50'),
+      adminJson('tables/pack_options?order=sort_order.asc&limit=100'),
+      adminJson('tables/services_list?order=sort_order.asc&limit=50'),
+      adminJson('tables/audits?order=created_at.desc&limit=100'),
     ]);
+
+    const failures = [pr,cr,lr,vr,or,pfr,pkr,opr,svr,ar].filter(r => r.status === 'rejected');
+    if (failures.length) {
+      const first = failures[0].reason?.message || String(failures[0].reason || 'Erreur API admin');
+      throw new Error(first);
+    }
     
     if (ar.status==='fulfilled' && ar.value) AUDITS = Array.isArray(ar.value.data) ? ar.value.data : [];
     
@@ -208,7 +225,7 @@ async function loadAll() {
     console.log('[Admin] Data loaded:', { posts: P.length, leads: LEADS.length, packs: PACKS.length, options: OPTIONS.length });
   } catch(e) { 
     console.error('[Admin] loadAll error:', e);
-    toast('Erreur de chargement','err'); 
+    toast(`Erreur de chargement: ${e.message || e}`,'err'); 
   }
 
   updateBadges();
