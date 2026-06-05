@@ -1,14 +1,14 @@
 <!DOCTYPE html><html lang="en" data-theme="dark"><head><script data-english-runtime="true">window.__ROOT_PATH__="../";window.__PAGE_ROOT__="./";window.__FORCE_LANG__='en';</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hozana Concept | AI &amp; Automation Agency — USA, UK, Europe &amp; Africa</title>
+  <title>Hozana Concept | Startup IA &amp; Automation — USA, UK, Europe &amp; Africa</title>
   <meta name="description" content="Hozana Concept is an AI, automation and digital growth agency for ambitious companies in the US, UK, Europe and Africa.">
   <meta name="keywords" content="agence IA Tunisie, intelligence artificielle Tunis, automatisation entreprise, chatbot IA, growth digital, agence marketing IA, développement application mobile, branding Tunisie, consulting digital, formation IA, ROI IA">
-  <meta property="og:title" content="Hozana Concept | AI &amp; Automation Agency — USA, UK, Europe &amp; Africa">
+  <meta property="og:title" content="Hozana Concept | Startup IA &amp; Automation — USA, UK, Europe &amp; Africa">
   <meta property="og:description" content="Hozana Concept is an AI, automation and digital growth agency for ambitious companies in the US, UK, Europe and Africa.">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Hozana Concept | AI &amp; Automation Agency — USA, UK, Europe &amp; Africa">
+  <meta name="twitter:title" content="Hozana Concept | Startup IA &amp; Automation — USA, UK, Europe &amp; Africa">
   <meta name="twitter:description" content="Hozana Concept is an AI, automation and digital growth agency for ambitious companies in the US, UK, Europe and Africa.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1200&amp;q=80">
@@ -2811,7 +2811,7 @@ async function loadPacksPreview() {
     const res = await fetch('tables/packs?order=sort_order.asc');
     const data = await res.json();
 
-    let packs = (data.data || []).filter(item => !isHomePricingOption(item));
+    let packs = (data.data || []).filter(item => !isHomePricingOption(item)).slice(0, 4);
 
     if (!packs.length) {
       console.warn('[Packs] Aucune donnée en base.');
@@ -2825,7 +2825,7 @@ async function loadPacksPreview() {
       const period = p.period || '';
       const contactMode = isHomeContactPack(p);
       const href = contactMode ? `contact.html?pack=${encodeURIComponent(p.name || '')}` : resolveHomePackHref(p);
-      const buttonText = contactMode ? 'Contactez-nous' : (p.button_text || 'Voir l’offre');
+      const buttonText = contactMode ? 'Contactez-nous' : 'Démarrer';
 
       const features = Array.isArray(p.features) ? p.features : [];
       const excluded = Array.isArray(p.features_excluded) ? p.features_excluded : [];
@@ -2837,7 +2837,8 @@ async function loadPacksPreview() {
         <div class="glass pack-card ${isFeatured} reveal delay-${i+1}" style="opacity:1 !important; visibility:visible !important;">
           ${badgeHtml}
           <div class="badge ${colorClass} mb-md">${escapePreview(p.name)}</div>
-          <h3 class="card-title">${escapePreview(p.description || '')}</h3>
+          <h3 class="card-title">${escapePreview(p.name || 'Pack Hozana')}</h3>
+          <p class="card-text" style="min-height:4.4rem;">${escapePreview(p.description || '')}</p>
           <div class="pack-price">
             <span class="pack-price-num ${p.is_featured ? 'gradient-text' : ''}">${escapePreview(p.price)}</span>
             <span class="pack-price-period">${escapePreview(period)}</span>
@@ -2935,7 +2936,7 @@ function renderHomeTestimonial(item, index) {
     : initials;
   const socials = [item.social1, item.social2].filter(Boolean).map(url => {
     const safe = escapePreview(url);
-    return `<a href="${safe}" target="_blank" rel="noopener noreferrer" aria-label="Profil social de ${name}" style="color:var(--white-50);font-size:.9rem;margin-left:.45rem;"><i class="fas fa-link"></i></a>`;
+    return `<a href="${safe}" target="_blank" rel="noopener noreferrer" aria-label="Profil social de ${name}" style="display:inline-flex;width:24px;height:24px;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--white-70);font-size:.72rem;margin-left:.4rem;"><i class="${socialIconForUrl(safe)}"></i></a>`;
   }).join('');
   return `
     <div class="glass testimonial-card reveal delay-${Math.min(index + 1, 3)}">
@@ -2949,6 +2950,17 @@ function renderHomeTestimonial(item, index) {
         </div>
       </div>
     </div>`;
+}
+
+function socialIconForUrl(url) {
+  const value = String(url || '').toLowerCase();
+  if (value.includes('linkedin')) return 'fab fa-linkedin-in';
+  if (value.includes('facebook')) return 'fab fa-facebook-f';
+  if (value.includes('instagram')) return 'fab fa-instagram';
+  if (value.includes('x.com') || value.includes('twitter')) return 'fab fa-x-twitter';
+  if (value.includes('youtube')) return 'fab fa-youtube';
+  if (value.includes('tiktok')) return 'fab fa-tiktok';
+  return 'fas fa-link';
 }
 
 /* ============================================================

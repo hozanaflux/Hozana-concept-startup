@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en" data-theme="dark"><head><script data-english-runtime="true">window.__ROOT_PATH__="../../";window.__PAGE_ROOT__="../";window.__FORCE_LANG__='en';</script><script>window.__STATIC_PACK_KEY__ = "starter";
-window.__STATIC_PACK_DATA__ = {"name":"Starter","description":"Le pack Starter Digital permet de lancer une présence professionnelle avec une identité claire, une page web efficace, une stratégie de communication simple et les\n  premières bases marketing pour attirer des prospects.","priceMonthly":160,"priceAnnual":128,"oldPriceMonthly":0,"price":"160  £","oldPrice":"","period":"par mois","features":["Mini audit business et positionnement","Création ou amélioration de l’identité visuelle","Landing page ou mini-site vitrine","Optimisation SEO de base","Configuration formulaire de contact","Mise en place des réseaux sociaux essentiels","Conseils marketing de lancement"],"excluded":[],"comparison":{},"slug":"starter","badge":"Starter","featured":false,"isFeatured":false};</script>
+window.__STATIC_PACK_DATA__ = {"name":"Starter","description":"Le pack Starter Digital permet de lancer une présence professionnelle avec une identité claire, une page web efficace, une stratégie de communication simple et les\n  premières bases marketing pour attirer des prospects.","priceMonthly":160,"priceAnnual":128,"oldPriceMonthly":0,"price":"160  £","oldPrice":"","period":"par mois","features":["Mini audit business et positionnement","Création ou amélioration de l’identité visuelle","Landing page ou mini-site vitrine","Optimisation SEO de base","Configuration formulaire de contact","Mise en place des réseaux sociaux essentiels","Conseils marketing de lancement"],"excluded":[],"comparison":{"Audit initial":"Mini audit","Stratégie business":"Basic"},"slug":"starter","badge":"Starter","featured":false,"isFeatured":false};</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Starter | Pack IA et automation Hozana Concept</title>
@@ -1617,17 +1617,20 @@ async function initPage() {
     currentPack = mergePackDetailData(currentPack, staticPackData);
   }
 
-  // Tentative de merge avec les données Supabase (prix mis à jour via admin)
-  try {
-    const res = await fetch('tables/packs?order=sort_order.asc');
-    if (res.ok) {
-      const json = await res.json();
-      const rows = Array.isArray(json.data) ? json.data : [];
-      const packData = rows.find(row => matchesPackDetail(row, requestedPack, staticKey));
-      if (packData) currentPack = mergePackDetailData(currentPack, packData);
+  // Tentative de merge avec les données Supabase (prix mis à jour via admin).
+  // Les pages statiques générées embarquent déjà leurs données et n'ont pas besoin de refetch.
+  if (!staticPackData) {
+    try {
+      const res = await fetch('tables/packs?order=sort_order.asc');
+      if (res.ok) {
+        const json = await res.json();
+        const rows = Array.isArray(json.data) ? json.data : [];
+        const packData = rows.find(row => matchesPackDetail(row, requestedPack, staticKey));
+        if (packData) currentPack = mergePackDetailData(currentPack, packData);
+      }
+    } catch (e) {
+      // Les données locales sont toujours disponibles — aucun problème
     }
-  } catch (e) {
-    // Les données locales sont toujours disponibles — aucun problème
   }
 
   renderPackHero();

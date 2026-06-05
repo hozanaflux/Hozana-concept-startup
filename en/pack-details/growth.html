@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en" data-theme="dark"><head><script data-english-runtime="true">window.__ROOT_PATH__="../../";window.__PAGE_ROOT__="../";window.__FORCE_LANG__='en';</script><script>window.__STATIC_PACK_KEY__ = "growth";
-window.__STATIC_PACK_DATA__ = {"name":"Pack Growth","description":"Pour PME, startups et porteurs de projets qui veulent générer plus de clients avec une stratégie digitale structurée.","priceMonthly":499,"priceAnnual":399,"oldPriceMonthly":0,"price":"499 £","oldPrice":"","period":"par mois","features":["Audit complet de votre activité digitale","Refonte ou création site web professionnel","Optimisation UX et conversion","Stratégie SEO et contenu","Mise en place tunnel de contact ou prise de rendez-vous","Automatisation email ou notification client","Kit réseaux sociaux professionnel","Plan marketing sur 30 jours"],"excluded":[],"comparison":{},"slug":"growth","badge":"Le plus Populaire","featured":true,"isFeatured":true};</script>
+window.__STATIC_PACK_DATA__ = {"name":"Pack Growth","description":"Pour PME, startups et porteurs de projets qui veulent générer plus de clients avec une stratégie digitale structurée.","priceMonthly":499,"priceAnnual":399,"oldPriceMonthly":0,"price":"499 £","oldPrice":"","period":"par mois","features":["Audit complet de votre activité digitale","Refonte ou création site web professionnel","Optimisation UX et conversion","Stratégie SEO et contenu","Mise en place tunnel de contact ou prise de rendez-vous","Automatisation email ou notification client","Kit réseaux sociaux professionnel","Plan marketing sur 30 jours"],"excluded":[],"comparison":{"Audit initial":"Mini audit"},"slug":"growth","badge":"Le plus Populaire","featured":true,"isFeatured":true};</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pack Growth | Pack IA et automation Hozana Concept</title>
@@ -1625,17 +1625,20 @@ async function initPage() {
     currentPack = mergePackDetailData(currentPack, staticPackData);
   }
 
-  // Tentative de merge avec les données Supabase (prix mis à jour via admin)
-  try {
-    const res = await fetch('tables/packs?order=sort_order.asc');
-    if (res.ok) {
-      const json = await res.json();
-      const rows = Array.isArray(json.data) ? json.data : [];
-      const packData = rows.find(row => matchesPackDetail(row, requestedPack, staticKey));
-      if (packData) currentPack = mergePackDetailData(currentPack, packData);
+  // Tentative de merge avec les données Supabase (prix mis à jour via admin).
+  // Les pages statiques générées embarquent déjà leurs données et n'ont pas besoin de refetch.
+  if (!staticPackData) {
+    try {
+      const res = await fetch('tables/packs?order=sort_order.asc');
+      if (res.ok) {
+        const json = await res.json();
+        const rows = Array.isArray(json.data) ? json.data : [];
+        const packData = rows.find(row => matchesPackDetail(row, requestedPack, staticKey));
+        if (packData) currentPack = mergePackDetailData(currentPack, packData);
+      }
+    } catch (e) {
+      // Les données locales sont toujours disponibles — aucun problème
     }
-  } catch (e) {
-    // Les données locales sont toujours disponibles — aucun problème
   }
 
   renderPackHero();

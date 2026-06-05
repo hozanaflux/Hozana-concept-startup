@@ -253,7 +253,7 @@
       <div class="section-label">Notre Équipe</div>
       <h2 class="text-h1">Les <span class="gradient-text">experts</span> derrière la magie</h2>
     </div>
-    <div class="grid-3">
+    <div class="grid-3" id="company-team-grid">
       <div class="glass team-card reveal delay-1">
         <div class="team-avatar">E</div>
         <div class="team-name">Efro Mwanza</div>
@@ -351,5 +351,63 @@
 <script src="js/supabase-config.js"></script>
 <script src="js/core.js"></script>
 <script src="js/components.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', loadCompanyTeam);
+
+async function loadCompanyTeam() {
+  const grid = document.getElementById('company-team-grid');
+  if (!grid) return;
+  try {
+    const res = await fetch('tables/site_settings?key=eq.company_team&limit=1');
+    if (!res.ok) return;
+    const json = await res.json();
+    const raw = json.data?.[0]?.value || '';
+    const team = JSON.parse(raw || '[]').filter(member => member && (member.name || member.role || member.bio));
+    if (!team.length) return;
+    grid.innerHTML = team.slice(0, 4).map((member, i) => renderCompanyTeamMember(member, i)).join('');
+    if (window.reObserveReveals) window.reObserveReveals();
+  } catch (error) {
+    console.warn('[Team] Chargement dynamique indisponible:', error);
+  }
+}
+
+function renderCompanyTeamMember(member, index) {
+  const name = escapeCompanyText(member.name || 'Membre Hozana');
+  const role = escapeCompanyText(member.role || '');
+  const bio = escapeCompanyText(member.bio || '');
+  const photo = String(member.photo || '').trim();
+  const initials = name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase();
+  const avatar = photo
+    ? `<img src="${escapeCompanyText(photo)}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+    : initials;
+  const socials = [member.social1, member.social2].filter(Boolean).map(url => {
+    const safe = escapeCompanyText(url);
+    return `<a href="${safe}" class="social-link" target="_blank" rel="noopener noreferrer" style="width:32px;height:32px;"><i class="${companySocialIcon(safe)}" style="font-size:0.75rem;"></i></a>`;
+  }).join('');
+  return `
+    <div class="glass team-card reveal delay-${Math.min(index + 1, 4)}">
+      <div class="team-avatar">${avatar}</div>
+      <div class="team-name">${name}</div>
+      <div class="team-role">${role}</div>
+      <p class="team-bio">${bio}</p>
+      ${socials ? `<div style="display:flex;justify-content:center;gap:0.5rem;margin-top:1rem;">${socials}</div>` : ''}
+    </div>`;
+}
+
+function companySocialIcon(url) {
+  const value = String(url || '').toLowerCase();
+  if (value.includes('linkedin')) return 'fab fa-linkedin-in';
+  if (value.includes('facebook')) return 'fab fa-facebook-f';
+  if (value.includes('instagram')) return 'fab fa-instagram';
+  if (value.includes('x.com') || value.includes('twitter')) return 'fab fa-x-twitter';
+  if (value.includes('youtube')) return 'fab fa-youtube';
+  if (value.includes('tiktok')) return 'fab fa-tiktok';
+  return 'fas fa-link';
+}
+
+function escapeCompanyText(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+</script>
 </body>
 </html>

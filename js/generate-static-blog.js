@@ -766,7 +766,7 @@ function resolvePackButtonText(row, contactMode) {
   const savedText = String(row.button_text || '').trim();
   const isGenericText = /^(démarrer|demarrer|choisir|choisir ce pack|voir le détail du pack|voir le detail du pack)/i.test(savedText);
   if (contactMode && (!savedText || isGenericText)) return 'Contactez-nous';
-  return savedText || (contactMode ? 'Contactez-nous' : 'Voir le détail du pack');
+  return (!savedText || isGenericText) ? (contactMode ? 'Contactez-nous' : 'Démarrer') : savedText;
 }
 
 function enrichOption(row) {
@@ -964,7 +964,7 @@ function renderStaticPackCard(pack) {
         <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">${escapeHtml(pack.description)}</p>
         <ul class="pack-features" style="flex:1;">${features}${excluded}</ul>
         <a href="${detailHref}" class="btn ${pack.buttonClass || (pack.isFeatured ? 'btn-primary' : 'btn-glass')} w-full mt-lg" style="justify-content:center;">
-          ${escapeHtml(pack.buttonText || (pack.isEnterprise ? 'Contactez-nous' : 'Voir le détail du pack'))}
+          ${escapeHtml(pack.buttonText || (pack.isEnterprise ? 'Contactez-nous' : 'Démarrer'))}
         </a>
       </article>`;
 }

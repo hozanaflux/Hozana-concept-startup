@@ -85,6 +85,9 @@
       <i class="fas fa-comments"></i> Commentaires
       <span class="badge" id="badge-com">0</span>
     </button>
+    <button class="nav-btn" data-panel="testimonials" onclick="nav(this,'testimonials')">
+      <i class="fas fa-star"></i> Témoignages
+    </button>
 
     <div class="nav-section">Business</div>
     <button class="nav-btn" data-panel="leads" onclick="nav(this,'leads')">
@@ -650,6 +653,21 @@
         </div>
       </div>
 
+      <!-- ══════════ TÉMOIGNAGES ══════════ -->
+      <div class="panel" id="panel-testimonials">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title"><i class="fas fa-star"></i> Témoignages accueil</div>
+              <p class="form-hint">Photos, fonctions et deux liens sociaux par personne. Les changements mettent à jour la page d'accueil.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="saveHomeTestimonials()"><i class="fas fa-save"></i> Enregistrer</button>
+          </div>
+          <div id="testimonials-admin-form" class="compact-editor-grid"></div>
+          <div id="testimonials-status" class="form-hint" style="margin-top:.75rem;"></div>
+        </div>
+      </div>
+
     <!-- LEAD AUDIT MODAL -->
     <div class="overlay" id="m-audit" onclick="closeIfBg(event,'m-audit')">
       <div class="modal" style="max-width:720px;">
@@ -724,12 +742,12 @@
             </div>
           </div>
           <div class="setting-card settings-wide">
-            <h3><i class="fas fa-star" style="color:#f59e0b"></i> Témoignages accueil</h3>
-            <p class="form-hint">Publie les témoignages visibles sur la page d'accueil. Chaque profil peut avoir une photo et deux liens sociaux.</p>
-            <div id="testimonials-admin-form" class="form-row"></div>
+            <h3><i class="fas fa-users" style="color:#38bdf8"></i> Équipe page À propos</h3>
+            <p class="form-hint">Contrôle les membres affichés dans la section équipe de la page company.html.</p>
+            <div id="team-admin-form" class="compact-editor-grid"></div>
             <div class="settings-actions">
-              <button class="btn btn-primary" onclick="saveHomeTestimonials()"><i class="fas fa-save"></i> Enregistrer les témoignages</button>
-              <span id="testimonials-status" class="form-hint"></span>
+              <button class="btn btn-primary" onclick="saveCompanyTeam()"><i class="fas fa-save"></i> Enregistrer l'équipe</button>
+              <span id="team-status" class="form-hint"></span>
             </div>
           </div>
           <div class="setting-card settings-wide">

@@ -167,7 +167,7 @@ async function doLogout() {
 }
 
 /* ─── NAVIGATION ─── */
-const TITLES = { dashboard:'Dashboard', analytics:'Analytics', notifications:'Notifications', articles:'Articles', portfolio:'Portfolio', leads:'Leads CRM', audits:'Audits IA', packs:'Packs Tarifs', publication:'Centre publication', orders:'Commandes', contacts:'Base contacts', visitors:'Visiteurs', services:'Services', comments:'Commentaires', settings:'Paramètres' };
+const TITLES = { dashboard:'Dashboard', analytics:'Analytics', notifications:'Notifications', articles:'Articles', portfolio:'Portfolio', leads:'Leads CRM', audits:'Audits IA', packs:'Packs Tarifs', publication:'Centre publication', orders:'Commandes', contacts:'Base contacts', visitors:'Visiteurs', services:'Services', comments:'Commentaires', testimonials:'Témoignages', settings:'Paramètres' };
 const CTA = { articles:{ label:'Nouvel article', fn:'openArticleModal()' }, portfolio:{ label:'Nouveau projet', fn:'openPfModal()' }, packs:{ label:'Nouveau pack', fn:'openPackModal()' }, services:{ label:'Nouveau service', fn:'openServiceModal()' } };
 function nav(btn, panel) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -199,6 +199,7 @@ function nav(btn, panel) {
   if (panel === 'services')  renderServices();
   if (panel === 'orders')    renderOrders();
   if (panel === 'comments')  renderComments();
+  if (panel === 'testimonials') renderHomeTestimonialsForm();
   if (panel === 'settings')  fillSiteSettingsForm();
 
   document.getElementById('sidebar').classList.remove('open');
@@ -1647,7 +1648,7 @@ async function savePack() {
     is_featured:document.getElementById('pk-featured').value==='true',
     sort_order:parseInt(document.getElementById('pk-order').value)||0,
     link: buttonMode === 'contact' ? (manualLink || `contact.html?pack=${encodeURIComponent(name)}`) : manualLink,
-    button_text: buttonMode === 'contact' ? 'Contactez-nous' : 'Voir le détail du pack',
+    button_text: buttonMode === 'contact' ? 'Contactez-nous' : 'Démarrer',
     button_class: buttonMode === 'contact' ? 'btn-primary' : '',
     comparison: comparisonFromText(document.getElementById('pk-comparison').value)
   };
@@ -1929,7 +1930,7 @@ function fillSiteSettingsForm() {
     const el = document.getElementById(id);
     if (el) el.value = SITE_SETTINGS[key] || '';
   });
-  renderHomeTestimonialsForm();
+  renderCompanyTeamForm();
 }
 
 function defaultHomeTestimonials() {
@@ -1955,15 +1956,52 @@ function renderHomeTestimonialsForm() {
   const rows = getHomeTestimonials().slice(0, 3);
   while (rows.length < 3) rows.push({ name:'', role:'', text:'', photo:'', social1:'', social2:'' });
   el.innerHTML = rows.map((t, i) => `
-    <div class="form-grp full" style="border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem;background:rgba(255,255,255,.02);">
+    <div class="compact-editor-card">
       <label class="form-label">Témoignage ${i + 1}</label>
-      <div class="form-row">
-        <div class="form-grp"><input class="form-ctrl tst-name" value="${escapeAttr(t.name || '')}" placeholder="Nom"></div>
-        <div class="form-grp"><input class="form-ctrl tst-role" value="${escapeAttr(t.role || '')}" placeholder="Fonction / entreprise"></div>
-        <div class="form-grp full"><textarea class="form-ctrl tst-text" rows="3" placeholder="Texte du témoignage">${escapeText(t.text || '')}</textarea></div>
-        <div class="form-grp"><input class="form-ctrl tst-photo" value="${escapeAttr(t.photo || '')}" placeholder="URL photo de profil"></div>
-        <div class="form-grp"><input class="form-ctrl tst-social1" value="${escapeAttr(t.social1 || '')}" placeholder="Lien social 1"></div>
-        <div class="form-grp"><input class="form-ctrl tst-social2" value="${escapeAttr(t.social2 || '')}" placeholder="Lien social 2"></div>
+      <div class="mini-grid">
+        <input class="form-ctrl tst-name" value="${escapeAttr(t.name || '')}" placeholder="Nom">
+        <input class="form-ctrl tst-role" value="${escapeAttr(t.role || '')}" placeholder="Fonction / entreprise">
+        <textarea class="form-ctrl tst-text" rows="3" placeholder="Texte du témoignage">${escapeText(t.text || '')}</textarea>
+        <input class="form-ctrl tst-photo" value="${escapeAttr(t.photo || '')}" placeholder="URL photo de profil">
+        <input class="form-ctrl tst-social1" value="${escapeAttr(t.social1 || '')}" placeholder="Lien social 1">
+        <input class="form-ctrl tst-social2" value="${escapeAttr(t.social2 || '')}" placeholder="Lien social 2">
+      </div>
+    </div>
+  `).join('');
+}
+
+function defaultCompanyTeam() {
+  return [
+    { name:'Efro Mwanza', role:'Fondateur & CEO', bio:'Pionnier de l’IA appliquée aux PME, Efro Mwanza guide les entrepreneurs vers la transformation digitale avec une approche orientée data et résultats.', photo:'', social1:'', social2:'' },
+    { name:'Dr. Sarah Mbemba', role:'Directrice IA & Data Science', bio:'PhD en machine learning, Sarah dirige la R&D IA et conçoit les architectures intelligentes sur mesure pour nos clients globaux.', photo:'', social1:'', social2:'' },
+    { name:'Léa Fontaine', role:'Head of Growth', bio:'Experte en growth hacking et acquisition client, Léa maximise le ROI de chaque campagne grâce à l’IA et à la data.', photo:'', social1:'', social2:'' }
+  ];
+}
+
+function getCompanyTeam() {
+  try {
+    const parsed = JSON.parse(SITE_SETTINGS.company_team || '[]');
+    return Array.isArray(parsed) && parsed.length ? parsed : defaultCompanyTeam();
+  } catch {
+    return defaultCompanyTeam();
+  }
+}
+
+function renderCompanyTeamForm() {
+  const el = document.getElementById('team-admin-form');
+  if (!el) return;
+  const rows = getCompanyTeam().slice(0, 4);
+  while (rows.length < 3) rows.push({ name:'', role:'', bio:'', photo:'', social1:'', social2:'' });
+  el.innerHTML = rows.map((t, i) => `
+    <div class="compact-editor-card">
+      <label class="form-label">Membre ${i + 1}</label>
+      <div class="mini-grid">
+        <input class="form-ctrl team-name" value="${escapeAttr(t.name || '')}" placeholder="Nom">
+        <input class="form-ctrl team-role" value="${escapeAttr(t.role || '')}" placeholder="Rôle">
+        <textarea class="form-ctrl team-bio" rows="3" placeholder="Bio courte">${escapeText(t.bio || '')}</textarea>
+        <input class="form-ctrl team-photo" value="${escapeAttr(t.photo || '')}" placeholder="URL photo">
+        <input class="form-ctrl team-social1" value="${escapeAttr(t.social1 || '')}" placeholder="Lien social 1">
+        <input class="form-ctrl team-social2" value="${escapeAttr(t.social2 || '')}" placeholder="Lien social 2">
       </div>
     </div>
   `).join('');
@@ -1985,7 +2023,7 @@ async function saveHomeTestimonials() {
   const status = document.getElementById('testimonials-status');
   if (status) status.textContent = 'Enregistrement...';
   try {
-    const cards = [...document.querySelectorAll('#testimonials-admin-form > .form-grp')];
+    const cards = [...document.querySelectorAll('#testimonials-admin-form > .compact-editor-card')];
     const rows = cards.map(card => ({
       name: card.querySelector('.tst-name')?.value.trim() || '',
       role: card.querySelector('.tst-role')?.value.trim() || '',
@@ -2002,6 +2040,30 @@ async function saveHomeTestimonials() {
     console.error('[Settings] saveHomeTestimonials error:', error);
     if (status) status.textContent = 'Erreur enregistrement.';
     toast(`Erreur témoignages: ${error.message || error}`, 'err');
+  }
+}
+
+async function saveCompanyTeam() {
+  const status = document.getElementById('team-status');
+  if (status) status.textContent = 'Enregistrement...';
+  try {
+    const cards = [...document.querySelectorAll('#team-admin-form > .compact-editor-card')];
+    const rows = cards.map(card => ({
+      name: card.querySelector('.team-name')?.value.trim() || '',
+      role: card.querySelector('.team-role')?.value.trim() || '',
+      bio: card.querySelector('.team-bio')?.value.trim() || '',
+      photo: card.querySelector('.team-photo')?.value.trim() || '',
+      social1: card.querySelector('.team-social1')?.value.trim() || '',
+      social2: card.querySelector('.team-social2')?.value.trim() || ''
+    })).filter(t => t.name || t.role || t.bio);
+    SITE_SETTINGS.company_team = JSON.stringify(rows);
+    await upsertSiteSetting('company_team', SITE_SETTINGS.company_team);
+    if (status) status.textContent = 'Équipe enregistrée.';
+    toast('Équipe page À propos enregistrée', 'ok');
+  } catch (error) {
+    console.error('[Settings] saveCompanyTeam error:', error);
+    if (status) status.textContent = 'Erreur enregistrement.';
+    toast(`Erreur équipe: ${error.message || error}`, 'err');
   }
 }
 

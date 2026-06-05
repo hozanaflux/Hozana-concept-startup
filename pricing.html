@@ -203,7 +203,7 @@
   premières bases marketing pour attirer des prospects.</p>
         <ul class="pack-features" style="flex:1;"><li>Mini audit business et positionnement</li><li>Création ou amélioration de l’identité visuelle</li><li>Landing page ou mini-site vitrine</li><li>Optimisation SEO de base</li><li>Configuration formulaire de contact</li><li>Mise en place des réseaux sociaux essentiels</li><li>Conseils marketing de lancement</li></ul>
         <a href="pack-details/starter.html" class="btn btn-glass w-full mt-lg" style="justify-content:center;">
-          Voir le détail du pack
+          Démarrer
         </a>
       </article>
       <article class="glass pack-card-full featured reveal" itemscope="" itemtype="https://schema.org/Product">
@@ -221,7 +221,7 @@
         <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">Pour PME, startups et porteurs de projets qui veulent générer plus de clients avec une stratégie digitale structurée.</p>
         <ul class="pack-features" style="flex:1;"><li>Audit complet de votre activité digitale</li><li>Refonte ou création site web professionnel</li><li>Optimisation UX et conversion</li><li>Stratégie SEO et contenu</li><li>Mise en place tunnel de contact ou prise de rendez-vous</li><li>Automatisation email ou notification client</li><li>Kit réseaux sociaux professionnel</li></ul>
         <a href="pack-details/growth.html" class="btn btn-primary w-full mt-lg" style="justify-content:center;">
-          Voir le détail du pack
+          Démarrer
         </a>
       </article>
       <article class="glass pack-card-full  reveal" itemscope="" itemtype="https://schema.org/Product">
@@ -239,7 +239,7 @@
         <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">Transformation IA complète pour entreprises ambitieuses : workflows illimités, BI, prédictif et support VIP.</p>
         <ul class="pack-features" style="flex:1;"><li>IA sur mesure complète</li><li>Workflows illimités</li><li>BI et analyse prédictive</li><li>Growth Ads 2 000€/mois</li><li>Contenu IA illimité</li><li>Account manager dédié</li><li>SLA 4h</li></ul>
         <a href="pack-details/elite.html" class="btn btn-glass w-full mt-lg" style="justify-content:center;">
-          Voir le détail du pack
+          Démarrer
         </a>
       </article>
       <article class="glass pack-card-full  reveal" itemscope="" itemtype="https://schema.org/Product">
@@ -257,7 +257,7 @@
         <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;" itemprop="description">Pour entreprises qui veulent gagner du temps, réduire les tâches répétitives et intégrer l’intelligence artificielle dans leurs processus.</p>
         <ul class="pack-features" style="flex:1;"><li>Audit des processus internes</li><li>Identification des tâches automatisables</li><li>Création d’un chatbot ou assistant IA professionnel</li><li>Automatisation des demandes clients</li><li>Automatisation CRM, email ou formulaire</li><li>Connexion avec outils existants</li><li>Tableau de suivi des performances</li></ul>
         <a href="pack-details/startup.html" class="btn btn-glass w-full mt-lg" style="justify-content:center;">
-          Voir le détail du pack
+          Démarrer
         </a>
       </article>
       <article class="glass pack-card-full  reveal" itemscope="" itemtype="https://schema.org/Product">
@@ -599,7 +599,7 @@
       const isContact = /contact/i.test(href);
       const savedButtonText = String(p.button_text || '').trim();
       const isGenericButtonText = /^(démarrer|demarrer|choisir|choisir ce pack|voir le détail du pack|voir le detail du pack)/i.test(savedButtonText);
-      const buttonText = isContact && (!savedButtonText || isGenericButtonText) ? 'Contactez-nous' : (savedButtonText || (isContact ? 'Contactez-nous' : 'Choisir ce pack →'));
+      const buttonText = isContact && (!savedButtonText || isGenericButtonText) ? 'Contactez-nous' : ((!savedButtonText || isGenericButtonText) ? 'Démarrer' : savedButtonText);
       const buttonClass = p.button_class || (isContact ? 'btn-primary' : (isFeatured ? 'btn-primary' : 'btn-glass'));
       const badgeHtml = isFeatured ? `<div class="pack-badge">${p.badge || 'Mis en avant'}</div>` : (p.badge ? `<div class="badge badge-glass" style="width:fit-content;margin-bottom:1rem;">${p.badge}</div>` : '');
       const price = parsePricingPrice(p.price);
@@ -784,8 +784,6 @@
     return 'fas fa-robot';
   }
 </script>
-
-
 
 
 

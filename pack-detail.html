@@ -1536,17 +1536,20 @@ async function initPage() {
     currentPack = mergePackDetailData(currentPack, staticPackData);
   }
   
-  // Tentative de merge avec les données Supabase (prix mis à jour via admin)
-  try {
-    const res = await fetch('tables/packs?order=sort_order.asc');
-    if (res.ok) {
-      const json = await res.json();
-      const rows = Array.isArray(json.data) ? json.data : [];
-      const packData = rows.find(row => matchesPackDetail(row, requestedPack, staticKey));
-      if (packData) currentPack = mergePackDetailData(currentPack, packData);
+  // Tentative de merge avec les données Supabase (prix mis à jour via admin).
+  // Les pages statiques générées embarquent déjà leurs données et n'ont pas besoin de refetch.
+  if (!staticPackData) {
+    try {
+      const res = await fetch('tables/packs?order=sort_order.asc');
+      if (res.ok) {
+        const json = await res.json();
+        const rows = Array.isArray(json.data) ? json.data : [];
+        const packData = rows.find(row => matchesPackDetail(row, requestedPack, staticKey));
+        if (packData) currentPack = mergePackDetailData(currentPack, packData);
+      }
+    } catch (e) {
+      // Les données locales sont toujours disponibles — aucun problème
     }
-  } catch (e) {
-    // Les données locales sont toujours disponibles — aucun problème
   }
 
   renderPackHero();
