@@ -1520,39 +1520,25 @@ const PROMO_CODES = { 'HOZANA20': 20, 'HOZANA30': 30, 'LAUNCH50': 50 };
 async function initPage() {
   const params = new URLSearchParams(window.location.search);
   const staticPackData = window.__STATIC_PACK_DATA__ || null;
-  const packName = params.get('pack') || staticPackData?.name || window.__STATIC_PACK_KEY__ || 'Growth';
+  const requestedPack = params.get('pack') || params.get('slug') || staticPackData?.slug || staticPackData?.name || window.__STATIC_PACK_KEY__ || 'Growth';
 
   // Normalise le nom du pack depuis l'URL (ex: "Growth" → "growth")
   // et sélectionne le pack correspondant depuis nos données locales riches
-  const key = packName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const key = packDetailKey(requestedPack);
   const staticKey = window.__STATIC_PACK_KEY__;
   currentPack = PACKS[staticKey] || PACKS[key] || PACKS.growth;
   if (staticPackData) {
-    currentPack = {
-      ...currentPack,
-      ...staticPackData,
-      featureGroups: currentPack.featureGroups,
-      timeline: currentPack.timeline,
-      results: currentPack.results,
-      testimonial: currentPack.testimonial,
-      sidebarFeatures: currentPack.sidebarFeatures
-    };
+    currentPack = mergePackDetailData(currentPack, staticPackData);
   }
 
   // Tentative de merge avec les données Supabase (prix mis à jour via admin)
   try {
-    if (staticPackData) throw new Error('static-pack-data');
-    const res = await fetch(`tables/packs?name=eq.${encodeURIComponent(packName)}`);
+    const res = await fetch('tables/packs?order=sort_order.asc');
     if (res.ok) {
       const json = await res.json();
-      const packData = json.data ? json.data[0] : null;
-      if (packData && packData.price) {
-        const priceNum = parseInt(packData.price.replace(/[^0-9]/g, ''));
-        if (!isNaN(priceNum) && priceNum > 0) {
-          currentPack.priceMonthly = priceNum;
-          currentPack.priceAnnual = Math.round(priceNum * 0.8);
-        }
-      }
+      const rows = Array.isArray(json.data) ? json.data : [];
+      const packData = rows.find(row => matchesPackDetail(row, requestedPack, staticKey));
+      if (packData) currentPack = mergePackDetailData(currentPack, packData);
     }
   } catch (e) {
     // Les données locales sont toujours disponibles — aucun problème
@@ -1572,6 +1558,76 @@ async function initPage() {
   document.title = `${currentPack.name} | Hozana Concept`;
 }
 
+function packDetailSlug(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/^pack\s+/i, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '') || 'pack';
+}
+
+function packDetailKey(value) {
+  const slug = packDetailSlug(value).replace(/-/g, '');
+  if (slug.includes('starter') || slug.includes('stater')) return 'starter';
+  if (slug.includes('growth')) return 'growth';
+  if (slug.includes('elite')) return 'elite';
+  return slug || 'growth';
+}
+
+function matchesPackDetail(row, requestedPack, staticKey) {
+  const requestedSlug = packDetailSlug(requestedPack);
+  const rowSlug = packDetailSlug(row.slug || row.name || row.title || row.id);
+  const linkSlug = String(row.link || '').match(/pack-details\/([^/?#]+)\.html/i)?.[1] || '';
+  return rowSlug === requestedSlug
+    || packDetailSlug(linkSlug) === requestedSlug
+    || packDetailKey(row.name || row.title || row.slug) === packDetailKey(requestedPack)
+    || (staticKey && packDetailKey(row.name || row.slug) === packDetailKey(staticKey));
+}
+
+function listFromPackValue(value) {
+  if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean);
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) return listFromPackValue(parsed);
+    } catch {}
+    return value.split(/\n|,/).map(v => v.trim()).filter(Boolean);
+  }
+  return [];
+}
+
+function mergePackDetailData(base, data) {
+  const next = { ...base };
+  const features = listFromPackValue(data.features);
+  const excluded = listFromPackValue(data.excluded || data.features_excluded);
+  const priceMonthly = parseInt(String(data.priceMonthly || data.price || '').replace(/[^0-9]/g, ''), 10);
+  const oldPriceMonthly = parseInt(String(data.oldPriceMonthly || data.old_price || data.price_before || data.compare_at_price || '').replace(/[^0-9]/g, ''), 10);
+
+  if (data.name) next.name = data.name;
+  if (data.description) next.description = data.description;
+  if (Number.isFinite(priceMonthly) && priceMonthly > 0) {
+    next.priceMonthly = priceMonthly;
+    next.priceAnnual = Math.round(priceMonthly * 0.8);
+  }
+  if (Number.isFinite(oldPriceMonthly) && oldPriceMonthly > next.priceMonthly) next.oldPriceMonthly = oldPriceMonthly;
+  if (data.badge) next.badge = data.badge;
+  if (data.is_featured !== undefined || data.isFeatured !== undefined || data.featured !== undefined) {
+    next.featured = data.is_featured === true || data.isFeatured === true || data.featured === true || String(data.is_featured || data.isFeatured || data.featured) === 'true';
+  }
+  if (features.length || excluded.length) {
+    next.sidebarFeatures = features.length ? features : next.sidebarFeatures;
+    next.featureGroups = [{
+      title: 'Inclus dans ce pack',
+      features: [
+        ...features.map(name => ({ name, desc: 'Inclus dans votre accompagnement Hozana Concept.', type: 'check' })),
+        ...excluded.map(name => ({ name, desc: 'Non inclus dans cette offre.', type: 'x' }))
+      ]
+    }];
+  }
+  return next;
+}
+
 function renderPackHero() {
   const el = document.getElementById('pack-hero-display');
   if (!el) return;
@@ -1581,6 +1637,9 @@ function renderPackHero() {
   const monthly = currentPack.priceMonthly;
   const annual = currentPack.priceAnnual;
   const showPrice = billingType === 'monthly' ? monthly : annual;
+  const oldPrice = currentPack.oldPriceMonthly && currentPack.oldPriceMonthly > monthly
+    ? `<span style="display:block;font-size:1rem;color:var(--white-30);text-decoration:line-through;margin-bottom:0.35rem;">${currentPack.oldPriceMonthly}€</span>`
+    : '';
 
   el.innerHTML = `
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
@@ -1590,6 +1649,7 @@ function renderPackHero() {
     <h1 class="pack-hero-title">${currentPack.name}</h1>
     <p class="pack-hero-subtitle">${currentPack.description}</p>
     <div class="pack-hero-price">
+      ${oldPrice}
       <span class="pack-price-amount gradient-text" id="hero-price">${showPrice}€</span>
       <span class="pack-price-period">/mois HT</span>
       ${billingType === 'annual' ? '<div style="margin-top:0.5rem;"><span class="discount-badge">Facturé annuellement — Vous économisez ' + ((monthly - annual) * 12) + '€/an</span></div>' : ''}

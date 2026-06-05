@@ -2375,7 +2375,7 @@
       </p>
     </div>
 
-    <div class="testimonials-grid">
+    <div class="testimonials-grid" id="home-testimonials-grid">
       <div class="glass testimonial-card reveal delay-1">
         <div class="stars" aria-label="5 étoiles">★★★★★</div>
         <p class="testimonial-text">"En 3 month avec Hozana Concept, notre CA a bondi de 67%. On avait peur que ce soit trop complexe pour nous — mais leur équipe a tout géré. Résultats visibles dès le premier month, sans aucune perturbation interne."</p>
@@ -2609,6 +2609,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPortfolioPreview();
   // Packs preview
   loadPacksPreview();
+  loadHomeTestimonials();
 
   // Stats charts (after short delay so canvas is rendered)
   setTimeout(initStatsCharts, 600);
@@ -2822,6 +2823,9 @@ async function loadPacksPreview() {
       const badgeHtml = p.badge ? `<div class="pack-badge">${p.badge}</div>` : '';
       const colorClass = p.color_class || 'badge-glass';
       const period = p.period || '';
+      const contactMode = isHomeContactPack(p);
+      const href = contactMode ? `contact.html?pack=${encodeURIComponent(p.name || '')}` : resolveHomePackHref(p);
+      const buttonText = contactMode ? 'Contactez-nous' : (p.button_text || 'Voir l’offre');
 
       const features = Array.isArray(p.features) ? p.features : [];
       const excluded = Array.isArray(p.features_excluded) ? p.features_excluded : [];
@@ -2841,8 +2845,8 @@ async function loadPacksPreview() {
           <ul class="pack-features">
             ${featuresHtml}
           </ul>
-          <a href="${p.link || 'contact.html'}" class="btn ${p.button_class || 'btn-glass'} w-full" style="justify-content:center;">
-            ${escapePreview(p.button_text || 'Démarrer')}
+          <a href="${href}" class="btn ${p.button_class || (contactMode ? 'btn-primary' : 'btn-glass')} w-full" style="justify-content:center;">
+            ${escapePreview(buttonText)}
           </a>
         </div>
       `;
@@ -2853,6 +2857,34 @@ async function loadPacksPreview() {
   } catch (err) {
     console.error('[Packs] Erreur de chargement:', err);
   }
+}
+
+function homeSlug(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/^pack\s+/i, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '') || 'pack';
+}
+
+function resolveHomePackHref(pack) {
+  const link = String(pack?.link || '').trim();
+  const slugFromLink = link.match(/pack-details\/([^/?#]+)\.html/i)?.[1];
+  const slug = homeSlug(pack?.slug || slugFromLink || pack?.name || pack?.id);
+  return `pack-details/${slug}.html`;
+}
+
+function isHomeContactPack(pack) {
+  const text = String(pack?.button_text || '').toLowerCase();
+  const link = String(pack?.link || '').toLowerCase();
+  const price = String(pack?.price || '').toLowerCase();
+  const category = String(pack?.item_type || pack?.type || pack?.category || '').toLowerCase();
+  return text.includes('contact')
+    || category.includes('sur mesure')
+    || category.includes('custom')
+    || price.includes('devis')
+    || (/contact/.test(link) && !/pack-details\//.test(link));
 }
 
 function isHomePricingOption(item) {
@@ -2873,6 +2905,50 @@ function isHomePricingOption(item) {
     || link.includes('cart')
     || Boolean(item?.parent_pack_id)
     || Boolean(item?.pack_id);
+}
+
+async function loadHomeTestimonials() {
+  const grid = document.getElementById('home-testimonials-grid');
+  if (!grid) return;
+  try {
+    const res = await fetch('tables/site_settings?key=eq.home_testimonials&limit=1');
+    if (!res.ok) return;
+    const json = await res.json();
+    const raw = json.data?.[0]?.value || '';
+    const testimonials = JSON.parse(raw || '[]').filter(item => item && (item.name || item.text));
+    if (!testimonials.length) return;
+    grid.innerHTML = testimonials.slice(0, 3).map((item, i) => renderHomeTestimonial(item, i)).join('');
+    if (window.reObserveReveals) window.reObserveReveals();
+  } catch (error) {
+    console.warn('[Testimonials] Chargement dynamique indisponible:', error);
+  }
+}
+
+function renderHomeTestimonial(item, index) {
+  const name = escapePreview(item.name || 'Client Hozana');
+  const role = escapePreview(item.role || '');
+  const text = escapePreview(item.text || '');
+  const photo = String(item.photo || '').trim();
+  const initials = name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase();
+  const avatar = photo
+    ? `<img src="${escapePreview(photo)}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+    : initials;
+  const socials = [item.social1, item.social2].filter(Boolean).map(url => {
+    const safe = escapePreview(url);
+    return `<a href="${safe}" target="_blank" rel="noopener noreferrer" aria-label="Profil social de ${name}" style="color:var(--white-50);font-size:.9rem;margin-left:.45rem;"><i class="fas fa-link"></i></a>`;
+  }).join('');
+  return `
+    <div class="glass testimonial-card reveal delay-${Math.min(index + 1, 3)}">
+      <div class="stars" aria-label="5 étoiles">★★★★★</div>
+      <p class="testimonial-text">"${text}"</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" aria-hidden="true">${avatar}</div>
+        <div>
+          <div class="testimonial-name">${name}${socials}</div>
+          <div class="testimonial-role">${role}</div>
+        </div>
+      </div>
+    </div>`;
 }
 
 /* ============================================================

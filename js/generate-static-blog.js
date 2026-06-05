@@ -524,6 +524,13 @@ window.__STATIC_PACK_DATA__ = ${JSON.stringify({
       priceMonthly: pack.priceMonthly,
       priceAnnual: pack.priceAnnual,
       oldPriceMonthly: pack.oldPriceMonthly,
+      price: pack.price,
+      oldPrice: pack.oldPrice,
+      period: pack.period,
+      features: pack.features,
+      excluded: pack.excluded,
+      comparison: pack.comparison,
+      slug: pack.slug,
       badge: pack.badge,
       featured: pack.isFeatured,
       isFeatured: pack.isFeatured
@@ -782,7 +789,8 @@ function enrichPack(row) {
   if (key === 'elite' && !/^pack\s+/i.test(name)) name = 'Pack Elite';
   const defaults = getPackDefaults(key);
   const priceMonthly = parsePrice(row.price) || defaults.priceMonthly || 0;
-  const oldPriceMonthly = parsePrice(row.old_price || row.price_before || row.compare_at_price);
+  const rawOldPriceMonthly = parsePrice(row.old_price || row.price_before || row.compare_at_price);
+  const oldPriceMonthly = priceMonthly > 0 && rawOldPriceMonthly > priceMonthly ? rawOldPriceMonthly : 0;
   const features = normalizeList(row.features).length ? normalizeList(row.features) : defaults.sidebarFeatures;
   const excluded = normalizeList(row.features_excluded);
   const description = row.description || defaults.description || '';
@@ -805,7 +813,7 @@ function enrichPack(row) {
     priceMonthly,
     priceAnnual: priceMonthly ? Math.round(priceMonthly * 0.8) : 0,
     oldPriceMonthly,
-    oldPrice: row.old_price || row.price_before || row.compare_at_price || '',
+    oldPrice: oldPriceMonthly ? (row.old_price || row.price_before || row.compare_at_price || '') : '',
     price: row.price || (priceMonthly ? `${priceMonthly.toLocaleString('fr-FR')}€` : 'Sur devis'),
     period: row.period || 'par mois, HT',
     description,
@@ -934,11 +942,12 @@ function resolveImageURL(imgPath) {
 }
 
 function renderStaticPackCard(pack) {
-  const detailHref = pack.buttonHref || (pack.isEnterprise ? `contact.html?pack=${encodeURIComponent(pack.name)}` : `pack-details/${pack.slug}.html`);
+  const contactMode = pack.isEnterprise || /contact/i.test(pack.buttonHref || '');
+  const detailHref = contactMode ? `contact.html?pack=${encodeURIComponent(pack.name)}` : `pack-details/${pack.slug}.html`;
   const features = pack.features.slice(0, 7).map(f => `<li>${escapeHtml(f)}</li>`).join('');
   const excluded = pack.excluded.map(f => `<li class="excluded">${escapeHtml(f)}</li>`).join('');
   const priceId = `${pack.key}-price`;
-  const oldPrice = pack.oldPriceMonthly ? `<div style="font-size:1rem;color:var(--white-30);text-decoration:line-through;margin-top:0.4rem;">${pack.oldPriceMonthly.toLocaleString('fr-FR')}€</div>` : '';
+  const oldPrice = pack.oldPriceMonthly && pack.oldPriceMonthly > pack.priceMonthly ? `<div style="font-size:1rem;color:var(--white-30);text-decoration:line-through;margin-top:0.4rem;">${pack.oldPriceMonthly.toLocaleString('fr-FR')}€</div>` : '';
   return `
       <article class="glass pack-card-full ${pack.isFeatured ? 'featured' : ''} reveal" itemscope itemtype="https://schema.org/Product">
         ${pack.isFeatured ? `<div class="pack-badge">${escapeHtml(pack.badge || 'Mis en avant')}</div>` : ''}

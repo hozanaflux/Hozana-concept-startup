@@ -594,20 +594,25 @@
       const features = Array.isArray(p.features) ? p.features : [];
       const excluded = Array.isArray(p.features_excluded) ? p.features_excluded : [];
 
-      const href = p.link || (String(p.price || '').toLowerCase().includes('devis') ? '/contact?pack=' + encodeURIComponent(p.name) : 'pack-detail.html?pack=' + encodeURIComponent(p.name));
+      const contactMode = isPricingContactPack(p);
+      const href = contactMode ? `contact.html?pack=${encodeURIComponent(p.name || '')}` : resolvePricingPackHref(p);
       const isContact = /contact/i.test(href);
       const savedButtonText = String(p.button_text || '').trim();
       const isGenericButtonText = /^(démarrer|demarrer|choisir|choisir ce pack|voir le détail du pack|voir le detail du pack)/i.test(savedButtonText);
       const buttonText = isContact && (!savedButtonText || isGenericButtonText) ? 'Contactez-nous' : (savedButtonText || (isContact ? 'Contactez-nous' : 'Choisir ce pack →'));
       const buttonClass = p.button_class || (isContact ? 'btn-primary' : (isFeatured ? 'btn-primary' : 'btn-glass'));
       const badgeHtml = isFeatured ? `<div class="pack-badge">${p.badge || 'Mis en avant'}</div>` : (p.badge ? `<div class="badge badge-glass" style="width:fit-content;margin-bottom:1rem;">${p.badge}</div>` : '');
+      const price = parsePricingPrice(p.price);
+      const oldPrice = parsePricingPrice(p.old_price || p.price_before || p.compare_at_price);
+      const oldPriceHtml = price > 0 && oldPrice > price ? `<div style="font-size:1rem;color:var(--white-30);text-decoration:line-through;margin-top:0.4rem;">${oldPrice.toLocaleString('fr-FR')}€</div>` : '';
 
       return `
       <div class="glass pack-card-full ${isFeatured ? 'featured' : ''} reveal" style="transition-delay: ${i * 100}ms">
         ${badgeHtml}
         <div style="margin-top:0.5rem;">
           <div class="badge badge-glass" style="width:fit-content;opacity:0.6;font-size:0.7rem;">${p.name}</div>
-          <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="${isFeatured ? 'gradient-text' : ''}" id="${p.name.toLowerCase()}-price">${p.price || 'Sur Devis'}</div>
+          ${oldPriceHtml}
+          <div style="font-size:2.75rem;font-weight:800;font-family:var(--font-title);margin-top:0.5rem;" class="${isFeatured ? 'gradient-text' : ''}" id="${pricingSlug(p.name)}-price">${p.price || 'Sur Devis'}</div>
           <div style="font-size:0.875rem;color:var(--white-50);">${p.period || 'par mois, HT'}</div>
         </div>
         <p style="font-size:0.875rem;color:var(--white-50);margin:1rem 0;line-height:1.5;">${p.description || ''}</p>
@@ -620,9 +625,110 @@
         </a>
       </div>`;
     }).join('');
+    renderPricingComparison(packs);
 
     // Trigger reveals if core.js is loaded
     if (window.initReveals) window.initReveals();
+  }
+
+  function pricingSlug(value) {
+    return String(value || '')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/^pack\s+/i, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '') || 'pack';
+  }
+
+  function resolvePricingPackHref(pack) {
+    const link = String(pack?.link || '').trim();
+    const slugFromLink = link.match(/pack-details\/([^/?#]+)\.html/i)?.[1];
+    const slug = pricingSlug(pack?.slug || slugFromLink || pack?.name || pack?.id);
+    return `pack-details/${slug}.html`;
+  }
+
+  function isPricingContactPack(pack) {
+    const text = String(pack?.button_text || '').toLowerCase();
+    const link = String(pack?.link || '').toLowerCase();
+    const price = String(pack?.price || '').toLowerCase();
+    const category = String(pack?.item_type || pack?.type || pack?.category || '').toLowerCase();
+    return text.includes('contact')
+      || category.includes('sur mesure')
+      || category.includes('custom')
+      || price.includes('devis')
+      || (/contact/.test(link) && !/pack-details\//.test(link));
+  }
+
+  function renderPricingComparison(packs) {
+    const table = document.querySelector('.compare-table');
+    if (!table || !packs.length) return;
+    const labels = [
+      'Audit initial', 'Stratégie business', 'Identité visuelle / branding',
+      'Site web / landing page', 'Optimisation UX / conversion', 'SEO',
+      'Réseaux sociaux', 'Marketing digital', 'Tunnel de contact / RDV',
+      'Automatisation email', 'Chatbot / assistant IA', 'Automatisation des tâches',
+      'CRM / suivi client', 'Dashboard de suivi', 'Formation', 'Support',
+      'Durée estimée', 'Idéal pour', 'Objectif principal', 'Bouton recommandé'
+    ];
+    packs.forEach(pack => Object.keys(parsePricingComparison(pack.comparison || pack.compare || pack.comparison_rows)).forEach(label => {
+      if (!labels.includes(label)) labels.push(label);
+    }));
+    table.innerHTML = `
+      <thead><tr>
+        <th style="width:30%;">Élément comparatif</th>
+        ${packs.map(pack => `<th>${escapePricingHtml(String(pack.name || '').replace(/^Pack\s+/i, ''))}${pack.is_featured === true || String(pack.is_featured) === 'true' ? ' ⭐' : ''}</th>`).join('')}
+      </tr></thead>
+      <tbody>${labels.map(label => `
+        <tr>
+          <td>${escapePricingHtml(label)}</td>
+          ${packs.map(pack => renderPricingComparisonCell(comparisonPricingValue(pack, label))).join('')}
+        </tr>`).join('')}</tbody>`;
+  }
+
+  function comparisonPricingValue(pack, label) {
+    const comparison = parsePricingComparison(pack.comparison || pack.compare || pack.comparison_rows);
+    if (comparison[label]) return comparison[label];
+    const normalized = normalizePricingCompare(label);
+    const features = Array.isArray(pack.features) ? pack.features : [];
+    const excluded = Array.isArray(pack.features_excluded) ? pack.features_excluded : [];
+    const included = features.find(item => normalizePricingCompare(item).includes(normalized) || normalized.includes(normalizePricingCompare(item)));
+    const notIncluded = excluded.find(item => normalizePricingCompare(item).includes(normalized) || normalized.includes(normalizePricingCompare(item)));
+    if (included) return included;
+    if (notIncluded) return 'Non inclus';
+    return '';
+  }
+
+  function parsePricingComparison(value) {
+    if (!value) return {};
+    if (typeof value === 'object' && !Array.isArray(value)) return value;
+    if (Array.isArray(value)) {
+      return Object.fromEntries(value.map(item => {
+        if (typeof item === 'string') {
+          const parts = item.split(':');
+          return [parts.shift()?.trim(), parts.join(':').trim()];
+        }
+        return [item.label || item.name, item.value || item.text || ''];
+      }).filter(([label]) => label));
+    }
+    try { return parsePricingComparison(JSON.parse(String(value))); } catch {}
+    return Object.fromEntries(String(value).split(/\r?\n/).map(line => {
+      const parts = line.split(':');
+      return [parts.shift()?.trim(), parts.join(':').trim()];
+    }).filter(([label, val]) => label && val));
+  }
+
+  function normalizePricingCompare(value) {
+    return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+
+  function renderPricingComparisonCell(value) {
+    const text = String(value || '').trim();
+    const cls = /^✓|oui|inclus/i.test(text) ? ' class="yes"' : (/^✗|non|exclu/i.test(text) ? ' class="no"' : '');
+    return `<td${cls}>${escapePricingHtml(text || '—')}</td>`;
+  }
+
+  function escapePricingHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   }
 
   function isPricingOption(item) {
@@ -678,13 +784,6 @@
     return 'fas fa-robot';
   }
 </script>
-
-
-
-
-
-
-
 
 
 

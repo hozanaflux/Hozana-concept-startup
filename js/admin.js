@@ -199,6 +199,7 @@ function nav(btn, panel) {
   if (panel === 'services')  renderServices();
   if (panel === 'orders')    renderOrders();
   if (panel === 'comments')  renderComments();
+  if (panel === 'settings')  fillSiteSettingsForm();
 
   document.getElementById('sidebar').classList.remove('open');
 }
@@ -1928,6 +1929,80 @@ function fillSiteSettingsForm() {
     const el = document.getElementById(id);
     if (el) el.value = SITE_SETTINGS[key] || '';
   });
+  renderHomeTestimonialsForm();
+}
+
+function defaultHomeTestimonials() {
+  return [
+    { name:'Kofi Diallo', role:'CEO, TechStartup Dakar', text:'En 3 mois avec Hozana Concept, notre CA a bondi de 67%. Leur équipe a tout géré et les résultats ont été visibles dès le premier mois.', photo:'', social1:'', social2:'' },
+    { name:'Marie Ndiaye', role:'Directrice Ops, E-commerce Paris', text:'30 heures par semaine économisées sur notre service client. Mon équipe peut enfin se concentrer sur les clients à forte valeur.', photo:'', social1:'', social2:'' },
+    { name:'Amadou Traoré', role:'Fondateur, AgriTech Abidjan', text:'Les workflows automatisés par Hozana ont transformé notre façon de travailler et créé une valeur mesurable très rapidement.', photo:'', social1:'', social2:'' }
+  ];
+}
+
+function getHomeTestimonials() {
+  try {
+    const parsed = JSON.parse(SITE_SETTINGS.home_testimonials || '[]');
+    return Array.isArray(parsed) && parsed.length ? parsed : defaultHomeTestimonials();
+  } catch {
+    return defaultHomeTestimonials();
+  }
+}
+
+function renderHomeTestimonialsForm() {
+  const el = document.getElementById('testimonials-admin-form');
+  if (!el) return;
+  const rows = getHomeTestimonials().slice(0, 3);
+  while (rows.length < 3) rows.push({ name:'', role:'', text:'', photo:'', social1:'', social2:'' });
+  el.innerHTML = rows.map((t, i) => `
+    <div class="form-grp full" style="border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem;background:rgba(255,255,255,.02);">
+      <label class="form-label">Témoignage ${i + 1}</label>
+      <div class="form-row">
+        <div class="form-grp"><input class="form-ctrl tst-name" value="${escapeAttr(t.name || '')}" placeholder="Nom"></div>
+        <div class="form-grp"><input class="form-ctrl tst-role" value="${escapeAttr(t.role || '')}" placeholder="Fonction / entreprise"></div>
+        <div class="form-grp full"><textarea class="form-ctrl tst-text" rows="3" placeholder="Texte du témoignage">${escapeText(t.text || '')}</textarea></div>
+        <div class="form-grp"><input class="form-ctrl tst-photo" value="${escapeAttr(t.photo || '')}" placeholder="URL photo de profil"></div>
+        <div class="form-grp"><input class="form-ctrl tst-social1" value="${escapeAttr(t.social1 || '')}" placeholder="Lien social 1"></div>
+        <div class="form-grp"><input class="form-ctrl tst-social2" value="${escapeAttr(t.social2 || '')}" placeholder="Lien social 2"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function upsertSiteSetting(key, value) {
+  const existingRes = await fetch('tables/site_settings?order=key.asc&limit=100');
+  const existingJson = await existingRes.json();
+  const existing = Object.fromEntries((existingJson.data || []).map(row => [row.key, row]));
+  const body = JSON.stringify({ key, value, updated_at: new Date().toISOString() });
+  const row = existing[key];
+  const response = row?.id
+    ? await fetch(`tables/site_settings/${row.id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body })
+    : await fetch('tables/site_settings', { method:'POST', headers:{'Content-Type':'application/json'}, body });
+  if (!response.ok) throw new Error(await response.text().catch(() => response.statusText));
+}
+
+async function saveHomeTestimonials() {
+  const status = document.getElementById('testimonials-status');
+  if (status) status.textContent = 'Enregistrement...';
+  try {
+    const cards = [...document.querySelectorAll('#testimonials-admin-form > .form-grp')];
+    const rows = cards.map(card => ({
+      name: card.querySelector('.tst-name')?.value.trim() || '',
+      role: card.querySelector('.tst-role')?.value.trim() || '',
+      text: card.querySelector('.tst-text')?.value.trim() || '',
+      photo: card.querySelector('.tst-photo')?.value.trim() || '',
+      social1: card.querySelector('.tst-social1')?.value.trim() || '',
+      social2: card.querySelector('.tst-social2')?.value.trim() || ''
+    })).filter(t => t.name || t.role || t.text);
+    SITE_SETTINGS.home_testimonials = JSON.stringify(rows);
+    await upsertSiteSetting('home_testimonials', SITE_SETTINGS.home_testimonials);
+    if (status) status.textContent = 'Témoignages enregistrés.';
+    toast('Témoignages accueil enregistrés', 'ok');
+  } catch (error) {
+    console.error('[Settings] saveHomeTestimonials error:', error);
+    if (status) status.textContent = 'Erreur enregistrement.';
+    toast(`Erreur témoignages: ${error.message || error}`, 'err');
+  }
 }
 
 async function saveSiteSettings() {
