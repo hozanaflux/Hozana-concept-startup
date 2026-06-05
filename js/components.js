@@ -65,7 +65,7 @@ function applySiteSettings() {
 
 async function loadSiteSettings() {
   try {
-    const res = await fetch('tables/site_settings?order=key.asc&limit=100');
+    const res = await fetch(`${root()}tables/site_settings?order=key.asc&limit=100`);
     if (!res.ok) return;
     const json = await res.json();
     const rows = Array.isArray(json.data) ? json.data : [];

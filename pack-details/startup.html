@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="fr" data-theme="dark"><head><script>window.__STATIC_PACK_KEY__ = "startup";
-window.__STATIC_PACK_DATA__ = {"name":"startup","description":"Pour entreprises qui veulent gagner du temps, réduire les tâches répétitives et intégrer l’intelligence artificielle dans leurs processus.","priceMonthly":800,"priceAnnual":640,"oldPriceMonthly":2500,"price":"800 £","oldPrice":"2500 £","period":"par mois","features":["Audit des processus internes","Identification des tâches automatisables","Création d’un chatbot ou assistant IA professionnel","Automatisation des demandes clients","Automatisation CRM, email ou formulaire","Connexion avec outils existants","Tableau de suivi des performances","Formation courte à l’utilisation"],"excluded":[],"comparison":{},"slug":"startup","badge":"startup","featured":false,"isFeatured":false};</script>
+window.__STATIC_PACK_DATA__ = {"name":"startup","description":"Pour entreprises qui veulent gagner du temps, réduire les tâches répétitives et intégrer l’intelligence artificielle dans leurs processus.","priceMonthly":800,"priceAnnual":640,"oldPriceMonthly":2500,"price":"800 £","oldPrice":"2500 £","period":"par mois","features":["Audit des processus internes","Identification des tâches automatisables","Création d’un chatbot ou assistant IA professionnel","Automatisation des demandes clients","Automatisation CRM, email ou formulaire","Connexion avec outils existants","Tableau de suivi des performances","Formation courte à l’utilisation"],"excluded":[],"comparison":{},"slug":"startup","badge":"startup","vatEnabled":true,"featured":false,"isFeatured":false};</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>startup | Pack IA et automatisation Hozana Concept</title>
@@ -1410,6 +1410,16 @@ window.__STATIC_PACK_DATA__ = {"name":"startup","description":"Pour entreprises 
 
 <div id="footer-placeholder"></div>
 
+<script>
+(function() {
+  if (window.__ROOT_PATH__ === undefined) {
+    window.__ROOT_PATH__ = location.pathname.includes('/pack-details/') ? '../' : '';
+  }
+  if (window.__PAGE_ROOT__ === undefined) {
+    window.__PAGE_ROOT__ = window.__ROOT_PATH__;
+  }
+})();
+</script>
 <script src="../js/supabase-config.js"></script>
 <script src="../js/core.js"></script>
 <script src="../js/components.js"></script>
@@ -1626,7 +1636,7 @@ async function initPage() {
   // Les pages statiques générées embarquent déjà leurs données et n'ont pas besoin de refetch.
   if (!staticPackData) {
     try {
-      const res = await fetch('tables/packs?order=sort_order.asc');
+    const res = await fetch(`${window.__ROOT_PATH__ || ''}tables/packs?order=sort_order.asc`);
       if (res.ok) {
         const json = await res.json();
         const rows = Array.isArray(json.data) ? json.data : [];
@@ -1708,6 +1718,12 @@ function mergePackDetailData(base, data) {
   if (data.badge) next.badge = data.badge;
   if (data.is_featured !== undefined || data.isFeatured !== undefined || data.featured !== undefined) {
     next.featured = data.is_featured === true || data.isFeatured === true || data.featured === true || String(data.is_featured || data.isFeatured || data.featured) === 'true';
+  }
+  if (data.vat_enabled !== undefined || data.vatEnabled !== undefined || data.tva_enabled !== undefined) {
+    const rawVat = data.vat_enabled ?? data.vatEnabled ?? data.tva_enabled;
+    next.vatEnabled = rawVat === true || String(rawVat).toLowerCase() === 'true';
+  } else if (next.vatEnabled === undefined) {
+    next.vatEnabled = true;
   }
   if (features.length || excluded.length) {
     next.sidebarFeatures = features.length ? features : next.sidebarFeatures;
@@ -1880,8 +1896,11 @@ function updateSummary() {
     document.getElementById('summary-promo-row').style.display = 'none';
   }
 
-  const tva = Math.round(subtotal * 0.2);
+  const vatEnabled = pack.vatEnabled !== false;
+  const tva = vatEnabled ? Math.round(subtotal * 0.2) : 0;
   const total = subtotal + tva;
+  const vatLabel = document.querySelector('#summary-tva')?.previousElementSibling;
+  if (vatLabel) vatLabel.textContent = vatEnabled ? 'TVA (20%)' : 'TVA non appliquée';
   document.getElementById('summary-tva').textContent = tva + '€';
   document.getElementById('summary-total').textContent = total.toLocaleString('fr-FR') + '€';
 
@@ -1907,7 +1926,7 @@ async function loadCheckoutOptions() {
   if (!list || !block) return;
 
   try {
-    const res = await fetch('tables/pack_options?order=sort_order.asc');
+    const res = await fetch(`${window.__ROOT_PATH__ || ''}tables/pack_options?order=sort_order.asc`);
     const json = await res.json();
     const options = json.data || [];
     if (!options.length || list.children.length) return;
@@ -1952,15 +1971,36 @@ function toggleCheckoutOption(option, btn) {
   updateSummary();
 }
 
+function removeCheckoutOption(id) {
+  selectedOptions = selectedOptions.filter(item => String(item.id) !== String(id));
+  document.querySelectorAll(`[data-checkout-option="${cssEscapeValue(id)}"]`).forEach(btn => btn.classList.remove('checkout-option-active'));
+  persistCartOptions();
+  updateSummary();
+}
+
 function renderSummaryOptions() {
   const wrap = document.getElementById('summary-options-rows');
   if (!wrap) return;
   wrap.innerHTML = selectedOptions.map(option => `
-    <div class="order-line">
-      <span>${option.name}</span>
+    <div class="order-line" style="align-items:flex-start;gap:0.75rem;">
+      <span style="display:flex;flex-direction:column;gap:0.35rem;">
+        <span>${escapePackDetailText(option.name)}</span>
+        <button type="button" onclick="removeCheckoutOption(decodeURIComponent('${encodeURIComponent(String(option.id ?? ''))}'))" style="align-self:flex-start;border:0;background:transparent;color:#ef4444;font-size:0.72rem;font-weight:700;cursor:pointer;padding:0;">
+          <i class="fas fa-times-circle"></i> Retirer
+        </button>
+      </span>
       <span class="price-tag">+${(parseInt(option.price, 10) || 0).toLocaleString('fr-FR')}€</span>
     </div>
   `).join('');
+}
+
+function escapePackDetailText(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+
+function cssEscapeValue(value) {
+  if (window.CSS?.escape) return CSS.escape(String(value));
+  return String(value).replace(/["\\]/g, '\\$&');
 }
 
 /* ── Steps navigation ── */

@@ -606,6 +606,18 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   grid-template-columns: 1fr;
   gap: .55rem;
 }
+.media-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .45rem;
+  align-items: center;
+}
+.media-upload-btn {
+  width: 2.45rem;
+  height: 2.45rem;
+  padding: 0;
+  justify-content: center;
+}
 .form-label { display: block; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .375rem; }
 .form-ctrl { width: 100%; padding: .65rem .875rem; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: .85rem; outline: none; transition: border-color var(--trans); }
 .form-ctrl:focus { border-color: var(--red-border); }

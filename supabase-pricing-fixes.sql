@@ -11,6 +11,7 @@ alter table if exists public.packs
   add column if not exists button_text text,
   add column if not exists button_class text,
   add column if not exists link text,
+  add column if not exists vat_enabled boolean default true,
   add column if not exists item_type text default 'pack';
 
 create index if not exists packs_slug_idx on public.packs (slug);

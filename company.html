@@ -358,7 +358,7 @@ async function loadCompanyTeam() {
   const grid = document.getElementById('company-team-grid');
   if (!grid) return;
   try {
-    const res = await fetch('tables/site_settings?key=eq.company_team&limit=1');
+    const res = await fetch(`${window.__ROOT_PATH__ || ''}tables/site_settings?key=eq.company_team&limit=1`);
     if (!res.ok) return;
     const json = await res.json();
     const raw = json.data?.[0]?.value || '';

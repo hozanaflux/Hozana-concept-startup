@@ -532,6 +532,7 @@ window.__STATIC_PACK_DATA__ = ${JSON.stringify({
       comparison: pack.comparison,
       slug: pack.slug,
       badge: pack.badge,
+      vatEnabled: pack.vatEnabled,
       featured: pack.isFeatured,
       isFeatured: pack.isFeatured
     })};`;
@@ -563,9 +564,9 @@ window.__STATIC_PACK_DATA__ = ${JSON.stringify({
     const summaryBase = document.getElementById('summary-base-price');
     if (summaryBase) summaryBase.textContent = pack.priceMonthly ? `${pack.priceMonthly}€` : 'Sur devis';
     const tva = document.getElementById('summary-tva');
-    if (tva) tva.textContent = pack.priceMonthly ? `${Math.round(pack.priceMonthly * 0.2)}€` : 'Sur devis';
+    if (tva) tva.textContent = pack.priceMonthly ? `${pack.vatEnabled === false ? 0 : Math.round(pack.priceMonthly * 0.2)}€` : 'Sur devis';
     const total = document.getElementById('summary-total');
-    if (total) total.textContent = pack.priceMonthly ? `${Math.round(pack.priceMonthly * 1.2).toLocaleString('fr-FR')}€` : 'Sur devis';
+    if (total) total.textContent = pack.priceMonthly ? `${Math.round(pack.priceMonthly * (pack.vatEnabled === false ? 1 : 1.2)).toLocaleString('fr-FR')}€` : 'Sur devis';
 
     injectJsonLd(document, buildPackJsonLd(pack, url), 'static-pack-jsonld');
     let html = fixRelativePaths(dom.serialize());
@@ -791,6 +792,8 @@ function enrichPack(row) {
   const priceMonthly = parsePrice(row.price) || defaults.priceMonthly || 0;
   const rawOldPriceMonthly = parsePrice(row.old_price || row.price_before || row.compare_at_price);
   const oldPriceMonthly = priceMonthly > 0 && rawOldPriceMonthly > priceMonthly ? rawOldPriceMonthly : 0;
+  const rawVat = row.vat_enabled ?? row.vatEnabled ?? row.tva_enabled;
+  const vatEnabled = rawVat === undefined || rawVat === null || rawVat === '' ? true : (rawVat === true || String(rawVat).toLowerCase() === 'true');
   const features = normalizeList(row.features).length ? normalizeList(row.features) : defaults.sidebarFeatures;
   const excluded = normalizeList(row.features_excluded);
   const description = row.description || defaults.description || '';
@@ -813,6 +816,7 @@ function enrichPack(row) {
     priceMonthly,
     priceAnnual: priceMonthly ? Math.round(priceMonthly * 0.8) : 0,
     oldPriceMonthly,
+    vatEnabled,
     oldPrice: oldPriceMonthly ? (row.old_price || row.price_before || row.compare_at_price || '') : '',
     price: row.price || (priceMonthly ? `${priceMonthly.toLocaleString('fr-FR')}€` : 'Sur devis'),
     period: row.period || 'par mois, HT',

@@ -1551,6 +1551,7 @@ function openPackModal(p=null) {
   document.getElementById('pk-price').value = p?.price||'';
   document.getElementById('pk-old-price').value = p?.old_price||p?.price_before||p?.compare_at_price||'';
   document.getElementById('pk-period').value = p?.period||'par mois';
+  document.getElementById('pk-vat-enabled').value = (p?.vat_enabled === false || String(p?.vat_enabled).toLowerCase() === 'false') ? 'false' : 'true';
   document.getElementById('pk-desc').value = p?.description||'';
   document.getElementById('pk-features').value = Array.isArray(p?.features)?p.features.join('\n'):'';
   document.getElementById('pk-features-excluded').value = Array.isArray(p?.features_excluded)?p.features_excluded.join('\n'):'';
@@ -1599,13 +1600,14 @@ async function parseJsonSafe(response) {
 
 function isMissingColumnError(payload) {
   const msg = `${payload?.message || ''} ${payload?.details || ''} ${payload?.hint || ''}`;
-  return /column|schema cache|could not find|item_type|old_price|comparison|pack_options/i.test(msg);
+  return /column|schema cache|could not find|item_type|old_price|comparison|pack_options|vat_enabled/i.test(msg);
 }
 
 function legacyPackPayload(data) {
   const legacy = { ...data };
   delete legacy.old_price;
   delete legacy.comparison;
+  delete legacy.vat_enabled;
   return legacy;
 }
 
@@ -1643,6 +1645,7 @@ async function savePack() {
     price:document.getElementById('pk-price').value,
     old_price:document.getElementById('pk-old-price').value,
     period:document.getElementById('pk-period').value,
+    vat_enabled:document.getElementById('pk-vat-enabled').value === 'true',
     description:document.getElementById('pk-desc').value,
     features, features_excluded,
     is_featured:document.getElementById('pk-featured').value==='true',
@@ -1962,7 +1965,7 @@ function renderHomeTestimonialsForm() {
         <input class="form-ctrl tst-name" value="${escapeAttr(t.name || '')}" placeholder="Nom">
         <input class="form-ctrl tst-role" value="${escapeAttr(t.role || '')}" placeholder="Fonction / entreprise">
         <textarea class="form-ctrl tst-text" rows="3" placeholder="Texte du témoignage">${escapeText(t.text || '')}</textarea>
-        <input class="form-ctrl tst-photo" value="${escapeAttr(t.photo || '')}" placeholder="URL photo de profil">
+        ${renderPhotoUploadField('tst-photo', `tst-photo-${i}`, t.photo || '', 'URL photo de profil')}
         <input class="form-ctrl tst-social1" value="${escapeAttr(t.social1 || '')}" placeholder="Lien social 1">
         <input class="form-ctrl tst-social2" value="${escapeAttr(t.social2 || '')}" placeholder="Lien social 2">
       </div>
@@ -1999,12 +2002,24 @@ function renderCompanyTeamForm() {
         <input class="form-ctrl team-name" value="${escapeAttr(t.name || '')}" placeholder="Nom">
         <input class="form-ctrl team-role" value="${escapeAttr(t.role || '')}" placeholder="Rôle">
         <textarea class="form-ctrl team-bio" rows="3" placeholder="Bio courte">${escapeText(t.bio || '')}</textarea>
-        <input class="form-ctrl team-photo" value="${escapeAttr(t.photo || '')}" placeholder="URL photo">
+        ${renderPhotoUploadField('team-photo', `team-photo-${i}`, t.photo || '', 'URL photo')}
         <input class="form-ctrl team-social1" value="${escapeAttr(t.social1 || '')}" placeholder="Lien social 1">
         <input class="form-ctrl team-social2" value="${escapeAttr(t.social2 || '')}" placeholder="Lien social 2">
       </div>
     </div>
   `).join('');
+}
+
+function renderPhotoUploadField(inputClass, inputId, value, placeholder) {
+  const fileId = `${inputId}-file`;
+  return `
+    <div class="media-input-row">
+      <input class="form-ctrl ${inputClass}" id="${inputId}" value="${escapeAttr(value || '')}" placeholder="${escapeAttr(placeholder)}">
+      <button type="button" class="btn btn-ghost btn-sm media-upload-btn" onclick="document.getElementById('${fileId}').click()" title="Télécharger une photo">
+        <i class="fas fa-upload"></i>
+      </button>
+      <input type="file" id="${fileId}" style="display:none;" accept="image/*" onchange="handleFileUpload(this, '${inputId}')">
+    </div>`;
 }
 
 async function upsertSiteSetting(key, value) {
