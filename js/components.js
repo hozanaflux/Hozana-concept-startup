@@ -1022,7 +1022,7 @@ function renderFooter() {
             </ul>
           </div>
 
-          <!-- Contact + Legal Column -->
+          <!-- Contact Column -->
           <div class="footer-links-col reveal delay-3">
             <h4 class="footer-col-title">
               <i class="fas fa-headset footer-col-icon"></i>
@@ -1045,17 +1045,6 @@ function renderFooter() {
                 <span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span>
                 <span data-site-field="address">${siteSetting('address')}</span>
               </li>
-            </ul>
-
-            <h4 class="footer-col-title footer-col-title-spaced">
-              <i class="fas fa-balance-scale footer-col-icon"></i>
-              ${t('footer.legal')}
-            </h4>
-            <ul class="footer-link-list">
-              <li><a href="${pageRoot()}privacy.html">${t('footer.privacy')}</a></li>
-              <li><a href="${pageRoot()}legal.html">${t('footer.legalNotice')}</a></li>
-              <li><a href="${pageRoot()}terms.html">${t('footer.terms')}</a></li>
-              <li><a href="${pageRoot()}refund.html">${t('footer.refund')}</a></li>
             </ul>
           </div>
 
@@ -1087,6 +1076,7 @@ function renderFooter() {
             © ${year} <strong>Hozana Concept</strong>. ${t('footer.rights')}
           </p>
           <div class="footer-bottom-links">
+            <span class="footer-bottom-title"><i class="fas fa-balance-scale"></i> ${t('footer.legal')}</span>
             <a href="${pageRoot()}privacy.html">${t('footer.privacyShort')}</a>
             <span class="sep">·</span>
             <a href="${pageRoot()}legal.html">${t('footer.legalNotice')}</a>

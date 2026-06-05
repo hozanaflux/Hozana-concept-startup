@@ -780,7 +780,7 @@ window.__STATIC_BLOG_DATA__ = {
         </span>
         <span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>2 juin 2026</span>
         <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>11 min de lecture</span>
-        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>55 vues</span>
+        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i><span class="article-view-count">55 vues</span></span>
       </div>
   </div>
 </header>
@@ -1190,7 +1190,7 @@ function renderPost(post) {
       </span>
       ${date ? `<span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>${date}</span>` : ''}
       <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>${post.read_time || 5} min de lecture</span>
-      <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>${formatNum((post.views || 0) + 1)} vues</span>
+      <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i><span class="article-view-count">${formatNum((post.views || 0) + 1)} vues</span></span>
     `;
   }
 
@@ -1583,12 +1583,19 @@ function copyLink() {
 async function trackView() {
   if (!currentPost) return;
   try {
-    const newViews = (currentPost.views || 0) + 1;
-    await fetch(`tables/blog_posts/${currentPost.id}`, {
-      method: 'PATCH',
+    const response = await fetch('/api/increment-blog-view', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ views: newViews })
+      body: JSON.stringify({ id: currentPost.id })
     });
+    if (!response.ok) return;
+    const payload = await response.json();
+    if (!Number.isFinite(Number(payload.views))) return;
+    currentPost.views = Number(payload.views);
+    const sv = document.getElementById('stat-views');
+    if (sv) sv.textContent = formatNum(currentPost.views);
+    const metaViews = document.querySelector('#article-hero-meta .article-view-count');
+    if (metaViews) metaViews.textContent = `${formatNum(currentPost.views)} vues`;
   } catch {}
 }
 

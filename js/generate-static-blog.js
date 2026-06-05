@@ -203,7 +203,7 @@ async function generateStaticPost(post) {
         </span>
         ${date ? `<span><i class="fas fa-calendar-alt" style="margin-right:0.3rem;color:var(--red);"></i>${date}</span>` : ''}
         <span><i class="fas fa-clock" style="margin-right:0.3rem;color:var(--red);"></i>${post.read_time || 5} min de lecture</span>
-        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i>${formatNum((post.views || 0) + 1)} vues</span>
+        <span><i class="fas fa-eye" style="margin-right:0.3rem;color:var(--red);"></i><span class="article-view-count">${formatNum((post.views || 0) + 1)} vues</span></span>
       `;
     }
 

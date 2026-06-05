@@ -1924,6 +1924,23 @@
   gap: 0.75rem;
 }
 
+.footer-bottom-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-accent);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--white-55);
+}
+
+.footer-bottom-title i {
+  color: var(--red);
+  font-size: 0.78rem;
+}
+
 .footer-bottom-links a {
   font-size: 0.8rem;
   color: var(--white-40);
