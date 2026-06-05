@@ -986,7 +986,7 @@
       <div class="featured-meta">
         <span class="featured-author"><span class="author-avatar-sm">HC</span><span itemprop="author">Hozana Concept</span></span>
         <span class="featured-meta-item"><i class="fas fa-clock"></i> 14 min</span>
-        <span class="featured-meta-item"><i class="fas fa-eye"></i> 0</span>
+        <span class="featured-meta-item"><i class="fas fa-eye"></i> 2</span>
         <span class="featured-meta-item"><i class="fas fa-calendar-alt"></i> <time itemprop="datePublished" datetime="2026-06-05T07:01:55.953Z">5 juin 2026</time></span>
       </div>
       <div class="btn btn-primary btn-sm" style="width:fit-content;">Read article <i class="fas fa-arrow-right"></i></div>
@@ -1092,7 +1092,7 @@
   </a></div>
 
       <!-- No results -->
-      <div class="no-results-msg" id="no-results">
+      <div class="no-results-msg" id="no-results" hidden="">
         <div class="no-results-icon">🔍</div>
         <h3 style="font-family:var(--font-title);font-size:1.4rem;margin-bottom:0.75rem;">Aucun résultat trouvé</h3>
         <p style="color:var(--white-50);margin-bottom:1.5rem;">Essayez d'autres mots-clés ou explorez toutes nos catégories.</p>
@@ -1442,6 +1442,7 @@ function renderAll() {
   if (filtered.length === 0) {
     grid.innerHTML = '';
     if (featuredEl) featuredEl.innerHTML = '';
+    noResults.hidden = false;
     noResults.classList.add('show');
     if (countEl) countEl.textContent = '';
     renderPagination(0);
@@ -1449,6 +1450,7 @@ function renderAll() {
   }
 
   noResults.classList.remove('show');
+  noResults.hidden = true;
 
   const featuredPost = filtered[0];
   if (featuredEl && currentPage === 1) {
@@ -1696,6 +1698,7 @@ function formatNum(n) {
   return String(n);
 }
 </script>
+
 
 
 

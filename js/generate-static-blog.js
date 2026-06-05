@@ -324,12 +324,12 @@ function generateSitemap(posts, packs = []) {
   // Add main pages
   const mainPages = [
     { loc: `${SITE_URL}/`, priority: '1.0', changefreq: 'weekly' },
-    { loc: `${SITE_URL}/blog`, priority: '0.9', changefreq: 'daily' },
-    { loc: `${SITE_URL}/platform`, priority: '0.8', changefreq: 'monthly' },
-    { loc: `${SITE_URL}/portfolio`, priority: '0.8', changefreq: 'monthly' },
-    { loc: `${SITE_URL}/pricing`, priority: '0.8', changefreq: 'monthly' },
-    { loc: `${SITE_URL}/demo`, priority: '0.8', changefreq: 'monthly' },
-    { loc: `${SITE_URL}/contact`, priority: '0.7', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/blog.html`, priority: '0.9', changefreq: 'daily' },
+    { loc: `${SITE_URL}/platform.html`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/portfolio.html`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/pricing.html`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/demo.html`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/contact.html`, priority: '0.7', changefreq: 'monthly' },
   ];
   const englishPages = [
     { loc: `${SITE_URL}/en/`, priority: '1.0', changefreq: 'weekly' },
@@ -414,7 +414,7 @@ function generateStaticBlogIndex(generatedPosts) {
   const gridPosts = featured ? posts.filter(p => p.id !== featured.id).slice(0, 9) : posts.slice(0, 9);
 
   upsertMetaNode(document, 'name', 'description', 'Articles experts Hozana Concept sur l intelligence artificielle, l automatisation, le growth digital et la transformation des entreprises.');
-  upsertCanonical(document, `${SITE_URL}/blog`);
+  upsertCanonical(document, `${SITE_URL}/blog.html`);
   document.title = 'Blog IA, Automatisation & Growth Digital | Hozana Concept';
 
   const stat = document.getElementById('stat-articles');
@@ -460,7 +460,7 @@ function generateStaticBlogIndex(generatedPosts) {
     '@type': 'Blog',
     name: 'Blog Hozana Concept',
     description: 'Articles sur l intelligence artificielle, l automatisation et le growth digital.',
-    url: `${SITE_URL}/blog`,
+    url: `${SITE_URL}/blog.html`,
     inLanguage: 'fr-FR',
     blogPost: posts.slice(0, 12).map(p => ({
       '@type': 'BlogPosting',
@@ -493,7 +493,7 @@ function generatePricingPage(packs, options = []) {
   }
 
   upsertMetaNode(document, 'name', 'description', 'Comparez les packs IA Hozana Concept : Starter, Growth, Elite et Enterprise. Tarifs HT, fonctionnalités incluses, support, automatisations, chatbots IA et accompagnement.');
-  upsertCanonical(document, `${SITE_URL}/pricing`);
+  upsertCanonical(document, `${SITE_URL}/pricing.html`);
   injectJsonLd(document, buildPricingJsonLd(packs), 'static-pricing-jsonld');
   injectJsonLd(document, buildPricingFaqJsonLd(document), 'static-pricing-faq-jsonld');
 
@@ -1350,7 +1350,7 @@ function buildPricingJsonLd(packs) {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Packs et tarifs Hozana Concept',
-    url: `${SITE_URL}/pricing`,
+    url: `${SITE_URL}/pricing.html`,
     itemListElement: packs.map((pack, index) => ({
       '@type': 'ListItem',
       position: index + 1,

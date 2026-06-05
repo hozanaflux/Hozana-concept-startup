@@ -2200,8 +2200,29 @@
     <!-- 3D Gallery -->
     <div class="gallery-3d-wrap reveal" id="gallery-3d-wrap">
       <div class="gallery-3d-stage" id="gallery-3d-stage">
-        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--white-30);font-family:var(--font-accent);font-size:0.9rem;">
-          <i class="fas fa-spinner fa-spin" style="margin-right:0.5rem;"></i>Chargement des projets...
+        <div class="gallery-item-3d" data-cat="web" data-index="0" style="left:calc(50% - 150px);top:calc(50% - 200px);transform:rotateY(0deg) translateZ(470px);opacity:1;" onclick="location.href='portfolio.html'">
+          <img src="../images/hero-bg.jpg" alt="Plateforme web IA Hozana Concept" loading="eager" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&amp;h=800&amp;fit=crop'">
+          <div class="card-overlay"><h3>Plateforme IA</h3><em>Websites</em><div class="photo-by">Interface web, conversion et automation</div></div>
+        </div>
+        <div class="gallery-item-3d" data-cat="design" data-index="1" style="left:calc(50% - 150px);top:calc(50% - 200px);transform:rotateY(60deg) translateZ(470px);opacity:.82;" onclick="location.href='portfolio.html'">
+          <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&amp;h=800&amp;fit=crop" alt="Branding digital premium" loading="eager">
+          <div class="card-overlay"><h3>Brand System</h3><em>Design &amp; Branding</em><div class="photo-by">Identité visuelle et direction créative</div></div>
+        </div>
+        <div class="gallery-item-3d" data-cat="social" data-index="2" style="left:calc(50% - 150px);top:calc(50% - 200px);transform:rotateY(120deg) translateZ(470px);opacity:.64;" onclick="location.href='portfolio.html'">
+          <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&amp;h=800&amp;fit=crop" alt="Campagnes social media" loading="eager">
+          <div class="card-overlay"><h3>Social Growth</h3><em>Réseaux sociaux</em><div class="photo-by">Contenus, campagnes et acquisition</div></div>
+        </div>
+        <div class="gallery-item-3d" data-cat="app" data-index="3" style="left:calc(50% - 150px);top:calc(50% - 200px);transform:rotateY(180deg) translateZ(470px);opacity:.46;" onclick="location.href='portfolio.html'">
+          <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&amp;h=800&amp;fit=crop" alt="Application mobile et dashboard" loading="eager">
+          <div class="card-overlay"><h3>Mobile CRM</h3><em>Applications</em><div class="photo-by">Suivi client, dashboard et alertes</div></div>
+        </div>
+        <div class="gallery-item-3d" data-cat="web" data-index="4" style="left:calc(50% - 150px);top:calc(50% - 200px);transform:rotateY(240deg) translateZ(470px);opacity:.64;" onclick="location.href='portfolio.html'">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&amp;h=800&amp;fit=crop" alt="Dashboard analytique IA" loading="eager">
+          <div class="card-overlay"><h3>Dashboard IA</h3><em>Analytics</em><div class="photo-by">Données, reporting et décision</div></div>
+        </div>
+        <div class="gallery-item-3d" data-cat="design" data-index="5" style="left:calc(50% - 150px);top:calc(50% - 200px);transform:rotateY(300deg) translateZ(470px);opacity:.82;" onclick="location.href='portfolio.html'">
+          <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?w=600&amp;h=800&amp;fit=crop" alt="Expérience utilisateur premium" loading="eager">
+          <div class="card-overlay"><h3>UX Premium</h3><em>Design produit</em><div class="photo-by">Parcours, clarté et conversion</div></div>
         </div>
       </div>
       <div class="gallery-scroll-hint" id="gallery-scroll-hint">
@@ -2352,8 +2373,70 @@
     </div>
 
     <div class="packs-grid">
-      <!-- Chargement dynamique des packs -->
-      <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--white-30);">Optimisation des offres...</div>
+      <div class="glass pack-card reveal delay-1" style="opacity:1 !important; visibility:visible !important;">
+        <div class="badge badge-glass mb-md">Starter</div>
+        <h3 class="card-title">Starter</h3>
+        <p class="card-text" style="min-height:4.4rem;">Une base digitale propre pour lancer votre présence, clarifier votre image et attirer vos premiers prospects.</p>
+        <div class="pack-price">
+          <span class="pack-price-num">160 EUR</span>
+          <span class="pack-price-period">/ month</span>
+        </div>
+        <ul class="pack-features">
+          <li>Landing page professionnelle</li>
+          <li>Identité visuelle de départ</li>
+          <li>SEO et tracking essentiels</li>
+        </ul>
+        <a href="./pack-details/starter.html" class="btn btn-glass w-full" style="justify-content:center;">Démarrer</a>
+      </div>
+
+      <div class="glass pack-card featured reveal delay-2" style="opacity:1 !important; visibility:visible !important;">
+        <div class="pack-badge">Most popular</div>
+        <div class="badge badge-red mb-md">Growth</div>
+        <h3 class="card-title">Pack Growth</h3>
+        <p class="card-text" style="min-height:4.4rem;">Pour structurer votre acquisition, automatiser les tâches répétitives et convertir plus de visiteurs en clients.</p>
+        <div class="pack-price">
+          <span class="pack-price-num gradient-text">499 EUR</span>
+          <span class="pack-price-period">/ month</span>
+        </div>
+        <ul class="pack-features">
+          <li>Automations commerciales</li>
+          <li>Campagnes social media</li>
+          <li>Reporting mensuel priorisé</li>
+        </ul>
+        <a href="./pack-details/growth.html" class="btn btn-primary w-full" style="justify-content:center;">Démarrer</a>
+      </div>
+
+      <div class="glass pack-card reveal delay-3" style="opacity:1 !important; visibility:visible !important;">
+        <div class="badge badge-glass mb-md">Elite</div>
+        <h3 class="card-title">Pack Elite</h3>
+        <p class="card-text" style="min-height:4.4rem;">Une transformation IA complète avec workflows avancés, tableaux de bord et accompagnement stratégique.</p>
+        <div class="pack-price">
+          <span class="pack-price-num">1 990 EUR</span>
+          <span class="pack-price-period">/ month</span>
+        </div>
+        <ul class="pack-features">
+          <li>Agents IA métier</li>
+          <li>Business intelligence</li>
+          <li>Support VIP et optimisation</li>
+        </ul>
+        <a href="./pack-details/elite.html" class="btn btn-glass w-full" style="justify-content:center;">Démarrer</a>
+      </div>
+
+      <div class="glass pack-card reveal delay-4" style="opacity:1 !important; visibility:visible !important;">
+        <div class="badge badge-glass mb-md">Enterprise</div>
+        <h3 class="card-title">Enterprise</h3>
+        <p class="card-text" style="min-height:4.4rem;">Une solution sur mesure pour les organisations qui exigent sécurité, integrations et gouvernance avancées.</p>
+        <div class="pack-price">
+          <span class="pack-price-num">Sur devis</span>
+          <span class="pack-price-period"></span>
+        </div>
+        <ul class="pack-features">
+          <li>Architecture personnalisée</li>
+          <li>Sécurité et conformité</li>
+          <li>Roadmap dédiée</li>
+        </ul>
+        <a href="contact.html?pack=Enterprise" class="btn btn-glass w-full" style="justify-content:center;">Contact us</a>
+      </div>
     </div>
 
     <div class="text-center mt-lg reveal">
@@ -3259,7 +3342,9 @@ async function loadPortfolioPreview() {
     let projects = data.data || [];
 
     if (!projects.length) {
-      stage.innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--white-30);font-family:var(--font-accent);">Aucun projet en base.</div>';
+      if (!stage.querySelector('.gallery-item-3d')) {
+        stage.innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--white-30);font-family:var(--font-accent);">Aucun projet en base.</div>';
+      }
       return;
     }
 
@@ -3267,7 +3352,9 @@ async function loadPortfolioPreview() {
 
   } catch (err) {
     console.warn('3D Gallery load failed:', err);
-    stage.innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--white-30);font-family:var(--font-accent);">Erreur de chargement.</div>';
+    if (!stage.querySelector('.gallery-item-3d')) {
+      stage.innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--white-30);font-family:var(--font-accent);">Erreur de chargement.</div>';
+    }
   }
 }
 
