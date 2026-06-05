@@ -4,8 +4,8 @@
    enriches it with public IP geolocation data when available.
    ============================================================ */
 
-const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
-const { SUPABASE_URL, supabaseServiceKey } = require('./_supabase');
+const { setCors, rejectBadOrigin, rateLimit } = require('../server/security');
+const { SUPABASE_URL, supabaseServiceKey } = require('../server/supabase');
 
 const TRACK_FIELDS = new Set([
   'page',

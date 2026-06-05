@@ -1,4 +1,4 @@
-const { createSession, setSessionCookie, validCredentials, prepareApi } = require('./admin-auth');
+const { createSession, setSessionCookie, validCredentials, prepareApi } = require('../server/admin-auth');
 
 module.exports = async (req, res) => {
   if (!prepareApi(req, res, 'admin-login', 10)) return;

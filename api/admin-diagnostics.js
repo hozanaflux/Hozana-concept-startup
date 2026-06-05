@@ -1,5 +1,5 @@
-const { prepareApi, isAdminRequest } = require('./admin-auth');
-const { SUPABASE_URL, supabaseServiceKey } = require('./_supabase');
+const { prepareApi, isAdminRequest } = require('../server/admin-auth');
+const { SUPABASE_URL, supabaseServiceKey } = require('../server/supabase');
 
 function decodeJwtRole(token = '') {
   const parts = String(token).split('.');

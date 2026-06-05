@@ -5,7 +5,7 @@
    ============================================================ */
 
 const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions';
-const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
+const { setCors, rejectBadOrigin, rateLimit } = require('../server/security');
 
 module.exports = async (req, res) => {
   setCors(req, res);

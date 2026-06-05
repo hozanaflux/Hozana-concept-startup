@@ -14,7 +14,7 @@ const isVercelRuntime = !!process.env.VERCEL;
 const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
 const GITHUB_REPO = process.env.GITHUB_REPO || 'hozanaflux/Hozana-concept-startup';
 const GITHUB_DISPATCH_EVENT = process.env.GITHUB_DISPATCH_EVENT || 'generate-blog';
-const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
+const { setCors, rejectBadOrigin, rateLimit } = require('../server/security');
 
 module.exports = async (req, res) => {
   // ── CORS ──

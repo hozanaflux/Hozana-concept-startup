@@ -1,4 +1,4 @@
-const { clearSessionCookie, prepareApi } = require('./admin-auth');
+const { clearSessionCookie, prepareApi } = require('../server/admin-auth');
 
 module.exports = async (req, res) => {
   if (!prepareApi(req, res, 'admin-logout', 30)) return;

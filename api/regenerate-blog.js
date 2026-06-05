@@ -11,8 +11,8 @@ const isVercelRuntime = !!process.env.VERCEL;
 const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL || '';
 const GITHUB_REPO = process.env.GITHUB_REPO || 'hozanaflux/Hozana-concept-startup';
 const GITHUB_DISPATCH_EVENT = process.env.GITHUB_DISPATCH_EVENT || 'generate-blog';
-const { setCors, rejectBadOrigin, requireAdminWriteHeader, rateLimit } = require('./_security');
-const { isAdminRequest } = require('./admin-auth');
+const { setCors, rejectBadOrigin, requireAdminWriteHeader, rateLimit } = require('../server/security');
+const { isAdminRequest } = require('../server/admin-auth');
 
 module.exports = async (req, res) => {
   // ── CORS ──

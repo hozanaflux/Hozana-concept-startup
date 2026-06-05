@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { setCors, rejectBadOrigin, rateLimit } = require('./_security');
+const { setCors, rejectBadOrigin, rateLimit } = require('./security');
 
 const DEFAULT_EMAIL_HASH = 'a4976d615b70ef9383759e67e205e204fad71ebddeed9ab327662b389c8d21e4';
 const DEFAULT_PASSWORD_HASH = 'cb2e6d595374831518b59caec6590572569c1d989f19a807e4fc4db9c1a96383';

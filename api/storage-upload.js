@@ -1,7 +1,7 @@
 const path = require('path');
-const { setCors, rejectBadOrigin, requireAdminWriteHeader, rateLimit } = require('./_security');
-const { isAdminRequest } = require('./admin-auth');
-const { SUPABASE_URL, supabaseServiceKey } = require('./_supabase');
+const { setCors, rejectBadOrigin, requireAdminWriteHeader, rateLimit } = require('../server/security');
+const { isAdminRequest } = require('../server/admin-auth');
+const { SUPABASE_URL, supabaseServiceKey } = require('../server/supabase');
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const ALLOWED_BUCKETS = new Set(['blog-images']);

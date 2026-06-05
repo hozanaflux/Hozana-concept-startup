@@ -1,4 +1,4 @@
-const { prepareApi, readSession, verifySession } = require('./admin-auth');
+const { prepareApi, readSession, verifySession } = require('../server/admin-auth');
 
 module.exports = async (req, res) => {
   if (!prepareApi(req, res, 'admin-session', 60)) return;
