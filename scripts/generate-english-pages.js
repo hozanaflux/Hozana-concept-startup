@@ -24,6 +24,7 @@ const ROOT_PAGES = [
   'company.html',
   'contact.html',
   'portfolio.html',
+  'demo.html',
   'audit.html',
   'article.html',
   'pack-detail.html',

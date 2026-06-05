@@ -93,8 +93,8 @@ const I18N = {
       blog: 'Actualités',
       company: 'À Propos',
       contact: 'Contact',
-      start: 'Démarrer →',
-      startProject: 'Démarrer mon projet',
+      start: 'Démo →',
+      startProject: 'Voir la démo',
       mainMenu: 'Menu principal',
       mainNav: 'Navigation principale',
       openMenu: 'Ouvrir le menu',
@@ -150,8 +150,8 @@ const I18N = {
       blog: 'Insights',
       company: 'Company',
       contact: 'Contact',
-      start: 'Start →',
-      startProject: 'Start my project',
+      start: 'Demo →',
+      startProject: 'View demo',
       mainMenu: 'Main menu',
       mainNav: 'Main navigation',
       openMenu: 'Open menu',
@@ -727,7 +727,7 @@ function renderNavbar() {
             <div class="theme-toggle-thumb" id="theme-thumb">🌙</div>
           </div>
         </button>
-        <a href="${pageRoot()}contact.html" class="btn btn-primary btn-sm navbar-cta" aria-label="${t('nav.startProject')}">${t('nav.start')}</a>
+        <a href="${pageRoot()}demo.html" class="btn btn-primary btn-sm navbar-cta" aria-label="${t('nav.startProject')}">${t('nav.start')}</a>
         <button class="hamburger" id="hamburger" aria-label="${t('nav.openMenu')}" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -751,8 +751,8 @@ function renderNavbar() {
     </ul>
     <div class="mobile-menu-footer">
       ${renderLanguageSwitch('mobile')}
-      <a href="${pageRoot()}contact.html" class="btn btn-primary w-full mobile-menu-cta" onclick="closeMobileMenu()">
-        <i class="fas fa-rocket"></i> ${t('nav.startProject')}
+      <a href="${pageRoot()}demo.html" class="btn btn-primary w-full mobile-menu-cta" onclick="closeMobileMenu()">
+        <i class="fas fa-play"></i> ${t('nav.startProject')}
       </a>
       <div class="mobile-contact-info">
         <a href="mailto:${siteSetting('email')}" data-site-link="email"><i class="fas fa-envelope"></i> <span data-site-field="email">${siteSetting('email')}</span></a>

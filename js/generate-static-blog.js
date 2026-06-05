@@ -328,6 +328,7 @@ function generateSitemap(posts, packs = []) {
     { loc: `${SITE_URL}/platform`, priority: '0.8', changefreq: 'monthly' },
     { loc: `${SITE_URL}/portfolio`, priority: '0.8', changefreq: 'monthly' },
     { loc: `${SITE_URL}/pricing`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/demo`, priority: '0.8', changefreq: 'monthly' },
     { loc: `${SITE_URL}/contact`, priority: '0.7', changefreq: 'monthly' },
   ];
   const englishPages = [
@@ -336,6 +337,7 @@ function generateSitemap(posts, packs = []) {
     { loc: `${SITE_URL}/en/platform.html`, priority: '0.8', changefreq: 'monthly' },
     { loc: `${SITE_URL}/en/portfolio.html`, priority: '0.8', changefreq: 'monthly' },
     { loc: `${SITE_URL}/en/pricing.html`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/en/demo.html`, priority: '0.8', changefreq: 'monthly' },
     { loc: `${SITE_URL}/en/contact.html`, priority: '0.7', changefreq: 'monthly' },
     { loc: `${SITE_URL}/en/company.html`, priority: '0.7', changefreq: 'monthly' },
   ];
