@@ -412,7 +412,7 @@ async function trackPageView(meta = {}) {
       geo_source: precise.latitude && precise.longitude ? 'gps' : 'ip',
       event_type: meta.eventType || 'pageview'
     };
-    const postServerView = (body) => fetch('/api/track-visit', {
+    const postServerView = (body) => fetch('/api/visitor-geo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
