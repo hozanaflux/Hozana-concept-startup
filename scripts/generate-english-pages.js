@@ -252,6 +252,68 @@ function localizeStructuredData(document) {
   });
 }
 
+function localizeContactPage(document) {
+  const mapFrame = document.querySelector('.map-iframe');
+  if (mapFrame) {
+    mapFrame.setAttribute('title', 'Hozana Concept international presence');
+    mapFrame.setAttribute('aria-label', 'International presence map');
+  }
+
+  const faqHead = document.querySelector('#faq .text-center');
+  if (faqHead) {
+    faqHead.innerHTML = `
+      <div class="section-label">Frequently Asked Questions</div>
+      <h2 class="text-h1">Everything you need to <span class="gradient-text">know</span></h2>
+      <p style="color:var(--white-60);margin-top:0.75rem;max-width:520px;margin-left:auto;margin-right:auto;">
+        Still unsure? Here are the answers to the questions our clients ask most often before getting started.
+      </p>`;
+  }
+
+  const faqList = document.getElementById('faq-list');
+  if (faqList) {
+    const items = [
+      ['🌐 How much does a website cost?', 'Pricing depends on your needs. A business website starts from <strong>990€</strong> and an e-commerce store from <strong>1,990€</strong>. We also offer monthly plans from <strong>490€/month</strong> including website, maintenance and social media support. <a href="./pricing.html">View all plans →</a>'],
+      ['⏱️ How long does it take to build my website?', 'We usually deliver a business website in <strong>10 to 21 days</strong> and an e-commerce store in <strong>3 to 4 weeks</strong>. More advanced projects such as apps or AI systems usually take 30 to 60 days. Everything starts with a free audit to define a precise timeline.'],
+      ['🎨 I know nothing about design. Do you handle everything?', '<strong>Absolutely.</strong> You do not need technical knowledge. You share your ideas, activity and preferences, and we handle the rest: logo, visual identity, website, social media visuals and launch assets. You review, approve and move forward.'],
+      ['📱 Do you also create visuals for social media?', 'Yes. We create <strong>posts, stories, reels and templates</strong> for Instagram, Facebook, TikTok and LinkedIn. Depending on your plan, we can also manage your full social media presence, including publishing, comments and editorial strategy.'],
+      ['💳 How do payments work?', 'For custom projects: <strong>50% at order, 50% at delivery</strong>. Monthly plans are billed monthly by card or bank transfer. We can also arrange staged payments for projects above 1,500€.'],
+      ['📊 How do I know if it works?', 'We define <strong>clear indicators from day one</strong>: traffic, conversion rate, generated leads, social engagement and operational savings. You receive regular reporting, and our clients typically see stronger ROI and lower operating costs within a few months.'],
+      ['🌍 Do you work with clients outside France?', 'Yes. Hozana Concept works remotely with clients across several markets. Our delivery model is cloud-based, so strategy sessions, design reviews, automation setup and reporting can all be managed online.'],
+      ['🚀 What is the first step?', 'Start with our <strong>free 30-minute audit</strong>. Fill out the form above and an expert will contact you within 24h. We analyze your situation, objectives and budget, then propose the most suitable solution with no commitment.']
+    ];
+    faqList.innerHTML = items.map(([q, a], index) => `
+      <div class="faq-item reveal${index ? ` delay-${Math.min(index, 3)}` : ''}" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <div class="faq-q-text">${q}</div>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">${a}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  const faqCta = document.querySelector('#faq .text-center.mt-lg');
+  if (faqCta) {
+    faqCta.innerHTML = `
+      <p style="color:var(--white-50);margin-bottom:1.25rem;">Do you have another question?</p>
+      <a href="https://wa.me/+21651474751?text=Hello, I have a question for Hozana Concept" target="_blank" class="btn btn-glass btn-lg" style="margin-right:1rem;" data-site-link="phone">
+        <i class="fab fa-whatsapp" style="color:#25D366;"></i> Direct WhatsApp
+      </a>
+      <a href="mailto:info@hozanaconcept.com" class="btn btn-outline" data-site-link="email">
+        <i class="fas fa-envelope"></i> Send an email
+      </a>`;
+  }
+
+  document.querySelectorAll('script').forEach(script => {
+    if (!script.textContent) return;
+    script.textContent = script.textContent
+      .replace("Veuillez remplir tous les champs obligatoires.", "Please fill in all required fields.")
+      .replace("Erreur lors de l\\'envoi. Contactez-nous directement par WhatsApp.", "Error while sending. Please contact us directly on WhatsApp.")
+      .replace("Envoi...", "Sending...");
+  });
+}
+
 function translateMetadata(document, rel) {
   const title = document.querySelector('title');
   const descriptions = {
@@ -271,6 +333,7 @@ function translateMetadata(document, rel) {
       .replace('Actualités', 'Insights')
       .replace('À Propos', 'Company')
       .replace('Contact', 'Contact'));
+    if (rel === 'contact.html') title.textContent = 'Contact & Free Audit | Hozana Concept - Reply within 24h';
   }
   if (descriptions[rel]) {
     upsertMeta(document, 'description', descriptions[rel]);
@@ -320,6 +383,7 @@ function transformPage(rel) {
   translateMetadata(document, rel);
   applyStaticEnglishText(document);
   localizeStructuredData(document);
+  if (rel === 'contact.html') localizeContactPage(document);
   upsertLink(document, 'canonical', enUrl);
   upsertLink(document, 'alternate', frUrl, { hreflang: 'fr' });
   upsertLink(document, 'alternate', enUrl, { hreflang: 'en-us' });

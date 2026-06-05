@@ -171,6 +171,47 @@
       margin-bottom: 0.375rem;
     }
     .map-overlay-item i { color: var(--red); width: 14px; }
+    @media (max-width: 768px) {
+      .map-section { padding: 3rem 1.25rem; }
+      .map-wrapper {
+        display: flex;
+        flex-direction: column;
+        border-radius: 16px;
+      }
+      .map-iframe {
+        height: 300px;
+        min-height: 300px;
+      }
+      .map-overlay-card {
+        position: static;
+        max-width: none;
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0;
+        background: rgba(10,10,18,0.98);
+      }
+    }
+    @media (max-width: 480px) {
+      .map-section { padding: 2.5rem 1rem; }
+      .map-iframe {
+        height: 260px;
+        min-height: 260px;
+      }
+      .map-overlay-card {
+        padding: 1rem;
+      }
+      .map-overlay-title {
+        font-size: 0.95rem;
+      }
+      .map-overlay-item {
+        align-items: flex-start;
+        font-size: 0.78rem;
+        line-height: 1.4;
+      }
+    }
 
     /* === FAQ === */
     .faq-section { padding: 5rem 2rem; }
@@ -419,33 +460,33 @@
 </section>
 
 <!-- ============================================================
-     CARTE — Global Presence
+     CARTE — Présence internationale
      ============================================================ -->
 <section class="map-section" id="localisation">
   <div class="container">
     <div class="text-center mb-lg reveal">
-      <div class="section-label">Global Presence</div>
-      <h2 class="text-h1"><span class="gradient-text">Worldwide</span> Reach, Active Everywhere</h2>
+      <div class="section-label">Présence internationale</div>
+      <h2 class="text-h1">Une équipe <span class="gradient-text">accessible partout</span></h2>
       <p style="color:var(--white-60);margin-top:0.75rem;max-width:500px;margin-left:auto;margin-right:auto;">
-        Operating as a decentralized AI Platform. We serve clients worldwide through our high-performance cloud infrastructure.
+        Nous accompagnons des clients à distance dans plusieurs marchés grâce à nos outils cloud, nos agents IA et nos workflows automatisés.
       </p>
     </div>
     <div class="map-wrapper reveal delay-1">
       <iframe
         class="map-iframe"
-        title="Hozana Concept Global Presence"
+        title="Présence internationale Hozana Concept"
         src="https://www.openstreetmap.org/export/embed.html?bbox=-180%2C-60%2C180%2C80&layer=mapnik"
         allowfullscreen
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
-        aria-label="Global Map"
+        aria-label="Carte de présence internationale"
       ></iframe>
       <div class="map-overlay-card">
         <div class="map-overlay-title">📍 Hozana Concept</div>
         <div class="map-overlay-item"><i class="fas fa-globe"></i> <span data-site-field="address">Hozana Concept Global Headquarters</span></div>
         <div class="map-overlay-item"><i class="fas fa-envelope"></i> <span data-site-field="email">info@hozanaconcept.com</span></div>
         <div class="map-overlay-item"><i class="fab fa-whatsapp"></i> <span data-site-field="phone">+216 51 47 47 51</span></div>
-        <div class="map-overlay-item"><i class="fas fa-clock"></i> 24/7 Cloud Monitoring</div>
+        <div class="map-overlay-item"><i class="fas fa-clock"></i> Supervision cloud 24/7</div>
         <div style="margin-top:0.75rem;">
           <a href="company.html" class="btn btn-glass" style="padding:0.4rem 0.875rem;font-size:0.78rem;">
             <i class="fas fa-info-circle"></i> Notre vision
